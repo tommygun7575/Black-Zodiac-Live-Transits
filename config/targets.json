@@ -1,14 +1,15 @@
 {
   "meta": {
     "generated_by": "Black-Zodiac Live Config",
-    "notes": "Numeric IDs for Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts require natal charts placed in config/natal/*.json"
+    "version": "2025-08-16",
+    "notes": "Numeric IDs for JPL Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts computed per natal JSON placed in config/natal/*.json"
   },
+
   "planets": [
     { "id": "10", "label": "Sun" },
     { "id": "301", "label": "Moon" },
     { "id": "199", "label": "Mercury" },
     { "id": "299", "label": "Venus" },
-    { "id": "399", "label": "Earth (center)" },
     { "id": "499", "label": "Mars" },
     { "id": "599", "label": "Jupiter" },
     { "id": "699", "label": "Saturn" },
@@ -16,59 +17,66 @@
     { "id": "899", "label": "Neptune" },
     { "id": "999", "label": "Pluto" }
   ],
+
   "minor_bodies": [
     "1","2","3","4","5","16","31","80","2060","2063","1221","3811",
-    "136108","136472","20000","28978","42355","120347"
+    "136108","136472","20000","28978","42355","120347","2060","2063","1221",
+    "4341","10199","134340","24835","29428","50000","90377","120347","145451"
   ],
+
   "fixed_stars": [
-    {
-      "id": "Regulus",
-      "label": "Regulus (Alpha Leo)",
-      "ra_deg": 152.0929625,
-      "dec_deg": 11.9672083,
-      "epoch": "J2000"
-    },
-    {
-      "id": "Spica",
-      "label": "Spica (Alpha Vir)",
-      "ra_deg": 201.2982475,
-      "dec_deg": -11.1613194,
-      "epoch": "J2000"
-    },
-    {
-      "id": "Sirius",
-      "label": "Sirius (Alpha CMa)",
-      "ra_deg": 101.28715533,
-      "dec_deg": -16.71611586,
-      "epoch": "J2000"
-    },
-    {
-      "id": "Aldebaran",
-      "label": "Aldebaran (Alpha Tau)",
-      "ra_deg": 68.9801625,
-      "dec_deg": 16.50930278,
-      "epoch": "J2000"
-    }
+    { "id": "Regulus", "label": "Regulus (Alpha Leo)", "ra_deg": 152.0929625, "dec_deg": 11.9672083, "epoch": "J2000" },
+    { "id": "Spica", "label": "Spica (Alpha Vir)", "ra_deg": 201.2982475, "dec_deg": -11.1613194, "epoch": "J2000" },
+    { "id": "Sirius", "label": "Sirius (Alpha CMa)", "ra_deg": 101.28715533, "dec_deg": -16.71611586, "epoch": "J2000" },
+    { "id": "Aldebaran", "label": "Aldebaran (Alpha Tau)", "ra_deg": 68.9801625, "dec_deg": 16.50930278, "epoch": "J2000" },
+    { "id": "Antares", "label": "Antares (Alpha Sco)", "ra_deg": 247.3519167, "dec_deg": -26.432, "epoch": "J2000" },
+    { "id": "Betelgeuse", "label": "Betelgeuse (Alpha Ori)", "ra_deg": 88.792939, "dec_deg": 7.407064, "epoch": "J2000" },
+    { "id": "Vega", "label": "Vega (Alpha Lyr)", "ra_deg": 279.23473479, "dec_deg": 38.78368896, "epoch": "J2000" },
+    { "id": "Deneb", "label": "Deneb (Alpha Cyg)", "ra_deg": 310.35798, "dec_deg": 45.280338, "epoch": "J2000" },
+    { "id": "Altair", "label": "Altair (Alpha Aql)", "ra_deg": 297.695827, "dec_deg": 8.868321, "epoch": "J2000" },
+    { "id": "Fomalhaut", "label": "Fomalhaut (Alpha PsA)", "ra_deg": 344.41275, "dec_deg": -29.622236, "epoch": "J2000" },
+    { "id": "Capella", "label": "Capella (Alpha Aur)", "ra_deg": 79.172327, "dec_deg": 45.997991, "epoch": "J2000" },
+    { "id": "Pollux", "label": "Pollux (Beta Gem)", "ra_deg": 116.32898, "dec_deg": 28.02618, "epoch": "J2000" },
+    { "id": "Procyon", "label": "Procyon (Alpha CMi)", "ra_deg": 114.825493, "dec_deg": 5.224993, "epoch": "J2000" },
+    { "id": "Castor", "label": "Castor (Alpha Gem)", "ra_deg": 113.6496, "dec_deg": 31.8883, "epoch": "J2000" },
+    { "id": "Arcturus", "label": "Arcturus (Alpha Boo)", "ra_deg": 213.9153, "dec_deg": 19.1824, "epoch": "J2000" },
+    { "id": "Polaris", "label": "Polaris (Alpha UMi)", "ra_deg": 37.95456067, "dec_deg": 89.26410897, "epoch": "J2000" },
+    { "id": "Mimosa", "label": "Mimosa (Beta Cru)", "ra_deg": 186.6494, "dec_deg": -59.6888, "epoch": "J2000" },
+    { "id": "Bellatrix", "label": "Bellatrix (Gamma Ori)", "ra_deg": 81.282764, "dec_deg": 6.349702, "epoch": "J2000" },
+    { "id": "Alnitak", "label": "Alnitak (Zeta Ori)", "ra_deg": 85.1897, "dec_deg": -1.9426, "epoch": "J2000" },
+    { "id": "Algol", "label": "Algol (Beta Per)", "ra_deg": 47.0422, "dec_deg": 40.9556, "epoch": "J2000" },
+    { "id": "Rigel", "label": "Rigel (Beta Ori)", "ra_deg": 78.63446707, "dec_deg": -8.20163837, "epoch": "J2000" },
+    { "id": "Acrux", "label": "Acrux (Alpha Cru)", "ra_deg": 186.649, "dec_deg": -63.099, "epoch": "J2000" },
+    { "id": "Shaula", "label": "Shaula (Lambda Sco)", "ra_deg": 263.402, "dec_deg": -37.1038, "epoch": "J2000" },
+    { "id": "Denebola", "label": "Denebola (Beta Leo)", "ra_deg": 177.267, "dec_deg": 14.5721, "epoch": "J2000" }
   ],
+
   "arabic_parts": [
     {
       "id": "PartOfFortune",
       "label": "Part of Fortune",
       "formula": "asc + moon - sun",
-      "description": "Day formula: Asc + Moon - Sun. Night formula: Asc - Moon + Sun.",
-      "natal_chart_file": "config/natal/Tommy.json"
+      "description": "Classical Part of Fortune (day formula used by default). Computed per natal chart found in config/natal/*.json"
     },
     {
       "id": "PartOfSpirit",
       "label": "Part of Spirit",
       "formula": "asc - moon + sun",
-      "description": "Common 'Part of Spirit' formula. Requires natal chart values.",
-      "natal_chart_file": "config/natal/Tommy.json"
+      "description": "Part of Spirit formula. Computed per natal chart."
+    },
+    {
+      "id": "PartOfLove",
+      "label": "Part of Love",
+      "formula": "asc + moon - sun",
+      "description": "Common variant used for love/relations (same tokens; rename for your workflows)."
     }
   ],
+
   "options": {
     "use_barycenter_when_available": true,
-    "compute_conjunctions": false,
-    "ecliptic_frame": "true_ecliptic"
+    "auto_skip_disallowed": true,
+    "compute_conjunctions": true,
+    "ecliptic_frame": "true_ecliptic",
+    "notes": "The runner will autoscan config/natal/*.json for natal inputs and compute parts for each natal chart."
   }
 }
