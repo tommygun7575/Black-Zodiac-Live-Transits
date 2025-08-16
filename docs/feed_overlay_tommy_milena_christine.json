@@ -1,8 +1,17 @@
 {
   "generated_at_utc": "2025-08-16T14:32:32.942328+00:00",
+  "overlay_charts": [
+    "tommy",
+    "milena",
+    "christine"
+  ],
+  "missing_charts": [
+    "tommy",
+    "milena",
+    "christine"
+  ],
   "observer": "geocentric (Earth center)",
-  "refplane": "earth",
-  "source": "JPL Horizons via astroquery + local fixed stars + computed parts",
+  "source": "JPL Horizons + overlay parts",
   "objects": [
     {
       "id": "10",
@@ -476,54 +485,6 @@
       "elong_deg": null,
       "phase_angle_deg": null,
       "constellation": null
-    },
-    {
-      "id": "PartOfFortune@Christine",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfSpirit@Christine",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune_Milena@Christine",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune_Christine@Christine",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune@Milena",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfSpirit@Milena",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune_Milena@Milena",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune_Christine@Milena",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune@Tommy",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfSpirit@Tommy",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune_Milena@Tommy",
-      "error": "Part compute error: name 'asc' is not defined"
-    },
-    {
-      "id": "PartOfFortune_Christine@Tommy",
-      "error": "Part compute error: name 'asc' is not defined"
     }
   ]
 }
