@@ -1,172 +1,134 @@
 #!/usr/bin/env python3
 """
-Robust transit fetcher for JPL Horizons → docs/feed_now.json
-
-- Uses numeric IDs where appropriate (config should contain numeric ids for planets).
-- Uses astroquery.horizons.ephemerides (no refplane) and falls back to astropy conversion.
-- If astropy transform fails or returns NaN, uses a manual spherical trig conversion
-  (equatorial -> ecliptic using obliquity).
+Comprehensive transit fetcher:
+- Planets/minor bodies via JPL Horizons (numeric IDs)
+- Fixed stars via RA/DEC -> ecliptic using Astropy
+- Arabic parts computed from natal chart values (requires natal JSON files)
+- Writes docs/feed_now.json
 """
-import json
-import os
-import math
+
+import json, os, math
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
+# astroquery + astropy
 from astroquery.jplhorizons import Horizons  # type: ignore
 from astropy import units as u  # type: ignore
 from astropy.coordinates import SkyCoord, GeocentricTrueEcliptic  # type: ignore
 from astropy.time import Time  # type: ignore
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-CONFIG = os.path.join(ROOT, "config", "targets.json")
-OUTDIR = os.path.join(ROOT, "docs")
-OUTFILE = os.path.join(OUTDIR, "feed_now.json")
+CONFIG_PATH = os.path.join(ROOT, "config", "targets.json")
+OUT_DIR = os.path.join(ROOT, "docs")
+OUT_FILE = os.path.join(OUT_DIR, "feed_now.json")
 
-# Mean obliquity (approx) for manual fallback (degrees)
 OBLIQUITY_DEG = 23.439291
 
+def load_config(path: str) -> Dict[str, Any]:
+    if not os.path.exists(path):
+        raise FileNotFoundError(path)
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-def load_targets(config_path: str) -> List[Dict[str, Any]]:
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return data.get("targets", [])
-    return [{"id": "10", "label": "Sun"}, {"id": "301", "label": "Moon"}]
-
-
-def _as_float(val):
+def _as_float(v):
     try:
-        return float(val)
+        return float(v)
     except Exception:
         try:
-            return float(val.value)
+            return float(v.value)
         except Exception:
             return None
 
-
-def _attempt_query(target_id: str):
+def query_horizons_id(idstr: str):
     try:
-        obj = Horizons(id=str(target_id), location=None, epochs=None)
+        obj = Horizons(id=str(idstr), location=None, epochs=None)
         eph = obj.ephemerides()
         row = eph[0]
         return True, row
     except Exception as e:
         return False, e
 
-
-def _manual_ecl_from_ra_dec(ra_deg: float, dec_deg: float):
-    """
-    Manual conversion from equatorial (RA/DEC in degrees) to ecliptic lon/lat in degrees.
-    Uses rotation about x-axis by obliquity (epsilon).
-    """
+def compute_ecl_from_ra_dec(ra_deg, dec_deg, datetime_str=None, delta_au=None):
+    # prefer astropy transform; fallback to manual trig if necessary
     try:
-        ra = math.radians(ra_deg)
-        dec = math.radians(dec_deg)
-        eps = math.radians(OBLIQUITY_DEG)
-
-        x = math.cos(dec) * math.cos(ra)
-        y = math.cos(dec) * math.sin(ra)
-        z = math.sin(dec)
-
-        # rotate coordinates by +epsilon about X: (x' = x; y' = cosε*y + sinε*z; z' = -sinε*y + cosε*z)
-        y_e = math.cos(eps) * y + math.sin(eps) * z
-        z_e = -math.sin(eps) * y + math.cos(eps) * z
-        x_e = x
-
-        r = math.sqrt(x_e * x_e + y_e * y_e + z_e * z_e)
-        if r == 0:
-            return None, None
-
-        lon = math.degrees(math.atan2(y_e, x_e)) % 360.0
-        lat = math.degrees(math.asin(z_e / r))
-        return lon, lat
-    except Exception:
-        return None, None
-
-
-def _compute_ecliptic_from_ra_dec(ra_deg, dec_deg, datetime_str, delta_au):
-    """
-    Try astropy conversion first (with sensible distance). If that returns NaN or fails,
-    fall back to manual trig conversion.
-    """
-    try:
-        # set a sensible distance (avoid zero)
-        try:
-            if delta_au is not None and delta_au > 1e-6:
-                dist = delta_au * u.AU
-            else:
-                dist = 1.0 * u.AU
-        except Exception:
-            dist = 1.0 * u.AU
+        dist = 1.0 * u.AU
+        if delta_au is not None:
+            try:
+                if float(delta_au) > 1e-6:
+                    dist = float(delta_au) * u.AU
+            except Exception:
+                pass
 
         obstime = None
-        try:
-            if datetime_str:
+        if datetime_str:
+            try:
                 obstime = Time(datetime_str)
-        except Exception:
-            obstime = None
+            except Exception:
+                obstime = None
 
         sc = SkyCoord(ra=ra_deg * u.deg, dec=dec_deg * u.deg, distance=dist, frame="icrs", obstime=obstime)
-        if obstime is not None:
-            ecl_frame = GeocentricTrueEcliptic(obstime=obstime)
-        else:
-            ecl_frame = GeocentricTrueEcliptic()
+        ecl_frame = GeocentricTrueEcliptic(obstime=obstime) if obstime is not None else GeocentricTrueEcliptic()
         ecl = sc.transform_to(ecl_frame)
         lon = float(ecl.lon.to(u.deg).value)
         lat = float(ecl.lat.to(u.deg).value)
-
-        # guard against NaN
         if math.isnan(lon) or math.isnan(lat):
-            return _manual_ecl_from_ra_dec(ra_deg, dec_deg)
+            # fallback
+            raise ValueError("astropy returned NaN")
         return lon, lat
     except Exception:
-        # final manual fallback
-        return _manual_ecl_from_ra_dec(ra_deg, dec_deg)
+        # manual conversion
+        try:
+            ra = math.radians(ra_deg)
+            dec = math.radians(dec_deg)
+            eps = math.radians(OBLIQUITY_DEG)
+            x = math.cos(dec) * math.cos(ra)
+            y = math.cos(dec) * math.sin(ra)
+            z = math.sin(dec)
+            y_e = math.cos(eps) * y + math.sin(eps) * z
+            z_e = -math.sin(eps) * y + math.cos(eps) * z
+            lon = math.degrees(math.atan2(y_e, x)) % 360.0
+            lat = math.degrees(math.asin(z_e / math.sqrt(x*x+y_e*y_e+z_e*z_e)))
+            return lon, lat
+        except Exception as e:
+            return None, None
 
-
-def query_body(target_spec: str) -> Dict[str, Any]:
-    ok, res = _attempt_query(target_spec)
-    if ok:
-        row = res
-    else:
-        err = res
-        # if ambiguous name: just return the error (we prefer numeric ids in config)
-        return {"id": str(target_spec), "error": f"{type(err).__name__}: {err}"}
-
+def process_horizons_entry(idval):
+    ok, res = query_horizons_id(idval)
+    if not ok:
+        return {"id": str(idval), "error": f"{type(res).__name__}: {res}"}
+    row = res
     try:
-        targetname = str(row.get("targetname", str(target_spec)))
-        datetime_utc = str(row.get("datetime_str", ""))
+        targetname = str(row.get("targetname", idval))
+        datetime_utc = str(row.get("datetime_str",""))
         jd = _as_float(row.get("datetime_jd"))
         ra = _as_float(row.get("RA"))
         dec = _as_float(row.get("DEC"))
-        delta_au = _as_float(row.get("delta"))
+        delta = _as_float(row.get("delta"))
         r_au = _as_float(row.get("r"))
-        elong_deg = _as_float(row.get("elong"))
-        phase_angle_deg = _as_float(row.get("alpha"))
-        constellation = str(row.get("constellation", ""))
+        elong = _as_float(row.get("elong"))
+        alpha = _as_float(row.get("alpha"))
+        const = str(row.get("constellation",""))
 
-        # prefer Horizons EclLon/EclLat
+        # try Horizons ecliptic fields if present
         ecl_lon = None
         ecl_lat = None
         try:
-            if "EclLon" in getattr(row, "colnames", []):
+            colnames = getattr(row, "colnames", [])
+            if "EclLon" in colnames:
                 ecl_lon = _as_float(row.get("EclLon"))
-            if "EclLat" in getattr(row, "colnames", []):
+            if "EclLat" in colnames:
                 ecl_lat = _as_float(row.get("EclLat"))
         except Exception:
             ecl_lon = None
             ecl_lat = None
 
-        # fallback compute if missing or NaN
-        if (ecl_lon is None or ecl_lat is None or (isinstance(ecl_lon, float) and math.isnan(ecl_lon))) and (ra is not None and dec is not None):
-            lon_fallback, lat_fallback = _compute_ecliptic_from_ra_dec(ra, dec, datetime_utc, delta_au)
-            if lon_fallback is not None:
-                ecl_lon = lon_fallback
-                ecl_lat = lat_fallback
+        if (ecl_lon is None or ecl_lat is None) and (ra is not None and dec is not None):
+            lon, lat = compute_ecl_from_ra_dec(ra, dec, datetime_utc, delta)
+            ecl_lon = lon
+            ecl_lat = lat
 
         return {
-            "id": str(target_spec),
+            "id": str(idval),
             "targetname": targetname,
             "datetime_utc": datetime_utc,
             "jd": jd,
@@ -174,36 +136,132 @@ def query_body(target_spec: str) -> Dict[str, Any]:
             "ecl_lat_deg": ecl_lat,
             "ra_deg": ra,
             "dec_deg": dec,
-            "delta_au": delta_au,
+            "delta_au": delta,
             "r_au": r_au,
-            "elong_deg": elong_deg,
-            "phase_angle_deg": phase_angle_deg,
-            "constellation": constellation,
+            "elong_deg": elong,
+            "phase_angle_deg": alpha,
+            "constellation": const
         }
     except Exception as e:
-        return {"id": str(target_spec), "error": f"{type(e).__name__}: {e}"}
+        return {"id": str(idval), "error": f"{type(e).__name__}: {e}"}
 
+def process_fixed_star(star):
+    try:
+        ra = float(star["ra_deg"])
+        dec = float(star["dec_deg"])
+        lon, lat = compute_ecl_from_ra_dec(ra, dec)
+        return {
+            "id": star.get("id", star.get("label")),
+            "targetname": star.get("label"),
+            "datetime_utc": datetime.now(timezone.utc).isoformat(),
+            "jd": None,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "ra_deg": ra,
+            "dec_deg": dec,
+            "delta_au": None,
+            "r_au": None,
+            "elong_deg": None,
+            "phase_angle_deg": None,
+            "constellation": None
+        }
+    except Exception as e:
+        return {"id": star.get("id"), "error": f"{type(e).__name__}: {e}"}
 
-def main() -> None:
-    targets = load_targets(CONFIG)
-    results: List[Dict[str, Any]] = []
-    for t in targets:
-        tid = str(t.get("id"))
-        results.append(query_body(tid))
+def compute_arabic_part(formula: str, natal: Dict[str, Any]):
+    """
+    Very small arithmetic parser for common formulas like:
+      asc + moon - sun
+    natal must contain numeric longitudes in degrees keyed by 'asc', 'sun', 'moon'
+    Returns a longitude in degrees 0-360.
+    """
+    try:
+        # build a small eval environment
+        env = {}
+        for k in ('asc','sun','moon','mc','vertex'):
+            if k in natal:
+                env[k] = float(natal[k])
+        # safe tokens only: letters, numbers, + - * / parenthesis and spaces
+        allowed = set("abcdefghijklmnopqrstuvwxyz0123456789+-*/(). _")
+        if not set(formula.lower()) <= allowed:
+            return None, "unsafe formula"
+        expr = formula.lower()
+        # replace tokens with env values
+        for k,v in env.items():
+            expr = expr.replace(k, f"({v})")
+        val = eval(expr, {"__builtins__": {}})
+        # normalize
+        lon = float(val) % 360.0
+        return lon, None
+    except Exception as e:
+        return None, str(e)
 
-    os.makedirs(OUTDIR, exist_ok=True)
+def process_arabic_part(part):
+    natal_file = part.get("natal_chart_file")
+    if not natal_file:
+        return {"id": part.get("id"), "error": "no natal_chart_file specified"}
+    if not os.path.exists(natal_file):
+        # allow relative to repo root
+        path = os.path.join(ROOT, natal_file)
+    else:
+        path = natal_file
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            natal = json.load(f)
+    except Exception as e:
+        return {"id": part.get("id"), "error": f"failed to open natal chart {path}: {e}"}
+    # natal must contain 'asc','sun','moon' as longitudes in degrees
+    lon, err = compute_arabic_part(part.get("formula",""), natal)
+    if err:
+        return {"id": part.get("id"), "error": err}
+    return {
+        "id": part.get("id"),
+        "targetname": part.get("label"),
+        "datetime_utc": datetime.now(timezone.utc).isoformat(),
+        "jd": None,
+        "ecl_lon_deg": lon,
+        "ecl_lat_deg": None,
+        "ra_deg": None,
+        "dec_deg": None,
+        "delta_au": None,
+        "r_au": None,
+        "constellation": None
+    }
+
+def main():
+    cfg = load_config(CONFIG_PATH)
+    now = datetime.now(timezone.utc).isoformat()
+    results = []
+
+    # planets
+    for p in cfg.get("planets", []):
+        pid = p.get("id") if isinstance(p, dict) else p
+        results.append(process_horizons_entry(pid))
+
+    # minor bodies
+    for mb in cfg.get("minor_bodies", []):
+        results.append(process_horizons_entry(mb))
+
+    # fixed stars
+    for star in cfg.get("fixed_stars", []):
+        results.append(process_fixed_star(star))
+
+    # arabic parts
+    for part in cfg.get("arabic_parts", []):
+        results.append(process_arabic_part(part))
+
+    os.makedirs(OUT_DIR, exist_ok=True)
     payload = {
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "generated_at_utc": now,
         "observer": "geocentric (Earth center)",
         "refplane": "earth",
-        "source": "JPL Horizons via astroquery",
-        "objects": results,
+        "source": "JPL Horizons via astroquery + local fixed stars + computed parts",
+        "objects": results
     }
-    with open(OUTFILE, "w", encoding="utf-8") as f:
+    with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    print(f"Wrote {OUTFILE} with {len(results)} objects.")
-
+    print("Wrote", OUT_FILE, "objects:", len(results))
 
 if __name__ == "__main__":
     main()
