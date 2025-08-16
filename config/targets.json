@@ -1,7 +1,7 @@
 {
   "meta": {
     "generated_by": "Black-Zodiac Live Config",
-    "notes": "Numeric IDs for Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts require natal charts in config/natal/*.json"
+    "notes": "Numeric IDs for Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts require natal charts placed in config/natal/*.json"
   },
 
   "planets": [
@@ -25,9 +25,9 @@
 
   "fixed_stars": [
     { "id": "Regulus", "label": "Regulus (Alpha Leo)", "ra_deg": 152.0929625, "dec_deg": 11.9672083, "epoch": "J2000" },
-    { "id": "Spica",   "label": "Spica (Alpha Vir)",   "ra_deg": 201.2982475, "dec_deg": -11.1613194, "epoch": "J2000" },
-    { "id": "Sirius",  "label": "Sirius (Alpha CMa)",  "ra_deg": 101.28715533, "dec_deg": -16.71611586, "epoch": "J2000" },
-    { "id": "Aldebaran","label":"Aldebaran (Alpha Tau)","ra_deg": 68.9801625, "dec_deg": 16.50930278, "epoch": "J2000" }
+    { "id": "Spica", "label": "Spica (Alpha Vir)", "ra_deg": 201.2982475, "dec_deg": -11.1613194, "epoch": "J2000" },
+    { "id": "Sirius", "label": "Sirius (Alpha CMa)", "ra_deg": 101.28715533, "dec_deg": -16.71611586, "epoch": "J2000" },
+    { "id": "Aldebaran", "label": "Aldebaran (Alpha Tau)", "ra_deg": 68.9801625, "dec_deg": 16.50930278, "epoch": "J2000" }
   ],
 
   "arabic_parts": [
@@ -42,18 +42,18 @@
       "id": "PartOfSpirit",
       "label": "Part of Spirit",
       "formula": "asc - moon + sun",
-      "description": "Common Part of Spirit formula. Requires natal chart values.",
+      "description": "Common 'Part of Spirit' formula. Requires natal chart values.",
       "natal_chart_file": "config/natal/Tommy.json"
     },
     {
-      "id": "Part_Milena_Fortune",
-      "label": "Milena Part of Fortune",
+      "id": "PartOfFortune_Milena",
+      "label": "Part of Fortune (Milena)",
       "formula": "asc + moon - sun",
       "natal_chart_file": "config/natal/Milena.json"
     },
     {
-      "id": "Part_Christine_Fortune",
-      "label": "Christine Part of Fortune",
+      "id": "PartOfFortune_Christine",
+      "label": "Part of Fortune (Christine)",
       "formula": "asc + moon - sun",
       "natal_chart_file": "config/natal/Christine.json"
     }
