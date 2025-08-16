@@ -3,7 +3,6 @@
     "generated_by": "Black-Zodiac Live Config",
     "notes": "Numeric IDs for Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts require natal charts placed in config/natal/*.json"
   },
-
   "planets": [
     { "id": "10", "label": "Sun" },
     { "id": "301", "label": "Moon" },
@@ -17,13 +16,10 @@
     { "id": "899", "label": "Neptune" },
     { "id": "999", "label": "Pluto" }
   ],
-
   "minor_bodies": [
-    1,2,3,4,5,16,31,80,2060,2063,1221,3811,
-    136108,136472,20000,28978,42355,120347
-    /* add additional numeric asteroid IDs here (integers or strings allowed) */
+    "1","2","3","4","5","16","31","80","2060","2063","1221","3811",
+    "136108","136472","20000","28978","42355","120347"
   ],
-
   "fixed_stars": [
     {
       "id": "Regulus",
@@ -54,7 +50,6 @@
       "epoch": "J2000"
     }
   ],
-
   "arabic_parts": [
     {
       "id": "PartOfFortune",
@@ -71,7 +66,6 @@
       "natal_chart_file": "config/natal/Tommy.json"
     }
   ],
-
   "options": {
     "use_barycenter_when_available": true,
     "compute_conjunctions": false,
