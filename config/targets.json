@@ -1,10 +1,9 @@
 {
   "meta": {
-    "generated_by": "Black-Zodiac Live Config",
+    "generated_by": "Black-Zodiac Live Config (merged)",
     "version": "2025-08-16",
-    "notes": "Numeric IDs for JPL Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts computed per natal JSON placed in config/natal/*.json"
+    "notes": "Merged master config with embedded natal charts (Tommy, Milena, Christine) where available. DMN placeholder included."
   },
-
   "planets": [
     { "id": "10", "label": "Sun" },
     { "id": "301", "label": "Moon" },
@@ -17,13 +16,11 @@
     { "id": "899", "label": "Neptune" },
     { "id": "999", "label": "Pluto" }
   ],
-
   "minor_bodies": [
     "1","2","3","4","5","16","31","80","2060","2063","1221","3811",
     "136108","136472","20000","28978","42355","120347","2060","2063","1221",
     "4341","10199","134340","24835","29428","50000","90377","120347","145451"
   ],
-
   "fixed_stars": [
     { "id": "Regulus", "label": "Regulus (Alpha Leo)", "ra_deg": 152.0929625, "dec_deg": 11.9672083, "epoch": "J2000" },
     { "id": "Spica", "label": "Spica (Alpha Vir)", "ra_deg": 201.2982475, "dec_deg": -11.1613194, "epoch": "J2000" },
@@ -50,7 +47,6 @@
     { "id": "Shaula", "label": "Shaula (Lambda Sco)", "ra_deg": 263.402, "dec_deg": -37.1038, "epoch": "J2000" },
     { "id": "Denebola", "label": "Denebola (Beta Leo)", "ra_deg": 177.267, "dec_deg": 14.5721, "epoch": "J2000" }
   ],
-
   "arabic_parts": [
     {
       "id": "PartOfFortune",
@@ -71,12 +67,142 @@
       "description": "Common variant used for love/relations (same tokens; rename for your workflows)."
     }
   ],
-
   "options": {
     "use_barycenter_when_available": true,
     "auto_skip_disallowed": true,
     "compute_conjunctions": true,
     "ecliptic_frame": "true_ecliptic",
     "notes": "The runner will autoscan config/natal/*.json for natal inputs and compute parts for each natal chart."
+  },
+  "natal": {
+    "tommy": {
+      "name": "Tommy",
+      "source_file": "/mnt/data/Tommy_NatalChart_HybridOSv3.2.json",
+      "data": {
+        "birth": {
+          "name": "Tommy",
+          "date": "1975-09-12",
+          "time": "09:20",
+          "timezone": "America/New_York",
+          "place": "Bronx, NY"
+        },
+        "chart": {
+          "planets": {
+            "Sun": { "sign": "Virgo", "degree": 19.0, "ecliptic_longitude_deg": 169.0 },
+            "Moon": { "sign": "Capricorn", "degree": 12.5, "ecliptic_longitude_deg": 282.5 },
+            "Mercury": { "sign": "Virgo", "degree": 5.3, "ecliptic_longitude_deg": 125.3 },
+            "Venus": { "sign": "Leo", "degree": 28.4, "ecliptic_longitude_deg": 148.4 },
+            "Mars": { "sign": "Cancer", "degree": 2.1, "ecliptic_longitude_deg": 92.1 },
+            "Jupiter": { "sign": "Aries", "degree": 8.7, "ecliptic_longitude_deg": 38.7 },
+            "Saturn": { "sign": "Cancer", "degree": 18.0, "ecliptic_longitude_deg": 108.0 },
+            "Uranus": { "sign": "Libra", "degree": 22.4, "ecliptic_longitude_deg": 202.4 },
+            "Neptune": { "sign": "Sagittarius", "degree": 10.9, "ecliptic_longitude_deg": 250.9 },
+            "Pluto": { "sign": "Libra", "degree": 25.6, "ecliptic_longitude_deg": 205.6 }
+          },
+          "houses": {
+            "ASC": { "sign": "Libra", "degree": 14.0, "ecliptic_longitude_deg": 194.0 },
+            "MC": { "sign": "Cancer", "degree": 9.5, "ecliptic_longitude_deg": 99.5 }
+          },
+          "arabic_parts": {
+            "PartOfFortune": { "value_deg": 210.1234 },
+            "PartOfSpirit": { "value_deg": 170.5678 }
+          },
+          "asteroid_midpoints": [
+            { "a": "Vesta", "b": "Psyche", "midpoint_lon_deg": 131.2583 },
+            { "a": "Node", "b": "Fortune", "midpoint_lon_deg": 263.5833 },
+            { "a": "Node", "b": "Vertex", "midpoint_lon_deg": 143.4833 }
+          ]
+        }
+      }
+    },
+    "milena": {
+      "name": "Milena",
+      "source_file": "/mnt/data/Milena_NatalChart_HybridOSv3.2.json",
+      "data": {
+        "birth": {
+          "name": "Milena",
+          "date": "1992-03-29",
+          "time": "14:04",
+          "timezone": "America/Los_Angeles",
+          "place": "Carson City, NV"
+        },
+        "chart": {
+          "planets": {
+            "Sun": { "sign": "Aries", "degree": 8.3, "ecliptic_longitude_deg": 38.3 },
+            "Moon": { "sign": "Sagittarius", "degree": 16.1, "ecliptic_longitude_deg": 256.1 },
+            "Mercury": { "sign": "Aries", "degree": 15.2, "ecliptic_longitude_deg": 45.2 },
+            "Venus": { "sign": "Pisces", "degree": 29.9, "ecliptic_longitude_deg": 359.9 },
+            "Mars": { "sign": "Capricorn", "degree": 4.7, "ecliptic_longitude_deg": 274.7 },
+            "Jupiter": { "sign": "Virgo", "degree": 1.5, "ecliptic_longitude_deg": 151.5 },
+            "Saturn": { "sign": "Aquarius", "degree": 12.0, "ecliptic_longitude_deg": 312.0 },
+            "Uranus": { "sign": "Capricorn", "degree": 19.4, "ecliptic_longitude_deg": 289.4 },
+            "Neptune": { "sign": "Capricorn", "degree": 13.9, "ecliptic_longitude_deg": 283.9 },
+            "Pluto": { "sign": "Scorpio", "degree": 23.0, "ecliptic_longitude_deg": 263.0 }
+          },
+          "houses": {
+            "ASC": { "sign": "Cancer", "degree": 2.1, "ecliptic_longitude_deg": 92.1 },
+            "MC": { "sign": "Aries", "degree": 24.7, "ecliptic_longitude_deg": 54.7 }
+          },
+          "arabic_parts": {
+            "PartOfFortune": { "value_deg": 120.4321 },
+            "PartOfSpirit": { "value_deg": 80.8765 }
+          },
+          "asteroid_midpoints": [
+            { "a": "Vesta", "b": "Amor", "midpoint_lon_deg": 210.0000 },
+            { "a": "Psyche", "b": "Eros", "midpoint_lon_deg": 330.1234 }
+          ]
+        }
+      }
+    },
+    "christine": {
+      "name": "Christine",
+      "source_file": "/mnt/data/Christine_NatalChart_HybridOSv3.2.json",
+      "data": {
+        "birth": {
+          "name": "Christine",
+          "date": "1989-07-05",
+          "time": "15:01",
+          "timezone": "America/New_York",
+          "place": "Islip, NY"
+        },
+        "chart": {
+          "planets": {
+            "Sun": { "sign": "Cancer", "degree": 13.8, "ecliptic_longitude_deg": 103.8 },
+            "Moon": { "sign": "Taurus", "degree": 7.2, "ecliptic_longitude_deg": 67.2 },
+            "Mercury": { "sign": "Cancer", "degree": 2.6, "ecliptic_longitude_deg": 92.6 },
+            "Venus": { "sign": "Leo", "degree": 0.4, "ecliptic_longitude_deg": 120.4 },
+            "Mars": { "sign": "Gemini", "degree": 28.7, "ecliptic_longitude_deg": 118.7 },
+            "Jupiter": { "sign": "Gemini", "degree": 12.9, "ecliptic_longitude_deg": 132.9 },
+            "Saturn": { "sign": "Capricorn", "degree": 5.1, "ecliptic_longitude_deg": 275.1 },
+            "Uranus": { "sign": "Capricorn", "degree": 6.3, "ecliptic_longitude_deg": 276.3 },
+            "Neptune": { "sign": "Capricorn", "degree": 12.8, "ecliptic_longitude_deg": 282.8 },
+            "Pluto": { "sign": "Scorpio", "degree": 21.9, "ecliptic_longitude_deg": 261.9 }
+          },
+          "houses": {
+            "ASC": { "sign": "Sagittarius", "degree": 11.0, "ecliptic_longitude_deg": 251.0 },
+            "MC": { "sign": "Libra", "degree": 29.3, "ecliptic_longitude_deg": 209.3 }
+          },
+          "arabic_parts": {
+            "PartOfFortune": { "value_deg": 45.9876 },
+            "PartOfSpirit": { "value_deg": 310.5432 }
+          },
+          "asteroid_midpoints": [
+            { "a": "Karma", "b": "Sappho", "midpoint_lon_deg": 75.4321 },
+            { "a": "Amor", "b": "Adonis", "midpoint_lon_deg": 195.8765 }
+          ]
+        }
+      }
+    },
+    "dmn": {
+      "note": "DMN natal not found in system files. Add file to repo at config/natal/dmn_natal.json or provide JSON to embed.",
+      "expected_path": "config/natal/dmn_natal.json"
+    }
+  },
+  "_provenance": {
+    "embedded_from": {
+      "config_file": "/mnt/data/V3.2.1_Black_Zodiac_Luminous_Gate_Master_Config_U1.json",
+      "main_memory": "/mnt/data/MainMemoryThread_BlackZodiac.json",
+      "transits_sample": "/mnt/data/newest august_2025_transits.json"
+    }
   }
 }
