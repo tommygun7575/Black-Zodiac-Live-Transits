@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Full robust fetch_transits.py
+fetch_transits.py — full robust version with overlay support.
 
-- Queries JPL Horizons for numeric IDs (no `refplane` to avoid version issues).
-- Computes ecliptic coords via astropy, with guaranteed manual trig fallback to avoid NaNs (Sun).
-- Handles fixed stars (given RA/DEC J2000 in config).
-- Computes Arabic parts for each natal JSON placed in config/natal/*.json (auto-scan).
-- Writes combined docs/feed_now.json and per-natal docs/feed_<name>.json outputs.
-- Produces clear "error" entries instead of crashing.
+- Queries JPL Horizons for numeric IDs (no `refplane`).
+- Computes ecl coords via astropy, manual fallback if needed.
+- Fixed stars via RA/DEC J2000.
+- Autoscan config/natal/*.json for natal charts; compute Arabic parts for each natal.
+- Writes docs/feed_now.json (combined) and docs/feed_<name>.json (per-natal).
+- If OVERLAY_CHARTS env var is set (comma-separated natal names), creates docs/feed_overlay_<names>.json.
 """
 
 import os
@@ -28,12 +28,9 @@ CONFIG_PATH = os.path.join(ROOT, "config", "targets.json")
 OUT_DIR = os.path.join(ROOT, "docs")
 OUT_FILE = os.path.join(OUT_DIR, "feed_now.json")
 
-# Manual obliquity for manual fallback
 MEAN_OBLIQUITY_DEG = 23.439291
 
-# -------------------------
-# Utility helpers
-# -------------------------
+
 def load_config(path: str) -> Dict[str, Any]:
     if not os.path.exists(path):
         raise FileNotFoundError(f"Config not found: {path}")
@@ -46,21 +43,13 @@ def _as_float(v) -> Optional[float]:
         return float(v)
     except Exception:
         try:
-            return float(v.value)  # astropy Quantity
+            return float(v.value)
         except Exception:
             return None
 
 
-# -------------------------
-# Horizons query wrapper
-# -------------------------
 def query_horizons_id(idstr: Any) -> Tuple[bool, Any]:
-    """
-    Query Horizons for idstr synchronously (ephemerides()).
-    Returns (ok, row_or_exception)
-    """
     try:
-        # use id as string; location=None gives geocentric Earth center context
         obj = Horizons(id=str(idstr), location=None, epochs=None)
         eph = obj.ephemerides()
         row = eph[0]
@@ -69,17 +58,8 @@ def query_horizons_id(idstr: Any) -> Tuple[bool, Any]:
         return False, e
 
 
-# -------------------------
-# Ecliptic computation (astropy + manual fallback)
-# -------------------------
 def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optional[str] = None, delta_au: Optional[float] = None) -> Tuple[Optional[float], Optional[float]]:
-    """
-    Convert equatorial RA/DEC (degrees) -> ecliptic lon/lat (degrees).
-    Try astropy transform first; if it fails or returns NaN, use stable manual trig.
-    """
-    # First attempt: astropy transform (preferred)
     try:
-        # sensible distance (avoid 0)
         dist = 1.0 * u.AU
         if delta_au is not None:
             try:
@@ -102,12 +82,10 @@ def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optiona
         lat = float(ecl.lat.to(u.deg).value)
         if not (math.isnan(lon) or math.isnan(lat)):
             return lon, lat
-        # otherwise fall through to manual fallback
     except Exception:
-        # fall through to manual fallback
         pass
 
-    # Manual trig fallback: rotate equatorial vector by obliquity about X axis
+    # Manual fallback
     try:
         ra_r = math.radians(float(ra_deg))
         dec_r = math.radians(float(dec_deg))
@@ -117,7 +95,6 @@ def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optiona
         y = math.cos(dec_r) * math.sin(ra_r)
         z = math.sin(dec_r)
 
-        # rotate by +epsilon about X axis
         y_e = math.cos(eps) * y + math.sin(eps) * z
         z_e = -math.sin(eps) * y + math.cos(eps) * z
         x_e = x
@@ -133,19 +110,14 @@ def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optiona
         return None, None
 
 
-# -------------------------
-# Process Horizons row into feed object
-# -------------------------
 def process_horizons_entry(idval: Any) -> Dict[str, Any]:
     ok, res = query_horizons_id(idval)
     if not ok:
-        # Provide a friendly skip for observer=target disallowed messages
         errmsg = str(res)
         low = errmsg.lower()
         if "observer" in low and "disallow" in low:
             return {"id": str(idval), "error": "skipped: observer equals target (Horizons disallows this request). Remove this id or use different observer."}
         return {"id": str(idval), "error": f"{type(res).__name__}: {res}"}
-
     row = res
     try:
         targetname = str(row.get("targetname", idval))
@@ -159,7 +131,6 @@ def process_horizons_entry(idval: Any) -> Dict[str, Any]:
         alpha = _as_float(row.get("alpha"))
         const = str(row.get("constellation", ""))
 
-        # try Horizons EclLon/EclLat if present
         ecl_lon = None
         ecl_lat = None
         try:
@@ -172,7 +143,6 @@ def process_horizons_entry(idval: Any) -> Dict[str, Any]:
             ecl_lon = None
             ecl_lat = None
 
-        # If missing or NaN, compute from RA/DEC using robust function
         if (ecl_lon is None or ecl_lat is None or (isinstance(ecl_lon, float) and math.isnan(ecl_lon))):
             if ra is not None and dec is not None:
                 lon_fallback, lat_fallback = compute_ecl_from_ra_dec(ra, dec, datetime_utc, delta_au)
@@ -198,9 +168,6 @@ def process_horizons_entry(idval: Any) -> Dict[str, Any]:
         return {"id": str(idval), "error": f"{type(e).__name__}: {e}"}
 
 
-# -------------------------
-# Fixed star processing (RA/DEC -> ecl)
-# -------------------------
 def process_fixed_star(star: Dict[str, Any]) -> Dict[str, Any]:
     try:
         ra = float(star["ra_deg"])
@@ -225,18 +192,8 @@ def process_fixed_star(star: Dict[str, Any]) -> Dict[str, Any]:
         return {"id": star.get("id"), "error": f"{type(e).__name__}: {e}"}
 
 
-# -------------------------
-# Arabic parts: safe evaluator
-# -------------------------
 def compute_arabic_part(formula: str, natal: Dict[str, Any]) -> Tuple[Optional[float], Optional[str]]:
-    """
-    Very small, safe-ish formula evaluator.
-    Supported tokens: asc, sun, moon, mc, vertex (replace by numeric values from natal).
-    Operators: + - * / ( ) and numbers.
-    Returns (lon_deg_or_None, error_or_None)
-    """
     try:
-        # gather env
         env = {}
         for k in ("asc", "sun", "moon", "mc", "vertex"):
             if k in natal:
@@ -245,21 +202,17 @@ def compute_arabic_part(formula: str, natal: Dict[str, Any]) -> Tuple[Optional[f
                 except Exception:
                     env[k] = None
 
-        # validate characters safe
         allowed = set("abcdefghijklmnopqrstuvwxyz0123456789+-*/(). _")
         lf = formula.lower()
         if not set(lf) <= allowed:
             return None, "unsafe formula characters"
 
         expr = lf
-        # replace tokens with numeric literals where available
         for k, v in env.items():
             if v is None:
-                # missing natal value is an error
                 return None, f"missing natal value for '{k}'"
             expr = expr.replace(k, f"({v})")
 
-        # eval in safe context
         val = eval(expr, {"__builtins__": {}})
         lon = float(val) % 360.0
         return lon, None
@@ -267,9 +220,6 @@ def compute_arabic_part(formula: str, natal: Dict[str, Any]) -> Tuple[Optional[f
         return None, str(e)
 
 
-# -------------------------
-# Main
-# -------------------------
 def main() -> None:
     try:
         cfg = load_config(CONFIG_PATH)
@@ -278,7 +228,6 @@ def main() -> None:
         return
 
     now_iso = datetime.now(timezone.utc).isoformat()
-
     results_core: List[Dict[str, Any]] = []
 
     # Planets
@@ -294,13 +243,12 @@ def main() -> None:
     for star in cfg.get("fixed_stars", []):
         results_core.append(process_fixed_star(star))
 
-    # Prepare combined plus per-natal outputs
     combined_objects = list(results_core)
     per_natal_feeds: Dict[str, List[Dict[str, Any]]] = {}
 
-    # Autoscan natal dir
     natal_dir = os.path.join(ROOT, "config", "natal")
     natal_files = sorted(glob.glob(os.path.join(natal_dir, "*.json")))
+
     for nf in natal_files:
         try:
             with open(nf, "r", encoding="utf-8") as fh:
@@ -310,9 +258,8 @@ def main() -> None:
             continue
 
         natal_name = natal.get("name") or os.path.splitext(os.path.basename(nf))[0]
-        per_objs = list(results_core)  # copy core objects
+        per_objs = list(results_core)
 
-        # For each configured arabic part, compute for this natal
         for part in cfg.get("arabic_parts", []):
             part_id = part.get("id", "Part")
             formula = part.get("formula", "")
@@ -339,7 +286,6 @@ def main() -> None:
             per_objs.append(entry)
             combined_objects.append(entry)
 
-        # write per-natal buffer
         per_natal_feeds[natal_name] = per_objs
 
     # Write combined feed
@@ -367,8 +313,40 @@ def main() -> None:
         with open(fname, "w", encoding="utf-8") as fh:
             json.dump(payload, fh, ensure_ascii=False, indent=2)
 
-    print(f"Wrote combined feed to {OUT_FILE} and {len(per_natal_feeds)} per-natal feeds.")
+    # Overlay support: read env var OVERLAY_CHARTS (comma-separated natal names)
+    overlay_env = os.environ.get("OVERLAY_CHARTS", "") or ""
+    overlay_env = overlay_env.strip()
+    if overlay_env:
+        # parse names
+        chart_names = [n.strip() for n in overlay_env.split(",") if n.strip()]
+        # collect objects for each requested chart from per_natal_feeds
+        overlay_objs: List[Dict[str, Any]] = list(results_core)  # start with core objects
+        missing = []
+        for name in chart_names:
+            objs = per_natal_feeds.get(name)
+            if objs is None:
+                missing.append(name)
+            else:
+                # only include the computed parts (ids that include '@<name>') to avoid duplicating core objects
+                for o in objs:
+                    oid = o.get("id", "")
+                    if isinstance(oid, str) and oid.endswith(f"@{name}"):
+                        overlay_objs.append(o)
+        overlay_fname = os.path.join(OUT_DIR, f"feed_overlay_{'_'.join(chart_names)}.json")
+        payload_overlay = {
+            "generated_at_utc": now_iso,
+            "overlay_charts": chart_names,
+            "missing_charts": missing,
+            "observer": "geocentric (Earth center)",
+            "source": "JPL Horizons + overlay parts",
+            "objects": overlay_objs
+        }
+        with open(overlay_fname, "w", encoding="utf-8") as fh:
+            json.dump(payload_overlay, fh, ensure_ascii=False, indent=2)
 
+    print(f"Wrote combined feed to {OUT_FILE} and {len(per_natal_feeds)} per-natal feeds.")
+    if overlay_env:
+        print(f"Overlay requested for: {overlay_env}")
 
 if __name__ == "__main__":
     main()
