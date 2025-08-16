@@ -1,35 +1,80 @@
 {
-  "targets": [
+  "meta": {
+    "generated_by": "Black-Zodiac Live Config",
+    "notes": "Numeric IDs for Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts require natal charts placed in config/natal/*.json"
+  },
+
+  "planets": [
     { "id": "10", "label": "Sun" },
     { "id": "301", "label": "Moon" },
     { "id": "199", "label": "Mercury" },
     { "id": "299", "label": "Venus" },
+    { "id": "399", "label": "Earth (center)" },
     { "id": "499", "label": "Mars" },
     { "id": "599", "label": "Jupiter" },
     { "id": "699", "label": "Saturn" },
     { "id": "799", "label": "Uranus" },
     { "id": "899", "label": "Neptune" },
-    { "id": "999", "label": "Pluto" },
+    { "id": "999", "label": "Pluto" }
+  ],
 
-    { "id": "1", "label": "Ceres" },
-    { "id": "2", "label": "Pallas" },
-    { "id": "3", "label": "Juno" },
-    { "id": "4", "label": "Vesta" },
-    { "id": "2060", "label": "Chiron" },
+  "minor_bodies": [
+    1,2,3,4,5,16,31,80,2060,2063,1221,3811,
+    136108,136472,20000,28978,42355,120347
+    /* add additional numeric asteroid IDs here (integers or strings allowed) */
+  ],
 
-    { "id": "136108", "label": "Haumea" },
-    { "id": "136472", "label": "Makemake" },
-    { "id": "20000", "label": "Varuna" },
-    { "id": "28978", "label": "Ixion" },
-    { "id": "42355", "label": "Typhon" },
-    { "id": "120347", "label": "Salacia" },
+  "fixed_stars": [
+    {
+      "id": "Regulus",
+      "label": "Regulus (Alpha Leo)",
+      "ra_deg": 152.0929625,
+      "dec_deg": 11.9672083,
+      "epoch": "J2000"
+    },
+    {
+      "id": "Spica",
+      "label": "Spica (Alpha Vir)",
+      "ra_deg": 201.2982475,
+      "dec_deg": -11.1613194,
+      "epoch": "J2000"
+    },
+    {
+      "id": "Sirius",
+      "label": "Sirius (Alpha CMa)",
+      "ra_deg": 101.28715533,
+      "dec_deg": -16.71611586,
+      "epoch": "J2000"
+    },
+    {
+      "id": "Aldebaran",
+      "label": "Aldebaran (Alpha Tau)",
+      "ra_deg": 68.9801625,
+      "dec_deg": 16.50930278,
+      "epoch": "J2000"
+    }
+  ],
 
-    { "id": "5", "label": "Astraea" },
-    { "id": "16", "label": "Psyche" },
-    { "id": "31", "label": "Euphrosyne" },
-    { "id": "3811", "label": "Karma" },
-    { "id": "80", "label": "Sappho" },
-    { "id": "2063", "label": "Bacchus" },
-    { "id": "1221", "label": "Amor" }
-  ]
+  "arabic_parts": [
+    {
+      "id": "PartOfFortune",
+      "label": "Part of Fortune",
+      "formula": "asc + moon - sun",
+      "description": "Day formula: Asc + Moon - Sun. Night formula: Asc - Moon + Sun.",
+      "natal_chart_file": "config/natal/Tommy.json"
+    },
+    {
+      "id": "PartOfSpirit",
+      "label": "Part of Spirit",
+      "formula": "asc - moon + sun",
+      "description": "Common 'Part of Spirit' formula. Requires natal chart values.",
+      "natal_chart_file": "config/natal/Tommy.json"
+    }
+  ],
+
+  "options": {
+    "use_barycenter_when_available": true,
+    "compute_conjunctions": false,
+    "ecliptic_frame": "true_ecliptic"
+  }
 }
