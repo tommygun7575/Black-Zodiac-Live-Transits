@@ -263,4 +263,112 @@ def compute_arabic_part(formula: str, natal: Dict[str, Any]) -> Tuple[Optional[f
         val = eval(expr, {"__builtins__": {}})
         lon = float(val) % 360.0
         return lon, None
-    except Exception as
+    except Exception as e:
+        return None, str(e)
+
+
+# -------------------------
+# Main
+# -------------------------
+def main() -> None:
+    try:
+        cfg = load_config(CONFIG_PATH)
+    except Exception as e:
+        print(f"ERROR: failed to load config: {e}")
+        return
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    results_core: List[Dict[str, Any]] = []
+
+    # Planets
+    for p in cfg.get("planets", []):
+        pid = p.get("id") if isinstance(p, dict) else p
+        results_core.append(process_horizons_entry(pid))
+
+    # Minor bodies
+    for mb in cfg.get("minor_bodies", []):
+        results_core.append(process_horizons_entry(mb))
+
+    # Fixed stars
+    for star in cfg.get("fixed_stars", []):
+        results_core.append(process_fixed_star(star))
+
+    # Prepare combined plus per-natal outputs
+    combined_objects = list(results_core)
+    per_natal_feeds: Dict[str, List[Dict[str, Any]]] = {}
+
+    # Autoscan natal dir
+    natal_dir = os.path.join(ROOT, "config", "natal")
+    natal_files = sorted(glob.glob(os.path.join(natal_dir, "*.json")))
+    for nf in natal_files:
+        try:
+            with open(nf, "r", encoding="utf-8") as fh:
+                natal = json.load(fh)
+        except Exception as e:
+            combined_objects.append({"id": f"natal_load_error:{os.path.basename(nf)}", "error": f"Failed to load natal file: {e}"})
+            continue
+
+        natal_name = natal.get("name") or os.path.splitext(os.path.basename(nf))[0]
+        per_objs = list(results_core)  # copy core objects
+
+        # For each configured arabic part, compute for this natal
+        for part in cfg.get("arabic_parts", []):
+            part_id = part.get("id", "Part")
+            formula = part.get("formula", "")
+            label = part.get("label", part_id)
+            lon, err = compute_arabic_part(formula, natal)
+            if err:
+                entry = {"id": f"{part_id}@{natal_name}", "error": f"Part compute error: {err}"}
+            else:
+                entry = {
+                    "id": f"{part_id}@{natal_name}",
+                    "targetname": f"{label} ({natal_name})",
+                    "datetime_utc": now_iso,
+                    "jd": None,
+                    "ecl_lon_deg": lon,
+                    "ecl_lat_deg": None,
+                    "ra_deg": None,
+                    "dec_deg": None,
+                    "delta_au": None,
+                    "r_au": None,
+                    "elong_deg": None,
+                    "phase_angle_deg": None,
+                    "constellation": None
+                }
+            per_objs.append(entry)
+            combined_objects.append(entry)
+
+        # write per-natal buffer
+        per_natal_feeds[natal_name] = per_objs
+
+    # Write combined feed
+    os.makedirs(OUT_DIR, exist_ok=True)
+    payload_combined = {
+        "generated_at_utc": now_iso,
+        "observer": "geocentric (Earth center)",
+        "refplane": "earth",
+        "source": "JPL Horizons via astroquery + local fixed stars + computed parts",
+        "objects": combined_objects
+    }
+    with open(OUT_FILE, "w", encoding="utf-8") as fh:
+        json.dump(payload_combined, fh, ensure_ascii=False, indent=2)
+
+    # Write per-natal feeds
+    for natal_name, objs in per_natal_feeds.items():
+        fname = os.path.join(OUT_DIR, f"feed_{natal_name}.json")
+        payload = {
+            "generated_at_utc": now_iso,
+            "natal": natal_name,
+            "observer": "geocentric (Earth center)",
+            "source": "JPL Horizons + computed parts",
+            "objects": objs
+        }
+        with open(fname, "w", encoding="utf-8") as fh:
+            json.dump(payload, fh, ensure_ascii=False, indent=2)
+
+    print(f"Wrote combined feed to {OUT_FILE} and {len(per_natal_feeds)} per-natal feeds.")
+
+
+if __name__ == "__main__":
+    main()
