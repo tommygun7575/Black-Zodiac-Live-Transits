@@ -1,120 +1,318 @@
 {
-  "generated_at_utc": "2025-08-16T12:03:46.425468+00:00",
+  "generated_at_utc": "2025-08-16T12:12:40.540305+00:00",
   "observer": "geocentric (Earth center)",
   "refplane": "earth",
   "source": "JPL Horizons via astroquery",
   "objects": [
     {
       "id": "Sun",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "Sun (10)",
+      "datetime_utc": "2025-Aug-16 12:12:29.345",
+      "jd": 2460904.008672975,
+      "ecl_lon_deg": NaN,
+      "ecl_lat_deg": NaN,
+      "ra_deg": 145.86115,
+      "dec_deg": 13.6732,
+      "delta_au": 1.0125461829071,
+      "r_au": 0.0,
+      "elong_deg": 0.0,
+      "phase_angle_deg": 0.0,
+      "constellation": "Leo"
     },
     {
       "id": "Moon",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        3  Earth-Moon Barycenter                           EMB                  \n      301  Moon                                            Luna                 \n "
     },
     {
       "id": "Mercury",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        1  Mercury Barycenter                                                   \n      199  Mercury                                                              \n "
     },
     {
       "id": "Venus",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        2  Venus Barycenter                                                     \n      299  Venus                                                                \n     -248  Venus Express (spacecraft)         2005-045A    VEX                  \n "
     },
     {
       "id": "Mars",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        4  Mars Barycenter                                                      \n      499  Mars                                                                 \n       -3  Mars Orbiter Mission (spacecraft)  2013-060A    MOM Mangalyaan       \n      -41  Mars Express (spacecraft)          2003-022A    MEX                  \n      -53  Mars Odyssey (spacecraft)          2001-013A                         \n     -530  Mars Pathfinder (spacecraft)       1996-068A    MPF                  \n      -74  Mars Reconnaissance Orbiter (spacec2005-029A    MRO                  \n      -76  Mars Science Laboratory (spacecraft2011-070A    Curiosity MSL        \n     -143  ExoMars16 TGO (spacecraft)         2016-017A                         \n     -168  Mars2020 (spacecraft)              2020-052A    Ingenuity Perseveran \n "
     },
     {
       "id": "Jupiter",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        5  Jupiter Barycenter                                                   \n      599  Jupiter                                                              \n "
     },
     {
       "id": "Saturn",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        6  Saturn Barycenter                                                    \n      699  Saturn                                                               \n "
     },
     {
       "id": "Uranus",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        7  Uranus Barycenter                                                    \n      799  Uranus                                                               \n "
     },
     {
       "id": "Neptune",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        8  Neptune Barycenter                                                   \n      899  Neptune                                                              \n "
     },
     {
       "id": "Pluto",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Ambiguous target name; provide unique id:\n  ID#      Name                               Designation  IAU/aliases/other   \n  -------  ---------------------------------- -----------  ------------------- \n        9  Pluto Barycenter                                                     \n      999  Pluto                              134340                            \n "
     },
     {
       "id": "1",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "Mercury Barycenter (199)",
+      "datetime_utc": "2025-Aug-16 12:12:32.648",
+      "jd": 2460904.008711204,
+      "ecl_lon_deg": 12.7565,
+      "ecl_lat_deg": -4.0846,
+      "ra_deg": 127.41919,
+      "dec_deg": 17.27328,
+      "delta_au": 0.83164338464621,
+      "r_au": 0.341025953715,
+      "elong_deg": 18.1253,
+      "phase_angle_deg": 112.5324,
+      "constellation": "Cnc"
     },
     {
       "id": "2",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "Venus Barycenter (299)",
+      "datetime_utc": "2025-Aug-16 12:12:33.101",
+      "jd": 2460904.008716447,
+      "ecl_lon_deg": 55.6028,
+      "ecl_lat_deg": -1.2179,
+      "ra_deg": 110.19946,
+      "dec_deg": 21.43746,
+      "delta_au": 1.26468452477406,
+      "r_au": 0.722103036716,
+      "elong_deg": 34.7913,
+      "phase_angle_deg": 53.1428,
+      "constellation": "Gem"
     },
     {
       "id": "3",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "error": "ValueError: Query failed without known error message; received the following response:\nAPI VERSION: 1.2\nAPI SOURCE: NASA/JPL Horizons API\n\n*******************************************************************************\nRevised: April 12, 2021         Earth Barycenter                              3\n \n Dynamical point:\n ---------------\n The common point about which the Earth and Moon revolve (center of mass). This\n is approximately 4671 km from the center of the Earth, or about 3/4 of the way \n to the surface. See 399 for Earth center, or 301 for Moon center ephemeris.\n*******************************************************************************\n\nObserver table for planet/topocenter -> barycenter disallowed.\n"
     },
     {
       "id": "4",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "Mars Barycenter (4)",
+      "datetime_utc": "2025-Aug-16 12:12:33.750",
+      "jd": 2460904.008723958,
+      "ecl_lon_deg": 210.7843,
+      "ecl_lat_deg": 0.5925,
+      "ra_deg": 185.33575,
+      "dec_deg": -1.84051,
+      "delta_au": 2.19661655881137,
+      "r_au": 1.596704501494,
+      "elong_deg": 42.0949,
+      "phase_angle_deg": 25.1566,
+      "constellation": "Vir"
     },
     {
       "id": "2060",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "2060 Chiron (1977 UB)",
+      "datetime_utc": "2025-Aug-16 12:12:34.195",
+      "jd": 2460904.008729109,
+      "ecl_lon_deg": 23.8749,
+      "ecl_lat_deg": 0.6578,
+      "ra_deg": 24.50003,
+      "dec_deg": 10.91675,
+      "delta_au": 18.0028333225411,
+      "r_au": 18.48235503278,
+      "elong_deg": 116.8487,
+      "phase_angle_deg": 2.8051,
+      "constellation": "Psc"
     },
     {
       "id": "136108",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "136108 Haumea (2003 EL61)",
+      "datetime_utc": "2025-Aug-16 12:12:34.673",
+      "jd": 2460904.008734641,
+      "ecl_lon_deg": 212.125,
+      "ecl_lat_deg": 28.208,
+      "ra_deg": 218.51181,
+      "dec_deg": 14.50027,
+      "delta_au": 50.1965416951608,
+      "r_au": 49.86166802561,
+      "elong_deg": 70.1443,
+      "phase_angle_deg": 1.0954,
+      "constellation": "Boo"
     },
     {
       "id": "136472",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "136472 Makemake (2005 FY9)",
+      "datetime_utc": "2025-Aug-16 12:12:35.135",
+      "jd": 2460904.008739988,
+      "ecl_lon_deg": 190.7743,
+      "ecl_lat_deg": 27.3121,
+      "ra_deg": 200.06368,
+      "dec_deg": 20.81099,
+      "delta_au": 53.3290129464737,
+      "r_au": 52.71208474864,
+      "elong_deg": 52.0317,
+      "phase_angle_deg": 0.8699,
+      "constellation": "Com"
     },
     {
       "id": "20000",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "20000 Varuna (2000 WR106)",
+      "datetime_utc": "2025-Aug-16 12:12:35.592",
+      "jd": 2460904.008745278,
+      "ecl_lon_deg": 129.2588,
+      "ecl_lat_deg": 9.2931,
+      "ra_deg": 134.71646,
+      "dec_deg": 26.59697,
+      "delta_au": 45.1904795568718,
+      "r_au": 44.22111707904,
+      "elong_deg": 16.6076,
+      "phase_angle_deg": 0.3711,
+      "constellation": "Cnc"
     },
     {
       "id": "28978",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "28978 Ixion (2001 KX76)",
+      "datetime_utc": "2025-Aug-16 12:12:36.039",
+      "jd": 2460904.008750451,
+      "ecl_lon_deg": 276.2104,
+      "ecl_lat_deg": -8.628,
+      "ra_deg": 275.88857,
+      "dec_deg": -32.122,
+      "delta_au": 37.0050022726296,
+      "r_au": 37.67594244017,
+      "elong_deg": 130.9251,
+      "phase_angle_deg": 1.1593,
+      "constellation": "Sgr"
     },
     {
       "id": "42355",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "42355 Typhon (2002 CR46)",
+      "datetime_utc": "2025-Aug-16 12:12:36.499",
+      "jd": 2460904.008755776,
+      "ecl_lon_deg": 237.8566,
+      "ecl_lat_deg": -2.2184,
+      "ra_deg": 232.73971,
+      "dec_deg": -21.32832,
+      "delta_au": 26.1204166507969,
+      "r_au": 26.17712845935,
+      "elong_deg": 92.1083,
+      "phase_angle_deg": 2.214,
+      "constellation": "Lib"
     },
     {
       "id": "120347",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "120347 Salacia (2004 SB60)",
+      "datetime_utc": "2025-Aug-16 12:12:36.940",
+      "jd": 2460904.00876088,
+      "ecl_lon_deg": 10.8197,
+      "ecl_lat_deg": 23.9261,
+      "ra_deg": 0.54006,
+      "dec_deg": 26.86052,
+      "delta_au": 44.6852902350078,
+      "r_au": 45.30609249772,
+      "elong_deg": 127.2957,
+      "phase_angle_deg": 1.0223,
+      "constellation": "Peg"
     },
     {
       "id": "5",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "Jupiter Barycenter (5)",
+      "datetime_utc": "2025-Aug-16 12:12:37.382",
+      "jd": 2460904.008765996,
+      "ecl_lon_deg": 97.4863,
+      "ecl_lat_deg": -0.069,
+      "ra_deg": 105.8122,
+      "dec_deg": 22.58246,
+      "delta_au": 5.9097123102614,
+      "r_au": 5.161832023987,
+      "elong_deg": 38.9624,
+      "phase_angle_deg": 7.0837,
+      "constellation": "Gem"
     },
     {
       "id": "16",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "16 Psyche (A852 FA)",
+      "datetime_utc": "2025-Aug-16 12:12:37.826",
+      "jd": 2460904.008771134,
+      "ecl_lon_deg": 48.0496,
+      "ecl_lat_deg": -3.0301,
+      "ra_deg": 69.10284,
+      "dec_deg": 19.104,
+      "delta_au": 2.66795612540826,
+      "r_au": 2.566901692819,
+      "elong_deg": 73.2773,
+      "phase_angle_deg": 22.1989,
+      "constellation": "Tau"
     },
     {
       "id": "31",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "SEMB-L1 (31)",
+      "datetime_utc": "2025-Aug-16 12:12:38.290",
+      "jd": 2460904.008776505,
+      "ecl_lon_deg": 323.5371,
+      "ecl_lat_deg": 0.0018,
+      "ra_deg": 145.70898,
+      "dec_deg": 13.73988,
+      "delta_au": 0.0101386025886,
+      "r_au": 1.002407602851,
+      "elong_deg": 0.1623,
+      "phase_angle_deg": 179.836,
+      "constellation": "Leo"
     },
     {
       "id": "3811",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "3811 Karma (1953 TH)",
+      "datetime_utc": "2025-Aug-16 12:12:38.738",
+      "jd": 2460904.00878169,
+      "ecl_lon_deg": 174.0214,
+      "ecl_lat_deg": -2.717,
+      "ra_deg": 166.27101,
+      "dec_deg": 3.65989,
+      "delta_au": 3.65882855222895,
+      "r_au": 2.750766591672,
+      "elong_deg": 22.4983,
+      "phase_angle_deg": 8.099,
+      "constellation": "Leo"
     },
     {
       "id": "80",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "80 Sappho (A864 JA)",
+      "datetime_utc": "2025-Aug-16 12:12:39.198",
+      "jd": 2460904.008787014,
+      "ecl_lon_deg": 42.5767,
+      "ecl_lat_deg": -0.6002,
+      "ra_deg": 70.97352,
+      "dec_deg": 21.70278,
+      "delta_au": 2.00093633930412,
+      "r_au": 1.929008310474,
+      "elong_deg": 71.1651,
+      "phase_angle_deg": 29.7917,
+      "constellation": "Tau"
     },
     {
       "id": "2063",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "2063 Bacchus (1977 HB)",
+      "datetime_utc": "2025-Aug-16 12:12:39.608",
+      "jd": 2460904.008791759,
+      "ecl_lon_deg": 252.2627,
+      "ecl_lat_deg": -5.9987,
+      "ra_deg": 206.73746,
+      "dec_deg": -17.30001,
+      "delta_au": 1.46170935423923,
+      "r_au": 1.425975006235,
+      "elong_deg": 67.5943,
+      "phase_angle_deg": 41.0282,
+      "constellation": "Vir"
     },
     {
       "id": "1221",
-      "error": "TypeError: HorizonsClass.ephemerides_async() got an unexpected keyword argument 'refplane'"
+      "targetname": "1221 Amor (1932 EA1)",
+      "datetime_utc": "2025-Aug-16 12:12:40.091",
+      "jd": 2460904.008797349,
+      "ecl_lon_deg": 258.3941,
+      "ecl_lat_deg": 11.8544,
+      "ra_deg": 212.53639,
+      "dec_deg": -0.36098,
+      "delta_au": 1.26543258853777,
+      "r_au": 1.282383326556,
+      "elong_deg": 67.4697,
+      "phase_angle_deg": 46.8244,
+      "constellation": "Vir"
     }
   ]
 }
