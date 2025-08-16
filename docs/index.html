@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Black Zodiac Live Transits</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.4;margin:18px}
+    table{border-collapse:collapse;width:100%;max-width:1200px}
+    th,td{border:1px solid #ddd;padding:8px;text-align:left}
+    th{background:#111;color:#fff}
+    caption{font-size:1.25rem;margin-bottom:8px}
+    .small{font-size:.9rem;color:#666}
+  </style>
+</head>
+<body>
+  <h1>Black Zodiac — Live Transits</h1>
+  <p class="small">Auto-generated feed (via GitHub Actions). Last fetched: <span id="when">…</span></p>
+  <div id="error" style="color:#c00"></div>
+  <table id="tbl" hidden>
+    <caption>Objects</caption>
+    <thead>
+      <tr><th>id</th><th>target</th><th>ecl lon</th><th>ecl lat</th><th>RA</th><th>DEC</th><th>delta (AU)</th><th>constellation</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const url = 'feed_now.json';
+    fetch(url).then(r=>{
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    }).then(json=>{
+      document.getElementById('when').textContent = json.generated_at_utc || 'unknown';
+      const tbody = document.querySelector('#tbl tbody');
+      json.objects.forEach(o=>{
+        const tr = document.createElement('tr');
+        const id = o.id || '';
+        const name = o.targetname || (o.error ? ('error: '+o.error) : '');
+        const eclLon = (o.ecl_lon_deg===null||o.ecl_lon_deg===undefined)?'':o.ecl_lon_deg;
+        const eclLat = (o.ecl_lat_deg===null||o.ecl_lat_deg===undefined)?'':o.ecl_lat_deg;
+        tr.innerHTML = `<td>${id}</td><td>${name}</td><td>${eclLon}</td><td>${eclLat}</td><td>${o.ra_deg||''}</td><td>${o.dec_deg||''}</td><td>${o.delta_au||''}</td><td>${o.constellation||''}</td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('tbl').hidden = false;
+    }).catch(err=>{
+      document.getElementById('error').textContent = 'Failed to load feed: '+err.message;
+    });
+  </script>
+</body>
+</html>
