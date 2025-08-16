@@ -2,12 +2,14 @@
 """
 Robust transit fetcher for JPL Horizons → docs/feed_now.json
 
-- Retries ambiguous-name errors using explicit numeric IDs for major solar-system bodies.
-- Computes ecliptic lon/lat from RA/DEC using astropy with a sensible distance fallback
-  (avoids NaNs for the Sun and other special cases).
+- Uses numeric IDs where appropriate (config should contain numeric ids for planets).
+- Uses astroquery.horizons.ephemerides (no refplane) and falls back to astropy conversion.
+- If astropy transform fails or returns NaN, uses a manual spherical trig conversion
+  (equatorial -> ecliptic using obliquity).
 """
 import json
 import os
+import math
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
@@ -21,21 +23,8 @@ CONFIG = os.path.join(ROOT, "config", "targets.json")
 OUTDIR = os.path.join(ROOT, "docs")
 OUTFILE = os.path.join(OUTDIR, "feed_now.json")
 
-
-# Map common names to safe numeric IDs for Horizons (use barycenter/IAU numeric IDs)
-NUMERIC_ID_MAP = {
-    "Sun": "10",
-    "Moon": "301",            # Luna (Moon)
-    "Mercury": "199",
-    "Venus": "299",
-    "Earth": "399",
-    "Mars": "499",
-    "Jupiter": "599",
-    "Saturn": "699",
-    "Uranus": "799",
-    "Neptune": "899",
-    "Pluto": "999",
-}
+# Mean obliquity (approx) for manual fallback (degrees)
+OBLIQUITY_DEG = 23.439291
 
 
 def load_targets(config_path: str) -> List[Dict[str, Any]]:
@@ -51,15 +40,12 @@ def _as_float(val):
         return float(val)
     except Exception:
         try:
-            return float(val.value)  # astropy Quantity
+            return float(val.value)
         except Exception:
             return None
 
 
 def _attempt_query(target_id: str):
-    """
-    Query Horizons for a single id string. Return (success, result_or_exception).
-    """
     try:
         obj = Horizons(id=str(target_id), location=None, epochs=None)
         eph = obj.ephemerides()
@@ -69,23 +55,43 @@ def _attempt_query(target_id: str):
         return False, e
 
 
-def _compute_ecliptic_from_ra_dec(ra_deg, dec_deg, datetime_str, delta_au):
+def _manual_ecl_from_ra_dec(ra_deg: float, dec_deg: float):
     """
-    Compute ecliptic lon/lat from RA/DEC using astropy.
-    - Use provided distance if > tiny threshold; otherwise use 1 AU to avoid zero-distance NaNs.
-    - Use the datetime_str (if available) to set the transformation time.
+    Manual conversion from equatorial (RA/DEC in degrees) to ecliptic lon/lat in degrees.
+    Uses rotation about x-axis by obliquity (epsilon).
     """
     try:
-        obstime = None
-        try:
-            if datetime_str:
-                # Horizons returns formats like "2025-Aug-16 12:12:40"
-                # astropy Time can parse many common formats
-                obstime = Time(datetime_str)
-        except Exception:
-            obstime = None
+        ra = math.radians(ra_deg)
+        dec = math.radians(dec_deg)
+        eps = math.radians(OBLIQUITY_DEG)
 
-        dist = None
+        x = math.cos(dec) * math.cos(ra)
+        y = math.cos(dec) * math.sin(ra)
+        z = math.sin(dec)
+
+        # rotate coordinates by +epsilon about X: (x' = x; y' = cosε*y + sinε*z; z' = -sinε*y + cosε*z)
+        y_e = math.cos(eps) * y + math.sin(eps) * z
+        z_e = -math.sin(eps) * y + math.cos(eps) * z
+        x_e = x
+
+        r = math.sqrt(x_e * x_e + y_e * y_e + z_e * z_e)
+        if r == 0:
+            return None, None
+
+        lon = math.degrees(math.atan2(y_e, x_e)) % 360.0
+        lat = math.degrees(math.asin(z_e / r))
+        return lon, lat
+    except Exception:
+        return None, None
+
+
+def _compute_ecliptic_from_ra_dec(ra_deg, dec_deg, datetime_str, delta_au):
+    """
+    Try astropy conversion first (with sensible distance). If that returns NaN or fails,
+    fall back to manual trig conversion.
+    """
+    try:
+        # set a sensible distance (avoid zero)
         try:
             if delta_au is not None and delta_au > 1e-6:
                 dist = delta_au * u.AU
@@ -93,6 +99,13 @@ def _compute_ecliptic_from_ra_dec(ra_deg, dec_deg, datetime_str, delta_au):
                 dist = 1.0 * u.AU
         except Exception:
             dist = 1.0 * u.AU
+
+        obstime = None
+        try:
+            if datetime_str:
+                obstime = Time(datetime_str)
+        except Exception:
+            obstime = None
 
         sc = SkyCoord(ra=ra_deg * u.deg, dec=dec_deg * u.deg, distance=dist, frame="icrs", obstime=obstime)
         if obstime is not None:
@@ -102,36 +115,25 @@ def _compute_ecliptic_from_ra_dec(ra_deg, dec_deg, datetime_str, delta_au):
         ecl = sc.transform_to(ecl_frame)
         lon = float(ecl.lon.to(u.deg).value)
         lat = float(ecl.lat.to(u.deg).value)
+
+        # guard against NaN
+        if math.isnan(lon) or math.isnan(lat):
+            return _manual_ecl_from_ra_dec(ra_deg, dec_deg)
         return lon, lat
     except Exception:
-        return None, None
+        # final manual fallback
+        return _manual_ecl_from_ra_dec(ra_deg, dec_deg)
 
 
 def query_body(target_spec: str) -> Dict[str, Any]:
-    """
-    Wrapper that tries to query Horizons. If ambiguous-name error occurs,
-    retry with a numeric ID from NUMERIC_ID_MAP (when mapping exists).
-    """
-    # First attempt with exactly what the config specified
     ok, res = _attempt_query(target_spec)
     if ok:
         row = res
     else:
-        # If Horizons complained about ambiguous names, try a mapped numeric ID
         err = res
-        msg = str(err)
-        mapped = NUMERIC_ID_MAP.get(str(target_spec))
-        if mapped:
-            ok2, res2 = _attempt_query(mapped)
-            if ok2:
-                row = res2
-            else:
-                return {"id": str(target_spec), "error": f"{type(res2).__name__}: {res2}"}
-        else:
-            # no mapping; return original error
-            return {"id": str(target_spec), "error": f"{type(err).__name__}: {err}"}
+        # if ambiguous name: just return the error (we prefer numeric ids in config)
+        return {"id": str(target_spec), "error": f"{type(err).__name__}: {err}"}
 
-    # Extract fields
     try:
         targetname = str(row.get("targetname", str(target_spec)))
         datetime_utc = str(row.get("datetime_str", ""))
@@ -144,7 +146,7 @@ def query_body(target_spec: str) -> Dict[str, Any]:
         phase_angle_deg = _as_float(row.get("alpha"))
         constellation = str(row.get("constellation", ""))
 
-        # Prefer Horizons EclLon/EclLat when available and numeric
+        # prefer Horizons EclLon/EclLat
         ecl_lon = None
         ecl_lat = None
         try:
@@ -156,8 +158,8 @@ def query_body(target_spec: str) -> Dict[str, Any]:
             ecl_lon = None
             ecl_lat = None
 
-        # Fallback: compute from RA/DEC
-        if (ecl_lon is None or ecl_lat is None) and (ra is not None and dec is not None):
+        # fallback compute if missing or NaN
+        if (ecl_lon is None or ecl_lat is None or (isinstance(ecl_lon, float) and math.isnan(ecl_lon))) and (ra is not None and dec is not None):
             lon_fallback, lat_fallback = _compute_ecliptic_from_ra_dec(ra, dec, datetime_utc, delta_au)
             if lon_fallback is not None:
                 ecl_lon = lon_fallback
