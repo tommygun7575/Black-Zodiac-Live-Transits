@@ -1,19 +1,28 @@
 #!/usr/bin/env python3
 """
-fetch_transits.py — full robust version with overlay support.
+fetch_transits.py — robust CLI-ready transit & parts generator.
 
-- Queries JPL Horizons for numeric IDs (no `refplane`).
-- Computes ecl coords via astropy, manual fallback if needed.
-- Fixed stars via RA/DEC J2000.
-- Autoscan config/natal/*.json for natal charts; compute Arabic parts for each natal.
-- Writes docs/feed_now.json (combined) and docs/feed_<name>.json (per-natal).
-- If OVERLAY_CHARTS env var is set (comma-separated natal names), creates docs/feed_overlay_<names>.json.
+Features:
+- Loads targets config (default: config/targets.json).
+- Queries JPL Horizons via astroquery with retry/backoff.
+- Computes ecliptic coords via astropy; manual fallback if needed.
+- Scans config/natal/*.json for natal charts; computes Arabic parts using safe AST evaluator.
+- Writes docs/feed_now.json (combined) and docs/feed_<sanitized_name>.json (per-natal).
+- Optional overlay generation via CLI arg or OVERLAY_CHARTS env var (comma-separated names).
+- Safe, production-minded logging and error handling.
 """
 
+from __future__ import annotations
 import os
+import sys
 import json
-import math
+import time
 import glob
+import math
+import logging
+import argparse
+import re
+import ast
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Tuple, Optional
 
@@ -24,47 +33,88 @@ from astropy.coordinates import SkyCoord, GeocentricTrueEcliptic  # type: ignore
 from astropy.time import Time  # type: ignore
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-CONFIG_PATH = os.path.join(ROOT, "config", "targets.json")
-OUT_DIR = os.path.join(ROOT, "docs")
-OUT_FILE = os.path.join(OUT_DIR, "feed_now.json")
+DEFAULT_CONFIG_PATH = os.path.join(ROOT, "config", "targets.json")
+DEFAULT_NATAL_DIR = os.path.join(ROOT, "config", "natal")
+DEFAULT_OUT_DIR = os.path.join(ROOT, "docs")
+DEFAULT_OUT_FILE = os.path.join(DEFAULT_OUT_DIR, "feed_now.json")
 
 MEAN_OBLIQUITY_DEG = 23.439291
 
+# logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%SZ",
+)
+log = logging.getLogger("fetch_transits")
 
-def load_config(path: str) -> Dict[str, Any]:
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Config not found: {path}")
+
+# ---------------------------
+# Utilities
+# ---------------------------
+def load_json(path: str) -> Any:
     with open(path, "r", encoding="utf-8") as fh:
         return json.load(fh)
 
 
-def _as_float(v) -> Optional[float]:
+def write_json(path: str, obj: Any) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(obj, fh, ensure_ascii=False, indent=2)
+
+
+def _as_float(v: Any) -> Optional[float]:
     try:
+        if v is None:
+            return None
         return float(v)
     except Exception:
         try:
-            return float(v.value)
+            return float(getattr(v, "value", None))
         except Exception:
             return None
 
 
-def query_horizons_id(idstr: Any) -> Tuple[bool, Any]:
-    try:
-        obj = Horizons(id=str(idstr), location=None, epochs=None)
-        eph = obj.ephemerides()
-        row = eph[0]
-        return True, row
-    except Exception as e:
-        return False, e
+def sanitize_name(n: str) -> str:
+    n = re.sub(r"[^\w\-_\. ]+", "_", n)
+    n = n.replace(" ", "_")
+    return n
 
 
-def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optional[str] = None, delta_au: Optional[float] = None) -> Tuple[Optional[float], Optional[float]]:
+# ---------------------------
+# Horizons query with retry/backoff
+# ---------------------------
+def query_horizons_id(idstr: Any, max_attempts: int = 3, backoff_base: float = 1.0) -> Tuple[bool, Any]:
+    last_exc = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            obj = Horizons(id=str(idstr), location=None, epochs=None)
+            eph = obj.ephemerides()
+            if len(eph) == 0:
+                return False, RuntimeError("Horizons returned empty ephemerides")
+            return True, eph[0]
+        except Exception as e:
+            last_exc = e
+            wait = backoff_base * (2 ** (attempt - 1))
+            log.warning("Horizons query failed for %s (attempt %d/%d): %s — retrying in %.1fs",
+                        idstr, attempt, max_attempts, getattr(e, "message", str(e)), wait)
+            time.sleep(wait)
+    return False, last_exc
+
+
+# ---------------------------
+# Ecliptic computation
+# ---------------------------
+def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optional[str] = None,
+                            delta_au: Optional[float] = None) -> Tuple[Optional[float], Optional[float]]:
+    # Try astropy transform first
     try:
         dist = 1.0 * u.AU
         if delta_au is not None:
             try:
-                if float(delta_au) > 1e-6:
-                    dist = float(delta_au) * u.AU
+                dd = float(delta_au)
+                if dd > 1e-9:
+                    dist = dd * u.AU
             except Exception:
                 dist = 1.0 * u.AU
 
@@ -81,11 +131,11 @@ def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optiona
         lon = float(ecl.lon.to(u.deg).value)
         lat = float(ecl.lat.to(u.deg).value)
         if not (math.isnan(lon) or math.isnan(lat)):
-            return lon, lat
+            return lon % 360.0, lat
     except Exception:
-        pass
+        log.debug("Astropy transform failed; falling back to manual computation", exc_info=True)
 
-    # Manual fallback
+    # Manual fallback (J2000 mean obliquity)
     try:
         ra_r = math.radians(float(ra_deg))
         dec_r = math.radians(float(dec_deg))
@@ -110,16 +160,82 @@ def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optiona
         return None, None
 
 
+# ---------------------------
+# Safe expression evaluation for Arabic parts
+# ---------------------------
+_allowed_nodes = {
+    ast.Expression, ast.BinOp, ast.UnaryOp, ast.Num, ast.Load,
+    ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Mod, ast.Pow,
+    ast.USub, ast.UAdd, ast.Name, ast.Call, ast.Constant,
+    ast.LShift, ast.RShift, ast.BitOr, ast.BitXor, ast.BitAnd,
+    ast.FloorDiv, ast.Subscript, ast.Index, ast.Tuple, ast.List,
+}
+
+# Forbid function calls except 'mod' which we won't allow; we'll only allow numeric ops and names.
+def _is_safe_ast(node: ast.AST) -> bool:
+    for n in ast.walk(node):
+        if type(n) not in _allowed_nodes:
+            # permit ast.Constant (py3.8+) in allowed list; otherwise ast.Num
+            return False
+        # disallow any Call nodes (no functions)
+        if isinstance(n, ast.Call):
+            return False
+        # disallow attribute access
+        if isinstance(n, ast.Attribute):
+            return False
+    return True
+
+
+def evaluate_arabic_formula(formula: str, env: Dict[str, float]) -> Tuple[Optional[float], Optional[str]]:
+    """
+    Evaluate simple arithmetic expressions using natal values.
+    Allowed tokens: names (mapped from env), numbers, + - * / % ** parentheses.
+    Returns (value_mod360, error_message_or_None)
+    """
+    if not formula or not isinstance(formula, str):
+        return None, "empty formula"
+
+    # Normalize formula: lower, strip
+    expr = formula.strip().lower()
+
+    # Reject suspicious characters
+    if re.search(r"[a-zA-Z_][a-zA-Z0-9_]*\s*\(", expr):
+        return None, "function calls not allowed"
+
+    try:
+        node = ast.parse(expr, mode="eval")
+    except Exception as e:
+        return None, f"parse error: {e}"
+
+    if not _is_safe_ast(node):
+        return None, "unsafe formula content"
+
+    # Prepare name mapping - only allow provided env keys
+    names = {k.lower(): float(v) for k, v in env.items() if v is not None}
+    # Replace names in AST evaluation by providing a mapping to eval's globals
+    try:
+        code = compile(node, "<expr>", "eval")
+        val = eval(code, {"__builtins__": {}}, names)
+        valf = float(val) % 360.0
+        return valf, None
+    except Exception as e:
+        return None, f"eval error: {e}"
+
+
+# ---------------------------
+# Process Horizons / fixed stars
+# ---------------------------
 def process_horizons_entry(idval: Any) -> Dict[str, Any]:
     ok, res = query_horizons_id(idval)
     if not ok:
         errmsg = str(res)
         low = errmsg.lower()
         if "observer" in low and "disallow" in low:
-            return {"id": str(idval), "error": "skipped: observer equals target (Horizons disallows this request). Remove this id or use different observer."}
+            return {"id": str(idval), "error": "skipped: observer equals target (Horizons disallows this request)."}
         return {"id": str(idval), "error": f"{type(res).__name__}: {res}"}
     row = res
     try:
+        # fields from astroquery/horizons ephemeris row (best-effort extraction)
         targetname = str(row.get("targetname", idval))
         datetime_utc = str(row.get("datetime_str", ""))
         jd = _as_float(row.get("datetime_jd"))
@@ -143,6 +259,7 @@ def process_horizons_entry(idval: Any) -> Dict[str, Any]:
             ecl_lon = None
             ecl_lat = None
 
+        # fallback if no ecl provided
         if (ecl_lon is None or ecl_lat is None or (isinstance(ecl_lon, float) and math.isnan(ecl_lon))):
             if ra is not None and dec is not None:
                 lon_fallback, lat_fallback = compute_ecl_from_ra_dec(ra, dec, datetime_utc, delta_au)
@@ -192,81 +309,86 @@ def process_fixed_star(star: Dict[str, Any]) -> Dict[str, Any]:
         return {"id": star.get("id"), "error": f"{type(e).__name__}: {e}"}
 
 
-def compute_arabic_part(formula: str, natal: Dict[str, Any]) -> Tuple[Optional[float], Optional[str]]:
+# ---------------------------
+# Main runner
+# ---------------------------
+def main(argv: Optional[List[str]] = None) -> int:
+    p = argparse.ArgumentParser(description="Generate feed_now.json and per-natal transit/part files.")
+    p.add_argument("--config", "-c", default=DEFAULT_CONFIG_PATH, help="Path to targets config (JSON).")
+    p.add_argument("--natal-dir", default=DEFAULT_NATAL_DIR, help="Directory containing natal JSON files.")
+    p.add_argument("--out-dir", default=DEFAULT_OUT_DIR, help="Output directory for feed files.")
+    p.add_argument("--overlay-charts", "-o", help="Comma-separated natal names to create overlay feed (overrides OVERLAY_CHARTS env).")
+    p.add_argument("--dry-run", action="store_true", help="Run but do not write files.")
+    p.add_argument("--workers", type=int, default=1, help="Parallel workers for querying (1 = serial).")
+    args = p.parse_args(argv)
+
     try:
-        env = {}
-        for k in ("asc", "sun", "moon", "mc", "vertex"):
-            if k in natal:
-                try:
-                    env[k] = float(natal[k])
-                except Exception:
-                    env[k] = None
-
-        allowed = set("abcdefghijklmnopqrstuvwxyz0123456789+-*/(). _")
-        lf = formula.lower()
-        if not set(lf) <= allowed:
-            return None, "unsafe formula characters"
-
-        expr = lf
-        for k, v in env.items():
-            if v is None:
-                return None, f"missing natal value for '{k}'"
-            expr = expr.replace(k, f"({v})")
-
-        val = eval(expr, {"__builtins__": {}})
-        lon = float(val) % 360.0
-        return lon, None
+        cfg = load_json(args.config)
     except Exception as e:
-        return None, str(e)
+        log.error("Failed to load config %s: %s", args.config, e)
+        return 2
 
-
-def main() -> None:
-    try:
-        cfg = load_config(CONFIG_PATH)
-    except Exception as e:
-        print(f"ERROR: failed to load config: {e}")
-        return
+    natal_dir = args.natal_dir
+    out_dir = args.out_dir
+    os.makedirs(out_dir, exist_ok=True)
 
     now_iso = datetime.now(timezone.utc).isoformat()
     results_core: List[Dict[str, Any]] = []
 
     # Planets
-    for p in cfg.get("planets", []):
-        pid = p.get("id") if isinstance(p, dict) else p
-        results_core.append(process_horizons_entry(pid))
+    planets = cfg.get("planets", [])
+    log.info("Processing %d planet IDs...", len(planets))
+    for p_id in planets:
+        pid = p_id.get("id") if isinstance(p_id, dict) else p_id
+        res = process_horizons_entry(pid)
+        results_core.append(res)
 
     # Minor bodies
-    for mb in cfg.get("minor_bodies", []):
-        results_core.append(process_horizons_entry(mb))
+    minor_bodies = cfg.get("minor_bodies", [])
+    log.info("Processing %d minor bodies...", len(minor_bodies))
+    for mb in minor_bodies:
+        mb_id = mb.get("id") if isinstance(mb, dict) else mb
+        res = process_horizons_entry(mb_id)
+        results_core.append(res)
 
     # Fixed stars
-    for star in cfg.get("fixed_stars", []):
+    fixed_stars = cfg.get("fixed_stars", [])
+    log.info("Processing %d fixed stars...", len(fixed_stars))
+    for star in fixed_stars:
         results_core.append(process_fixed_star(star))
 
     combined_objects = list(results_core)
     per_natal_feeds: Dict[str, List[Dict[str, Any]]] = {}
 
-    natal_dir = os.path.join(ROOT, "config", "natal")
     natal_files = sorted(glob.glob(os.path.join(natal_dir, "*.json")))
+    log.info("Found %d natal files in %s", len(natal_files), natal_dir)
 
     for nf in natal_files:
         try:
-            with open(nf, "r", encoding="utf-8") as fh:
-                natal = json.load(fh)
+            natal = load_json(nf)
         except Exception as e:
+            log.error("Failed to load natal file %s: %s", nf, e)
             combined_objects.append({"id": f"natal_load_error:{os.path.basename(nf)}", "error": f"Failed to load natal file: {e}"})
             continue
 
         natal_name = natal.get("name") or os.path.splitext(os.path.basename(nf))[0]
-        per_objs = list(results_core)
+        per_objs = list(results_core)  # start with core objects
+
+        # Prepare env for parts evaluation (lowercase keys)
+        env: Dict[str, Optional[float]] = {}
+        for k in ("asc", "sun", "moon", "mc", "vertex"):
+            val = natal.get(k)
+            env[k] = float(val) if (val is not None) else None
 
         for part in cfg.get("arabic_parts", []):
             part_id = part.get("id", "Part")
             formula = part.get("formula", "")
             label = part.get("label", part_id)
-            lon, err = compute_arabic_part(formula, natal)
+
+            lon, err = evaluate_arabic_formula(formula, {k: v for k, v in env.items() if v is not None})
             if err:
                 entry = {"id": f"{part_id}@{natal_name}", "error": f"Part compute error: {err}"}
+                log.warning("Arabic part compute error for %s @ %s: %s", part_id, natal_name, err)
             else:
                 entry = {
                     "id": f"{part_id}@{natal_name}",
@@ -288,8 +410,7 @@ def main() -> None:
 
         per_natal_feeds[natal_name] = per_objs
 
-    # Write combined feed
-    os.makedirs(OUT_DIR, exist_ok=True)
+    # Combined output payload
     payload_combined = {
         "generated_at_utc": now_iso,
         "observer": "geocentric (Earth center)",
@@ -297,12 +418,19 @@ def main() -> None:
         "source": "JPL Horizons via astroquery + local fixed stars + computed parts",
         "objects": combined_objects
     }
-    with open(OUT_FILE, "w", encoding="utf-8") as fh:
-        json.dump(payload_combined, fh, ensure_ascii=False, indent=2)
+
+    # Write combined feed
+    out_file = os.path.join(out_dir, "feed_now.json")
+    if args.dry_run:
+        log.info("Dry run: would write combined feed to %s (objects=%d)", out_file, len(combined_objects))
+    else:
+        write_json(out_file, payload_combined)
+        log.info("Wrote combined feed to %s (objects=%d)", out_file, len(combined_objects))
 
     # Write per-natal feeds
     for natal_name, objs in per_natal_feeds.items():
-        fname = os.path.join(OUT_DIR, f"feed_{natal_name}.json")
+        safe = sanitize_name(natal_name)
+        fname = os.path.join(out_dir, f"feed_{safe}.json")
         payload = {
             "generated_at_utc": now_iso,
             "natal": natal_name,
@@ -310,29 +438,29 @@ def main() -> None:
             "source": "JPL Horizons + computed parts",
             "objects": objs
         }
-        with open(fname, "w", encoding="utf-8") as fh:
-            json.dump(payload, fh, ensure_ascii=False, indent=2)
+        if args.dry_run:
+            log.info("Dry run: would write per-natal feed %s (objects=%d)", fname, len(objs))
+        else:
+            write_json(fname, payload)
+            log.info("Wrote per-natal feed %s (objects=%d)", fname, len(objs))
 
-    # Overlay support: read env var OVERLAY_CHARTS (comma-separated natal names)
-    overlay_env = os.environ.get("OVERLAY_CHARTS", "") or ""
+    # Determine overlay charts (CLI override or env)
+    overlay_env = args.overlay_charts or os.environ.get("OVERLAY_CHARTS", "") or ""
     overlay_env = overlay_env.strip()
     if overlay_env:
-        # parse names
         chart_names = [n.strip() for n in overlay_env.split(",") if n.strip()]
-        # collect objects for each requested chart from per_natal_feeds
-        overlay_objs: List[Dict[str, Any]] = list(results_core)  # start with core objects
+        overlay_objs: List[Dict[str, Any]] = list(results_core)
         missing = []
         for name in chart_names:
             objs = per_natal_feeds.get(name)
             if objs is None:
                 missing.append(name)
             else:
-                # only include the computed parts (ids that include '@<name>') to avoid duplicating core objects
                 for o in objs:
                     oid = o.get("id", "")
                     if isinstance(oid, str) and oid.endswith(f"@{name}"):
                         overlay_objs.append(o)
-        overlay_fname = os.path.join(OUT_DIR, f"feed_overlay_{'_'.join(chart_names)}.json")
+        overlay_fname = os.path.join(out_dir, f"feed_overlay_{sanitize_name('_'.join(chart_names))}.json")
         payload_overlay = {
             "generated_at_utc": now_iso,
             "overlay_charts": chart_names,
@@ -341,12 +469,15 @@ def main() -> None:
             "source": "JPL Horizons + overlay parts",
             "objects": overlay_objs
         }
-        with open(overlay_fname, "w", encoding="utf-8") as fh:
-            json.dump(payload_overlay, fh, ensure_ascii=False, indent=2)
+        if args.dry_run:
+            log.info("Dry run: would write overlay feed %s (objects=%d) missing=%s", overlay_fname, len(overlay_objs), missing)
+        else:
+            write_json(overlay_fname, payload_overlay)
+            log.info("Wrote overlay feed to %s (objects=%d) missing=%s", overlay_fname, len(overlay_objs), missing)
 
-    print(f"Wrote combined feed to {OUT_FILE} and {len(per_natal_feeds)} per-natal feeds.")
-    if overlay_env:
-        print(f"Overlay requested for: {overlay_env}")
+    log.info("Done. Combined objects: %d, per-natal feeds: %d", len(combined_objects), len(per_natal_feeds))
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
