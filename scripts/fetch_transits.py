@@ -6,13 +6,13 @@ Features:
 - Loads targets config (default: config/targets.json).
 - Queries JPL Horizons via astroquery with retry/backoff.
 - Computes ecliptic coords via astropy; manual fallback if needed.
-- Scans config/natal/*.json for natal charts; computes Arabic parts using safe AST evaluator.
-- Writes docs/feed_now.json (combined) and docs/feed_<sanitized_name>.json (per-natal).
+- Scans config/natal/*.json for natal charts; computes Arabic parts using a safe AST-based evaluator.
+- Writes docs/feed_now.json and docs/feed_<sanitized_name>.json (per-natal).
 - Optional overlay generation via CLI arg or OVERLAY_CHARTS env var (comma-separated names).
-- Safe, production-minded logging and error handling.
+- Safe logging, clear errors, --dry-run support.
 """
-
 from __future__ import annotations
+
 import os
 import sys
 import json
@@ -26,7 +26,7 @@ import ast
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Tuple, Optional
 
-# astroquery + astropy
+# External libs (must be installed in the environment)
 from astroquery.jplhorizons import Horizons  # type: ignore
 from astropy import units as u  # type: ignore
 from astropy.coordinates import SkyCoord, GeocentricTrueEcliptic  # type: ignore
@@ -40,7 +40,7 @@ DEFAULT_OUT_FILE = os.path.join(DEFAULT_OUT_DIR, "feed_now.json")
 
 MEAN_OBLIQUITY_DEG = 23.439291
 
-# logging
+# Logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -77,8 +77,7 @@ def _as_float(v: Any) -> Optional[float]:
 
 def sanitize_name(n: str) -> str:
     n = re.sub(r"[^\w\-_\. ]+", "_", n)
-    n = n.replace(" ", "_")
-    return n
+    return n.replace(" ", "_")
 
 
 # ---------------------------
@@ -96,8 +95,14 @@ def query_horizons_id(idstr: Any, max_attempts: int = 3, backoff_base: float = 1
         except Exception as e:
             last_exc = e
             wait = backoff_base * (2 ** (attempt - 1))
-            log.warning("Horizons query failed for %s (attempt %d/%d): %s — retrying in %.1fs",
-                        idstr, attempt, max_attempts, getattr(e, "message", str(e)), wait)
+            log.warning(
+                "Horizons query failed for %s (attempt %d/%d): %s — retrying in %.1fs",
+                idstr,
+                attempt,
+                max_attempts,
+                getattr(e, "message", str(e)),
+                wait,
+            )
             time.sleep(wait)
     return False, last_exc
 
@@ -105,9 +110,13 @@ def query_horizons_id(idstr: Any, max_attempts: int = 3, backoff_base: float = 1
 # ---------------------------
 # Ecliptic computation
 # ---------------------------
-def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optional[str] = None,
-                            delta_au: Optional[float] = None) -> Tuple[Optional[float], Optional[float]]:
-    # Try astropy transform first
+def compute_ecl_from_ra_dec(
+    ra_deg: float, dec_deg: float, datetime_str: Optional[str] = None, delta_au: Optional[float] = None
+) -> Tuple[Optional[float], Optional[float]]:
+    """
+    Convert RA/DEC (ICRS/J2000-like) to geocentric true ecliptic lon/lat degrees.
+    Prefer astropy transform; fallback to manual mean-obliquity transform.
+    """
     try:
         dist = 1.0 * u.AU
         if delta_au is not None:
@@ -133,9 +142,9 @@ def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optiona
         if not (math.isnan(lon) or math.isnan(lat)):
             return lon % 360.0, lat
     except Exception:
-        log.debug("Astropy transform failed; falling back to manual computation", exc_info=True)
+        log.debug("Astropy ecliptic transform failed; falling back to manual.", exc_info=True)
 
-    # Manual fallback (J2000 mean obliquity)
+    # Manual fallback: mean obliquity J2000
     try:
         ra_r = math.radians(float(ra_deg))
         dec_r = math.radians(float(dec_deg))
@@ -163,42 +172,55 @@ def compute_ecl_from_ra_dec(ra_deg: float, dec_deg: float, datetime_str: Optiona
 # ---------------------------
 # Safe expression evaluation for Arabic parts
 # ---------------------------
-_allowed_nodes = {
-    ast.Expression, ast.BinOp, ast.UnaryOp, ast.Num, ast.Load,
-    ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Mod, ast.Pow,
-    ast.USub, ast.UAdd, ast.Name, ast.Call, ast.Constant,
-    ast.LShift, ast.RShift, ast.BitOr, ast.BitXor, ast.BitAnd,
-    ast.FloorDiv, ast.Subscript, ast.Index, ast.Tuple, ast.List,
+# Allowed AST node types (no Call, no Attribute)
+_ALLOWED_NODES = {
+    ast.Expression,
+    ast.BinOp,
+    ast.UnaryOp,
+    ast.Constant,  # py3.8+: numbers/strings
+    ast.Num,  # fallback for older versions
+    ast.Name,
+    ast.Load,
+    ast.Add,
+    ast.Sub,
+    ast.Mult,
+    ast.Div,
+    ast.Mod,
+    ast.Pow,
+    ast.USub,
+    ast.UAdd,
+    ast.Tuple,
+    ast.List,
+    ast.Subscript,
+    ast.Index,
+    ast.Slice,
 }
 
-# Forbid function calls except 'mod' which we won't allow; we'll only allow numeric ops and names.
+
 def _is_safe_ast(node: ast.AST) -> bool:
+    """
+    Structural AST check: disallow Call, Attribute, or any node not in the allowed set.
+    """
     for n in ast.walk(node):
-        if type(n) not in _allowed_nodes:
-            # permit ast.Constant (py3.8+) in allowed list; otherwise ast.Num
+        if isinstance(n, ast.Call) or isinstance(n, ast.Attribute):
             return False
-        # disallow any Call nodes (no functions)
-        if isinstance(n, ast.Call):
-            return False
-        # disallow attribute access
-        if isinstance(n, ast.Attribute):
+        if type(n) not in _ALLOWED_NODES:
             return False
     return True
 
 
 def evaluate_arabic_formula(formula: str, env: Dict[str, float]) -> Tuple[Optional[float], Optional[str]]:
     """
-    Evaluate simple arithmetic expressions using natal values.
-    Allowed tokens: names (mapped from env), numbers, + - * / % ** parentheses.
-    Returns (value_mod360, error_message_or_None)
+    Safely evaluate arithmetic expressions that can only reference names in `env`.
+    - Allowed operations: + - * / % ** parentheses.
+    - Disallows function calls and attribute access.
+    Returns (value_mod360, error_message_or_None).
     """
     if not formula or not isinstance(formula, str):
         return None, "empty formula"
 
-    # Normalize formula: lower, strip
-    expr = formula.strip().lower()
-
-    # Reject suspicious characters
+    expr = formula.strip()
+    # Quick reject of function-call looking patterns
     if re.search(r"[a-zA-Z_][a-zA-Z0-9_]*\s*\(", expr):
         return None, "function calls not allowed"
 
@@ -208,14 +230,20 @@ def evaluate_arabic_formula(formula: str, env: Dict[str, float]) -> Tuple[Option
         return None, f"parse error: {e}"
 
     if not _is_safe_ast(node):
-        return None, "unsafe formula content"
+        return None, "unsafe formula content (calls/attributes or disallowed nodes)"
 
-    # Prepare name mapping - only allow provided env keys
-    names = {k.lower(): float(v) for k, v in env.items() if v is not None}
-    # Replace names in AST evaluation by providing a mapping to eval's globals
+    # Collect identifiers used and ensure they're in env (case-insensitive)
+    names_in_expr = {n.id.lower() for n in ast.walk(node) if isinstance(n, ast.Name)}
+    allowed_names = {k.lower() for k in env.keys()}
+    unknown = names_in_expr - allowed_names
+    if unknown:
+        return None, f"unknown identifier(s) in formula: {', '.join(sorted(unknown))}"
+
+    # Build safe mapping (case-insensitive)
+    names_map = {k.lower(): float(v) for k, v in env.items() if v is not None}
     try:
         code = compile(node, "<expr>", "eval")
-        val = eval(code, {"__builtins__": {}}, names)
+        val = eval(code, {"__builtins__": {}}, names_map)
         valf = float(val) % 360.0
         return valf, None
     except Exception as e:
@@ -235,7 +263,6 @@ def process_horizons_entry(idval: Any) -> Dict[str, Any]:
         return {"id": str(idval), "error": f"{type(res).__name__}: {res}"}
     row = res
     try:
-        # fields from astroquery/horizons ephemeris row (best-effort extraction)
         targetname = str(row.get("targetname", idval))
         datetime_utc = str(row.get("datetime_str", ""))
         jd = _as_float(row.get("datetime_jd"))
@@ -259,7 +286,6 @@ def process_horizons_entry(idval: Any) -> Dict[str, Any]:
             ecl_lon = None
             ecl_lat = None
 
-        # fallback if no ecl provided
         if (ecl_lon is None or ecl_lat is None or (isinstance(ecl_lon, float) and math.isnan(ecl_lon))):
             if ra is not None and dec is not None:
                 lon_fallback, lat_fallback = compute_ecl_from_ra_dec(ra, dec, datetime_utc, delta_au)
@@ -279,7 +305,7 @@ def process_horizons_entry(idval: Any) -> Dict[str, Any]:
             "r_au": r_au,
             "elong_deg": elong,
             "phase_angle_deg": alpha,
-            "constellation": const
+            "constellation": const,
         }
     except Exception as e:
         return {"id": str(idval), "error": f"{type(e).__name__}: {e}"}
@@ -303,7 +329,7 @@ def process_fixed_star(star: Dict[str, Any]) -> Dict[str, Any]:
             "r_au": None,
             "elong_deg": None,
             "phase_angle_deg": None,
-            "constellation": None
+            "constellation": None,
         }
     except Exception as e:
         return {"id": star.get("id"), "error": f"{type(e).__name__}: {e}"}
@@ -317,7 +343,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--config", "-c", default=DEFAULT_CONFIG_PATH, help="Path to targets config (JSON).")
     p.add_argument("--natal-dir", default=DEFAULT_NATAL_DIR, help="Directory containing natal JSON files.")
     p.add_argument("--out-dir", default=DEFAULT_OUT_DIR, help="Output directory for feed files.")
-    p.add_argument("--overlay-charts", "-o", help="Comma-separated natal names to create overlay feed (overrides OVERLAY_CHARTS env).")
+    p.add_argument(
+        "--overlay-charts",
+        "-o",
+        help="Comma-separated natal names to create overlay feed (overrides OVERLAY_CHARTS env).",
+    )
     p.add_argument("--dry-run", action="store_true", help="Run but do not write files.")
     p.add_argument("--workers", type=int, default=1, help="Parallel workers for querying (1 = serial).")
     args = p.parse_args(argv)
@@ -393,91 +423,3 @@ def main(argv: Optional[List[str]] = None) -> int:
                 entry = {
                     "id": f"{part_id}@{natal_name}",
                     "targetname": f"{label} ({natal_name})",
-                    "datetime_utc": now_iso,
-                    "jd": None,
-                    "ecl_lon_deg": lon,
-                    "ecl_lat_deg": None,
-                    "ra_deg": None,
-                    "dec_deg": None,
-                    "delta_au": None,
-                    "r_au": None,
-                    "elong_deg": None,
-                    "phase_angle_deg": None,
-                    "constellation": None
-                }
-            per_objs.append(entry)
-            combined_objects.append(entry)
-
-        per_natal_feeds[natal_name] = per_objs
-
-    # Combined output payload
-    payload_combined = {
-        "generated_at_utc": now_iso,
-        "observer": "geocentric (Earth center)",
-        "refplane": "earth",
-        "source": "JPL Horizons via astroquery + local fixed stars + computed parts",
-        "objects": combined_objects
-    }
-
-    # Write combined feed
-    out_file = os.path.join(out_dir, "feed_now.json")
-    if args.dry_run:
-        log.info("Dry run: would write combined feed to %s (objects=%d)", out_file, len(combined_objects))
-    else:
-        write_json(out_file, payload_combined)
-        log.info("Wrote combined feed to %s (objects=%d)", out_file, len(combined_objects))
-
-    # Write per-natal feeds
-    for natal_name, objs in per_natal_feeds.items():
-        safe = sanitize_name(natal_name)
-        fname = os.path.join(out_dir, f"feed_{safe}.json")
-        payload = {
-            "generated_at_utc": now_iso,
-            "natal": natal_name,
-            "observer": "geocentric (Earth center)",
-            "source": "JPL Horizons + computed parts",
-            "objects": objs
-        }
-        if args.dry_run:
-            log.info("Dry run: would write per-natal feed %s (objects=%d)", fname, len(objs))
-        else:
-            write_json(fname, payload)
-            log.info("Wrote per-natal feed %s (objects=%d)", fname, len(objs))
-
-    # Determine overlay charts (CLI override or env)
-    overlay_env = args.overlay_charts or os.environ.get("OVERLAY_CHARTS", "") or ""
-    overlay_env = overlay_env.strip()
-    if overlay_env:
-        chart_names = [n.strip() for n in overlay_env.split(",") if n.strip()]
-        overlay_objs: List[Dict[str, Any]] = list(results_core)
-        missing = []
-        for name in chart_names:
-            objs = per_natal_feeds.get(name)
-            if objs is None:
-                missing.append(name)
-            else:
-                for o in objs:
-                    oid = o.get("id", "")
-                    if isinstance(oid, str) and oid.endswith(f"@{name}"):
-                        overlay_objs.append(o)
-        overlay_fname = os.path.join(out_dir, f"feed_overlay_{sanitize_name('_'.join(chart_names))}.json")
-        payload_overlay = {
-            "generated_at_utc": now_iso,
-            "overlay_charts": chart_names,
-            "missing_charts": missing,
-            "observer": "geocentric (Earth center)",
-            "source": "JPL Horizons + overlay parts",
-            "objects": overlay_objs
-        }
-        if args.dry_run:
-            log.info("Dry run: would write overlay feed %s (objects=%d) missing=%s", overlay_fname, len(overlay_objs), missing)
-        else:
-            write_json(overlay_fname, payload_overlay)
-            log.info("Wrote overlay feed to %s (objects=%d) missing=%s", overlay_fname, len(overlay_objs), missing)
-
-    log.info("Done. Combined objects: %d, per-natal feeds: %d", len(combined_objects), len(per_natal_feeds))
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
