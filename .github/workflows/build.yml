@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       note:
-        description: 'Optional note to append to commit message'
+        description: "Optional note to append to commit message"
         required: false
-        default: ''
+        default: ""
   schedule:
-    - cron: '0 11,23 * * *'   # 04:00 & 16:00 Pacific
+    - cron: "0 11,23 * * *"   # 04:00 & 16:00 Pacific (every 12h)
 
 permissions:
   contents: write
@@ -16,6 +16,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install deps
         run: |
@@ -33,14 +34,14 @@ jobs:
       - name: Ensure Swiss path
         run: mkdir -p .eph
 
-      - name: Generate JPL feed
+      - name: Generate JPL feed (with Swiss fallback for majors)
         run: |
           python scripts/fetch_transits.py \
             --config config/live_config.json \
             --out docs/feed_now.json
 
       - name: Show first lines of feed_now.json (debug)
-        run: head -n 80 docs/feed_now.json || true
+        run: head -n 120 docs/feed_now.json || true
 
       - name: Add Swiss angles + Arabic Parts
         run: |
@@ -49,7 +50,7 @@ jobs:
             --targets config/targets.json \
             --out docs/feed_now.json
 
-      - name: Build overlays
+      - name: Build overlays (merge natal charts)
         run: |
           python scripts/build_overlays.py \
             --feed docs/feed_now.json \
@@ -64,7 +65,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            msg="chore(feed): update feeds [skip ci]"
+            msg="chore(feed): update feeds (auto) [skip ci]"
             if [ -n "${{ github.event.inputs.note }}" ]; then
               msg="$msg - ${{ github.event.inputs.note }}"
             fi
