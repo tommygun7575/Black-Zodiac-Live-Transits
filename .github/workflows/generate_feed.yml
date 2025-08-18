@@ -8,8 +8,7 @@ on:
         required: false
         default: ''
   schedule:
-    # 11:00 & 23:00 UTC = 04:00 & 16:00 Pacific
-    - cron: '0 11,23 * * *'
+    - cron: '0 11,23 * * *'   # 04:00 & 16:00 Pacific
 
 permissions:
   contents: write
@@ -17,7 +16,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,35 +25,37 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install deps
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Generate raw feed (JPL w/ Swiss fallback)
+      - name: Ensure Swiss path
+        run: |
+          mkdir -p .eph  # not strictly needed, but harmless
+
+      - name: Generate JPL feed
         run: |
           python scripts/fetch_transits.py \
             --config config/live_config.json \
             --out docs/feed_now.json
 
-      - name: Add Swiss Angles + Arabic Parts
+      - name: Show first lines of feed_now.json (debug)
+        run: head -n 80 docs/feed_now.json || true
+
+      - name: Add Swiss angles + Arabic Parts
         run: |
           python scripts/compute_angles_and_parts.py \
             --feed docs/feed_now.json \
-            --targets config/live_config.json \
+            --config config/live_config.json \
             --out docs/feed_now.json
 
-      - name: Merge overlay with natal charts
+      - name: Build overlays
         run: |
           python scripts/build_overlays.py \
             --feed docs/feed_now.json \
             --config config/live_config.json \
             --out docs/feed_overlay.json
-
-      - name: Show first lines of feed (debug)
-        run: |
-          head -n 80 docs/feed_now.json || true
-          head -n 40 docs/feed_overlay.json || true
 
       - name: Commit if changed
         run: |
