@@ -46,14 +46,14 @@ jobs:
         run: |
           python scripts/compute_angles_and_parts.py \
             --feed docs/feed_now.json \
-            --config config/live_config.json \
+            --targets config/targets.json \
             --out docs/feed_now.json
 
       - name: Build overlays
         run: |
           python scripts/build_overlays.py \
             --feed docs/feed_now.json \
-            --config config/live_config.json \
+            --natal_dir config/natal \
             --out docs/feed_overlay.json
 
       - name: Commit if changed
