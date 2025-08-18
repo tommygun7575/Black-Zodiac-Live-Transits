@@ -25,7 +25,8 @@ def main():
         else:
             print(f"[WARN] Missing natal file: {file}")
 
-    overlay = {"feed": feed, "natal": natal, "meta": {"config_version": cfg.get("meta",{}).get("version","unknown")}}
+    overlay = {"feed": feed, "natal": natal,
+               "meta": {"config_version": cfg.get("meta",{}).get("version","unknown")}}
     Path(args.out).write_text(json.dumps(overlay, indent=2), encoding="utf-8")
     print(f"[OK] overlay written -> {args.out}")
 
