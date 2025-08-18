@@ -1,104 +1,85 @@
 #!/usr/bin/env python3
 """
-augment_feed.py — add Swiss Angles (ASC, MC, IC, DSC) and Arabic Parts
-to feed_now.json, merging into the existing structure.
-
-Requires: pyswisseph, python-dateutil
+generate_feed.py — Fetch planetary positions from JPL Horizons
+and fall back to Swiss Ephemeris if Horizons data is missing.
+Writes docs/feed_now.json (core major bodies).
 """
 
 import json
-import swisseph as swe
 from datetime import datetime, timezone
-from dateutil import parser
+from astroquery.jplhorizons import Horizons
+import swisseph as swe
 
-# Observer defaults (Spanish Springs / Reno approx.)
-OBS_LAT = 39.653
-OBS_LON = -119.706
-OBS_ELEV = 1340
+LOCATION = "500@399"  # geocentric Earth
 
-# Arabic Part formulas (deg arithmetic)
-# Convention: Part = A + B - C
-ARABIC_PARTS = {
-    "Fortune":      ("Asc", "Moon", "Sun"),
-    "Spirit":       ("Asc", "Sun", "Moon"),
-    "Karma":        ("Saturn", "Asc", "Moon"),
-    "Treachery":    ("Neptune", "Mercury", "Asc"),
-    "Victory":      ("Jupiter", "Sun", "Asc"),
-    "Marriage":     ("Desc", "Venus", "Sun"),
-    "Vengeance":    ("Mars", "Moon", "Asc"),
-    "Deliverance":  ("Pluto", "Asc", "Saturn"),
+TARGETS = {
+    "10": "Sun",
+    "301": "Moon",
+    "199": "Mercury",
+    "299": "Venus",
+    "499": "Mars",
+    "599": "Jupiter",
+    "699": "Saturn",
+    "799": "Uranus",
+    "899": "Neptune",
+    "999": "Pluto",
+    "2060": "Chiron"
 }
 
-# Utility: normalize degrees 0–360
-def norm(x: float) -> float:
-    return x % 360.0
+def fetch_horizons(eph_id, dt):
+    try:
+        obj = Horizons(
+            id=eph_id,
+            id_type=None,
+            location=LOCATION,
+            epochs=dt.strftime("%Y-%m-%d %H:%M")
+        )
+        eph = obj.ephemerides()[0]
+        return {
+            "targetname": TARGETS.get(str(eph_id), eph_id),
+            "id": eph_id,
+            "datetime": eph["datetime_str"],
+            "ecl_lon": float(eph["ECL_LON"]),
+            "ecl_lat": float(eph["ECL_LAT"]),
+        }
+    except Exception as e:
+        print(f"[WARN] Horizons failed for {eph_id}: {e}")
+        return None
 
-def compute_angles(jd_ut, lat, lon):
-    """Compute ASC, MC, DSC, IC using Swiss Ephemeris house system (Placidus)."""
-    # houses returns cusps[1..12], ascendant, mc, armc, vertex, equasc, coasc1, coasc2, polarasc
-    houses, ascmc, _, _, _, _, _, _, _, _ = swe.houses_ex(
-        jd_ut,
-        lat,
-        lon,
-        b'P'  # Placidus
-    )
+def fetch_swiss(name, dt):
+    swe_map = {
+        "Sun": swe.SUN, "Moon": swe.MOON, "Mercury": swe.MERCURY,
+        "Venus": swe.VENUS, "Mars": swe.MARS, "Jupiter": swe.JUPITER,
+        "Saturn": swe.SATURN, "Uranus": swe.URANUS, "Neptune": swe.NEPTUNE,
+        "Pluto": swe.PLUTO, "Chiron": swe.CHIRON,
+    }
+    jd = swe.julday(dt.year, dt.month, dt.day,
+                    dt.hour + dt.minute/60 + dt.second/3600.0, swe.GREG_CAL)
+    lon, lat, dist = swe.calc_ut(jd, swe_map[name])[0:3]
     return {
-        "Asc": norm(ascmc[0]),
-        "MC": norm(ascmc[1]),
-        "IC": norm(ascmc[1] + 180.0),
-        "Desc": norm(ascmc[0] + 180.0),
+        "targetname": name,
+        "id": name,
+        "datetime": dt.isoformat(),
+        "ecl_lon": float(lon),
+        "ecl_lat": float(lat),
     }
 
 def main():
-    # Load feed_now.json
-    with open("docs/feed_now.json", "r") as f:
-        feed = json.load(f)
+    now = datetime.now(timezone.utc)
+    data = {
+        "generated_at_utc": now.isoformat(),
+        "observer": "geocentric Earth",
+        "source": "JPL Horizons (fallback: Swiss Ephemeris)",
+        "objects": []
+    }
+    for eid, name in TARGETS.items():
+        body = fetch_horizons(eid, now)
+        if not body:
+            body = fetch_swiss(name, now)
+        data["objects"].append(body)
 
-    # Parse timestamp of first object (assumes all same epoch)
-    if "objects" not in feed or not feed["objects"]:
-        raise RuntimeError("feed_now.json missing objects")
-    dt_str = feed["objects"][0]["datetime"]
-    dt = parser.parse(dt_str).astimezone(timezone.utc)
-
-    # Julian Day
-    jd_ut = swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0, swe.GREG_CAL)
-
-    # Angles
-    angles = compute_angles(jd_ut, OBS_LAT, OBS_LON)
-
-    # Index positions by name for easy lookup
-    positions = {obj["targetname"]: obj for obj in feed["objects"]}
-
-    # Arabic Parts
-    parts = {}
-    for name, (a, b, c) in ARABIC_PARTS.items():
-        if a not in angles and a not in positions:
-            continue
-        if b not in angles and b not in positions:
-            continue
-        if c not in angles and c not in positions:
-            continue
-
-        def get_lon(key):
-            if key in angles:
-                return angles[key]
-            elif key in positions:
-                return positions[key]["ecl_lon"]
-            else:
-                raise KeyError(key)
-
-        lon = norm(get_lon(a) + get_lon(b) - get_lon(c))
-        parts[name] = lon
-
-    # Merge into feed
-    feed["angles"] = angles
-    feed["arabic_parts"] = parts
-
-    # Save
     with open("docs/feed_now.json", "w") as f:
-        json.dump(feed, f, indent=2)
-
-    print(f"Augmented docs/feed_now.json with {len(angles)} angles and {len(parts)} Arabic Parts.")
+        json.dump(data, f, indent=2)
 
 if __name__ == "__main__":
     main()
