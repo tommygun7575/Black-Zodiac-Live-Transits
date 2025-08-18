@@ -1,15 +1,28 @@
 {
   "meta": {
     "generated_by": "Black-Zodiac Live Config",
-    "notes": "Numeric IDs for Horizons where possible. Fixed stars use RA/DEC (J2000). Arabic parts require natal charts placed in config/natal/*.json"
+    "version": "v3.2.2",
+    "notes": "Dual-source ephemeris: JPL for planets, Swiss for ASC/MC/houses. Arabic Parts require natal charts in config/natal/*.json"
+  },
+
+  "ephemeris": {
+    "primary": "jpl_horizons",
+    "secondary": "swiss_ephemeris",
+    "angles_provider": "swiss_ephemeris",
+    "house_system": "Placidus",
+    "node_type": "true",
+    "reconcile": {
+      "prefer_longitudes": "jpl",
+      "prefer_angles": "swiss",
+      "tolerance_arcsec": 15
+    }
   },
 
   "planets": [
-    { "id": "10", "label": "Sun" },
+    { "id": "10",  "label": "Sun" },
     { "id": "301", "label": "Moon" },
     { "id": "199", "label": "Mercury" },
     { "id": "299", "label": "Venus" },
-    { "id": "399", "label": "Earth (center)" },
     { "id": "499", "label": "Mars" },
     { "id": "599", "label": "Jupiter" },
     { "id": "699", "label": "Saturn" },
@@ -18,50 +31,70 @@
     { "id": "999", "label": "Pluto" }
   ],
 
-  "minor_bodies": [
-    1,2,3,4,5,16,31,80,2060,2063,1221,3811,
-    136108,136472,20000,28978,42355,120347
+  "barycenters": [
+    { "id": "1", "label": "Mercury Barycenter", "enabled": true },
+    { "id": "2", "label": "Venus Barycenter",   "enabled": true },
+    { "id": "4", "label": "Mars Barycenter",    "enabled": true },
+    { "id": "5", "label": "Jupiter Barycenter", "enabled": true }
   ],
+
+  "minor_bodies": [1, 2, 3, 4, 5, 16, 31, 80, 2060, 2063, 1221, 3811, 136108, 136472, 20000, 28978, 42355, 120347],
 
   "fixed_stars": [
-    { "id": "Regulus", "label": "Regulus (Alpha Leo)", "ra_deg": 152.0929625, "dec_deg": 11.9672083, "epoch": "J2000" },
-    { "id": "Spica", "label": "Spica (Alpha Vir)", "ra_deg": 201.2982475, "dec_deg": -11.1613194, "epoch": "J2000" },
-    { "id": "Sirius", "label": "Sirius (Alpha CMa)", "ra_deg": 101.28715533, "dec_deg": -16.71611586, "epoch": "J2000" },
-    { "id": "Aldebaran", "label": "Aldebaran (Alpha Tau)", "ra_deg": 68.9801625, "dec_deg": 16.50930278, "epoch": "J2000" }
+    { "id": "Regulus",  "label": "Regulus (Alpha Leo)", "ra_deg": 152.0929625, "dec_deg": 11.9672083,  "epoch": "J2000" },
+    { "id": "Spica",    "label": "Spica (Alpha Vir)",   "ra_deg": 201.2982475, "dec_deg": -11.1613194, "epoch": "J2000" },
+    { "id": "Sirius",   "label": "Sirius (Alpha CMa)",  "ra_deg": 101.28715533,"dec_deg": -16.71611586,"epoch": "J2000" },
+    { "id": "Aldebaran","label": "Aldebaran (Alpha Tau)","ra_deg": 68.9801625,"dec_deg": 16.50930278, "epoch": "J2000" }
   ],
 
-  "arabic_parts": [
-    {
-      "id": "PartOfFortune",
-      "label": "Part of Fortune",
-      "formula": "asc + moon - sun",
-      "description": "Day formula: Asc + Moon - Sun. Night formula: Asc - Moon + Sun.",
-      "natal_chart_file": "config/natal/Tommy.json"
-    },
-    {
-      "id": "PartOfSpirit",
-      "label": "Part of Spirit",
-      "formula": "asc - moon + sun",
-      "description": "Common 'Part of Spirit' formula. Requires natal chart values.",
-      "natal_chart_file": "config/natal/Tommy.json"
-    },
-    {
-      "id": "PartOfFortune_Milena",
-      "label": "Part of Fortune (Milena)",
-      "formula": "asc + moon - sun",
-      "natal_chart_file": "config/natal/Milena.json"
-    },
-    {
-      "id": "PartOfFortune_Christine",
-      "label": "Part of Fortune (Christine)",
-      "formula": "asc + moon - sun",
-      "natal_chart_file": "config/natal/Christine.json"
-    }
+  "targets": [
+    { "name": "Tommy",     "lat": 39.65, "lon": -119.70, "house_system": "P" },
+    { "name": "Milena",    "lat": 39.53, "lon": -119.81, "house_system": "P" },
+    { "name": "Christine", "lat": 39.65, "lon": -119.70, "house_system": "P" }
   ],
+
+  "natal_charts": [
+    { "name": "Tommy",     "file": "config/natal/Tommy_NatalChart_HybridOSv3.2.json" },
+    { "name": "Milena",    "file": "config/natal/Milena_NatalChart_HybridOSv3.2.json" },
+    { "name": "Christine", "file": "config/natal/Christine_NatalChart_HybridOSv3.2.json" }
+  ],
+
+  "arabic_parts": {
+    "aliases": {
+      "asc": "ASC",
+      "ascendant": "ASC",
+      "sun": "Sun",
+      "moon": "Moon",
+      "mc": "MC"
+    },
+    "parts": [
+      {
+        "id": "PartOfFortune",
+        "label": "Part of Fortune",
+        "formula_day":   "ASC + Moon - Sun",
+        "formula_night": "ASC + Sun  - Moon",
+        "output_id_pattern": "PartOfFortune@{name}"
+      },
+      {
+        "id": "PartOfSpirit",
+        "label": "Part of Spirit",
+        "formula_day":   "ASC + Sun  - Moon",
+        "formula_night": "ASC + Moon - Sun",
+        "output_id_pattern": "PartOfSpirit@{name}"
+      }
+    ],
+    "subjects": ["Tommy", "Milena", "Christine"],
+    "use_transit_angles": true,
+    "angle_provider": "swiss_ephemeris"
+  },
 
   "options": {
     "use_barycenter_when_available": true,
     "compute_conjunctions": false,
-    "ecliptic_frame": "true_ecliptic"
+    "ecliptic_frame": "true_ecliptic",
+    "output": {
+      "feed_now": "docs/feed_now.json",
+      "per_person": false
+    }
   }
 }
