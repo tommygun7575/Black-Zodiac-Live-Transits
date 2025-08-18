@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-compute_angles_and_parts.py — add ASC/MC/houses (Swiss) and Arabic Parts to feed
+compute_angles_and_parts.py — add ASC/MC/houses (Swiss) + Arabic Parts
 
-Inputs:
-  --feed docs/feed_now.json
-  --targets config/targets.json
-Outputs:
-  Overwrites --feed with added ASC/MC/Houses + PartOfFortune/PartOfSpirit per target.
+Robust body lookup (by id or targetname) so it never misses Sun/Moon
+if JPL changes labels.
 
 Usage:
   python scripts/compute_angles_and_parts.py --feed docs/feed_now.json --targets config/targets.json --out docs/feed_now.json
@@ -28,24 +25,20 @@ def norm360(x: float) -> float:
     x = x % 360.0
     return x if x >= 0 else x + 360.0
 
-ALIASES = {
-    "asc": "ASC", "ascendant": "ASC",
-    "mc": "MC",
-    "sun": "Sun",
-    "moon": "Moon"
-}
+ALIASES = {"asc":"ASC","ascendant":"ASC","mc":"MC","sun":"Sun","moon":"Moon"}
 
 def canonicalize(name: str) -> str:
     return ALIASES.get(name.strip().lower(), name)
 
-def get_body_lon_from_feed(feed, body_name: str):
-    body_name = canonicalize(body_name)
-    lookup = {"Sun": ["Sun (10)", "Sun"], "Moon": ["Moon (301)", "Moon"]}
-    names = lookup.get(body_name, [body_name])
+def get_body_lon_from_feed(feed, want: str):
+    want = canonicalize(want)
+    want_id = {"Sun":"10","Moon":"301"}.get(want)
     for obj in feed.get("objects", []):
-        if str(obj.get("targetname", "")).strip() in names:
+        tid = str(obj.get("id",""))
+        tname = str(obj.get("targetname",""))
+        if tid == (want_id or "") or tname.startswith(want):
             val = obj.get("ecl_lon_deg")
-            if isinstance(val, (int, float)): return float(val)
+            if isinstance(val, (int,float)): return float(val)
     return None
 
 def julday(dt_utc: datetime) -> float:
@@ -56,26 +49,20 @@ def swiss_angles(dt_utc: datetime, lat: float, lon: float, hsys: str = "P"):
     jd_ut = julday(dt_utc)
     swe.set_ephe_path(str(pathlib.Path(".eph").resolve()))
     cusps, ascmc = swe.houses(jd_ut, lat, lon, hsys.encode("ascii"))
-    return {
-        "ASC_deg": norm360(ascmc[0]),
-        "MC_deg":  norm360(ascmc[1]),
-        "houses_deg": [None] + [norm360(c) for c in cusps[1:13]]
-    }
+    return {"ASC_deg": norm360(ascmc[0]), "MC_deg": norm360(ascmc[1]),
+            "houses_deg": [None] + [norm360(c) for c in cusps[1:13]]}
 
-def is_daytime(dt_utc: datetime, lat: float, lon: float, hsys: str, sun_ecl_lon: float) -> bool:
+def is_daytime(dt_utc: datetime, lat: float, lon: float, hsys: str, sun_lon: float) -> bool:
     jd_ut = julday(dt_utc)
-    h = swe.house_pos(jd_ut, lat, lon, hsys.encode("ascii"), sun_ecl_lon, 0.0)
+    h = swe.house_pos(jd_ut, lat, lon, hsys.encode("ascii"), sun_lon, 0.0)
     return 7.0 <= h < 13.0
 
-def part_fortune(asc, sun, moon, day):
-    return norm360(asc + (moon - sun) if day else asc + (sun - moon))
+def part_fortune(asc, sun, moon, day):  return norm360(asc + (moon - sun) if day else asc + (sun - moon))
+def part_spirit(asc, sun, moon, day):   return norm360(asc + (sun - moon) if day else asc + (moon - sun))
 
-def part_spirit(asc, sun, moon, day):
-    return norm360(asc + (sun - moon) if day else asc + (moon - sun))
-
-def load_json(p):  return json.load(open(p, "r", encoding="utf-8"))
-def save_json(p, d): json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-def append_obj(feed, obj): feed.setdefault("objects", []).append(obj)
+def load_json(p):  return json.load(open(p,"r",encoding="utf-8"))
+def save_json(p,d): json.dump(d, open(p,"w",encoding="utf-8"), ensure_ascii=False, indent=2)
+def append_obj(feed,obj): feed.setdefault("objects",[]).append(obj)
 
 def main():
     ap = argparse.ArgumentParser()
@@ -89,21 +76,24 @@ def main():
     targets = load_json(args.targets).get("targets", [])
 
     gen = feed.get("generated_at_utc") or feed.get("datetime_utc")
-    if not gen:
-        print("[ERROR] feed missing generated_at_utc", file=sys.stderr); sys.exit(1)
+    if not gen: print("[ERROR] feed missing generated_at_utc", file=sys.stderr); sys.exit(1)
     dt_utc = dtparse.isoparse(gen).astimezone(timezone.utc).replace(tzinfo=None)
 
     sun = get_body_lon_from_feed(feed, "Sun")
     moon = get_body_lon_from_feed(feed, "Moon")
     if sun is None or moon is None:
-        print("[ERROR] feed missing Sun and/or Moon longitudes", file=sys.stderr); sys.exit(1)
+        print("[ERROR] feed missing Sun and/or Moon longitudes", file=sys.stderr)
+        # helpful dump
+        for o in feed.get("objects", []):
+            if o.get("id") in ("10","301") or str(o.get("targetname","")).startswith(("Sun","Moon")):
+                print("[DEBUG]", o, file=sys.stderr)
+        sys.exit(1)
 
     for t in targets:
-        name = t["name"]; lat=float(t["lat"]); lon=float(t["lon"]); hsys=t.get("house_system", args.house_system)
+        name=t["name"]; lat=float(t["lat"]); lon=float(t["lon"]); hsys=t.get("house_system", args.house_system)
         try:
             ang = swiss_angles(dt_utc, lat, lon, hsys)
             day = is_daytime(dt_utc, lat, lon, hsys, sun)
-
             asc, mc = ang["ASC_deg"], ang["MC_deg"]
             pof = part_fortune(asc, sun, moon, day)
             pos = part_spirit(asc, sun, moon, day)
