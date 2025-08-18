@@ -1,71 +1,91 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 fetch_transits.py — fetch planetary transits from JPL Horizons with Swiss Ephemeris fallback
+
+- Uses live_config.json for planets, minor bodies, fixed stars
+- Writes ecl_lon_deg / ecl_lat_deg so downstream scripts work
 """
 
-import argparse, json, datetime
-import numpy as np
+import argparse, json, datetime, sys
 from pathlib import Path
+import numpy as np
 from astroquery.jplhorizons import Horizons
 import swisseph as swe
 
-OBJECTS = {
-    "Sun": {"id": 10, "swe": swe.SUN},
-    "Moon": {"id": 301, "swe": swe.MOON},
-    "Mercury": {"id": 199, "swe": swe.MERCURY},
-    "Venus": {"id": 299, "swe": swe.VENUS},
-    "Mars": {"id": 499, "swe": swe.MARS},
-    "Jupiter": {"id": 599, "swe": swe.JUPITER},
-    "Saturn": {"id": 699, "swe": swe.SATURN},
-    "Uranus": {"id": 799, "swe": swe.URANUS},
-    "Neptune": {"id": 899, "swe": swe.NEPTUNE},
-    "Pluto": {"id": 999, "swe": swe.PLUTO},
-}
+def julday(dt: datetime.datetime) -> float:
+    return swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0)
 
 def fetch_from_horizons(obj_id, epoch):
     try:
         h = Horizons(id=obj_id, location='500@399', epochs=epoch, id_type=None)
-        eph = h.elements()
-        if "EclLon" in eph.colnames and "EclLat" in eph.colnames:
-            lon = float(eph["EclLon"][0])
-            lat = float(eph["EclLat"][0])
-            return lon, lat
+        eph = h.ephemerides(quantities="1")  # RA/Dec, lon/lat
+        lon = float(eph["EclLon"][0])
+        lat = float(eph["EclLat"][0])
+        return lon, lat, "horizons"
     except Exception as e:
-        print(f"[WARN] Horizons failed for {obj_id}: {e}")
-    return None, None
+        print(f"[WARN] Horizons failed for {obj_id}: {e}", file=sys.stderr)
+        return None, None, None
 
 def fetch_from_swiss(obj_swe, jd):
-    lon, lat, dist = swe.calc_ut(jd, obj_swe)[0:3]
-    return lon, lat
+    try:
+        xx, _ = swe.calc_ut(jd, obj_swe)
+        lon, lat = xx[0], xx[1]
+        return lon, lat, "swiss"
+    except Exception as e:
+        print(f"[FATAL] Swiss failed for {obj_swe}: {e}", file=sys.stderr)
+        return None, None, None
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config", required=True)
-    parser.add_argument("--out", required=True)
-    args = parser.parse_args()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", required=True, help="Path to live_config.json")
+    ap.add_argument("--out", required=True, help="Output feed file (JSON)")
+    args = ap.parse_args()
 
-    with open(args.config) as f:
-        cfg = json.load(f)
+    cfg = json.loads(Path(args.config).read_text())
 
     now = datetime.datetime.utcnow()
-    jd = swe.julday(now.year, now.month, now.day, now.hour + now.minute/60.0)
+    jd = julday(now)
+    epoch = now.strftime("%Y-%m-%d %H:%M")
 
-    feed = {"generated_at_utc": now.isoformat(), "objects": []}
+    feed = {
+        "generated_at_utc": now.isoformat() + "Z",
+        "objects": [],
+        "source": "JPL Horizons via astroquery + Swiss fallback"
+    }
 
-    for name, ids in OBJECTS.items():
-        lon, lat = fetch_from_horizons(ids["id"], now)
+    # Planets
+    for p in cfg.get("planets", []):
+        name, obj_id = p["label"], p["id"]
+        lon, lat, src = fetch_from_horizons(obj_id, epoch)
         if lon is None or np.isnan(lon):
-            lon, lat = fetch_from_swiss(ids["swe"], jd)
-            src = "swiss"
-        else:
-            src = "horizons"
-        feed["objects"].append({"name": name, "id": ids["id"], "lon": lon, "lat": lat, "source": src})
+            lon, lat, src = fetch_from_swiss(int(obj_id), jd)
+        feed["objects"].append({
+            "id": str(obj_id),
+            "targetname": name,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "source": src
+        })
 
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    with open(args.out, "w") as f:
-        json.dump(feed, f, indent=2)
+    # Minor bodies
+    for obj_id in cfg.get("minor_bodies", []):
+        lon, lat, src = fetch_from_horizons(obj_id, epoch)
+        if lon is None:
+            # Swiss can’t resolve most asteroids by ID
+            continue
+        feed["objects"].append({
+            "id": str(obj_id),
+            "targetname": f"MinorBody {obj_id}",
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "source": src
+        })
 
-    print(f"[OK] wrote {args.out}")
-
-if __name__ == "__main__":
-    main()
+    # Fixed stars (from config, RA/Dec)
+    for star in cfg.get("fixed_stars", []):
+        feed["objects"].append({
+            "id": star["id"],
+            "targetname": star["label"],
+            "ra_deg": star["ra_deg"],
+            "dec_deg": star["dec_deg"]_]()_
