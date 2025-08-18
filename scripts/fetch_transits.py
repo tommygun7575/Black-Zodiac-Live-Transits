@@ -13,12 +13,18 @@ import numpy as np
 from astroquery.jplhorizons import Horizons
 import swisseph as swe
 
+
+# ---------- helpers
+
 def julday(dt: datetime.datetime) -> float:
-    return swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0)
+    return swe.julday(dt.year, dt.month, dt.day,
+                      dt.hour + dt.minute/60.0 + dt.second/3600.0)
+
 
 def fetch_from_horizons(obj_id, epoch):
+    """Fetch ecliptic longitude/latitude from JPL Horizons"""
     try:
-        h = Horizons(id=obj_id, location='500@399', epochs=epoch, id_type=None)
+        h = Horizons(id=obj_id, location="500@399", epochs=epoch, id_type=None)
         eph = h.ephemerides(quantities="1")  # RA/Dec, lon/lat
         lon = float(eph["EclLon"][0])
         lat = float(eph["EclLat"][0])
@@ -27,7 +33,9 @@ def fetch_from_horizons(obj_id, epoch):
         print(f"[WARN] Horizons failed for {obj_id}: {e}", file=sys.stderr)
         return None, None, None
 
+
 def fetch_from_swiss(obj_swe, jd):
+    """Fallback using Swiss Ephemeris (major planets only)"""
     try:
         xx, _ = swe.calc_ut(jd, obj_swe)
         lon, lat = xx[0], xx[1]
@@ -35,6 +43,9 @@ def fetch_from_swiss(obj_swe, jd):
     except Exception as e:
         print(f"[FATAL] Swiss failed for {obj_swe}: {e}", file=sys.stderr)
         return None, None, None
+
+
+# ---------- main
 
 def main():
     ap = argparse.ArgumentParser()
@@ -54,7 +65,7 @@ def main():
         "source": "JPL Horizons via astroquery + Swiss fallback"
     }
 
-    # Planets
+    # ----- planets
     for p in cfg.get("planets", []):
         name, obj_id = p["label"], p["id"]
         lon, lat, src = fetch_from_horizons(obj_id, epoch)
@@ -68,11 +79,11 @@ def main():
             "source": src
         })
 
-    # Minor bodies
+    # ----- minor bodies
     for obj_id in cfg.get("minor_bodies", []):
         lon, lat, src = fetch_from_horizons(obj_id, epoch)
         if lon is None:
-            # Swiss can’t resolve most asteroids by ID
+            # Swiss can’t resolve most asteroids by numeric ID
             continue
         feed["objects"].append({
             "id": str(obj_id),
@@ -82,10 +93,22 @@ def main():
             "source": src
         })
 
-    # Fixed stars (from config, RA/Dec)
+    # ----- fixed stars
     for star in cfg.get("fixed_stars", []):
         feed["objects"].append({
             "id": star["id"],
             "targetname": star["label"],
-            "ra_deg": star["ra_deg"],
-            "dec_deg": star["dec_deg"]_]()_
+            "ra_deg": float(star["ra_deg"]),
+            "dec_deg": float(star["dec_deg"]),
+            "epoch": star.get("epoch", "J2000"),
+            "source": "catalog"
+        })
+
+    # write file
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.out).write_text(json.dumps(feed, indent=2))
+    print(f"[OK] wrote {args.out}")
+
+
+if __name__ == "__main__":
+    main()
