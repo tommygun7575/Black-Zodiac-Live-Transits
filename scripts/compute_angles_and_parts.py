@@ -38,6 +38,10 @@ def _ecliptic_from_ra_dec(obj, obstime_iso: str | None):
     return float(ecl.lon.to(u.deg).value)
 
 def find_lon(feed, ids_or_names, gen_time):
+    """
+    Try to find an object's ecliptic longitude in the feed by id or name.
+    Accepts ecl_lon_deg, ecl_lon, or derives from RA/Dec.
+    """
     for obj in feed.get("objects", []):
         oid = str(obj.get("id"))
         name = str(obj.get("targetname", ""))
@@ -91,7 +95,7 @@ def eval_formula(formula, mapping):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--feed", required=True, help="docs/feed_now.json")
-    # Make both optional; require at least one AFTER parsing (for backward compatibility)
+    # Backward-compatible: allow either config or targets
     ap.add_argument("--config", required=False, help="config/live_config.json")
     ap.add_argument("--targets", required=False, help="legacy targets file (lat/lon list)")
     ap.add_argument("--out", required=True, help="output (overwrite feed)")
@@ -103,7 +107,7 @@ def main():
 
     feed = json.loads(open(args.feed, "r", encoding="utf-8").read())
 
-    # When using live_config.json, get everything from there.
+    # When using live_config.json, get everything (targets + parts) from there.
     targets = []
     parts_cfg = None
     if args.config:
