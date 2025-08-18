@@ -4,52 +4,70 @@
 """
 fetch_transits.py — build docs/feed_now.json from config/live_config.json
 
-- JPL Horizons (astroquery) for planetary/minor-body longitudes.
-- Fixed stars converted from RA/DEC (J2000) to geocentric true ecliptic of date.
-- Retries JPL queries and FAILS EARLY if Sun or Moon are missing.
-
-Usage:
-  python scripts/fetch_transits.py --config config/live_config.json --out docs/feed_now.json
+- Uses JPL Horizons via astroquery for longitudes.
+- Ensures Sun (10) and Moon (301) resolve as MAJOR BODIES (no asteroid 301 Bavaria).
+- If Horizons ever returns NaN EclLon (rare), fall back to RA/DEC -> ecliptic conversion.
 """
 
 from __future__ import annotations
-import json, sys, argparse, time, datetime, os
-from typing import Any, Dict, List
+import json, sys, argparse, time, datetime, os, math
+from typing import Any, Dict
 
 from astropy.time import Time
 from astropy.coordinates import SkyCoord, FK5, GeocentricTrueEcliptic
 import astropy.units as u
 from astroquery.jplhorizons import Horizons
+import numpy as np
 
-MAJOR_IDS = {"10","199","299","399","499","599","699","799","899","999","1","2","4","5"}
-
-# -------- helpers
+# include 301 so Moon is NOT treated as an asteroid
+MAJOR_IDS = {"10","301","199","299","399","499","599","699","799","899","999","1","2","4","5"}
 
 def now_utc_iso() -> str:
     return datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+def _ecl_from_radec(ra_deg: float, dec_deg: float, jd: float) -> float:
+    t = Time(jd, format="jd")
+    c = SkyCoord(ra=ra_deg*u.deg, dec=dec_deg*u.deg, frame=FK5(equinox="J2000"))
+    ecl = c.transform_to(GeocentricTrueEcliptic(obstime=t))
+    return float(ecl.lon.to(u.deg).value)
 
 def horizons_once(target_id: str | int, epoch_jd: float) -> Dict[str, Any]:
     tid = str(target_id)
     if tid == "399":
         return {"id": "399", "error": "skipped: observer equals target (Horizons disallows this request)."}
+
     id_type = "majorbody" if tid in MAJOR_IDS else "smallbody"
     obj = Horizons(id=tid, id_type=id_type, location="500@399", epochs=epoch_jd)
     eph = obj.ephemerides(extra_precision=True)
-    return {
+
+    jd = float(eph['datetime_jd'][0])
+    ecl_lon = float(eph['EclLon'][0]) if not np.isnan(eph['EclLon'][0]) else None
+    ecl_lat = float(eph['EclLat'][0]) if not np.isnan(eph['EclLat'][0]) else None
+    ra = float(eph['RA'][0]); dec = float(eph['DEC'][0])
+
+    # fallback: if EclLon is NaN (seen for Sun occasionally), derive from RA/DEC
+    if ecl_lon is None:
+        try:
+            ecl_lon = _ecl_from_radec(ra, dec, jd)
+        except Exception:
+            pass
+
+    rec = {
         "id": tid,
         "targetname": f"{eph['targetname'][0]}",
-        "datetime_utc": Time(eph['datetime_jd'][0], format="jd").utc.isot,
-        "jd": float(eph['datetime_jd'][0]),
-        "ecl_lon_deg": float(eph['EclLon'][0]),
-        "ecl_lat_deg": float(eph['EclLat'][0]),
-        "ra_deg": float(eph['RA'][0]),
-        "dec_deg": float(eph['DEC'][0]),
+        "datetime_utc": Time(jd, format="jd").utc.isot,
+        "jd": jd,
+        "ecl_lon_deg": ecl_lon if ecl_lon is not None else float("nan"),
+        "ecl_lat_deg": ecl_lat if ecl_lat is not None else float("nan"),
+        "ra_deg": ra,
+        "dec_deg": dec,
         "delta_au": float(eph['delta'][0]),
         "r_au": float(eph['r'][0]),
         "elong_deg": float(eph['elong'][0]),
         "phase_angle_deg": float(eph['alpha'][0]),
         "constellation": None
     }
+    return rec
 
 def horizons_retry(target_id: str | int, epoch_jd: float, tries: int = 3, sleep_s: float = 2.0) -> Dict[str, Any]:
     last_err = None
@@ -65,8 +83,6 @@ def star_ra_dec_to_ecl_lon(ra_deg: float, dec_deg: float, obstime: Time) -> floa
     coord = SkyCoord(ra=ra_deg * u.deg, dec=dec_deg * u.deg, frame=FK5(equinox="J2000"))
     ecl = coord.transform_to(GeocentricTrueEcliptic(obstime=obstime))
     return float(ecl.lon.to(u.deg).value)
-
-# -------- builder
 
 def build_feed(cfg: Dict[str, Any]) -> Dict[str, Any]:
     t = Time.now()
@@ -130,14 +146,12 @@ def require_sun_moon(feed: Dict[str, Any]) -> None:
         if tid == "301" or name.startswith("Moon"):
             moon = obj
     missing = []
-    if not sun or ("ecl_lon_deg" not in sun):
+    if not sun or (sun.get("ecl_lon_deg") is None or (isinstance(sun.get("ecl_lon_deg"), float) and math.isnan(sun.get("ecl_lon_deg")))):
         missing.append("Sun (10)")
-    if not moon or ("ecl_lon_deg" not in moon):
+    if not moon or (moon.get("ecl_lon_deg") is None or (isinstance(moon.get("ecl_lon_deg"), float) and math.isnan(moon.get("ecl_lon_deg")))):
         missing.append("Moon (301)")
     if missing:
         raise SystemExit(f"[FATAL] Missing ecliptic longitude for: {', '.join(missing)}")
-
-# -------- main
 
 def main():
     parser = argparse.ArgumentParser()
@@ -148,7 +162,6 @@ def main():
     with open(args.config, "r", encoding="utf-8") as f:
         cfg = json.load(f)
 
-    # resolve output path without any fancy one-liners (prevents bracket typos)
     out_path = args.out
     if not out_path:
         options = cfg.get("options", {})
