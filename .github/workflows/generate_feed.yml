@@ -31,8 +31,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Ensure Swiss path
-        run: |
-          mkdir -p .eph  # not strictly needed, but harmless
+        run: mkdir -p .eph
 
       - name: Generate JPL feed
         run: |
