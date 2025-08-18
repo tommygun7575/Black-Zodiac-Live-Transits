@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 """
-fetch_transits.py — fetch planetary transits from JPL Horizons, fallback to Swiss Ephemeris
+fetch_transits.py — fetch planetary transits from JPL Horizons with Swiss Ephemeris fallback
 """
 
-import argparse
-import json
-import sys
-from pathlib import Path
-
+import argparse, json, datetime
 import numpy as np
+from pathlib import Path
 from astroquery.jplhorizons import Horizons
 import swisseph as swe
-import datetime
 
-# Map IDs for Horizons + Swiss
 OBJECTS = {
     "Sun": {"id": 10, "swe": swe.SUN},
     "Moon": {"id": 301, "swe": swe.MOON},
@@ -45,37 +40,26 @@ def fetch_from_swiss(obj_swe, jd):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", required=True, help="Path to live_config.json")
-    parser.add_argument("--out", required=True, help="Output file path")
+    parser.add_argument("--config", required=True)
+    parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
-    # Load config
-    with open(args.config, "r") as f:
+    with open(args.config) as f:
         cfg = json.load(f)
 
     now = datetime.datetime.utcnow()
     jd = swe.julday(now.year, now.month, now.day, now.hour + now.minute/60.0)
 
-    feed = {
-        "generated_at_utc": now.isoformat(),
-        "objects": []
-    }
+    feed = {"generated_at_utc": now.isoformat(), "objects": []}
 
     for name, ids in OBJECTS.items():
         lon, lat = fetch_from_horizons(ids["id"], now)
         if lon is None or np.isnan(lon):
             lon, lat = fetch_from_swiss(ids["swe"], jd)
-            source = "swiss"
+            src = "swiss"
         else:
-            source = "horizons"
-
-        feed["objects"].append({
-            "name": name,
-            "id": ids["id"],
-            "lon": lon,
-            "lat": lat,
-            "source": source
-        })
+            src = "horizons"
+        feed["objects"].append({"name": name, "id": ids["id"], "lon": lon, "lat": lat, "source": src})
 
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as f:
