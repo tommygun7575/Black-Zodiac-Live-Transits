@@ -1,765 +1,256 @@
 {
-  "generated_at_utc": "2025-08-18T00:48:54Z",
-  "observer": "geocentric (Earth center)",
-  "refplane": "earth",
-  "source": "JPL Horizons via astroquery + fixed stars (astropy)",
+  "generated_at_utc": "2025-08-18T03:56:18.318873Z",
+  "observer": "geocentric Earth",
+  "source": "JPL Horizons (fallback: Swiss for majors)",
   "objects": [
     {
       "id": "10",
-      "targetname": "Sun (10)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": NaN,
-      "ecl_lat_deg": NaN,
-      "ra_deg": 147.283582681,
-      "dec_deg": 13.18638476,
-      "delta_au": 1.01226842187341,
-      "r_au": 0.0,
-      "elong_deg": 0.0,
-      "phase_angle_deg": 0.0,
-      "constellation": null
+      "targetname": "Sun",
+      "ecl_lon_deg": 145.48070925930554,
+      "ecl_lat_deg": 0.000133983455355009,
+      "source": "swiss"
     },
     {
       "id": "301",
-      "targetname": "301 Bavaria (A890 WA)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 33.982063,
-      "ecl_lat_deg": -4.651715,
-      "ra_deg": 53.921174371,
-      "dec_deg": 14.185233356,
-      "delta_au": 2.64060197772755,
-      "r_au": 2.827470125187,
-      "elong_deg": 89.9635,
-      "phase_angle_deg": 20.9815,
-      "constellation": null
+      "targetname": "Moon",
+      "ecl_lon_deg": 81.15144547090811,
+      "ecl_lat_deg": 5.2302658657212815,
+      "source": "swiss"
     },
     {
       "id": "199",
-      "targetname": "Mercury (199)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 20.783966,
-      "ecl_lat_deg": -3.248202,
-      "ra_deg": 128.622099695,
-      "dec_deg": 17.426773506,
-      "delta_au": 0.87002070399012,
-      "r_au": 0.333286564474,
-      "elong_deg": 18.4816,
-      "phase_angle_deg": 105.6784,
-      "constellation": null
+      "targetname": "Mercury",
+      "ecl_lon_deg": 127.01871252277188,
+      "ecl_lat_deg": -1.2068168424249188,
+      "source": "swiss"
     },
     {
       "id": "299",
-      "targetname": "Venus (299)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 58.052039,
-      "ecl_lat_deg": -1.081311,
-      "ra_deg": 112.12807482,
-      "dec_deg": 21.260517372,
-      "delta_au": 1.2741977636154,
-      "r_au": 0.721901088545,
-      "elong_deg": 34.4534,
-      "phase_angle_deg": 52.4981,
-      "constellation": null
+      "targetname": "Venus",
+      "ecl_lon_deg": 111.06083753765137,
+      "ecl_lat_deg": -0.6037048510661055,
+      "source": "swiss"
     },
     {
       "id": "499",
-      "targetname": "Mars (499)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 211.509342,
-      "ecl_lat_deg": 0.570313,
-      "ra_deg": 186.21649946,
-      "dec_deg": -2.239260625,
-      "delta_au": 2.20366980909673,
-      "r_au": 1.595069315323,
-      "elong_deg": 41.5943,
-      "phase_angle_deg": 24.9156,
-      "constellation": null
+      "targetname": "Mars",
+      "ecl_lon_deg": 187.0307084274186,
+      "ecl_lat_deg": 0.40992345338356523,
+      "source": "swiss"
     },
     {
       "id": "599",
-      "targetname": "Jupiter (599)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 97.614849,
-      "ecl_lat_deg": -0.066036,
-      "ra_deg": 106.138804155,
-      "dec_deg": 22.551673963,
-      "delta_au": 5.89499389919256,
-      "r_au": 5.162384673615,
-      "elong_deg": 40.1257,
-      "phase_angle_deg": 7.2584,
-      "constellation": null
+      "targetname": "Jupiter",
+      "ecl_lon_deg": 105.25568334081512,
+      "ecl_lat_deg": -0.054706104142879644,
+      "source": "swiss"
     },
     {
       "id": "699",
-      "targetname": "Saturn (699)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 357.004386,
-      "ecl_lat_deg": -2.224315,
-      "ra_deg": 1.46139453,
-      "dec_deg": -2.0250834,
-      "delta_au": 8.71929981781878,
-      "r_au": 9.560500335395,
-      "elong_deg": 144.3841,
-      "phase_angle_deg": 3.5406,
-      "constellation": null
+      "targetname": "Saturn",
+      "ecl_lon_deg": 0.8917241124718832,
+      "ecl_lat_deg": -2.439168373492042,
+      "source": "swiss"
     },
     {
       "id": "799",
-      "targetname": "Uranus (799)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 57.99271,
-      "ecl_lat_deg": -0.213328,
-      "ra_deg": 58.855828666,
-      "dec_deg": 20.14090567,
-      "delta_au": 19.5929032602725,
-      "r_au": 19.51399427328,
-      "elong_deg": 84.0467,
-      "phase_angle_deg": 2.9582,
-      "constellation": null
+      "targetname": "Uranus",
+      "ecl_lon_deg": 61.31094454393646,
+      "ecl_lat_deg": -0.20945735279631575,
+      "source": "swiss"
     },
     {
       "id": "899",
-      "targetname": "Neptune (899)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 0.170696,
-      "ecl_lat_deg": -1.323606,
-      "ra_deg": 1.752752661,
-      "dec_deg": -0.72363329,
-      "delta_au": 29.0668962430833,
-      "r_au": 29.8883113059,
-      "elong_deg": 143.6494,
-      "phase_angle_deg": 1.1556,
-      "constellation": null
+      "targetname": "Neptune",
+      "ecl_lon_deg": 1.6813847722523696,
+      "ecl_lat_deg": -1.360630413011885,
+      "source": "swiss"
     },
     {
       "id": "999",
-      "targetname": "Pluto (999)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 302.335672,
-      "ecl_lat_deg": -3.676818,
-      "ra_deg": 304.844254833,
-      "dec_deg": -23.464635906,
-      "delta_au": 34.3978798253902,
-      "r_au": 35.32777878526,
-      "elong_deg": 156.4059,
-      "phase_angle_deg": 0.6515,
-      "constellation": null
-    },
-    {
-      "id": "1",
-      "targetname": "Mercury Barycenter (199)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 20.783966,
-      "ecl_lat_deg": -3.248202,
-      "ra_deg": 128.622099695,
-      "dec_deg": 17.426773506,
-      "delta_au": 0.87002070399012,
-      "r_au": 0.333286564474,
-      "elong_deg": 18.4816,
-      "phase_angle_deg": 105.6784,
-      "constellation": null
-    },
-    {
-      "id": "2",
-      "targetname": "Venus Barycenter (299)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 58.052039,
-      "ecl_lat_deg": -1.081311,
-      "ra_deg": 112.12807482,
-      "dec_deg": 21.260517372,
-      "delta_au": 1.2741977636154,
-      "r_au": 0.721901088545,
-      "elong_deg": 34.4534,
-      "phase_angle_deg": 52.4981,
-      "constellation": null
-    },
-    {
-      "id": "4",
-      "targetname": "Mars Barycenter (4)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 211.509342,
-      "ecl_lat_deg": 0.570313,
-      "ra_deg": 186.21649946,
-      "dec_deg": -2.239260625,
-      "delta_au": 2.20366980909726,
-      "r_au": 1.595069315323,
-      "elong_deg": 41.5943,
-      "phase_angle_deg": 24.9156,
-      "constellation": null
-    },
-    {
-      "id": "5",
-      "targetname": "Jupiter Barycenter (5)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 97.614836,
-      "ecl_lat_deg": -0.066036,
-      "ra_deg": 106.138792286,
-      "dec_deg": 22.551675392,
-      "delta_au": 5.89499386502879,
-      "r_au": 5.162384783432,
-      "elong_deg": 40.1257,
-      "phase_angle_deg": 7.2584,
-      "constellation": null
-    },
-    {
-      "id": "1",
-      "targetname": "Mercury Barycenter (199)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 20.783966,
-      "ecl_lat_deg": -3.248202,
-      "ra_deg": 128.622099695,
-      "dec_deg": 17.426773506,
-      "delta_au": 0.87002070399012,
-      "r_au": 0.333286564474,
-      "elong_deg": 18.4816,
-      "phase_angle_deg": 105.6784,
-      "constellation": null
-    },
-    {
-      "id": "2",
-      "targetname": "Venus Barycenter (299)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 58.052039,
-      "ecl_lat_deg": -1.081311,
-      "ra_deg": 112.12807482,
-      "dec_deg": 21.260517372,
-      "delta_au": 1.2741977636154,
-      "r_au": 0.721901088545,
-      "elong_deg": 34.4534,
-      "phase_angle_deg": 52.4981,
-      "constellation": null
-    },
-    {
-      "id": "3",
-      "targetname": "3 Juno (A804 RA)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 247.323569,
-      "ecl_lat_deg": 12.688333,
-      "ra_deg": 230.348001832,
-      "dec_deg": -5.099157096,
-      "delta_au": 3.27928514365321,
-      "r_au": 3.336996755991,
-      "elong_deg": 84.4483,
-      "phase_angle_deg": 17.571,
-      "constellation": null
-    },
-    {
-      "id": "4",
-      "targetname": "Mars Barycenter (4)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 211.509342,
-      "ecl_lat_deg": 0.570313,
-      "ra_deg": 186.21649946,
-      "dec_deg": -2.239260625,
-      "delta_au": 2.20366980909726,
-      "r_au": 1.595069315323,
-      "elong_deg": 41.5943,
-      "phase_angle_deg": 24.9156,
-      "constellation": null
-    },
-    {
-      "id": "5",
-      "targetname": "Jupiter Barycenter (5)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 97.614836,
-      "ecl_lat_deg": -0.066036,
-      "ra_deg": 106.138792286,
-      "dec_deg": 22.551675392,
-      "delta_au": 5.89499386502879,
-      "r_au": 5.162384783432,
-      "elong_deg": 40.1257,
-      "phase_angle_deg": 7.2584,
-      "constellation": null
-    },
-    {
-      "id": "16",
-      "targetname": "16 Psyche (A852 FA)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 48.436487,
-      "ecl_lat_deg": -3.034355,
-      "ra_deg": 69.617511453,
-      "dec_deg": 19.148260064,
-      "delta_au": 2.65050710400409,
-      "r_au": 2.567895313165,
-      "elong_deg": 74.2544,
-      "phase_angle_deg": 22.2999,
-      "constellation": null
-    },
-    {
-      "id": "31",
-      "targetname": "31 Euphrosyne (A854 RA)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 237.033445,
-      "ecl_lat_deg": -12.331378,
-      "ra_deg": 214.602619287,
-      "dec_deg": -26.534022529,
-      "delta_au": 3.78186626801518,
-      "r_au": 3.679092671732,
-      "elong_deg": 76.4726,
-      "phase_angle_deg": 15.5146,
-      "constellation": null
-    },
-    {
-      "id": "80",
-      "targetname": "80 Sappho (A864 JA)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 43.168976,
-      "ecl_lat_deg": -0.690279,
-      "ra_deg": 71.722861331,
-      "dec_deg": 21.699405288,
-      "delta_au": 1.98834728091293,
-      "r_au": 1.931486031473,
-      "elong_deg": 71.9417,
-      "phase_angle_deg": 29.8891,
-      "constellation": null
-    },
-    {
-      "id": "2060",
-      "targetname": "2060 Chiron (1977 UB)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 23.889829,
-      "ecl_lat_deg": 0.65598,
-      "ra_deg": 24.478042389,
-      "dec_deg": 10.907287942,
-      "delta_au": 17.9794690709105,
-      "r_au": 18.48158991085,
-      "elong_deg": 118.3386,
-      "phase_angle_deg": 2.7667,
-      "constellation": null
-    },
-    {
-      "id": "2063",
-      "targetname": "2063 Bacchus (1977 HB)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 252.978793,
-      "ecl_lat_deg": -6.089418,
-      "ra_deg": 207.68230633,
-      "dec_deg": -17.688031217,
-      "delta_au": 1.47570576574765,
-      "r_au": 1.428474116798,
-      "elong_deg": 67.1179,
-      "phase_angle_deg": 40.7556,
-      "constellation": null
-    },
-    {
-      "id": "1221",
-      "targetname": "1221 Amor (1932 EA1)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 259.5523,
-      "ecl_lat_deg": 11.863595,
-      "ra_deg": 213.942597547,
-      "dec_deg": -0.884078157,
-      "delta_au": 1.27573212926377,
-      "r_au": 1.290376679408,
-      "elong_deg": 67.5339,
-      "phase_angle_deg": 46.4589,
-      "constellation": null
-    },
-    {
-      "id": "3811",
-      "targetname": "3811 Karma (1953 TH)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 174.332967,
-      "ecl_lat_deg": -2.770781,
-      "ra_deg": 166.822582695,
-      "dec_deg": 3.389080307,
-      "delta_au": 3.66788163480745,
-      "r_au": 2.752488803888,
-      "elong_deg": 21.6517,
-      "phase_angle_deg": 7.8004,
-      "constellation": null
-    },
-    {
-      "id": "136108",
-      "targetname": "136108 Haumea (2003 EL61)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 212.129393,
-      "ecl_lat_deg": 28.207994,
-      "ra_deg": 218.522538867,
-      "dec_deg": 14.482835931,
-      "delta_au": 50.216996418151,
-      "r_au": 49.86127529795,
-      "elong_deg": 68.888,
-      "phase_angle_deg": 1.0863,
-      "constellation": null
-    },
-    {
-      "id": "136472",
-      "targetname": "136472 Makemake (2005 FY9)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 190.778316,
-      "ecl_lat_deg": 27.311456,
-      "ra_deg": 200.081923055,
-      "dec_deg": 20.792608463,
-      "delta_au": 53.3453959986657,
-      "r_au": 52.71217330277,
-      "elong_deg": 50.8541,
-      "phase_angle_deg": 0.8557,
-      "constellation": null
-    },
-    {
-      "id": "20000",
-      "targetname": "20000 Varuna (2000 WR106)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 129.263792,
-      "ecl_lat_deg": 9.294325,
-      "ra_deg": 134.756400831,
-      "dec_deg": 26.589124822,
-      "delta_au": 45.1839356692713,
-      "r_au": 44.22130039454,
-      "elong_deg": 17.817,
-      "phase_angle_deg": 0.3974,
-      "constellation": null
-    },
-    {
-      "id": "28978",
-      "targetname": "28978 Ixion (2001 KX76)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 276.216584,
-      "ecl_lat_deg": -8.630008,
-      "ra_deg": 275.865246843,
-      "dec_deg": -32.120146148,
-      "delta_au": 37.0234475457928,
-      "r_au": 37.6748903204,
-      "elong_deg": 129.4688,
-      "phase_angle_deg": 1.1844,
-      "constellation": null
-    },
-    {
-      "id": "42355",
-      "targetname": "42355 Typhon (2002 CR46)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 237.867939,
-      "ecl_lat_deg": -2.21857,
-      "ra_deg": 232.751523263,
-      "dec_deg": -21.328998085,
-      "delta_au": 26.1488204804249,
-      "r_au": 26.17984150991,
-      "elong_deg": 90.6535,
-      "phase_angle_deg": 2.2147,
-      "constellation": null
-    },
-    {
-      "id": "120347",
-      "targetname": "120347 Salacia (2004 SB60)",
-      "datetime_utc": "2025-08-18T00:48:54.933",
-      "jd": 2460905.533969132,
-      "ecl_lon_deg": 10.824841,
-      "ecl_lat_deg": 23.926104,
-      "ra_deg": 0.517159804,
-      "dec_deg": 26.86165709,
-      "delta_au": 44.6683480284844,
-      "r_au": 45.30635693775,
-      "elong_deg": 128.5602,
-      "phase_angle_deg": 1.0047,
-      "constellation": null
+      "targetname": "Pluto",
+      "ecl_lon_deg": 302.0460815345491,
+      "ecl_lat_deg": -3.7792864237857686,
+      "source": "swiss"
     },
     {
       "id": "Regulus",
       "targetname": "Regulus (Alpha Leo)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "jd": null,
-      "ecl_lon_deg": 149.81967572495358,
-      "ecl_lat_deg": null,
       "ra_deg": 152.0929625,
       "dec_deg": 11.9672083,
-      "delta_au": null,
-      "r_au": null,
-      "elong_deg": null,
-      "phase_angle_deg": null,
-      "constellation": null
+      "epoch": "J2000",
+      "source": "fixed"
     },
     {
       "id": "Spica",
       "targetname": "Spica (Alpha Vir)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "jd": null,
-      "ecl_lon_deg": 203.8345213412519,
-      "ecl_lat_deg": null,
       "ra_deg": 201.2982475,
       "dec_deg": -11.1613194,
-      "delta_au": null,
-      "r_au": null,
-      "elong_deg": null,
-      "phase_angle_deg": null,
-      "constellation": null
+      "epoch": "J2000",
+      "source": "fixed"
     },
     {
       "id": "Sirius",
       "targetname": "Sirius (Alpha CMa)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "jd": null,
-      "ecl_lon_deg": 104.07232281131438,
-      "ecl_lat_deg": null,
       "ra_deg": 101.28715533,
       "dec_deg": -16.71611586,
-      "delta_au": null,
-      "r_au": null,
-      "elong_deg": null,
-      "phase_angle_deg": null,
-      "constellation": null
+      "epoch": "J2000",
+      "source": "fixed"
     },
     {
       "id": "Aldebaran",
       "targetname": "Aldebaran (Alpha Tau)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "jd": null,
-      "ecl_lon_deg": 69.78392779818708,
-      "ecl_lat_deg": null,
       "ra_deg": 68.9801625,
       "dec_deg": 16.50930278,
-      "delta_au": null,
-      "r_au": null,
-      "elong_deg": null,
-      "phase_angle_deg": null,
-      "constellation": null
+      "epoch": "J2000",
+      "source": "fixed"
     },
     {
       "id": "ASC@Tommy",
       "targetname": "ASC (Tommy)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": 287.8660617250778,
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 63.189394976212796,
+      "source": "swiss"
     },
     {
       "id": "MC@Tommy",
       "targetname": "MC (Tommy)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": 221.6067148245696,
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 309.54454934427594,
+      "source": "swiss"
     },
     {
       "id": "Houses@Tommy",
       "targetname": "Houses (Tommy)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
       "houses_deg": [
-        330.83916328071274,
-        11.326763972882633,
-        41.60671482456962,
-        64.89871490192172,
-        85.581992332835,
-        107.86606172507783,
-        150.83916328071274,
-        191.32676397288265,
-        221.6067148245696,
-        244.89871490192172,
-        265.581992332835
+        86.91223564247565,
+        107.4462561256911,
+        129.54454934427594,
+        157.79154515575203,
+        197.26775813564586,
+        243.18939497621278,
+        266.91223564247565,
+        287.4462561256911,
+        309.54454934427594,
+        337.79154515575203,
+        17.26775813564585
       ],
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "source": "swiss"
     },
     {
       "id": "PartOfFortune@Tommy",
-      "targetname": "Pars Fortuna (Tommy)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": NaN,
-      "branch": "day",
-      "source_tags": {
-        "longitudes": "jpl",
-        "angles": "swiss"
-      }
+      "targetname": "Part of Fortune (Tommy)",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 127.51865876461024,
+      "branch": "night",
+      "source": "swiss+legacy"
     },
     {
       "id": "PartOfSpirit@Tommy",
-      "targetname": "Pars Spiritus (Tommy)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": NaN,
-      "branch": "day",
-      "source_tags": {
-        "longitudes": "jpl",
-        "angles": "swiss"
-      }
+      "targetname": "Part of Spirit (Tommy)",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 358.86013118781534,
+      "branch": "night",
+      "source": "swiss+legacy"
     },
     {
       "id": "ASC@Milena",
       "targetname": "ASC (Milena)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": 287.84237813716425,
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 353.4109284545218,
+      "source": "swiss"
     },
     {
       "id": "MC@Milena",
       "targetname": "MC (Milena)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": 221.49516757228727,
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 266.4054998329751,
+      "source": "swiss"
     },
     {
       "id": "Houses@Milena",
       "targetname": "Houses (Milena)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
       "houses_deg": [
-        330.72822149054207,
-        11.185225072294614,
-        41.4951675722873,
-        64.82464473699997,
-        85.53910960905739,
-        107.84237813716425,
-        150.72822149054207,
-        191.1852250722946,
-        221.49516757228727,
-        244.82464473699997,
-        265.5391096090574
+        35.904942053888696,
+        64.13539504907423,
+        86.40549983297512,
+        108.0985062840312,
+        134.2822925765807,
+        173.4109284545218,
+        215.9049420538887,
+        244.13539504907425,
+        266.4054998329751,
+        288.0985062840312,
+        314.2822925765807
       ],
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "source": "swiss"
     },
     {
       "id": "PartOfFortune@Milena",
-      "targetname": "Pars Fortuna (Milena)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": NaN,
-      "branch": "day",
-      "source_tags": {
-        "longitudes": "jpl",
-        "angles": "swiss"
-      }
+      "targetname": "Part of Fortune (Milena)",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 57.74019224291919,
+      "branch": "night",
+      "source": "swiss+legacy"
     },
     {
       "id": "PartOfSpirit@Milena",
-      "targetname": "Pars Spiritus (Milena)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": NaN,
-      "branch": "day",
-      "source_tags": {
-        "longitudes": "jpl",
-        "angles": "swiss"
-      }
+      "targetname": "Part of Spirit (Milena)",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 289.0816646661244,
+      "branch": "night",
+      "source": "swiss+legacy"
     },
     {
       "id": "ASC@Christine",
       "targetname": "ASC (Christine)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": 287.8660617250778,
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 63.868669196379535,
+      "source": "swiss"
     },
     {
       "id": "MC@Christine",
       "targetname": "MC (Christine)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": 221.6067148245696,
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 310.20279952751224,
+      "source": "swiss"
     },
     {
       "id": "Houses@Christine",
       "targetname": "Houses (Christine)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
       "houses_deg": [
-        330.83916328071274,
-        11.326763972882633,
-        41.60671482456962,
-        64.89871490192172,
-        85.581992332835,
-        107.86606172507783,
-        150.83916328071274,
-        191.32676397288265,
-        221.6067148245696,
-        244.89871490192172,
-        265.581992332835
+        87.46988919664136,
+        108.01366408345095,
+        130.20279952751224,
+        158.6097372511956,
+        198.1846727731769,
+        243.86866919637953,
+        267.46988919664136,
+        288.013664083451,
+        310.20279952751224,
+        338.60973725119555,
+        18.184672773176903
       ],
-      "notes": {
-        "system": "P",
-        "provider": "swiss_ephemeris"
-      }
+      "source": "swiss"
     },
     {
       "id": "PartOfFortune@Christine",
-      "targetname": "Pars Fortuna (Christine)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": NaN,
-      "branch": "day",
-      "source_tags": {
-        "longitudes": "jpl",
-        "angles": "swiss"
-      }
+      "targetname": "Part of Fortune (Christine)",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 128.19793298477697,
+      "branch": "night",
+      "source": "swiss+legacy"
     },
     {
       "id": "PartOfSpirit@Christine",
-      "targetname": "Pars Spiritus (Christine)",
-      "datetime_utc": "2025-08-18T00:48:54Z",
-      "ecl_lon_deg": NaN,
-      "branch": "day",
-      "source_tags": {
-        "longitudes": "jpl",
-        "angles": "swiss"
-      }
+      "targetname": "Part of Spirit (Christine)",
+      "datetime_utc": "2025-08-18T03:56:18.318873Z",
+      "ecl_lon_deg": 359.53940540798214,
+      "branch": "night",
+      "source": "swiss+legacy"
     }
-  ],
-  "source_tags": {
-    "longitudes": "jpl_horizons",
-    "angles": "swiss_ephemeris"
-  },
-  "config_used": {
-    "ephemeris": {
-      "primary": "jpl_horizons",
-      "secondary": "swiss_ephemeris",
-      "angles_provider": "swiss_ephemeris",
-      "house_system": "Placidus",
-      "node_type": "true",
-      "reconcile": {
-        "prefer_longitudes": "jpl",
-        "prefer_angles": "swiss",
-        "tolerance_arcsec": 15
-      }
-    },
-    "options": {
-      "ecliptic_frame": "true_ecliptic",
-      "output": {
-        "feed_now": "docs/feed_now.json",
-        "per_person": false
-      }
-    }
-  }
+  ]
 }

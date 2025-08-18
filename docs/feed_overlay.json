@@ -1,0 +1,312 @@
+{
+  "feed": {
+    "generated_at_utc": "2025-08-18T03:56:18.318873Z",
+    "observer": "geocentric Earth",
+    "source": "JPL Horizons (fallback: Swiss for majors)",
+    "objects": [
+      {
+        "id": "10",
+        "targetname": "Sun",
+        "ecl_lon_deg": 145.48070925930554,
+        "ecl_lat_deg": 0.000133983455355009,
+        "source": "swiss"
+      },
+      {
+        "id": "301",
+        "targetname": "Moon",
+        "ecl_lon_deg": 81.15144547090811,
+        "ecl_lat_deg": 5.2302658657212815,
+        "source": "swiss"
+      },
+      {
+        "id": "199",
+        "targetname": "Mercury",
+        "ecl_lon_deg": 127.01871252277188,
+        "ecl_lat_deg": -1.2068168424249188,
+        "source": "swiss"
+      },
+      {
+        "id": "299",
+        "targetname": "Venus",
+        "ecl_lon_deg": 111.06083753765137,
+        "ecl_lat_deg": -0.6037048510661055,
+        "source": "swiss"
+      },
+      {
+        "id": "499",
+        "targetname": "Mars",
+        "ecl_lon_deg": 187.0307084274186,
+        "ecl_lat_deg": 0.40992345338356523,
+        "source": "swiss"
+      },
+      {
+        "id": "599",
+        "targetname": "Jupiter",
+        "ecl_lon_deg": 105.25568334081512,
+        "ecl_lat_deg": -0.054706104142879644,
+        "source": "swiss"
+      },
+      {
+        "id": "699",
+        "targetname": "Saturn",
+        "ecl_lon_deg": 0.8917241124718832,
+        "ecl_lat_deg": -2.439168373492042,
+        "source": "swiss"
+      },
+      {
+        "id": "799",
+        "targetname": "Uranus",
+        "ecl_lon_deg": 61.31094454393646,
+        "ecl_lat_deg": -0.20945735279631575,
+        "source": "swiss"
+      },
+      {
+        "id": "899",
+        "targetname": "Neptune",
+        "ecl_lon_deg": 1.6813847722523696,
+        "ecl_lat_deg": -1.360630413011885,
+        "source": "swiss"
+      },
+      {
+        "id": "999",
+        "targetname": "Pluto",
+        "ecl_lon_deg": 302.0460815345491,
+        "ecl_lat_deg": -3.7792864237857686,
+        "source": "swiss"
+      },
+      {
+        "id": "Regulus",
+        "targetname": "Regulus (Alpha Leo)",
+        "ra_deg": 152.0929625,
+        "dec_deg": 11.9672083,
+        "epoch": "J2000",
+        "source": "fixed"
+      },
+      {
+        "id": "Spica",
+        "targetname": "Spica (Alpha Vir)",
+        "ra_deg": 201.2982475,
+        "dec_deg": -11.1613194,
+        "epoch": "J2000",
+        "source": "fixed"
+      },
+      {
+        "id": "Sirius",
+        "targetname": "Sirius (Alpha CMa)",
+        "ra_deg": 101.28715533,
+        "dec_deg": -16.71611586,
+        "epoch": "J2000",
+        "source": "fixed"
+      },
+      {
+        "id": "Aldebaran",
+        "targetname": "Aldebaran (Alpha Tau)",
+        "ra_deg": 68.9801625,
+        "dec_deg": 16.50930278,
+        "epoch": "J2000",
+        "source": "fixed"
+      },
+      {
+        "id": "ASC@Tommy",
+        "targetname": "ASC (Tommy)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 63.189394976212796,
+        "source": "swiss"
+      },
+      {
+        "id": "MC@Tommy",
+        "targetname": "MC (Tommy)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 309.54454934427594,
+        "source": "swiss"
+      },
+      {
+        "id": "Houses@Tommy",
+        "targetname": "Houses (Tommy)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "houses_deg": [
+          86.91223564247565,
+          107.4462561256911,
+          129.54454934427594,
+          157.79154515575203,
+          197.26775813564586,
+          243.18939497621278,
+          266.91223564247565,
+          287.4462561256911,
+          309.54454934427594,
+          337.79154515575203,
+          17.26775813564585
+        ],
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfFortune@Tommy",
+        "targetname": "Part of Fortune (Tommy)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 127.51865876461024,
+        "branch": "night",
+        "source": "swiss+legacy"
+      },
+      {
+        "id": "PartOfSpirit@Tommy",
+        "targetname": "Part of Spirit (Tommy)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 358.86013118781534,
+        "branch": "night",
+        "source": "swiss+legacy"
+      },
+      {
+        "id": "ASC@Milena",
+        "targetname": "ASC (Milena)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 353.4109284545218,
+        "source": "swiss"
+      },
+      {
+        "id": "MC@Milena",
+        "targetname": "MC (Milena)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 266.4054998329751,
+        "source": "swiss"
+      },
+      {
+        "id": "Houses@Milena",
+        "targetname": "Houses (Milena)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "houses_deg": [
+          35.904942053888696,
+          64.13539504907423,
+          86.40549983297512,
+          108.0985062840312,
+          134.2822925765807,
+          173.4109284545218,
+          215.9049420538887,
+          244.13539504907425,
+          266.4054998329751,
+          288.0985062840312,
+          314.2822925765807
+        ],
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfFortune@Milena",
+        "targetname": "Part of Fortune (Milena)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 57.74019224291919,
+        "branch": "night",
+        "source": "swiss+legacy"
+      },
+      {
+        "id": "PartOfSpirit@Milena",
+        "targetname": "Part of Spirit (Milena)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 289.0816646661244,
+        "branch": "night",
+        "source": "swiss+legacy"
+      },
+      {
+        "id": "ASC@Christine",
+        "targetname": "ASC (Christine)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 63.868669196379535,
+        "source": "swiss"
+      },
+      {
+        "id": "MC@Christine",
+        "targetname": "MC (Christine)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 310.20279952751224,
+        "source": "swiss"
+      },
+      {
+        "id": "Houses@Christine",
+        "targetname": "Houses (Christine)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "houses_deg": [
+          87.46988919664136,
+          108.01366408345095,
+          130.20279952751224,
+          158.6097372511956,
+          198.1846727731769,
+          243.86866919637953,
+          267.46988919664136,
+          288.013664083451,
+          310.20279952751224,
+          338.60973725119555,
+          18.184672773176903
+        ],
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfFortune@Christine",
+        "targetname": "Part of Fortune (Christine)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 128.19793298477697,
+        "branch": "night",
+        "source": "swiss+legacy"
+      },
+      {
+        "id": "PartOfSpirit@Christine",
+        "targetname": "Part of Spirit (Christine)",
+        "datetime_utc": "2025-08-18T03:56:18.318873Z",
+        "ecl_lon_deg": 359.53940540798214,
+        "branch": "night",
+        "source": "swiss+legacy"
+      }
+    ]
+  },
+  "natal": {
+    "tommy": {
+      "id": "Tommy",
+      "name": "Tommy",
+      "birth_local": "1975-09-12T09:20:00",
+      "birth_utc": "1975-09-12T13:20:00Z",
+      "timezone": "America/New_York",
+      "place": {
+        "city": "Bronx",
+        "region": "NY",
+        "country": "USA",
+        "latitude": 40.84478,
+        "longitude": -73.86483
+      },
+      "house_system": "Placidus",
+      "notes": "Created for Black-Zodiac Live Transits. Local time provided by user."
+    },
+    "milena": {
+      "id": "Milena",
+      "name": "Milena",
+      "birth_local": "1992-03-29T14:04:00",
+      "birth_utc": "1992-03-29T22:04:00Z",
+      "timezone": "America/Los_Angeles",
+      "place": {
+        "city": "Carson",
+        "region": "NV",
+        "country": "USA",
+        "latitude": 39.1638,
+        "longitude": -119.7674
+      },
+      "house_system": "Placidus",
+      "notes": "Local time supplied by user; DST pre-April 1992 assumed (PST)."
+    },
+    "christine": {
+      "id": "Christine",
+      "name": "Christine",
+      "birth_local": "1989-07-05T15:01:00",
+      "birth_utc": "1989-07-05T19:01:00Z",
+      "timezone": "America/New_York",
+      "place": {
+        "city": "Islip",
+        "region": "NY",
+        "country": "USA",
+        "latitude": 40.72982,
+        "longitude": -73.21039
+      },
+      "house_system": "Placidus",
+      "notes": "Local time provided by user."
+    }
+  },
+  "meta": {
+    "natal_count": 3,
+    "source": "natal_dir"
+  }
+}
