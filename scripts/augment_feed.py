@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """
 augment_feed.py — add Swiss Angles (ASC, MC, IC, DSC) and Arabic Parts
-to feed_now.json, merging into the existing structure.
-
-Requires: pyswisseph, python-dateutil
+to feed_now.json, with Swiss Ephemeris fallback for missing values.
 """
 
 import json
@@ -16,8 +14,22 @@ OBS_LAT = 39.653
 OBS_LON = -119.706
 OBS_ELEV = 1340
 
-# Arabic Part formulas (deg arithmetic)
-# Convention: Part = A + B - C
+# Map target names to Swiss Ephemeris IDs
+SWE_MAP = {
+    "Sun": swe.SUN,
+    "Moon": swe.MOON,
+    "Mercury": swe.MERCURY,
+    "Venus": swe.VENUS,
+    "Mars": swe.MARS,
+    "Jupiter": swe.JUPITER,
+    "Saturn": swe.SATURN,
+    "Uranus": swe.URANUS,
+    "Neptune": swe.NEPTUNE,
+    "Pluto": swe.PLUTO,
+    "Chiron": swe.CHIRON,
+}
+
+# Arabic Part formulas (deg arithmetic) — A + B - C
 ARABIC_PARTS = {
     "Fortune":      ("Asc", "Moon", "Sun"),
     "Spirit":       ("Asc", "Sun", "Moon"),
@@ -29,19 +41,19 @@ ARABIC_PARTS = {
     "Deliverance":  ("Pluto", "Asc", "Saturn"),
 }
 
-# Utility: normalize degrees 0–360
 def norm(x: float) -> float:
     return x % 360.0
 
+def swiss_position(body, jd_ut):
+    """Compute geocentric ecliptic lon/lat from Swiss Ephemeris."""
+    if body not in SWE_MAP:
+        return None
+    lon, lat, dist = swe.calc_ut(jd_ut, SWE_MAP[body])[0:3]
+    return {"ecl_lon": float(lon), "ecl_lat": float(lat)}
+
 def compute_angles(jd_ut, lat, lon):
-    """Compute ASC, MC, DSC, IC using Swiss Ephemeris house system (Placidus)."""
-    # houses returns cusps[1..12], ascendant, mc, armc, vertex, equasc, coasc1, coasc2, polarasc
-    houses, ascmc, _, _, _, _, _, _, _, _ = swe.houses_ex(
-        jd_ut,
-        lat,
-        lon,
-        b'P'  # Placidus
-    )
+    """Compute Asc, MC, Desc, IC via Placidus houses."""
+    houses, ascmc, *_ = swe.houses_ex(jd_ut, lat, lon, b'P')
     return {
         "Asc": norm(ascmc[0]),
         "MC": norm(ascmc[1]),
@@ -54,51 +66,59 @@ def main():
     with open("docs/feed_now.json", "r") as f:
         feed = json.load(f)
 
-    # Parse timestamp of first object (assumes all same epoch)
     if "objects" not in feed or not feed["objects"]:
         raise RuntimeError("feed_now.json missing objects")
+
+    # Parse epoch
     dt_str = feed["objects"][0]["datetime"]
     dt = parser.parse(dt_str).astimezone(timezone.utc)
-
-    # Julian Day
-    jd_ut = swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0, swe.GREG_CAL)
+    jd_ut = swe.julday(dt.year, dt.month, dt.day,
+                       dt.hour + dt.minute/60.0 + dt.second/3600.0,
+                       swe.GREG_CAL)
 
     # Angles
     angles = compute_angles(jd_ut, OBS_LAT, OBS_LON)
 
-    # Index positions by name for easy lookup
-    positions = {obj["targetname"]: obj for obj in feed["objects"]}
+    # Build position index with fallback
+    positions = {}
+    for obj in feed["objects"]:
+        name = obj["targetname"]
+        lon = obj.get("ecl_lon")
+        lat = obj.get("ecl_lat")
+
+        if lon is None:  # fallback to Swiss Ephemeris
+            print(f"[INFO] Filling missing {name} with Swiss Ephemeris")
+            swiss = swiss_position(name, jd_ut)
+            if swiss:
+                lon, lat = swiss["ecl_lon"], swiss["ecl_lat"]
+
+        if lon is not None:
+            positions[name] = {"ecl_lon": lon, "ecl_lat": lat}
 
     # Arabic Parts
     parts = {}
-    for name, (a, b, c) in ARABIC_PARTS.items():
-        if a not in angles and a not in positions:
-            continue
-        if b not in angles and b not in positions:
-            continue
-        if c not in angles and c not in positions:
-            continue
-
+    for pname, (a, b, c) in ARABIC_PARTS.items():
         def get_lon(key):
             if key in angles:
                 return angles[key]
-            elif key in positions:
+            if key in positions:
                 return positions[key]["ecl_lon"]
-            else:
-                raise KeyError(key)
+            raise KeyError(key)
 
-        lon = norm(get_lon(a) + get_lon(b) - get_lon(c))
-        parts[name] = lon
+        try:
+            lon = norm(get_lon(a) + get_lon(b) - get_lon(c))
+            parts[pname] = lon
+        except KeyError as e:
+            print(f"[WARN] Missing key for {pname}: {e}")
 
     # Merge into feed
     feed["angles"] = angles
     feed["arabic_parts"] = parts
 
-    # Save
     with open("docs/feed_now.json", "w") as f:
         json.dump(feed, f, indent=2)
 
-    print(f"Augmented docs/feed_now.json with {len(angles)} angles and {len(parts)} Arabic Parts.")
+    print(f"Augmented feed with {len(angles)} angles and {len(parts)} Arabic Parts.")
 
 if __name__ == "__main__":
     main()
