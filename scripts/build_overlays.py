@@ -1,49 +1,33 @@
 #!/usr/bin/env python3
 """
-build_overlays.py — generate feed_overlay.json
-Merges docs/feed_now.json with stored natal charts for Tommy, Milena, Christine.
+build_overlays.py — merge natal charts with current feed into overlay file
 """
 
-import json
+import argparse, json
 from pathlib import Path
 
-NATALS = {
-    "Tommy": "config/natal/Tommy_NatalChart_HybridOSv3.2.json",
-    "Milena": "config/natal/Milena_NatalChart_HybridOSv3.2.json",
-    "Christine": "config/natal/Christine_NatalChart_HybridOSv3.2.json",
-}
-
-def load_json(path):
-    with open(path, "r") as f:
-        return json.load(f)
-
 def main():
-    # Load current sky
-    with open("docs/feed_now.json", "r") as f:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--feed", required=True)
+    parser.add_argument("--natal_dir", required=True)
+    parser.add_argument("--out", required=True)
+    args = parser.parse_args()
+
+    with open(args.feed) as f:
         feed = json.load(f)
 
-    overlays = {
-        "generated_at": feed["generated_at_utc"],
-        "source": "feed_now.json + natal charts",
-        "overlays": {}
+    natal_data = {}
+    for natal_file in Path(args.natal_dir).glob("*.json"):
+        with open(natal_file) as nf:
+            natal_data[natal_file.stem] = json.load(nf)
+
+    overlay = {
+        "feed": feed,
+        "natal": natal_data
     }
 
-    # Build overlays per natal
-    for name, path in NATALS.items():
-        if not Path(path).exists():
-            print(f"[WARN] Missing natal file for {name}: {path}")
-            continue
-
-        natal = load_json(path)
-        overlays["overlays"][name] = {
-            "natal": natal,
-            "transits": feed
-        }
-
-    with open("docs/feed_overlay.json", "w") as f:
-        json.dump(overlays, f, indent=2)
-
-    print("Wrote docs/feed_overlay.json")
+    Path(args.out).write_text(json.dumps(overlay, indent=2))
+    print(f"[OK] overlay written to {args.out}")
 
 if __name__ == "__main__":
     main()
