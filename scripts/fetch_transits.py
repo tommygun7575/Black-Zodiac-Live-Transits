@@ -1,28 +1,45 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-fetch_transits.py — fetch planetary transits from JPL Horizons with Swiss Ephemeris fallback
-Reads planets/minor_bodies/fixed_stars from config/live_config.json.
-Writes docs/feed_now.json using ecl_lon_deg/ecl_lat_deg keys.
+fetch_transits.py — Build the live transit feed.
+
+- Reads planets, barycenters, minor bodies, and fixed stars from config/live_config.json
+- Tries JPL Horizons first for ecliptic long/lat
+- Falls back to Swiss Ephemeris for MAJOR bodies so Sun/Moon never missing
+- Writes ecl_lon_deg / ecl_lat_deg keys (consistent with downstream scripts)
 """
 
-import argparse, json, datetime, sys
+import argparse
+import json
+import sys
 from pathlib import Path
+from datetime import datetime
+
 import numpy as np
 from astroquery.jplhorizons import Horizons
 import swisseph as swe
 
 
-def julday(dt: datetime.datetime) -> float:
-    return swe.julday(dt.year, dt.month, dt.day,
-                      dt.hour + dt.minute/60.0 + dt.second/3600.0)
+# ---------------------------- utilities ----------------------------
+
+def jd_ut(dt: datetime) -> float:
+    """Julian day (UT) for a naive UTC datetime."""
+    return swe.julday(
+        dt.year, dt.month, dt.day,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0
+    )
 
 
-def fetch_from_horizons(obj_id, epoch):
-    """Return (lon, lat, 'horizons') or (None,None,None)."""
+def horizons_lonlat(obj_id: str, epoch_str: str):
+    """
+    Query JPL Horizons for ecliptic longitude/latitude at epoch_str.
+    Returns (lon_deg, lat_deg, "horizons") or (None, None, None).
+    """
     try:
-        h = Horizons(id=obj_id, location='500@399', epochs=epoch, id_type=None)
-        eph = h.ephemerides(quantities="1")  # includes EclLon/EclLat
+        # 500@399 = geocentric Earth
+        h = Horizons(id=obj_id, id_type=None, location="500@399", epochs=epoch_str)
+        # quantities="1" includes EclLon/EclLat columns (note capitalization)
+        eph = h.ephemerides(quantities="1")
         lon = float(eph["EclLon"][0])
         lat = float(eph["EclLat"][0])
         return lon, lat, "horizons"
@@ -31,52 +48,83 @@ def fetch_from_horizons(obj_id, epoch):
         return None, None, None
 
 
-def fetch_from_swiss_major(eid_str: str, jd: float):
-    """Swiss fallback for major bodies only."""
-    swiss_id_map = {
-        "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY, "299": swe.VENUS,
-        "499": swe.MARS, "599": swe.JUPITER, "699": swe.SATURN,
-        "799": swe.URANUS, "899": swe.NEPTUNE, "999": swe.PLUTO
-    }
-    if eid_str == "2060":  # Chiron
-        body = getattr(swe, "CHIRON", 15)  # fallback asteroid 15 if CHIRON missing
-    else:
-        body = swiss_id_map.get(eid_str)
-    if body is None:
-        return None, None, None
+# Swiss constants map for majors
+_SWE_MAJOR = {
+    "10": swe.SUN,
+    "301": swe.MOON,
+    "199": swe.MERCURY,
+    "299": swe.VENUS,
+    "499": swe.MARS,
+    "599": swe.JUPITER,
+    "699": swe.SATURN,
+    "799": swe.URANUS,
+    "899": swe.NEPTUNE,
+    "999": swe.PLUTO,
+}
+
+
+def swiss_lonlat_major(eid: str, jd: float):
+    """
+    Swiss fallback for major bodies (Sun..Pluto, optional Chiron).
+    Returns (lon_deg, lat_deg, "swiss") or (None, None, None).
+    """
     try:
+        if eid == "2060":  # Chiron if requested as 'planet'
+            body = getattr(swe, "CHIRON", None)
+            if body is None:
+                # Some builds miss CHIRON; skip gracefully
+                return None, None, None
+        else:
+            body = _SWE_MAJOR.get(eid)
+
+        if body is None:
+            return None, None, None
+
         xx, _ = swe.calc_ut(jd, int(body))
-        return float(xx[0]), float(xx[1]), "swiss"
+        lon, lat = float(xx[0]), float(xx[1])
+        return lon, lat, "swiss"
     except Exception as e:
-        print(f"[WARN] Swiss failed for {eid_str}: {e}", file=sys.stderr)
+        print(f"[WARN] Swiss failed for {eid}: {e}", file=sys.stderr)
         return None, None, None
 
+
+def to_str_id(v) -> str:
+    return str(v)
+
+
+# ---------------------------- main ----------------------------
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--config", required=True, help="Path to live_config.json")
-    ap.add_argument("--out", required=True, help="Output feed JSON path")
+    ap.add_argument("--config", required=True, help="Path to config/live_config.json")
+    ap.add_argument("--out", required=True, help="Path to write docs/feed_now.json")
     args = ap.parse_args()
 
-    cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    cfg_path = Path(args.config)
+    out_path = Path(args.out)
 
-    now = datetime.datetime.utcnow()
-    epoch = now.strftime("%Y-%m-%d %H:%M")
-    jd = julday(now)
+    cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+
+    now = datetime.utcnow()
+    epoch_str = now.strftime("%Y-%m-%d %H:%M")
+    jd = jd_ut(now)
 
     feed = {
         "generated_at_utc": now.isoformat() + "Z",
         "observer": "geocentric Earth",
-        "source": "JPL Horizons (fallback: Swiss)",
+        "source": "JPL Horizons (fallback: Swiss for majors)",
         "objects": []
     }
 
-    # Planets (with Swiss fallback)
+    # ---------- Planets (with Swiss fallback to guarantee Sun/Moon present)
     for p in cfg.get("planets", []):
-        eid = str(p["id"]); label = p["label"]
-        lon, lat, src = fetch_from_horizons(eid, epoch)
+        eid = to_str_id(p["id"])
+        label = p.get("label", eid)
+
+        lon, lat, src = horizons_lonlat(eid, epoch_str)
         if lon is None or (isinstance(lon, float) and np.isnan(lon)):
-            lon, lat, src = fetch_from_swiss_major(eid, jd)
+            lon, lat, src = swiss_lonlat_major(eid, jd)
+
         feed["objects"].append({
             "id": eid,
             "targetname": label,
@@ -85,12 +133,13 @@ def main():
             "source": src or "unknown"
         })
 
-    # Barycenters (Horizons only if enabled)
+    # ---------- Barycenters (Horizons only; include if enabled)
     for b in cfg.get("barycenters", []):
         if not b.get("enabled", True):
             continue
-        eid = str(b["id"]); label = b["label"]
-        lon, lat, src = fetch_from_horizons(eid, epoch)
+        eid = to_str_id(b["id"])
+        label = b.get("label", f"Barycenter {eid}")
+        lon, lat, src = horizons_lonlat(eid, epoch_str)
         if lon is None:
             continue
         feed["objects"].append({
@@ -101,10 +150,10 @@ def main():
             "source": src
         })
 
-    # Minor bodies (Horizons only)
+    # ---------- Minor bodies (Horizons only; many won’t be available in Swiss)
     for mb in cfg.get("minor_bodies", []):
-        eid = str(mb)
-        lon, lat, src = fetch_from_horizons(eid, epoch)
+        eid = to_str_id(mb)
+        lon, lat, src = horizons_lonlat(eid, epoch_str)
         if lon is None:
             continue
         feed["objects"].append({
@@ -115,19 +164,20 @@ def main():
             "source": src
         })
 
-    # Fixed stars (RA/Dec from config; lon derived later if needed)
+    # ---------- Fixed stars (store RA/Dec; downstream can derive ecliptic if needed)
     for star in cfg.get("fixed_stars", []):
         feed["objects"].append({
             "id": star["id"],
-            "targetname": star["label"],
+            "targetname": star.get("label", star["id"]),
             "ra_deg": float(star["ra_deg"]),
             "dec_deg": float(star["dec_deg"]),
             "epoch": star.get("epoch", "J2000"),
             "source": "fixed"
         })
 
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(feed, indent=2), encoding="utf-8")
+    # Write output
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(feed, indent=2), encoding="utf-8")
     print(f"[OK] wrote {args.out} with {len(feed['objects'])} objects")
 
 
