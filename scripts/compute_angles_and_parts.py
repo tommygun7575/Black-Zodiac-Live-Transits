@@ -2,8 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-compute_angles_and_parts.py — Add Swiss Angles + Arabic Parts using live_config.json.
-Robust Sun/Moon lookup: accepts id int/str, ecl_lon_deg or ecl_lon, or RA/Dec fallback.
+compute_angles_and_parts.py — Add Swiss Angles + Arabic Parts.
+
+Backwards compatible:
+- Preferred:  --config config/live_config.json  (targets + arabic parts come from here)
+- Legacy:     --targets config/targets.json     (targets only; uses built-in parts)
+
+Sun/Moon are pulled from the feed (ecl_lon_deg/ecl_lon) or derived from RA/DEC.
 """
 
 import json, sys, argparse, pathlib, math
@@ -15,6 +20,8 @@ from astropy.time import Time
 import astropy.units as u
 import swisseph as swe
 
+
+# ---------- helpers
 
 def norm360(x): return float(x % 360.0)
 
@@ -78,15 +85,44 @@ def eval_formula(formula, mapping):
         print(f"[WARN] Formula eval failed '{formula}': {e}", file=sys.stderr)
         return None
 
+
+# ---------- main
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--feed", required=True)
-    ap.add_argument("--config", required=True)  # live_config.json
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--feed", required=True, help="docs/feed_now.json")
+    # Make both optional; require at least one AFTER parsing (for backward compatibility)
+    ap.add_argument("--config", required=False, help="config/live_config.json")
+    ap.add_argument("--targets", required=False, help="legacy targets file (lat/lon list)")
+    ap.add_argument("--out", required=True, help="output (overwrite feed)")
     args = ap.parse_args()
 
+    if not args.config and not args.targets:
+        print("[ERROR] Need --config (preferred) or --targets (legacy).", file=sys.stderr)
+        sys.exit(2)
+
     feed = json.loads(open(args.feed, "r", encoding="utf-8").read())
-    cfg  = json.loads(open(args.config, "r", encoding="utf-8").read())
+
+    # When using live_config.json, get everything from there.
+    targets = []
+    parts_cfg = None
+    if args.config:
+        cfg = json.loads(open(args.config, "r", encoding="utf-8").read())
+        targets = cfg.get("targets", [])
+        parts_cfg = cfg.get("arabic_parts", {})
+    else:
+        # Legacy targets.json mode: only targets are available
+        tfile = json.loads(open(args.targets, "r", encoding="utf-8").read())
+        targets = tfile.get("targets", [])
+        # Minimal built-in Parts so the step still works
+        parts_cfg = {
+            "parts": [
+                {"label": "Part of Fortune", "output_id_pattern": "PartOfFortune@{name}",
+                 "formula_day": "ASC + Moon - Sun", "formula_night": "ASC + Sun - Moon"},
+                {"label": "Part of Spirit",   "output_id_pattern": "PartOfSpirit@{name}",
+                 "formula_day": "ASC + Sun - Moon", "formula_night": "ASC + Moon - Sun"},
+            ]
+        }
 
     gen_time = feed.get("generated_at_utc") or feed.get("datetime_utc")
     if not gen_time:
@@ -94,20 +130,20 @@ def main():
         sys.exit(1)
     dt_utc = dtparse.isoparse(gen_time).astimezone(timezone.utc).replace(tzinfo=None)
 
-    # Robust Sun/Moon
+    # Sun/Moon longitudes (robust)
     sun  = find_lon(feed, {"10","Sun"}, gen_time)
     moon = find_lon(feed, {"301","Moon"}, gen_time)
     if sun is None or moon is None:
         print("[ERROR] feed missing Sun/Moon", file=sys.stderr)
         try:
-            preview = json.dumps(feed.get("objects", [])[:5], indent=2)[:800]
+            preview = json.dumps(feed.get("objects", [])[:6], indent=2)[:1200]
             print("[DEBUG objects preview]\n" + preview, file=sys.stderr)
         except: pass
         sys.exit(1)
 
-    # Angles + Arabic Parts for each target
-    for t in cfg.get("targets", []):
-        name, lat, lon = t["name"], float(t["lat"]), float(t["lon"])
+    # For each target: angles + parts
+    for t in targets:
+        name = t["name"]; lat = float(t["lat"]); lon = float(t["lon"])
         hsys = t.get("house_system", "P")
 
         ang = swiss_angles(dt_utc, lat, lon, hsys)
@@ -124,17 +160,17 @@ def main():
              "datetime_utc": gen_time, "houses_deg": ang["houses"], "source": "swiss"}
         ])
 
-        for part in cfg.get("arabic_parts", {}).get("parts", []):
+        for part in parts_cfg.get("parts", []):
             formula = part.get("formula_day") if day else part.get("formula_night")
             val = eval_formula(formula, {"ASC":asc, "Sun":sun, "Moon":moon, "MC":mc})
             if val is None: continue
             feed["objects"].append({
-                "id": part["output_id_pattern"].format(name=name),
-                "targetname": f"{part['label']} ({name})",
+                "id": part.get("output_id_pattern", f"{part.get('label','Part')}@{{name}}").format(name=name),
+                "targetname": f"{part.get('label','Part')} ({name})",
                 "datetime_utc": gen_time,
                 "ecl_lon_deg": val,
                 "branch": branch,
-                "source": "swiss+config"
+                "source": "swiss+config" if args.config else "swiss+legacy"
             })
 
     open(args.out, "w", encoding="utf-8").write(json.dumps(feed, indent=2))
