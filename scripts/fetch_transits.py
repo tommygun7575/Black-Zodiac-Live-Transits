@@ -4,16 +4,15 @@
 """
 fetch_transits.py — build docs/feed_now.json from config/live_config.json
 
-- JPL Horizons (astroquery) for planetary/minor-body longitudes.
-- Fixed stars converted from RA/DEC (J2000) to geocentric true ecliptic of date.
-- ASC/MC/houses + Arabic Parts are added in a separate step by scripts/compute_angles_and_parts.py.
+Hardens JPL pulls with retries and guarantees Sun (10) and Moon (301)
+exist with ecliptic longitudes before writing the feed.
 
 Usage:
   python scripts/fetch_transits.py --config config/live_config.json --out docs/feed_now.json
 """
 
 from __future__ import annotations
-import json, sys, argparse, datetime
+import json, sys, argparse, time, datetime
 from typing import Any, Dict, List
 
 from astropy.time import Time
@@ -26,14 +25,13 @@ MAJOR_IDS = {"10","199","299","399","499","599","699","799","899","999","1","2",
 def now_utc_iso() -> str:
     return datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
-def horizons_query(target_id: str | int, epoch_jd: float) -> Dict[str, Any]:
+def horizons_once(target_id: str | int, epoch_jd: float) -> Dict[str, Any]:
     id_str = str(target_id)
     if id_str == "399":
         return {"id": "399", "error": "skipped: observer equals target (Horizons disallows this request)."}
     id_type = "majorbody" if id_str in MAJOR_IDS else "smallbody"
     obj = Horizons(id=id_str, id_type=id_type, location="500@399", epochs=epoch_jd)
     eph = obj.ephemerides(extra_precision=True)
-
     return {
         "id": id_str,
         "targetname": f"{eph['targetname'][0]}",
@@ -50,11 +48,15 @@ def horizons_query(target_id: str | int, epoch_jd: float) -> Dict[str, Any]:
         "constellation": None
     }
 
-def horizons_safe(target_id: str | int, epoch_jd: float) -> Dict[str, Any]:
-    try:
-        return horizons_query(target_id, epoch_jd)
-    except Exception as e:
-        return {"id": str(target_id), "error": f"horizons query failed: {e}"}
+def horizons_safe_with_retry(target_id: str | int, epoch_jd: float, tries: int = 3, sleep_s: float = 2.0) -> Dict[str, Any]:
+    err = None
+    for i in range(tries):
+        try:
+            return horizons_once(target_id, epoch_jd)
+        except Exception as e:
+            err = e
+            time.sleep(sleep_s)
+    return {"id": str(target_id), "error": f"horizons query failed after {tries} tries: {err}"}
 
 def star_ra_dec_to_ecl_lon(ra_deg: float, dec_deg: float, obstime: Time) -> float:
     coord = SkyCoord(ra=ra_deg * u.deg, dec=dec_deg * u.deg, frame=FK5(equinox="J2000"))
@@ -75,16 +77,16 @@ def build_feed(cfg: Dict[str, Any]) -> Dict[str, Any]:
 
     # majors
     for p in cfg.get("planets", []):
-        feed["objects"].append(horizons_safe(p["id"], epoch_jd))
+        feed["objects"].append(horizons_safe_with_retry(p["id"], epoch_jd))
 
     # barycenters
     for b in cfg.get("barycenters", []):
         if b.get("enabled", True):
-            feed["objects"].append(horizons_safe(b["id"], epoch_jd))
+            feed["objects"].append(horizons_safe_with_retry(b["id"], epoch_jd))
 
     # minors
     for mb in cfg.get("minor_bodies", []):
-        feed["objects"].append(horizons_safe(mb, epoch_jd))
+        feed["objects"].append(horizons_safe_with_retry(mb, epoch_jd))
 
     # fixed stars
     for star in cfg.get("fixed_stars", []):
@@ -108,9 +110,27 @@ def build_feed(cfg: Dict[str, Any]) -> Dict[str, Any]:
         except Exception as e:
             feed["objects"].append({"id": str(star.get("id","star")), "error": f"fixed star conversion failed: {e}"})
 
+    # Tags
     feed["source_tags"] = {"longitudes": "jpl_horizons", "angles": "swiss_ephemeris (next step)"}
     feed["config_used"] = {"ephemeris": cfg.get("ephemeris", {}), "options": cfg.get("options", {})}
     return feed
+
+def require_sun_moon(feed: Dict[str, Any]) -> None:
+    """Fail fast if Sun/Moon are missing or malformed."""
+    sun = None
+    moon = None
+    for obj in feed.get("objects", []):
+        if obj.get("id") == "10" or str(obj.get("targetname","")).startswith("Sun"):
+            sun = obj
+        if obj.get("id") == "301" or str(obj.get("targetname","")).startswith("Moon"):
+            moon = obj
+    problems = []
+    if not sun or "ecl_lon_deg" not in (sun or {}):
+        problems.append("Sun (10)")
+    if not moon or "ecl_lon_deg" not in (moon or {}):
+        problems.append("Moon (301)")
+    if problems:
+        raise SystemExit(f"[FATAL] Missing ecliptic longitude for: {', '.join(problems)}")
 
 def main():
     ap = argparse.ArgumentParser()
@@ -120,15 +140,4 @@ def main():
 
     with open(args.config, "r", encoding="utf-8") as f:
         cfg = json.load(f)
-    out_path = args.out or cfg.get("options", {}).get("output", {}).get("feed_now", "docs/feed_now.json")
-
-    import os
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    feed = build_feed(cfg)
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(feed, f, ensure_ascii=False, indent=2)
-
-    print(f"[OK] wrote {out_path}")
-
-if __name__ == "__main__":
-    main()
+    out_path = args.out or cfg.get("options", {}).get("output", {}).get("feed_now",
