@@ -6,10 +6,11 @@ compute_angles_and_parts.py — add ASC/MC/houses (Swiss) + Arabic Parts
 
 - Robust Sun/Moon lookup (by id or name)
 - Accepts numeric or string longitudes
-- If ecliptic longitude missing, derives from RA/DEC using astropy
+- If ecliptic longitude missing, derives from RA/DEC (astropy)
+- Day/night via Sun altitude (sidereal time + RA/Dec) — no house_pos()
 """
 
-import json, sys, argparse, pathlib
+import json, sys, argparse, pathlib, math
 from datetime import datetime, timezone
 from dateutil import parser as dtparse
 
@@ -93,10 +94,34 @@ def swiss_angles(dt_utc: datetime, lat: float, lon: float, hsys: str = "P"):
         "houses_deg": [None] + [norm360(c) for c in cusps[1:13]]
     }
 
-def is_daytime(dt_utc: datetime, lat: float, lon: float, hsys: str, sun_lon: float) -> bool:
+def is_daytime(dt_utc: datetime, lat_deg: float, lon_deg: float) -> bool:
+    """
+    True if Sun altitude > 0° (above horizon) at given UTC, lat, lon.
+    Uses sidereal time + Sun RA/Dec from Swiss Ephemeris.
+    """
     jd_ut = julday(dt_utc)
-    h = swe.house_pos(jd_ut, lat, lon, hsys.encode("ascii"), sun_lon, 0.0)
-    return 7.0 <= h < 13.0  # houses 7..12 = above horizon
+
+    # Sun RA/Dec (apparent, equatorial)
+    flags = swe.FLG_SWIEPH | swe.FLG_EQUATORIAL
+    xx, _ = swe.calc_ut(jd_ut, swe.SUN, flags)
+    ra_deg, dec_deg = xx[0], xx[1]  # RA, Dec in degrees
+
+    # Local sidereal time in degrees (sidtime returns hours)
+    lst_hours = swe.sidtime(jd_ut)  # Greenwich sidereal time (hours)
+    lst_local_deg = (lst_hours * 15.0 + lon_deg) % 360.0
+
+    # Hour angle (degrees)
+    ha_deg = (lst_local_deg - ra_deg) % 360.0
+    if ha_deg > 180.0:
+        ha_deg -= 360.0  # range (-180, 180]
+
+    # Altitude
+    lat_rad = math.radians(lat_deg)
+    dec_rad = math.radians(dec_deg)
+    ha_rad  = math.radians(ha_deg)
+    sin_alt = math.sin(lat_rad)*math.sin(dec_rad) + math.cos(lat_rad)*math.cos(dec_rad)*math.cos(ha_rad)
+    alt_deg = math.degrees(math.asin(max(-1.0, min(1.0, sin_alt))))
+    return alt_deg > 0.0
 
 def part_fortune(asc, sun, moon, day):  # Fortune
     return norm360(asc + (moon - sun) if day else asc + (sun - moon))
@@ -131,7 +156,6 @@ def main():
     moon = get_body_lon_from_feed(feed, "Moon")
     if sun is None or moon is None:
         print("[ERROR] feed missing Sun and/or Moon longitudes", file=sys.stderr)
-        # show any likely candidates
         for o in feed.get("objects", []):
             if o.get("id") in ("10", "301") or str(o.get("targetname", "")).startswith(("Sun", "Moon")):
                 print("[DEBUG candidate]", json.dumps(o)[:1000], file=sys.stderr)
@@ -142,7 +166,7 @@ def main():
         hsys = t.get("house_system", args.house_system)
 
         ang = swiss_angles(dt_utc, lat, lon, hsys)
-        day = is_daytime(dt_utc, lat, lon, hsys, sun)
+        day = is_daytime(dt_utc, lat, lon)
 
         asc, mc = ang["ASC_deg"], ang["MC_deg"]
         pof = part_fortune(asc, sun, moon, day)
