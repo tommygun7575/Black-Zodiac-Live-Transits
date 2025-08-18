@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "generated_by": "Black-Zodiac Live Config",
+    "notes": "Category lists of minor bodies that we actually resolve in the live feed. Add more anytime.",
+    "schema": {
+      "item": {
+        "id": "JPL/Horizons numeric id or canonical name string",
+        "name": "Human-readable label",
+        "enabled": "boolean"
+      }
+    }
+  },
+
+  "majors": [
+    { "id": 16, "name": "Psyche",        "enabled": true },
+    { "id": 31, "name": "Euphrosyne",    "enabled": true },
+    { "id": 80, "name": "Sappho",        "enabled": true },
+    { "id": 2060, "name": "Chiron",      "enabled": true }
+  ],
+
+  "love": [
+    { "id": 1221, "name": "Amor",        "enabled": true },
+    { "id": 433,  "name": "Eros",        "enabled": false },  // enable if you add 433 to minor_bodies
+    { "id": 80,   "name": "Sappho",      "enabled": true },
+    { "id": 16,   "name": "Psyche",      "enabled": true }
+  ],
+
+  "sex": [
+    { "id": 433,  "name": "Eros",        "enabled": false },  // optional
+    { "id": 2063, "name": "Bacchus",     "enabled": true }
+  ],
+
+  "career": [
+    { "id": 3811, "name": "Karma",       "enabled": true },   // karmic career themes
+    { "id": 31,   "name": "Euphrosyne",  "enabled": true }    // joy / fulfillment in work
+  ],
+
+  "money": [
+    { "id": 19,   "name": "Fortuna",     "enabled": false },  // add 19 to minor_bodies to enable
+    { "id": 258,  "name": "Tyche",       "enabled": false },  // add 258 to minor_bodies to enable
+    { "id": 151,  "name": "Abundantia",  "enabled": false }   // add 151 to minor_bodies to enable
+  ],
+
+  "talent_muse": [
+    { "id": 80,   "name": "Sappho",      "enabled": true },
+    { "id": 16,   "name": "Psyche",      "enabled": true }
+  ],
+
+  "spiritual": [
+    { "id": 2060,   "name": "Chiron",    "enabled": true },
+    { "id": 136108, "name": "Haumea",    "enabled": true },
+    { "id": 136472, "name": "Makemake",  "enabled": true },
+    { "id": 20000,  "name": "Varuna",    "enabled": true },
+    { "id": 120347, "name": "Salacia",   "enabled": true }
+  ],
+
+  "luck": [
+    { "id": 258,  "name": "Tyche",       "enabled": false },  // optional
+    { "id": 19,   "name": "Fortuna",     "enabled": false }   // optional
+  ],
+
+  "health": [
+    { "id": 2060, "name": "Chiron",      "enabled": true }
+  ],
+
+  "beauty": [
+    { "id": 80,   "name": "Sappho",      "enabled": true }
+  ],
+
+  "negative": [
+    { "id": 28978, "name": "Ixion",      "enabled": true }
+  ],
+
+  "positive": [
+    { "id": 31,    "name": "Euphrosyne", "enabled": true }
+  ],
+
+  "fates": [
+    { "id": 3811,  "name": "Karma",      "enabled": true }
+  ],
+
+  "other": [
+    { "id": 42355, "name": "Typhon",     "enabled": true },
+    { "id": 20000, "name": "Varuna",     "enabled": true },
+    { "id": 136108, "name": "Haumea",    "enabled": true },
+    { "id": 136472, "name": "Makemake",  "enabled": true },
+    { "id": 120347, "name": "Salacia",   "enabled": true }
+  ]
+}
