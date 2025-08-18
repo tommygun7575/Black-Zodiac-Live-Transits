@@ -31,6 +31,18 @@ jobs:
         run: |
           python scripts/fetch_transits.py --config config/live_config.json --out docs/feed_now.json
 
+      - name: Show first lines of feed_now.json (debug)
+        run: |
+          python - << 'PY'
+          import json, itertools
+          p='docs/feed_now.json'
+          d=json.load(open(p,'r',encoding='utf-8'))
+          print('generated_at_utc:', d.get('generated_at_utc'))
+          for o in itertools.islice(d.get('objects',[]), 0, 10):
+              print(o.get('id'), o.get('targetname'), 'ecl_lon_deg=', o.get('ecl_lon_deg'),
+                    'RA=', o.get('ra_deg'), 'DEC=', o.get('dec_deg'))
+          PY
+
       - name: Add Swiss angles + Arabic Parts
         run: |
           python scripts/compute_angles_and_parts.py --feed docs/feed_now.json --targets config/targets.json --out docs/feed_now.json
