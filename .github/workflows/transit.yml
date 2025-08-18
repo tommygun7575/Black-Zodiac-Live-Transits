@@ -1,57 +1,46 @@
-name: Update live transit feed
+name: Update transit feeds
 
 on:
   schedule:
-    # Every 12 hours starting at 04:00 Pacific (04:00 and 16:00 PT)
-    # PDT (UTC-7) -> 11:00 and 23:00 UTC
-    - cron: '0 11,23 * * *'
+    - cron: "0 11 * * *"   # 04:00 PT
+    - cron: "0 23 * * *"   # 16:00 PT
   workflow_dispatch:
-    inputs:
-      overlay_charts:
-        description: 'Comma-separated natal names to overlay (optional). Example: Tommy,Milena'
-        required: false
-        default: ''
-
-permissions:
-  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: Install python deps
+      - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
 
-      - name: Run transits fetch script
-        env:
-          OVERLAY_CHARTS: ${{ github.event.inputs.overlay_charts }}
+      - name: Ensure Swiss path
         run: |
-          python scripts/fetch_transits.py
+          mkdir -p .eph
+          echo "SE_EPHE_PATH=$GITHUB_WORKSPACE/.eph" >> $GITHUB_ENV
 
-      - name: Commit generated docs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate JPL feed
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs || true
-          # Only commit if there are changes
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: update transit feeds (auto)" || true
-            git push origin HEAD:main
-          else
-            echo "No changes to commit"
-          fi
+          python scripts/fetch_transits.py --config config/live_config.json --out docs/feed_now.json
+
+      - name: Add Swiss angles + Arabic Parts
+        run: |
+          python scripts/compute_angles_and_parts.py --feed docs/feed_now.json --targets config/targets.json --out docs/feed_now.json
+
+      - name: Commit if changed
+        run: |
+          git diff --quiet || (
+            git config user.name "github-actions[bot]" &&
+            git config user.email "github-actions[bot]@users.noreply.github.com" &&
+            git add docs &&
+            git commit -m "chore: update transit feeds (auto)" &&
+            git push
+          )
