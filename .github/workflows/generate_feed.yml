@@ -40,19 +40,25 @@ jobs:
         run: |
           python scripts/augment_feed.py
 
-      - name: Show first lines of feed_now.json (debug)
+      - name: Build natal overlays (Tommy, Milena, Christine)
         run: |
-          head -n 80 docs/feed_now.json || true
+          python scripts/build_overlays.py
+
+      - name: Show feeds (debug)
+        run: |
+          head -n 40 docs/feed_now.json || true
+          echo "----"
+          head -n 40 docs/feed_overlay.json || true
 
       - name: Commit if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/feed_now.json || true
+          git add docs/feed_now.json docs/feed_overlay.json || true
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            msg="chore(feed): update feed_now.json [skip ci]"
+            msg="chore(feed): update feeds [skip ci]"
             if [ -n "${{ github.event.inputs.note }}" ]; then
               msg="$msg - ${{ github.event.inputs.note }}"
             fi
