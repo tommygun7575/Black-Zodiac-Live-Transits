@@ -4,8 +4,10 @@
 """
 compute_angles_and_parts.py — add ASC/MC/houses (Swiss) + Arabic Parts
 
-Robust body lookup (by id or targetname) so it never misses Sun/Moon
-if JPL changes labels.
+Robust Sun/Moon lookup:
+- match by id ("10","301") or name prefix ("Sun","Moon")
+- accept numeric or string longitudes
+- if ecliptic longitude missing, derive from RA/DEC
 
 Usage:
   python scripts/compute_angles_and_parts.py --feed docs/feed_now.json --targets config/targets.json --out docs/feed_now.json
@@ -14,6 +16,11 @@ Usage:
 import json, sys, argparse, pathlib
 from datetime import datetime, timezone
 from dateutil import parser as dtparse
+
+# astropy just for fallback conversion RA/DEC -> ecliptic lon
+from astropy.coordinates import SkyCoord, FK5, GeocentricTrueEcliptic
+from astropy.time import Time
+import astropy.units as u
 
 try:
     import swisseph as swe
@@ -30,15 +37,55 @@ ALIASES = {"asc":"ASC","ascendant":"ASC","mc":"MC","sun":"Sun","moon":"Moon"}
 def canonicalize(name: str) -> str:
     return ALIASES.get(name.strip().lower(), name)
 
+def _to_float(val):
+    if isinstance(val, (int, float)):
+        return float(val)
+    if isinstance(val, str):
+        try:
+            return float(val.strip())
+        except Exception:
+            return None
+    return None
+
+def _ecliptic_from_ra_dec(obj, obstime_iso: str):
+    ra = _to_float(obj.get("ra_deg"))
+    dec = _to_float(obj.get("dec_deg"))
+    if ra is None or dec is None:
+        return None
+    t = Time(obstime_iso) if obstime_iso else Time.now()
+    c = SkyCoord(ra=ra*u.deg, dec=dec*u.deg, frame=FK5(equinox="J2000"))
+    ecl = c.transform_to(GeocentricTrueEcliptic(obstime=t))
+    return float(ecl.lon.to(u.deg).value)
+
 def get_body_lon_from_feed(feed, want: str):
+    """Return ecliptic longitude (deg) for Sun/Moon, with fallbacks."""
     want = canonicalize(want)
     want_id = {"Sun":"10","Moon":"301"}.get(want)
+    gen_time = feed.get("generated_at_utc") or feed.get("datetime_utc")
+
+    # 1) find matching object(s)
+    candidates = []
     for obj in feed.get("objects", []):
         tid = str(obj.get("id",""))
         tname = str(obj.get("targetname",""))
         if tid == (want_id or "") or tname.startswith(want):
-            val = obj.get("ecl_lon_deg")
-            if isinstance(val, (int,float)): return float(val)
+            candidates.append(obj)
+
+    if not candidates:
+        return None
+
+    # 2) try ecl_lon_deg directly
+    for obj in candidates:
+        lon = _to_float(obj.get("ecl_lon_deg"))
+        if lon is not None:
+            return lon
+
+    # 3) derive from RA/DEC if needed
+    for obj in candidates:
+        lon = _ecliptic_from_ra_dec(obj, gen_time)
+        if lon is not None:
+            return lon
+
     return None
 
 def julday(dt_utc: datetime) -> float:
@@ -76,17 +123,19 @@ def main():
     targets = load_json(args.targets).get("targets", [])
 
     gen = feed.get("generated_at_utc") or feed.get("datetime_utc")
-    if not gen: print("[ERROR] feed missing generated_at_utc", file=sys.stderr); sys.exit(1)
+    if not gen:
+        print("[ERROR] feed missing generated_at_utc", file=sys.stderr); sys.exit(1)
     dt_utc = dtparse.isoparse(gen).astimezone(timezone.utc).replace(tzinfo=None)
 
     sun = get_body_lon_from_feed(feed, "Sun")
     moon = get_body_lon_from_feed(feed, "Moon")
+
     if sun is None or moon is None:
         print("[ERROR] feed missing Sun and/or Moon longitudes", file=sys.stderr)
-        # helpful dump
+        # helpful dump: show any objects that look like Sun/Moon
         for o in feed.get("objects", []):
             if o.get("id") in ("10","301") or str(o.get("targetname","")).startswith(("Sun","Moon")):
-                print("[DEBUG]", o, file=sys.stderr)
+                print("[DEBUG candidate]", json.dumps(o)[:1000], file=sys.stderr)
         sys.exit(1)
 
     for t in targets:
@@ -96,22 +145,4 @@ def main():
             day = is_daytime(dt_utc, lat, lon, hsys, sun)
             asc, mc = ang["ASC_deg"], ang["MC_deg"]
             pof = part_fortune(asc, sun, moon, day)
-            pos = part_spirit(asc, sun, moon, day)
-
-            ts = dt_utc.isoformat() + "Z"
-            append_obj(feed, {"id": f"ASC@{name}", "targetname": f"ASC ({name})", "datetime_utc": ts, "ecl_lon_deg": asc, "notes": {"system": hsys, "provider": "swiss_ephemeris"}})
-            append_obj(feed, {"id": f"MC@{name}",  "targetname": f"MC ({name})",  "datetime_utc": ts, "ecl_lon_deg": mc,  "notes": {"system": hsys, "provider": "swiss_ephemeris"}})
-            append_obj(feed, {"id": f"Houses@{name}", "targetname": f"Houses ({name})", "datetime_utc": ts, "houses_deg": ang["houses_deg"][1:], "notes": {"system": hsys, "provider": "swiss_ephemeris"}})
-
-            branch = "day" if day else "night"
-            append_obj(feed, {"id": f"PartOfFortune@{name}", "targetname": f"Pars Fortuna ({name})", "datetime_utc": ts, "ecl_lon_deg": pof, "branch": branch, "source_tags": {"longitudes":"jpl","angles":"swiss"}})
-            append_obj(feed, {"id": f"PartOfSpirit@{name}",  "targetname": f"Pars Spiritus ({name})", "datetime_utc": ts, "ecl_lon_deg": pos, "branch": branch, "source_tags": {"longitudes":"jpl","angles":"swiss"}})
-        except Exception as e:
-            append_obj(feed, {"id": f"AnglesAndParts@{name}", "error": f"angles/parts compute failed: {e}"})
-
-    feed["source_tags"] = {"longitudes":"jpl_horizons","angles":"swiss_ephemeris"}
-    save_json(args.out, feed)
-    print("[OK] Angles + Arabic Parts updated:", args.out)
-
-if __name__ == "__main__":
-    main()
+            pos
