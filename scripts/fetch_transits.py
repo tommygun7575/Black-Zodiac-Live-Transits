@@ -31,13 +31,24 @@ def fetch_from_horizons(obj_id, epoch):
         return None, None, None
 
 
-def fetch_from_swiss(obj_id_int, jd):
-    """Major bodies fallback using Swiss."""
+def fetch_from_swiss_major(eid_str: str, jd: float):
+    """Swiss fallback for major bodies only."""
+    swiss_id_map = {
+        "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY, "299": swe.VENUS,
+        "499": swe.MARS, "599": swe.JUPITER, "699": swe.SATURN,
+        "799": swe.URANUS, "899": swe.NEPTUNE, "999": swe.PLUTO
+    }
+    if eid_str == "2060":  # Chiron
+        body = getattr(swe, "CHIRON", 15)  # fallback asteroid 15 if CHIRON missing
+    else:
+        body = swiss_id_map.get(eid_str)
+    if body is None:
+        return None, None, None
     try:
-        xx, _ = swe.calc_ut(jd, obj_id_int)
+        xx, _ = swe.calc_ut(jd, int(body))
         return float(xx[0]), float(xx[1]), "swiss"
     except Exception as e:
-        print(f"[WARN] Swiss failed for {obj_id_int}: {e}", file=sys.stderr)
+        print(f"[WARN] Swiss failed for {eid_str}: {e}", file=sys.stderr)
         return None, None, None
 
 
@@ -60,29 +71,34 @@ def main():
         "objects": []
     }
 
-    # Planets
+    # Planets (with Swiss fallback)
     for p in cfg.get("planets", []):
         eid = str(p["id"]); label = p["label"]
         lon, lat, src = fetch_from_horizons(eid, epoch)
-        if lon is None or np.isnan(lon):
-            # Map known major body IDs to Swiss constants by numeric code
-            swiss_id_map = {
-                "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY, "299": swe.VENUS,
-                "499": swe.MARS, "599": swe.JUPITER, "699": swe.SATURN,
-                "799": swe.URANUS, "899": swe.NEPTUNE, "999": swe.PLUTO
-            }
-            if eid == "2060":  # Chiron
-                body = getattr(swe, "CHIRON", 15)  # fallback to asteroid 15 if CHIRON missing
-            else:
-                body = swiss_id_map.get(eid)
-            if body is not None:
-                lon, lat, src = fetch_from_swiss(int(body), jd)
+        if lon is None or (isinstance(lon, float) and np.isnan(lon)):
+            lon, lat, src = fetch_from_swiss_major(eid, jd)
         feed["objects"].append({
             "id": eid,
             "targetname": label,
             "ecl_lon_deg": lon,
             "ecl_lat_deg": lat,
             "source": src or "unknown"
+        })
+
+    # Barycenters (Horizons only if enabled)
+    for b in cfg.get("barycenters", []):
+        if not b.get("enabled", True):
+            continue
+        eid = str(b["id"]); label = b["label"]
+        lon, lat, src = fetch_from_horizons(eid, epoch)
+        if lon is None:
+            continue
+        feed["objects"].append({
+            "id": eid,
+            "targetname": label,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "source": src
         })
 
     # Minor bodies (Horizons only)
@@ -99,7 +115,7 @@ def main():
             "source": src
         })
 
-    # Fixed stars (RA/Dec from config; lon will be derived later if needed)
+    # Fixed stars (RA/Dec from config; lon derived later if needed)
     for star in cfg.get("fixed_stars", []):
         feed["objects"].append({
             "id": star["id"],
