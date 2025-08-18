@@ -99,7 +99,6 @@ def main():
     moon = find_lon(feed, {"301","Moon"}, gen_time)
     if sun is None or moon is None:
         print("[ERROR] feed missing Sun/Moon", file=sys.stderr)
-        # Dump first objects to help debug quickly
         try:
             preview = json.dumps(feed.get("objects", [])[:5], indent=2)[:800]
             print("[DEBUG objects preview]\n" + preview, file=sys.stderr)
