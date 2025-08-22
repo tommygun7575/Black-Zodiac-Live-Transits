@@ -2,7 +2,7 @@ name: Generate 60-Day Transit Feed
 
 on:
   schedule:
-    - cron: "0 11 1 */2 *"
+    - cron: "0 11 1 */2 *"   # run every 2 months
   workflow_dispatch:
 
 jobs:
@@ -17,6 +17,17 @@ jobs:
       - name: Install deps
         run: |
           pip install pyswisseph astroquery pytz
+
+      - name: Fetch Swiss Ephemeris files
+        run: |
+          mkdir -p ephe
+          curl -sSL https://www.astro.com/ftp/swisseph/ephe/seas_18.se1 -o ephe/seas_18.se1
+          curl -sSL https://www.astro.com/ftp/swisseph/ephe/semo_18.se1 -o ephe/semo_18.se1
+          curl -sSL https://www.astro.com/ftp/swisseph/ephe/sepl_18.se1 -o ephe/sepl_18.se1
+          curl -sSL https://www.astro.com/ftp/swisseph/ephe/seur_18.se1 -o ephe/seur_18.se1
+          curl -sSL https://www.astro.com/ftp/swisseph/ephe/sene_18.se1 -o ephe/sene_18.se1
+          curl -sSL https://www.astro.com/ftp/swisseph/ephe/seplu_18.se1 -o ephe/seplu_18.se1
+          curl -sSL https://www.astro.com/ftp/swisseph/ephe/sechi_18.se1 -o ephe/sechi_18.se1
 
       - name: Generate 60-day feed
         run: python scripts/generate_feed_60day.py
