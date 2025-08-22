@@ -9,18 +9,23 @@ Writes docs/feed_60day.json for use by GPT Store app.
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import os
 import swisseph as swe
 
 # ---- Settings ----
 DAYS_AHEAD = 60
 HOUSE_SYSTEM = b'P'  # Placidus
 OBSERVER = "geocentric Earth"
+EPHE_PATH = "ephe"
 
-# Tell Swiss Ephemeris where the ephemeris data files are
-swe.set_ephe_path("ephe")
-print("Using Swiss Ephemeris path:", "ephe")  # debug log
+# ---- Setup ----
+if not os.path.isdir(EPHE_PATH):
+    raise RuntimeError(f"Ephemeris path '{EPHE_PATH}' not found. Did workflow fetch files?")
 
-# Example fixed stars (add more in config if needed)
+swe.set_ephe_path(EPHE_PATH)
+print("Using Swiss Ephemeris path:", EPHE_PATH)
+
+# Example fixed stars (expand if needed)
 FIXED_STARS = [
     {"id": "Regulus",   "label": "Regulus (Alpha Leo)",    "ra_deg": 152.0929625, "dec_deg": 11.9672083},
     {"id": "Spica",     "label": "Spica (Alpha Vir)",      "ra_deg": 201.2982475, "dec_deg": -11.1613194},
@@ -37,8 +42,11 @@ def swe_calc(body, dt):
         dt.hour + dt.minute / 60 + dt.second / 3600.0,
         swe.GREG_CAL
     )
-    xx, _ = swe.calc_ut(jd, body)
-    return float(xx[0]), float(xx[1])  # lon, lat
+    try:
+        xx, _ = swe.calc_ut(jd, body)
+        return float(xx[0]), float(xx[1])  # lon, lat
+    except Exception as e:
+        raise RuntimeError(f"Swiss Ephemeris failed for body {body}: {e}")
 
 def houses_and_points(lat, lon, dt):
     """Compute ASC, MC, houses, Parts of Fortune/Spirit."""
