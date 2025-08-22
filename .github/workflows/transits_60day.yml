@@ -2,33 +2,29 @@ name: Generate 60-Day Transit Feed
 
 on:
   schedule:
-    - cron: "0 11 1 */2 *"   # Run at 11:00 UTC on the 1st of every 2nd month (~60 days)
-  workflow_dispatch:          # Allow manual trigger if you want an early refresh
+    - cron: "0 11 1 */2 *"
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
       - name: Install deps
         run: |
-          pip install swisseph pytz
+          pip install pyswisseph astroquery pytz
 
       - name: Generate 60-day feed
-        run: |
-          python generate_feed.py --mode 60day
+        run: python generate_feed_60day.py
 
       - name: Commit & push updated feed
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs/feed_60day.json
-          git commit -m "Update 60-day transit feed"
+          git commit -m "Update 60-day transit feed" || echo "No changes"
           git push
