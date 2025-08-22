@@ -2,7 +2,7 @@ name: Generate 60-Day Transit Feed
 
 on:
   schedule:
-    - cron: "0 11 1 */2 *"   # run every 2 months
+    - cron: "0 11 1 */2 *"   # run every 2 months at 11:00 UTC on day 1
   workflow_dispatch:
 
 jobs:
@@ -21,13 +21,13 @@ jobs:
       - name: Fetch Swiss Ephemeris files
         run: |
           mkdir -p ephe
-          curl -sSL https://www.astro.com/ftp/swisseph/ephe/seas_18.se1 -o ephe/seas_18.se1
-          curl -sSL https://www.astro.com/ftp/swisseph/ephe/semo_18.se1 -o ephe/semo_18.se1
-          curl -sSL https://www.astro.com/ftp/swisseph/ephe/sepl_18.se1 -o ephe/sepl_18.se1
-          curl -sSL https://www.astro.com/ftp/swisseph/ephe/seur_18.se1 -o ephe/seur_18.se1
-          curl -sSL https://www.astro.com/ftp/swisseph/ephe/sene_18.se1 -o ephe/sene_18.se1
-          curl -sSL https://www.astro.com/ftp/swisseph/ephe/seplu_18.se1 -o ephe/seplu_18.se1
-          curl -sSL https://www.astro.com/ftp/swisseph/ephe/sechi_18.se1 -o ephe/sechi_18.se1
+          curl -sSL https://raw.githubusercontent.com/cyjoelchen/pyswisseph/master/swisseph/seas_18.se1 -o ephe/seas_18.se1
+          curl -sSL https://raw.githubusercontent.com/cyjoelchen/pyswisseph/master/swisseph/semo_18.se1 -o ephe/semo_18.se1
+          curl -sSL https://raw.githubusercontent.com/cyjoelchen/pyswisseph/master/swisseph/sepl_18.se1 -o ephe/sepl_18.se1
+          curl -sSL https://raw.githubusercontent.com/cyjoelchen/pyswisseph/master/swisseph/seur_18.se1 -o ephe/seur_18.se1
+          curl -sSL https://raw.githubusercontent.com/cyjoelchen/pyswisseph/master/swisseph/sene_18.se1 -o ephe/sene_18.se1
+          curl -sSL https://raw.githubusercontent.com/cyjoelchen/pyswisseph/master/swisseph/seplu_18.se1 -o ephe/seplu_18.se1
+          curl -sSL https://raw.githubusercontent.com/cyjoelchen/pyswisseph/master/swisseph/sechi_18.se1 -o ephe/sechi_18.se1
 
       - name: Generate 60-day feed
         run: python scripts/generate_feed_60day.py
@@ -36,6 +36,4 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add docs/feed_60day.json
-          git commit -m "Update 60-day transit feed" || echo "No changes"
-          git push
+          git add docs/feed
