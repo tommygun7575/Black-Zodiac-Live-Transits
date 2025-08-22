@@ -19,7 +19,7 @@ jobs:
           pip install pyswisseph astroquery pytz
 
       - name: Generate 60-day feed
-        run: python generate_feed_60day.py
+        run: python scripts/generate_feed_60day.py
 
       - name: Commit & push updated feed
         run: |
