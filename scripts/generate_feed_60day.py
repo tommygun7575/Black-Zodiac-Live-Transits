@@ -80,4 +80,81 @@ def main():
             "generated_at_utc": datetime.utcnow().isoformat(),
             "observer": OBSERVER,
             "range_days": DAYS_AHEAD,
-            "object
+            "objects": []
+        }
+    }
+
+    for d in range(DAYS_AHEAD):
+        dt = start + timedelta(days=d)
+
+        # Planets Sun → Pluto + Chiron
+        planet_map = {
+            "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY,
+            "299": swe.VENUS, "499": swe.MARS, "599": swe.JUPITER,
+            "699": swe.SATURN, "799": swe.URANUS, "899": swe.NEPTUNE,
+            "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15)
+        }
+
+        for pid, body in planet_map.items():
+            lon, lat = swe_calc(body, dt)
+            feed["feed"]["objects"].append({
+                "id": pid,
+                "targetname": str(body),
+                "datetime_utc": dt.isoformat(),
+                "ecl_lon_deg": lon,
+                "ecl_lat_deg": lat,
+                "source": "swiss"
+            })
+
+        # Houses, ASC, MC, Parts (using Greenwich lat/lon = 51.5N, 0W for global)
+        points = houses_and_points(51.5, 0.0, dt)
+        feed["feed"]["objects"].append({
+            "id": "ASC",
+            "targetname": "Ascendant",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["ASC"],
+            "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "MC",
+            "targetname": "Midheaven",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["MC"],
+            "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "Houses",
+            "targetname": "Houses",
+            "datetime_utc": dt.isoformat(),
+            "houses_deg": points["houses"],
+            "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "PartOfFortune",
+            "targetname": "Part of Fortune",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["PartOfFortune"],
+            "branch": "day",
+            "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "PartOfSpirit",
+            "targetname": "Part of Spirit",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["PartOfSpirit"],
+            "branch": "day",
+            "source": "swiss"
+        })
+
+        # Fixed stars
+        for star in FIXED_STARS:
+            feed["feed"]["objects"].append(add_fixed_star(star, dt))
+
+    Path("docs").mkdir(exist_ok=True)
+    with open("docs/feed_60day.json", "w") as f:
+        json.dump(feed, f, indent=2)
+
+    print("[OK] Wrote docs/feed_60day.json")
+
+if __name__ == "__main__":
+    main()
