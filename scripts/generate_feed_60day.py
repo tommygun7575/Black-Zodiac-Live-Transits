@@ -16,8 +16,9 @@ DAYS_AHEAD = 60
 HOUSE_SYSTEM = b'P'  # Placidus
 OBSERVER = "geocentric Earth"
 
-# Tell Swiss Ephemeris where the ephemeris data files are (downloaded in workflow)
+# Tell Swiss Ephemeris where the ephemeris data files are
 swe.set_ephe_path("ephe")
+print("Using Swiss Ephemeris path:", "ephe")  # debug log
 
 # Example fixed stars (add more in config if needed)
 FIXED_STARS = [
