@@ -2,8 +2,8 @@ name: Build Overlay Feed
 
 on:
   schedule:
-    # Run twice daily at 10:30 UTC and 22:30 UTC (≈ 3:30 AM / 3:30 PM Pacific during PDT)
-    - cron: "30 10,22 * * *"
+    # Run once daily at 10:30 UTC (≈ 3:30 AM Pacific during PDT)
+    - cron: "30 10 * * *"
   workflow_dispatch:
 
 jobs:
@@ -33,17 +33,14 @@ jobs:
       - name: Convert Astro-Seek flat file → fallback
         run: python scripts/convert_flat_astroseek.py aug_2025_to_feb_2026_asteroids_tnos_flat.json
 
-      - name: Build overlay feed
+      - name: Build full overlay feed
         run: python scripts/build_overlays.py
-
-      - name: Compute angles and parts
-        run: python scripts/compute_angles_and_parts.py
 
       - name: Commit & push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add docs/feed_overlay.json docs/feed_angles.json data/fallback_aug2025_2026.json
-          git commit -m "Daily update overlay feed + angles" || echo "No changes"
+          git add docs/feed_overlay.json data/fallback_aug2025_2026.json
+          git commit -m "Daily update overlay feed" || echo "No changes"
           git pull --rebase origin main
           git push origin main
