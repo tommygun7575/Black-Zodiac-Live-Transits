@@ -1,9 +1,8 @@
-name: Build Overlay Feed
+name: Daily update overlay feed
 
 on:
   schedule:
-    # Run once daily at 10:30 UTC (≈ 3:30 AM Pacific during PDT)
-    - cron: "30 10 * * *"
+    - cron: "0 */12 * * *"   # run every 12 hours
   workflow_dispatch:
 
 jobs:
@@ -11,36 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+    - name: Install Python deps
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Verify required files
-        run: |
-          echo "Checking for required files..."
-          test -f aug_2025_to_feb_2026_asteroids_tnos_flat.json || (echo "❌ Missing Astro-Seek flat file" && exit 1)
-          test -f config/live_config.json || (echo "❌ Missing config/live_config.json" && exit 1)
+    - name: Ensure Swiss ephemeris files
+      run: |
+        mkdir -p $GITHUB_WORKSPACE/ephe
+        cp *.se1 $GITHUB_WORKSPACE/ephe/
 
-      - name: Convert Astro-Seek flat file → fallback
-        run: python scripts/convert_flat_astroseek.py aug_2025_to_feb_2026_asteroids_tnos_flat.json
+    - name: Run overlay builder
+      run: |
+        python scripts/build_overlays.py
 
-      - name: Build full overlay feed
-        run: python scripts/build_overlays.py
-
-      - name: Commit & push
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add docs/feed_overlay.json data/fallback_aug2025_2026.json
-          git commit -m "Daily update overlay feed" || echo "No changes"
-          git pull --rebase origin main
-          git push origin main
+    - name: Commit and push results
+      run: |
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git add docs/feed_overlay.json
+        git commit -m "Daily update overlay feed" || echo "No changes"
+        git push
