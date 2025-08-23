@@ -8,6 +8,9 @@ from math import fmod
 from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
 from scripts.utils.coords import ra_dec_to_ecl
 
+import swisseph as swe
+from dateutil import parser
+
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
 NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
@@ -23,61 +26,47 @@ def iso_now() -> str:
 def normalize(deg: float) -> float:
     return fmod(deg + 360.0, 360.0)
 
-# ---- Compute Arabic Parts (simplified) ----
+# ---- Compute Arabic Parts ----
 def compute_arabic_parts(objects: Dict[str, Dict[str, Any]], asc: float, sun: float, moon: float) -> Dict[str, Dict[str, Any]]:
     parts = {}
-    # Day/night check: if Sun above horizon → day chart
-    # (approx: assume ASC–DESC axis, simple check)
     is_day = (sun - asc) % 360 < 180
 
-    # Fortune = ASC + Moon - Sun (day) or ASC + Sun - Moon (night)
     fortune = asc + (moon - sun if is_day else sun - moon)
-    parts["Part_of_Fortune"] = {
-        "ecl_lon_deg": normalize(fortune),
-        "ecl_lat_deg": 0.0,
-        "used_source": "calculated"
-    }
-
-    # Spirit = ASC + Sun - Moon (day) or ASC + Moon - Sun (night)
     spirit = asc + (sun - moon if is_day else moon - sun)
-    parts["Part_of_Spirit"] = {
-        "ecl_lon_deg": normalize(spirit),
-        "ecl_lat_deg": 0.0,
-        "used_source": "calculated"
-    }
-
-    # Karma, Treachery, Victory, Deliverance etc. → placeholder formulas
     karma = asc + (sun + moon) / 2.0
-    parts["Part_of_Karma"] = {
-        "ecl_lon_deg": normalize(karma),
-        "ecl_lat_deg": 0.0,
-        "used_source": "calculated"
-    }
-
     treachery = asc + (moon - karma)
-    parts["Part_of_Treachery"] = {
-        "ecl_lon_deg": normalize(treachery),
-        "ecl_lat_deg": 0.0,
-        "used_source": "calculated"
-    }
-
     victory = asc + (sun - karma)
-    parts["Part_of_Victory"] = {
-        "ecl_lon_deg": normalize(victory),
-        "ecl_lat_deg": 0.0,
-        "used_source": "calculated"
-    }
-
     deliverance = asc + (spirit - fortune)
-    parts["Part_of_Deliverance"] = {
-        "ecl_lon_deg": normalize(deliverance),
-        "ecl_lat_deg": 0.0,
-        "used_source": "calculated"
-    }
 
+    parts["Part_of_Fortune"] = {"ecl_lon_deg": normalize(fortune), "ecl_lat_deg": 0.0, "used_source": "calculated"}
+    parts["Part_of_Spirit"] = {"ecl_lon_deg": normalize(spirit), "ecl_lat_deg": 0.0, "used_source": "calculated"}
+    parts["Part_of_Karma"] = {"ecl_lon_deg": normalize(karma), "ecl_lat_deg": 0.0, "used_source": "calculated"}
+    parts["Part_of_Treachery"] = {"ecl_lon_deg": normalize(treachery), "ecl_lat_deg": 0.0, "used_source": "calculated"}
+    parts["Part_of_Victory"] = {"ecl_lon_deg": normalize(victory), "ecl_lat_deg": 0.0, "used_source": "calculated"}
+    parts["Part_of_Deliverance"] = {"ecl_lon_deg": normalize(deliverance), "ecl_lat_deg": 0.0, "used_source": "calculated"}
     return parts
 
-def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
+# ---- Compute House Cusps ----
+def compute_house_cusps(lat: float, lon: float, when_iso: str, hsys: str = "P") -> Dict[str, Dict[str, Any]]:
+    dt = parser.isoparse(when_iso)
+    jd = swe.julday(dt.year, dt.month, dt.day,
+                    dt.hour + dt.minute/60.0 + dt.second/3600.0)
+    try:
+        cusps, ascmc = swe.houses(jd, lat, lon, hsys)
+        houses = {}
+        for i, cusp in enumerate(cusps, start=1):
+            houses[f"House_{i}"] = {
+                "ecl_lon_deg": cusp,
+                "ecl_lat_deg": 0.0,
+                "used_source": f"houses-{hsys}"
+            }
+        houses["ASC"] = {"ecl_lon_deg": ascmc[0], "ecl_lat_deg": 0.0, "used_source": "houses"}
+        houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
+        return houses
+    except Exception:
+        return {}
+
+def compute_positions(when_iso: str, lat: float, lon: float) -> Dict[str, Dict[str, Any]]:
     out = {}
 
     # ---- Categories ----
@@ -113,21 +102,21 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
             "used_source": "missing" if not used else used
         }
 
-    # ---- Majors: JPL first, Swiss fallback ----
+    # Majors
     for name in MAJORS:
         out[name] = resolve_body(name, [
             ("jpl", horizons_client.get_ecliptic_lonlat),
             ("swiss", swiss_client.get_ecliptic_lonlat)
         ])
 
-    # ---- Asteroids: JPL first, Swiss fallback ----
+    # Asteroids
     for name in ASTEROIDS:
         out[name] = resolve_body(name, [
             ("jpl", horizons_client.get_ecliptic_lonlat),
             ("swiss", swiss_client.get_ecliptic_lonlat)
         ])
 
-    # ---- TNOs: Swiss first, then Miriade, then JPL fallback ----
+    # TNOs
     for name in TNOs:
         out[name] = resolve_body(name, [
             ("swiss", swiss_client.get_ecliptic_lonlat),
@@ -135,25 +124,25 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
             ("jpl", horizons_client.get_ecliptic_lonlat)
         ])
 
-    # ---- Aethers: Swiss first, Miriade fallback ----
+    # Aethers
     for name in AETHERS:
         out[name] = resolve_body(name, [
             ("swiss", swiss_client.get_ecliptic_lonlat),
             ("miriade", miriade_client.get_ecliptic_lonlat)
         ])
 
-    # ---- Fixed stars: always available ----
+    # Fixed Stars
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
         print(f"{s['id']:12s} → fixed   | lon={lam:.2f} lat={bet:.2f}")
-        out[s["id"]] = {
-            "ecl_lon_deg": lam,
-            "ecl_lat_deg": bet,
-            "used_source": "fixed"
-        }
+        out[s["id"]] = {"ecl_lon_deg": lam, "ecl_lat_deg": bet, "used_source": "fixed"}
 
-    # ---- Arabic Parts (needs ASC, Sun, Moon) ----
+    # Houses
+    houses = compute_house_cusps(lat, lon, when_iso)
+    out.update(houses)
+
+    # Arabic Parts (needs ASC, Sun, Moon)
     if "ASC" in out and "Sun" in out and "Moon" in out:
         asc = out["ASC"]["ecl_lon_deg"]
         sun = out["Sun"]["ecl_lon_deg"]
@@ -164,9 +153,7 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
 
     return out
 
-def merge_into(natal_bundle: Dict[str, Any],
-               positions: Dict[str, Dict[str, Any]],
-               when_iso: str) -> Dict[str, Any]:
+def merge_into(natal_bundle: Dict[str, Any], positions: Dict[str, Dict[str, Any]], when_iso: str) -> Dict[str, Any]:
     meta = {
         "generated_at_utc": when_iso,
         "source_order": [
@@ -174,6 +161,7 @@ def merge_into(natal_bundle: Dict[str, Any],
             "swiss (tnos/aethers/fallback)",
             "miriade (tnos/aethers fill)",
             "fixed (stars)",
+            "houses (cusps, ASC, MC)",
             "calculated (arabic parts)"
         ]
     }
@@ -182,23 +170,24 @@ def merge_into(natal_bundle: Dict[str, Any],
     for who, natal in natal_bundle.items():
         if who.startswith("_meta"):
             continue
+        birth = natal.get("birth", {})
+        lat = birth.get("lat")
+        lon = birth.get("lon")
         charts[who] = {
-            "birth": natal.get("birth", {}),
+            "birth": birth,
             "natal": natal.get("planets", {}),
-            "objects": positions
+            "objects": compute_positions(when_iso, lat, lon)
         }
 
     return {"meta": meta, "charts": charts}
 
 def main(argv: List[str]):
-    out_path = os.environ.get("OVERLAY_OUT",
-                              os.path.join("docs", "feed_overlay.json"))
+    out_path = os.environ.get("OVERLAY_OUT", os.path.join("docs", "feed_overlay.json"))
     when_iso = os.environ.get("OVERLAY_TIME_UTC", iso_now())
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
     natal_bundle = load_json(NATAL)
-    positions = compute_positions(when_iso)
-    merged = merge_into(natal_bundle, positions, when_iso)
+    merged = merge_into(natal_bundle, {}, when_iso)
 
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(merged, f, indent=2, ensure_ascii=False)
