@@ -2,8 +2,10 @@ name: build-overlay
 
 on:
   schedule:
-    # Run daily at 04:00 Pacific (11:00 UTC)
+    # Daily at 04:00 Pacific (11:00 UTC)
     - cron: '0 11 * * *'
+    # Weekly cross-check on Sundays at 05:00 Pacific (12:00 UTC)
+    - cron: '0 12 * * 0'
   workflow_dispatch: {}
 
 jobs:
@@ -26,20 +28,48 @@ jobs:
         env:
           OVERLAY_OUT: docs/feed_overlay.json
 
-      - name: Debug output (check Sun/Moon/Mercury)
+      - name: Debug output (sample bodies)
         run: |
-          echo "Checking generated feed_overlay.json..."
           python - <<'EOF'
           import json
-          with open("docs/feed_overlay.json", "r", encoding="utf-8") as f:
+          with open("docs/feed_overlay.json") as f:
               data = json.load(f)
-          charts = data.get("charts", {})
+          charts = data["charts"]
+          sample = ["Sun","Moon","Mercury","Venus","Mars","Eris","Sedna","Lilith"]
           for who, chart in charts.items():
-              if "objects" in chart:
-                  objs = chart["objects"]
-                  for body in ["Sun", "Moon", "Mercury"]:
-                      if body in objs:
-                          print(f"{who} - {body}: {objs[body]['ecl_lon_deg']}° | source={objs[body]['used_source']}")
+              print(f"\n=== {who} ===")
+              for b in sample:
+                  obj = chart["objects"].get(b)
+                  if obj:
+                      print(f"{b}: {obj['ecl_lon_deg']}° | source={obj['used_source']}")
+          EOF
+
+      - name: Weekly JPL cross-check
+        if: github.event.schedule == '0 12 * * 0'
+        run: |
+          echo "Running Swiss vs JPL Horizons check..."
+          python - <<'EOF'
+          import json, math
+          from scripts.sources import horizons_client, swiss_client
+          from datetime import datetime, timezone
+          when = datetime.now(timezone.utc).isoformat()
+          majors = ["Sun","Moon","Mercury"]
+          for b in majors:
+              swiss = swiss_client.get_ecliptic_lonlat(b, when)
+              jpl = horizons_client.get_ecliptic_lonlat(b, when)
+              if swiss and jpl:
+                  diff = abs(swiss[0]-jpl[0])
+                  if diff > 180: diff = 360 - diff
+                  print(f"{b}: Swiss={swiss[0]:.5f}, JPL={jpl[0]:.5f}, Δ={diff:.6f}°")
+                  if diff > 0.01:
+                      print(f"Adjusting {b} to JPL value in overlay...")
+                      with open("docs/feed_overlay.json","r+",encoding="utf-8") as f:
+                          data=json.load(f)
+                          for who in data["charts"]:
+                              if b in data["charts"][who]["objects"]:
+                                  data["charts"][who]["objects"][b]["ecl_lon_deg"]=jpl[0]
+                                  data["charts"][who]["objects"][b]["used_source"]="jpl-corrected"
+                          f.seek(0); json.dump(data,f,indent=2); f.truncate()
           EOF
 
       - name: Commit updated overlay
