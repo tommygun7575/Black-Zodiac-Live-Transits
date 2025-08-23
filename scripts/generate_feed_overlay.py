@@ -2,6 +2,7 @@
 import json, os, sys
 from datetime import datetime, timezone
 from typing import Dict, Any, List
+import pytz
 
 # Correct imports (use scripts.* since sources/ and utils/ are inside scripts/)
 from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
@@ -23,6 +24,15 @@ SOURCE_ORDER = (
 
 def iso_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+def log_times(when_iso: str):
+    """Log both UTC and Pacific times for confirmation in Actions logs."""
+    utc_time = datetime.fromisoformat(when_iso.replace("Z","+00:00"))
+    pacific = pytz.timezone("America/Los_Angeles")
+    print("Overlay run time:",
+          utc_time.strftime("%Y-%m-%d %H:%M UTC"),
+          "/",
+          utc_time.astimezone(pacific).strftime("%Y-%m-%d %I:%M %p %Z"))
 
 def load_existing(path: str) -> Dict[str, Any]:
     if os.path.exists(path):
@@ -101,6 +111,7 @@ def main(argv: List[str]):
     positions = compute_positions(when_iso)
     merged = merge_into(existing, positions, when_iso)
     json.dump(merged, open(out_path, "w"), indent=2, ensure_ascii=False)
+    log_times(when_iso)
     print(f"wrote {out_path}")
 
 if __name__ == "__main__":
