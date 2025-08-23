@@ -61,21 +61,31 @@ def get_jpl_batch(dt, retries=3):
                 location="500@399",  # Earth geocentric
                 epochs=dt.strftime("%Y-%m-%d %H:%M")
             )
-            eph = obj.ephemerides()
-            if "EclLon" not in eph.columns or "EclLat" not in eph.columns:
-                raise RuntimeError("Horizons returned malformed ephemeris")
+           eph = obj.ephemerides()
 
-            result = {}
-            for name in JPL_IDS.keys():
-                row = eph[eph["targetname"].str.contains(name, case=False)]
-                if len(row) > 0:
-                    lon = float(row["EclLon"].values[0])
-                    lat = float(row["EclLat"].values[0])
-                    if not (0.0 <= lon < 360.0):
-                        raise ValueError(f"Bad longitude for {name}: {lon}")
-                    result[name] = (lon, lat, "jpl")
-            if result:
-                return result
+# Check required columns exist
+if "EclLon" not in eph.columns or "EclLat" not in eph.columns:
+    raise RuntimeError("Horizons returned malformed ephemeris (missing EclLon/EclLat)")
+
+result = {}
+for name in JPL_IDS.keys():
+    try:
+        row = eph[eph["targetname"].str.contains(name, case=False)]
+        if len(row) > 0:
+            lon = float(row["EclLon"].values[0])
+            lat = float(row["EclLat"].values[0])
+
+            # sanity check ranges
+            if not (0.0 <= lon < 360.0):
+                raise ValueError(f"Bad longitude for {name}: {lon}")
+
+            result[name] = (lon, lat, "jpl")
+    except Exception as e:
+        print(f"[WARN] Skipping {name} due to bad Horizons data: {e}")
+
+if result:
+    return result
+
 
         except Exception as e:
             print(f"[WARN] JPL batch attempt {attempt+1} failed: {e}")
