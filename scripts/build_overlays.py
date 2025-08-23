@@ -4,7 +4,7 @@
 build_overlays.py — merge feed + angles into overlay
 """
 
-import argparse, json, sys
+import argparse, json
 from pathlib import Path
 
 def load(path): return json.loads(Path(path).read_text())
