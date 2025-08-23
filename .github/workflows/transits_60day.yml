@@ -20,11 +20,15 @@ jobs:
         run: |
           pip install pyswisseph astroquery pytz
 
-      # New step: verify files committed instead of fetching
       - name: Verify committed ephemeris files
         run: |
           echo "Ephemeris files present in repo:"
           ls -lh ephe
+          echo "Looking for required core files..."
+          test -f ephe/sepl_18.se1 && echo "✅ sepl_18.se1 found"
+          test -f ephe/seas_18.se1 && echo "✅ seas_18.se1 found"
+          test -f ephe/seasm18.se1 && echo "✅ seasm18.se1 found (optional)"
+          test -f ephe/semo_18.se1 && echo "✅ semo_18.se1 found (Moon precision)"
 
       - name: Generate 60-day feed
         run: python scripts/generate_feed_60day.py
