@@ -4,7 +4,7 @@
 augment_feed.py — enrich overlay with Aether + deep TNO placeholders
 """
 
-import argparse, json, sys
+import argparse, json
 from pathlib import Path
 from datetime import datetime
 
@@ -24,11 +24,11 @@ def main():
 
     for name in AETHER:
         if not any(o.get("targetname")==name for o in overlay["objects"]):
-            overlay["objects"].append({"id":name,"targetname":name,"source":"symbolic"})
+            overlay["objects"].append({"id":name,"targetname":name,"ecl_lon_deg":None,"ecl_lat_deg":0.0,"source":"symbolic"})
 
     for name in DEEP:
         if not any(o.get("targetname")==name for o in overlay["objects"]):
-            overlay["objects"].append({"id":name,"targetname":name,"source":"deep-TNO-placeholder","error":"no data available"})
+            overlay["objects"].append({"id":name,"targetname":name,"ecl_lon_deg":None,"ecl_lat_deg":0.0,"source":"deep-TNO-placeholder","error":"no data available"})
 
     path.write_text(json.dumps(overlay, indent=2))
     print(f"[OK] augmented {args.feed}")
