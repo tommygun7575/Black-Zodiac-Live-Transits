@@ -1,36 +1,53 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-augment_feed.py — enrich overlay with Aether + deep TNO placeholders
+augment_feed.py
+Augments overlay feed with fallback datasets (SEAS, SE1, SEPL, fallback JSON).
 """
 
-import argparse, json
+import json
 from pathlib import Path
-from datetime import datetime
 
-AETHER = ["Vulcan","Persephone","Hades","Proserpina","Isis"]
-DEEP   = ["Varuna","Ixion","Typhon","Salacia"]
+INPUT_FILE = Path("docs/feed_overlay.json")
+OUTPUT_FILE = Path("docs/feed_overlay.json")
 
-def load(path): return json.loads(Path(path).read_text())
+FALLBACK_FILES = [
+    Path("data/seas18.json"),
+    Path("data/se1.json"),
+    Path("data/sepl.json"),
+    Path("data/se_extra.json"),
+    Path("data/fallback_aug2025_2026.json"),
+]
+
+def load_fallbacks():
+    merged = {}
+    for file in FALLBACK_FILES:
+        if file.exists():
+            with open(file, "r") as f:
+                data = json.load(f)
+            merged.update(data)
+    return merged
 
 def main():
-    ap=argparse.ArgumentParser()
-    ap.add_argument("--feed",required=True)
-    args=ap.parse_args()
-    path=Path(args.feed); overlay=load(path)
+    if not INPUT_FILE.exists():
+        raise FileNotFoundError(f"{INPUT_FILE} missing")
 
-    overlay["meta"]["augmented_at_utc"]=datetime.utcnow().isoformat()+"Z"
-    overlay["meta"]["black_zodiac_version"]="3.3.0"
+    with open(INPUT_FILE, "r") as f:
+        feed = json.load(f)
 
-    for name in AETHER:
-        if not any(o.get("targetname")==name for o in overlay["objects"]):
-            overlay["objects"].append({"id":name,"targetname":name,"ecl_lon_deg":None,"ecl_lat_deg":0.0,"source":"symbolic"})
+    fallbacks = load_fallbacks()
 
-    for name in DEEP:
-        if not any(o.get("targetname")==name for o in overlay["objects"]):
-            overlay["objects"].append({"id":name,"targetname":name,"ecl_lon_deg":None,"ecl_lat_deg":0.0,"source":"deep-TNO-placeholder","error":"no data available"})
+    for obj in feed["objects"]:
+        if obj["ecl_lon_deg"] is None:
+            target = obj["id"]
+            if target in fallbacks:
+                obj["ecl_lon_deg"] = fallbacks[target].get("lon")
+                obj["ecl_lat_deg"] = fallbacks[target].get("lat", 0.0)
+                obj["source"] = f"fallback:{target}"
 
-    path.write_text(json.dumps(overlay, indent=2))
-    print(f"[OK] augmented {args.feed}")
+    with open(OUTPUT_FILE, "w") as f:
+        json.dump(feed, f, indent=2)
 
-if __name__=="__main__": main()
+    print("[OK] Overlay feed augmented with fallback datasets.")
+
+if __name__ == "__main__":
+    main()
