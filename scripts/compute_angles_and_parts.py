@@ -13,7 +13,7 @@ import swisseph as swe
 
 HOUSE_SYSTEM = b'P'
 
-def julday(dt): 
+def julday(dt):
     return swe.julday(dt.year, dt.month, dt.day,
                       dt.hour + dt.minute/60 + dt.second/3600.0)
 
@@ -25,11 +25,11 @@ def compute_angles(lat, lon, dt):
     fortune = (asc + moon[0] - sun[0]) % 360
     spirit  = (asc + sun[0] - moon[0]) % 360
     return [
-        {"id":"ASC","targetname":"Ascendant","ecl_lon_deg":asc,"ecl_lat_deg":0.0,"source":"swiss"},
-        {"id":"MC","targetname":"Midheaven","ecl_lon_deg":mc,"ecl_lat_deg":0.0,"source":"swiss"},
-        {"id":"Houses","targetname":"House Cusps","houses_deg":list(cusp),"source":"swiss"},
-        {"id":"PartOfFortune","targetname":"Part of Fortune","ecl_lon_deg":fortune,"ecl_lat_deg":0.0,"source":"swiss"},
-        {"id":"PartOfSpirit","targetname":"Part of Spirit","ecl_lon_deg":spirit,"ecl_lat_deg":0.0,"source":"swiss"}
+        {"id":"ASC","targetname":"Ascendant","ecl_lon_deg":float(asc),"ecl_lat_deg":0.0,"source":"swiss"},
+        {"id":"MC","targetname":"Midheaven","ecl_lon_deg":float(mc),"ecl_lat_deg":0.0,"source":"swiss"},
+        {"id":"Houses","targetname":"House Cusps","houses_deg":[float(x) for x in cusp],"source":"swiss"},
+        {"id":"PartOfFortune","targetname":"Part of Fortune","ecl_lon_deg":float(fortune),"ecl_lat_deg":0.0,"source":"swiss"},
+        {"id":"PartOfSpirit","targetname":"Part of Spirit","ecl_lon_deg":float(spirit),"ecl_lat_deg":0.0,"source":"swiss"}
     ]
 
 def load(path): return json.loads(Path(path).read_text())
