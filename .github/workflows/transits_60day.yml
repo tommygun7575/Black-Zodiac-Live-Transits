@@ -20,9 +20,9 @@ jobs:
         run: |
           pip install pyswisseph astroquery pytz
 
-      - name: Verify committed ephemeris files
+      - name: Verify committed ephemeris and fallback files
         run: |
-          echo "Checking for all required Swiss Ephemeris files..."
+          echo "Checking for all required Swiss Ephemeris + fallback files..."
           ls -lh .
           # Core planetary & asteroid files
           test -f sepl_18.se1   && echo "✅ sepl_18.se1   (planets Sun–Pluto)"       || (echo "❌ Missing sepl_18.se1" && exit 1)
@@ -33,6 +33,8 @@ jobs:
           test -f semom18.se1   && echo "✅ semom18.se1   (Moon motion corrections)"|| (echo "❌ Missing semom18.se1" && exit 1)
           # Combined planetary/lunar file
           test -f seplm18.se1   && echo "✅ seplm18.se1   (Planets + Moon motions)" || (echo "❌ Missing seplm18.se1" && exit 1)
+          # Fallback JSON for asteroids/TNOs
+          test -f sept_to_feb_2026_asteroids_tnos.json && echo "✅ sept_to_feb_2026_asteroids_tnos.json (fallback ephemeris)" || (echo "❌ Missing fallback JSON" && exit 1)
 
       - name: Generate 60-day feed
         run: python scripts/generate_feed_60day.py
