@@ -52,6 +52,7 @@ def swiss_lonlat(eid, jd):
         return None, None, None
 
 def parse_fallback(val):
+    """Convert '15° 36' → 15.6 (float degrees)."""
     if val is None: return None
     if isinstance(val, (int, float)): return float(val)
     if isinstance(val, str):
@@ -67,10 +68,10 @@ def load_fallback():
     try:
         fb = json.loads(Path(FALLBACK_PATH).read_text())
         # Normalize values on load
-        for day in fb["data"]:
-            for k,v in list(day.items()):
+        for row in fb["data"]:
+            for k,v in list(row.items()):
                 if k != "date":
-                    day[k] = parse_fallback(v)
+                    row[k] = parse_fallback(v)
         return {row["date"]: row for row in fb["data"]}
     except Exception:
         return {}
