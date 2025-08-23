@@ -1,11 +1,11 @@
 name: build-overlay
+
 on:
   schedule:
-    # 4:00 AM Pacific Standard Time (Nov–Mar)
-    - cron: '0 12 * * *'
-    # 4:00 AM Pacific Daylight Time (Mar–Nov)
+    # Run daily at 04:00 Pacific
     - cron: '0 11 * * *'
   workflow_dispatch: {}
+
 jobs:
   overlay:
     runs-on: ubuntu-latest
@@ -21,8 +21,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 🔎 Debug: print first 20 lines of the script
-      - name: Show generate_feed_overlay.py head
+      # (Optional Debug) show what file GitHub runner sees
+      - name: Show scripts folder
+        run: ls -R scripts
+
+      - name: Show head of overlay script
         run: head -n 20 scripts/generate_feed_overlay.py
 
       - name: Run generate_feed_overlay
