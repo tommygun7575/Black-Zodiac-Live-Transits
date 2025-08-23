@@ -29,6 +29,7 @@ def main():
             "PartOfSpirit": (ascmc[0] - ascmc[1]) / 2
         }
 
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_FILE, "w") as f:
         json.dump(results, f, indent=2)
 
