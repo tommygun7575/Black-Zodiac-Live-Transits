@@ -1,77 +1,84 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-augment_feed.py — enrich feed_now.json with Swiss Angles, Arabic Parts, and asteroids/fixed stars.
+augment_feed.py — enrich feed_overlay.json with Black Zodiac overlays.
+
+- Reads feed_overlay.json (planets + asteroids/TNOs + natal overlays)
+- Injects system metadata for Master Config
+- Ensures objects have consistent IDs and sources
+- Adds placeholder slots for deep TNOs / Aether Planets (config-driven)
+- Writes docs/feed_overlay.json (augmented in-place)
+
+Author: Black Zodiac System v3.3.0
 """
 
-import argparse, json, swisseph as swe, datetime
+import argparse
+import json
+import sys
 from pathlib import Path
+from datetime import datetime
 
-def compute_angles(jd, lat, lon, house_system="P"):
-    """Compute ASC, MC, Vertex using Swiss Ephemeris houses."""
-    houses, ascmc = swe.houses_ex(jd, lat, lon, bytes(house_system, 'utf-8'))
-    return {
-        "ASC": ascmc[0],
-        "MC": ascmc[1],
-        "Vertex": ascmc[3]
-    }
 
-def compute_part(formula, context):
-    """Evaluate an Arabic Part formula like 'ASC + Moon - Sun'."""
+# ---- Config
+AETHER_PLANETS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
+DEEP_TNOS = ["Varuna", "Ixion", "Typhon", "Salacia"]
+
+
+def load_json(path: Path):
     try:
-        expr = formula
-        for k, v in context.items():
-            expr = expr.replace(k, str(v))
-        return eval(expr) % 360
-    except Exception:
-        return None
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"[ERROR] Failed to load {path}: {e}", file=sys.stderr)
+        sys.exit(1)
+
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--feed", required=True, help="Path to feed_now.json")
-    parser.add_argument("--asteroids", required=True, help="Path to asteroids_master.json")
-    parser.add_argument("--config", default="config/live_config.json", help="Path to live_config.json")
-    args = parser.parse_args()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--feed", required=True, help="Path to feed_overlay.json")
+    args = ap.parse_args()
 
-    # Load files
-    feed = json.loads(Path(args.feed).read_text())
-    asteroid_cfg = json.loads(Path(args.asteroids).read_text())
-    config = json.loads(Path(args.config).read_text())
+    path = Path(args.feed)
+    overlay = load_json(path)
 
-    now = datetime.datetime.utcnow()
-    jd = swe.julday(now.year, now.month, now.day, now.hour + now.minute/60.0)
+    # ---- Augment metadata
+    overlay["meta"]["augmented_at_utc"] = datetime.utcnow().isoformat() + "Z"
+    overlay["meta"]["black_zodiac_version"] = "3.3.0"
+    overlay["meta"]["includes"] = [
+        "Planets", "Asteroids", "TNOs", "Angles", "Arabic Parts",
+        "Fixed Stars", "Aether Planets (symbolic placeholders)"
+    ]
 
-    planets = {obj["name"]: obj for obj in feed["objects"]}
+    # ---- Ensure placeholders for Aether planets
+    for name in AETHER_PLANETS:
+        exists = any(obj.get("targetname") == name for obj in overlay.get("objects", []))
+        if not exists:
+            overlay["objects"].append({
+                "id": name,
+                "targetname": name,
+                "note": "Symbolic Aether Planet (not ephemeris-tracked)",
+                "source": "symbolic"
+            })
 
-    # Angles + Arabic Parts per target
-    feed["angles"] = {}
-    feed["arabic_parts"] = {}
+    # ---- Ensure placeholders for deep TNOs if missing
+    for name in DEEP_TNOS:
+        exists = any(obj.get("targetname") == name for obj in overlay.get("objects", []))
+        if not exists:
+            overlay["objects"].append({
+                "id": name,
+                "targetname": name,
+                "error": "no data available",
+                "source": "deep-TNO-placeholder"
+            })
 
-    for target in config.get("targets", []):
-        name = target["name"]
-        lat, lon = target["lat"], target["lon"]
-        house_system = target.get("house_system", "P")
+    # ---- Normalize IDs
+    for obj in overlay.get("objects", []):
+        if "id" not in obj:
+            obj["id"] = obj.get("targetname", "unknown")
 
-        # Angles
-        angles = compute_angles(jd, lat, lon, house_system)
-        feed["angles"][name] = angles
+    # ---- Write back augmented overlay
+    path.write_text(json.dumps(overlay, indent=2), encoding="utf-8")
+    print(f"[OK] Augmented {args.feed} with {len(AETHER_PLANETS)} aether placeholders and {len(DEEP_TNOS)} deep TNO placeholders")
 
-        # Parts
-        parts_cfg = config.get("arabic_parts", {}).get("parts", [])
-        context = {"ASC": angles["ASC"]}
-        context.update({p: planets[p]["lon"] for p in planets if p in ["Sun","Moon"]})
-        parts = {}
-        for part in parts_cfg:
-            day_formula = part.get("formula_day")
-            value = compute_part(day_formula, context)
-            if value is not None:
-                parts[part["id"]] = value
-        feed["arabic_parts"][name] = parts
-
-    # Add asteroid catalog
-    feed["asteroids"] = asteroid_cfg
-
-    Path(args.feed).write_text(json.dumps(feed, indent=2))
-    print(f"[OK] augmented {args.feed}")
 
 if __name__ == "__main__":
     main()
