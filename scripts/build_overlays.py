@@ -66,7 +66,7 @@ def get_jpl_batch(dt, retries=3):
                 raise RuntimeError("Horizons returned malformed ephemeris")
 
             result = {}
-            for name, jpl_id in JPL_IDS.items():
+            for name in JPL_IDS.keys():
                 row = eph[eph["targetname"].str.contains(name, case=False)]
                 if len(row) > 0:
                     lon = float(row["EclLon"].values[0])
