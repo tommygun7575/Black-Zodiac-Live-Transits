@@ -16,31 +16,25 @@ NATALS = {
     "Christine": {"year": 1989, "month": 7, "day": 5, "hour": 15, "minute": 1, "lat": 40.72982, "lon": -73.21039}
 }
 
-def safe_houses_ex(jd, lat, lon, hsys=b"P"):
-    """Handle Swiss Ephemeris return value differences."""
-    result = swe.houses_ex(jd, lat, lon, hsys)
-    if isinstance(result, tuple):
-        if len(result) == 4:
-            houses, ascmc, _, _ = result
-        elif len(result) == 2:
-            houses, ascmc = result
-        else:
-            raise ValueError(f"Unexpected houses_ex return shape: {len(result)}")
-        return houses, ascmc
-    raise ValueError("houses_ex did not return a tuple")
-
 def main():
     results = {}
+
     for name, d in NATALS.items():
-        jd = swe.julday(d["year"], d["month"], d["day"], d["hour"] + d["minute"]/60.0)
-        houses, ascmc = safe_houses_ex(jd, d["lat"], d["lon"], b"P")
+        jd = swe.julday(
+            d["year"], d["month"], d["day"],
+            d["hour"] + d["minute"] / 60.0
+        )
+
+        # --- FIX: handle 2-value return from houses_ex ---
+        houses, ascmc = swe.houses_ex(jd, d["lat"], d["lon"], b"P")
 
         results[name] = {
             "ASC": ascmc[0],
             "MC": ascmc[1],
-            "houses": houses.tolist() if hasattr(houses, "tolist") else list(houses)
+            "houses": list(houses)  # convert numpy array to list
         }
-        # Basic Parts
+
+        # Basic Arabic Parts
         results[name]["PartOfFortune"] = (ascmc[0] + ascmc[1]) / 2
         results[name]["PartOfSpirit"] = (ascmc[0] - ascmc[1]) / 2
 
