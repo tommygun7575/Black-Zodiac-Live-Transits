@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 generate_feed_60day.py — build a 60-day projected transit feed.
-Extended for Black Zodiac 3.3.0 full interpretation set.
+Full Black Zodiac 3.3.0 set: planets, Chiron, asteroids, TNOs,
+Arabic Parts, houses, fixed stars.
 """
 
 import json
@@ -15,7 +16,7 @@ import swisseph as swe
 DAYS_AHEAD = 60
 HOUSE_SYSTEM = b'P'  # Placidus
 OBSERVER = "geocentric Earth"
-EPHE_PATH = "."  # .se1 files are in repo root now
+EPHE_PATH = "."  # .se1 files are in repo root
 
 # ---- Setup ----
 swe.set_ephe_path(EPHE_PATH)
@@ -36,7 +37,7 @@ PLANETS = {
     "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15)
 }
 
-# Archetype asteroids & TNOs — numeric IDs for Swiss Ephemeris
+# Archetype asteroids & TNOs (numeric IDs for Swiss Ephemeris)
 ASTEROIDS = {
     "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
     "Sappho": 80, "Karma": 3811,
@@ -59,8 +60,9 @@ def houses_and_points(lat, lon, dt):
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
                     swe.GREG_CAL)
-    cusp, ascmc, _ = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
-    asc = ascmc[0]; mc = ascmc[1]
+    cusp, ascmc = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
+    asc = ascmc[0]
+    mc = ascmc[1]
     sun_lon, _ = swe_calc(swe.SUN, dt)
     moon_lon, _ = swe_calc(swe.MOON, dt)
     fortune = (asc + moon_lon - sun_lon) % 360
@@ -116,11 +118,33 @@ def main():
 
         # Houses / Arabic Parts
         points = houses_and_points(51.5, 0.0, dt)
-        feed["feed"]["objects"].append({"id": "ASC","targetname":"Ascendant","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["ASC"],"source":"swiss"})
-        feed["feed"]["objects"].append({"id": "MC","targetname":"Midheaven","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["MC"],"source":"swiss"})
-        feed["feed"]["objects"].append({"id": "Houses","targetname":"Houses","datetime_utc":dt.isoformat(),"houses_deg":points["houses"],"source":"swiss"})
-        feed["feed"]["objects"].append({"id": "PartOfFortune","targetname":"Part of Fortune","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfFortune"],"branch":"day","source":"swiss"})
-        feed["feed"]["objects"].append({"id": "PartOfSpirit","targetname":"Part of Spirit","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfSpirit"],"branch":"day","source":"swiss"})
+        feed["feed"]["objects"].append({
+            "id": "ASC", "targetname": "Ascendant",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["ASC"], "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "MC", "targetname": "Midheaven",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["MC"], "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "Houses", "targetname": "Houses",
+            "datetime_utc": dt.isoformat(),
+            "houses_deg": points["houses"], "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "PartOfFortune", "targetname": "Part of Fortune",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["PartOfFortune"],
+            "branch": "day", "source": "swiss"
+        })
+        feed["feed"]["objects"].append({
+            "id": "PartOfSpirit", "targetname": "Part of Spirit",
+            "datetime_utc": dt.isoformat(),
+            "ecl_lon_deg": points["PartOfSpirit"],
+            "branch": "day", "source": "swiss"
+        })
 
         # Fixed stars
         for star in FIXED_STARS:
