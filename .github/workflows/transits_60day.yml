@@ -2,7 +2,7 @@ name: Generate 60-Day Transit Feed
 
 on:
   schedule:
-    - cron: "0 11 1 */2 *"   # run every 2 months at 11:00 UTC on day 1
+    - cron: "0 11,23 * * *"   # run every 12 hours at 11:00 & 23:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -22,22 +22,20 @@ jobs:
 
       - name: Verify committed ephemeris and fallback files
         run: |
-          echo "Checking for all required Swiss Ephemeris + fallback files..."
-          ls -lh .
-          # Core planetary & asteroid files
-          test -f sepl_18.se1   && echo "✅ sepl_18.se1   (planets Sun–Pluto)"       || (echo "❌ Missing sepl_18.se1" && exit 1)
-          test -f seas_18.se1   && echo "✅ seas_18.se1   (asteroids core, Chiron)" || (echo "❌ Missing seas_18.se1" && exit 1)
-          test -f seasm18.se1   && echo "✅ seasm18.se1   (asteroids supplementary)"|| (echo "❌ Missing seasm18.se1" && exit 1)
-          # Moon precision files
-          test -f semo_18.se1   && echo "✅ semo_18.se1   (Moon high precision)"    || (echo "❌ Missing semo_18.se1" && exit 1)
-          test -f semom18.se1   && echo "✅ semom18.se1   (Moon motion corrections)"|| (echo "❌ Missing semom18.se1" && exit 1)
-          # Combined planetary/lunar file
-          test -f seplm18.se1   && echo "✅ seplm18.se1   (Planets + Moon motions)" || (echo "❌ Missing seplm18.se1" && exit 1)
-          # Fallback JSON for asteroids/TNOs
-          test -f sept_to_feb_2026_asteroids_tnos.json && echo "✅ sept_to_feb_2026_asteroids_tnos.json (fallback ephemeris)" || (echo "❌ Missing fallback JSON" && exit 1)
+          echo "Checking for all required Swiss Ephemeris + asteroid JSON..."
+          test -f sepl_18.se1   || (echo "❌ Missing sepl_18.se1" && exit 1)
+          test -f seas_18.se1   || (echo "❌ Missing seas_18.se1" && exit 1)
+          test -f seasm18.se1   || (echo "❌ Missing seasm18.se1" && exit 1)
+          test -f semo_18.se1   || (echo "❌ Missing semo_18.se1" && exit 1)
+          test -f semom18.se1   || (echo "❌ Missing semom18.se1" && exit 1)
+          test -f seplm18.se1   || (echo "❌ Missing seplm18.se1" && exit 1)
+          test -f aug_2025_to_feb_2026_asteroids_tnos.json || (echo "❌ Missing asteroid/TNO JSON" && exit 1)
 
-      - name: Generate 60-day feed
+      - name: Generate planetary 60-day feed
         run: python scripts/generate_feed_60day.py
+
+      - name: Supplement feed with asteroid/TNO JSON
+        run: python scripts/supplement_with_asteroids.py
 
       - name: Commit & push updated feed
         run: |
