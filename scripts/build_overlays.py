@@ -16,13 +16,19 @@ def main():
     ap.add_argument("--out",required=True)
     args=ap.parse_args()
 
-    feed, angles=load(args.feed),load(args.angles)
-    overlay={"meta":{"generated_at_utc":feed["generated_at_utc"],
-                     "observer":feed.get("observer","geocentric Earth"),
-                     "source":"overlay-builder"},
-             "objects":feed.get("objects",[]),"angles":angles.get("angles",{})}
+    feed, angles = load(args.feed), load(args.angles)
+    overlay = {
+        "meta": {
+            "generated_at_utc": feed.get("generated_at_utc"),
+            "observer": feed.get("observer","geocentric Earth"),
+            "source": "overlay-builder"
+        },
+        "objects": feed.get("objects",[]),
+        "angles": angles.get("angles",{})
+    }
 
-    Path(args.out).write_text(json.dumps(overlay,indent=2))
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.out).write_text(json.dumps(overlay, indent=2))
     print(f"[OK] wrote {args.out}")
 
 if __name__=="__main__": main()
