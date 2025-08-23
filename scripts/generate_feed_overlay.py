@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
-import sys, os
-# Ensure repo root and scripts folder are on sys.path
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(os.path.dirname(__file__))
-
-import json
+import json, os, sys
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 
-from sources import horizons_client, miriade_client, mpc_client, swiss_client
-from utils.coords import ra_dec_to_ecl
+# Fixed imports (point to subpackages inside scripts/)
+from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
+from scripts.utils.coords import ra_dec_to_ecl
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
@@ -40,7 +36,8 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
     out = {}
 
     # majors
-    majors = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
+    majors = ["Sun", "Moon", "Mercury", "Venus", "Mars",
+              "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
     for name in majors:
         got, used = None, None
         for label, func in SOURCE_ORDER:
@@ -79,9 +76,12 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
 
     return out
 
-def merge_into(existing: Dict[str, Any], positions: Dict[str, Dict[str, Any]], when_iso: str) -> Dict[str, Any]:
+def merge_into(existing: Dict[str, Any],
+               positions: Dict[str, Dict[str, Any]],
+               when_iso: str) -> Dict[str, Any]:
     meta = existing.get("meta", {})
-    meta.update({"generated_at_utc": when_iso, "source_order": [s for s, _ in SOURCE_ORDER]})
+    meta.update({"generated_at_utc": when_iso,
+                 "source_order": [s for s, _ in SOURCE_ORDER]})
     charts = existing.get("charts")
     if charts and isinstance(charts, dict):
         for who, chart in charts.items():
@@ -93,7 +93,8 @@ def merge_into(existing: Dict[str, Any], positions: Dict[str, Dict[str, Any]], w
     return out
 
 def main(argv: List[str]):
-    out_path = os.environ.get("OVERLAY_OUT", os.path.join("docs", "feed_overlay.json"))
+    out_path = os.environ.get("OVERLAY_OUT",
+                              os.path.join("docs", "feed_overlay.json"))
     when_iso = os.environ.get("OVERLAY_TIME_UTC", iso_now())
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     existing = load_existing(out_path)
