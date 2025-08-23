@@ -89,11 +89,11 @@ def get_jpl_batch(dt, retries=3):
 def get_swiss(body, jd):
     if body in SWISS_IDS:
         res = swe.calc_ut(jd, SWISS_IDS[body])
-        lon, lat = res[0], res[1]   # safe unpack
+        lon, lat = res[0], res[1]   # <-- ONLY TWO VALUES
         return lon, lat, "swiss"
     if body in SWISS_MINORS:
         res = swe.calc_ut(jd, SWISS_MINORS[body])
-        lon, lat = res[0], res[1]   # safe unpack
+        lon, lat = res[0], res[1]   # <-- ONLY TWO VALUES
         return lon, lat, "swiss_minor"
     raise ValueError(f"No Swiss ID for {body}")
 
