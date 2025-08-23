@@ -1,6 +1,5 @@
 import json
 import datetime
-import math
 import swisseph as swe
 from astroquery.jplhorizons import Horizons
 
@@ -34,6 +33,13 @@ SWISS_MINORS = {
     "Sappho": 80, "Karma": 3811,
     "Bacchus": 2063, "Astraea": 5,
     "Euphrosyne": 31, "Chariklo": 10199,
+}
+
+FIXED_STARS = {
+    "Regulus": 150.0,
+    "Spica": 204.75,
+    "Sirius": 104.0,
+    "Aldebaran": 69.0
 }
 
 # -------------------------------
@@ -91,21 +97,20 @@ def compute_angles(jd, lat, lon):
 # -------------------------------
 
 def compute_parts(angles, objs):
-    # need Sun, Moon, ASC
     sun = objs["Sun"]["lon"]
     moon = objs["Moon"]["lon"]
     asc = angles["ASC"]
 
     parts = {}
-    parts["PartOfFortune"]    = normalize_deg(asc + moon - sun)
-    parts["PartOfSpirit"]     = normalize_deg(asc + sun - moon)
-    parts["PartOfKarma"]      = normalize_deg(asc + moon - sun + 30)
-    parts["PartOfTreachery"]  = angles["MC"]
-    parts["PartOfDeliverance"]= normalize_deg(parts["PartOfFortune"] + 106)
-    parts["PartOfRebirth"]    = normalize_deg(parts["PartOfSpirit"] + 49)
-    parts["PartOfVengeance"]  = normalize_deg(asc - moon + sun)
-    parts["PartOfVictory"]    = normalize_deg(asc + sun - moon + 60)
-    parts["PartOfDelirium"]   = normalize_deg(asc + moon + sun)
+    parts["PartOfFortune"]     = normalize_deg(asc + moon - sun)
+    parts["PartOfSpirit"]      = normalize_deg(asc + sun - moon)
+    parts["PartOfKarma"]       = normalize_deg(asc + moon - sun + 30)
+    parts["PartOfTreachery"]   = angles["MC"]
+    parts["PartOfDeliverance"] = normalize_deg(parts["PartOfFortune"] + 106)
+    parts["PartOfRebirth"]     = normalize_deg(parts["PartOfSpirit"] + 49)
+    parts["PartOfVengeance"]   = normalize_deg(asc - moon + sun)
+    parts["PartOfVictory"]     = normalize_deg(asc + sun - moon + 60)
+    parts["PartOfDelirium"]    = normalize_deg(asc + moon + sun)
     parts["PartOfIntelligence"]= normalize_deg(parts["PartOfSpirit"] - 30)
 
     return parts
@@ -121,10 +126,11 @@ def main():
         dt.hour + dt.minute/60.0 + dt.second/3600.0
     )
 
-    # Example observer coords (geocentric Earth = lat 0, lon 0 for overlay)
+    # Example observer coords (geocentric overlay)
     obs_lat, obs_lon = 0.0, 0.0
     angles = compute_angles(jd, obs_lat, obs_lon)
 
+    # Body list: majors + minors
     bodies = list(JPL_IDS.keys()) + \
              [b for b in SWISS_IDS.keys() if b not in JPL_IDS] + \
              list(SWISS_MINORS.keys())
@@ -134,13 +140,14 @@ def main():
         "meta": {
             "generated_at_utc": dt.isoformat(),
             "observer": "geocentric Earth",
-            "source_hierarchy": ["jpl", "swiss", "swiss_minor"],
+            "source_hierarchy": ["jpl", "swiss", "swiss_minor", "fixed"],
             "black_zodiac_version": "3.3.0"
         },
         "objects": [],
         "angles": angles
     }
 
+    # Planets, asteroids, TNOs
     for b in bodies:
         lon, lat, src = resolve_position(b, dt, jd)
         objs[b] = {"lon": lon, "lat": lat}
@@ -150,6 +157,16 @@ def main():
             "ecl_lon_deg": lon,
             "ecl_lat_deg": lat,
             "source": src
+        })
+
+    # Fixed stars
+    for star, lon in FIXED_STARS.items():
+        overlay["objects"].append({
+            "id": star,
+            "targetname": star,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": 0.0,
+            "source": "fixed"
         })
 
     # Arabic parts
