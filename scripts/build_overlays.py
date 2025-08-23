@@ -62,7 +62,6 @@ def get_jpl_batch(dt, retries=3):
                 epochs=dt.strftime("%Y-%m-%d %H:%M")
             )
             eph = obj.ephemerides()
-
             if "EclLon" not in eph.columns or "EclLat" not in eph.columns:
                 raise RuntimeError("Horizons returned malformed ephemeris")
 
@@ -85,15 +84,15 @@ def get_jpl_batch(dt, retries=3):
                 delay *= 2
     return {}
 
-# --- Swiss safe wrapper (no ValueError) ---
+# --- Swiss safe wrapper (no 3-value unpack!) ---
 def get_swiss(body, jd):
     if body in SWISS_IDS:
         res = swe.calc_ut(jd, SWISS_IDS[body])
-        lon, lat = res[0], res[1]   # <-- ONLY TWO VALUES
+        lon, lat = res[0], res[1]
         return lon, lat, "swiss"
     if body in SWISS_MINORS:
         res = swe.calc_ut(jd, SWISS_MINORS[body])
-        lon, lat = res[0], res[1]   # <-- ONLY TWO VALUES
+        lon, lat = res[0], res[1]
         return lon, lat, "swiss_minor"
     raise ValueError(f"No Swiss ID for {body}")
 
