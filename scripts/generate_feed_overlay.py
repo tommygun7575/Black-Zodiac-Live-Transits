@@ -3,7 +3,7 @@ import json, os, sys
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 
-# Explicit imports with scripts.* prefix
+# Explicit imports
 from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
 from scripts.utils.coords import ra_dec_to_ecl
 
@@ -15,34 +15,28 @@ def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-# ⚡ Swiss first, then JPL, then others
-SOURCE_ORDER = (
-    ("swiss", swiss_client.get_ecliptic_lonlat),
-    ("jpl", horizons_client.get_ecliptic_lonlat),
-    ("miriade", miriade_client.get_ecliptic_lonlat),
-    ("mpc", mpc_client.get_ecliptic_lonlat),
-)
-
 def iso_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-def load_existing(path: str) -> Dict[str, Any]:
-    if os.path.exists(path):
-        try:
-            return json.load(open(path))
-        except Exception:
-            return {}
-    return {}
 
 def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
     out = {}
 
-    # majors
-    majors = ["Sun", "Moon", "Mercury", "Venus", "Mars",
-              "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
-    for name in majors:
+    # ---- Categories ----
+    MAJORS = ["Sun","Moon","Mercury","Venus","Mars",
+              "Jupiter","Saturn","Uranus","Neptune","Pluto","Chiron"]
+
+    ASTEROIDS = ["Ceres","Pallas","Juno","Vesta","Psyche",
+                 "Amor","Eros","Astraea","Sappho","Karma","Bacchus"]
+
+    TNOs = ["Eris","Sedna","Haumea","Makemake","Varuna",
+            "Ixion","Typhon","Salacia","2002 AW197","2003 VS2"]
+
+    AETHERS = ["Vulcan","Persephone","Hades","Proserpina","Isis"]
+
+    # ---- Helper to query with fallbacks ----
+    def resolve_body(name: str, sources) -> Dict[str, Any]:
         got, used = None, None
-        for label, func in SOURCE_ORDER:
+        for label, func in sources:
             try:
                 pos = func(name, when_iso)
             except Exception:
@@ -50,33 +44,42 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
             if pos:
                 got, used = pos, label
                 break
-        out[name] = {
+        return {
             "ecl_lon_deg": None if not got else float(got[0]),
             "ecl_lat_deg": None if not got else float(got[1]),
-            "source": "missing" if not used else used,
+            "source": "missing" if not used else used
         }
 
-    # small bodies
-    sb_cfg = load_json(os.path.join(DATA, "small_bodies_master.json"))
-    for bucket in ("asteroids", "centaurs", "tnos"):
-        for rec in sb_cfg.get(bucket, []):
-            name, sid = rec["name"], rec["id"]
-            got, used = None, None
-            for label, func in SOURCE_ORDER:
-                try:
-                    pos = func(sid, when_iso)
-                except Exception:
-                    pos = None
-                if pos:
-                    got, used = pos, label
-                    break
-            out[name] = {
-                "ecl_lon_deg": None if not got else float(got[0]),
-                "ecl_lat_deg": None if not got else float(got[1]),
-                "source": "missing" if not used else used,
-            }
+    # ---- Majors: JPL first, Swiss fallback ----
+    for name in MAJORS:
+        out[name] = resolve_body(name, [
+            ("jpl", horizons_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat)
+        ])
 
-    # fixed stars (always available)
+    # ---- Asteroids: JPL first, Swiss fallback ----
+    for name in ASTEROIDS:
+        out[name] = resolve_body(name, [
+            ("jpl", horizons_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat)
+        ])
+
+    # ---- TNOs: Swiss first, then Miriade, then JPL fallback ----
+    for name in TNOs:
+        out[name] = resolve_body(name, [
+            ("swiss", swiss_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat),
+            ("jpl", horizons_client.get_ecliptic_lonlat)
+        ])
+
+    # ---- Aethers: Swiss first, Miriade fallback ----
+    for name in AETHERS:
+        out[name] = resolve_body(name, [
+            ("swiss", swiss_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat)
+        ])
+
+    # ---- Fixed stars: always available ----
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
@@ -89,7 +92,12 @@ def merge_into(natal_bundle: Dict[str, Any],
                when_iso: str) -> Dict[str, Any]:
     meta = {
         "generated_at_utc": when_iso,
-        "source_order": [s for s, _ in SOURCE_ORDER]
+        "source_order": [
+            "jpl (majors/asteroids)",
+            "swiss (tnos/aethers/fallback)",
+            "miriade (tnos/aethers fill)",
+            "fixed (stars)"
+        ]
     }
 
     charts = {}
