@@ -2,11 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 compute_angles_and_parts.py — calculate ASC, MC, Houses, Fortune, Spirit
-for each natal chart in config/live_config.json.
-
-- Input: feed_now.json (generated_at_utc)
-- Input: config/live_config.json (natal charts)
-- Output: feed_angles.json (normalized schema)
+Normalized schema output for each natal chart
 """
 
 import argparse, json, sys
@@ -28,7 +24,6 @@ def compute_angles(lat, lon, dt):
     sun, _ = swe.calc_ut(jd, swe.SUN); moon, _ = swe.calc_ut(jd, swe.MOON)
     fortune = (asc + moon[0] - sun[0]) % 360
     spirit  = (asc + sun[0] - moon[0]) % 360
-
     return [
         {"id":"ASC","targetname":"Ascendant","ecl_lon_deg":asc,"ecl_lat_deg":0.0,"source":"swiss"},
         {"id":"MC","targetname":"Midheaven","ecl_lon_deg":mc,"ecl_lat_deg":0.0,"source":"swiss"},
@@ -37,33 +32,24 @@ def compute_angles(lat, lon, dt):
         {"id":"PartOfSpirit","targetname":"Part of Spirit","ecl_lon_deg":spirit,"ecl_lat_deg":0.0,"source":"swiss"}
     ]
 
-def load(path): 
-    try: return json.loads(Path(path).read_text())
-    except Exception as e: 
-        print(f"[ERROR] Failed to load {path}: {e}", file=sys.stderr)
-        sys.exit(1)
+def load(path): return json.loads(Path(path).read_text())
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap=argparse.ArgumentParser()
     ap.add_argument("--feed",required=True)
     ap.add_argument("--config",required=True)
     ap.add_argument("--out",required=True)
-    args = ap.parse_args()
+    args=ap.parse_args()
 
-    feed = load(args.feed); cfg = load(args.config)
+    feed, cfg = load(args.feed), load(args.config)
     dt = dtparse.parse(feed["generated_at_utc"]) if "generated_at_utc" in feed else datetime.utcnow()
-
-    results = {
-        "generated_at_utc": dt.isoformat()+"Z",
-        "angles": {}
-    }
+    results={"generated_at_utc":dt.isoformat()+"Z","angles":{}}
 
     for entry in cfg["natal_charts"]:
-        name, lat, lon = entry["name"], float(entry["lat"]), float(entry["lon"])
-        results["angles"][name] = compute_angles(lat, lon, dt)
+        results["angles"][entry["name"]] = compute_angles(float(entry["lat"]), float(entry["lon"]), dt)
 
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(results, indent=2))
-    print(f"[OK] wrote {args.out} with {len(results['angles'])} natal charts")
+    print(f"[OK] wrote {args.out} with {len(results['angles'])} charts")
 
 if __name__=="__main__": main()
