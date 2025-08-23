@@ -7,7 +7,7 @@ fetch_transits.py — Build the live transit feed (planets + asteroids/TNOs + st
 - Normalized schema: id, targetname, ecl_lon_deg, ecl_lat_deg, source
 """
 
-import argparse, json, re, sys
+import argparse, json, re
 from pathlib import Path
 from datetime import datetime
 from astroquery.jplhorizons import Horizons
@@ -23,7 +23,7 @@ ASTEROIDS_TNOS = {
     "Varuna": 20000, "Ixion": 28978, "Typhon": 42355, "Salacia": 120347
 }
 
-# Always include Chiron explicitly
+# Planets + Chiron
 _SWE_MAJOR = {
     "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY, "299": swe.VENUS,
     "499": swe.MARS, "599": swe.JUPITER, "699": swe.SATURN,
@@ -66,6 +66,11 @@ def parse_fallback(val):
 def load_fallback():
     try:
         fb = json.loads(Path(FALLBACK_PATH).read_text())
+        # Normalize values on load
+        for day in fb["data"]:
+            for k,v in list(day.items()):
+                if k != "date":
+                    day[k] = parse_fallback(v)
         return {row["date"]: row for row in fb["data"]}
     except Exception:
         return {}
@@ -102,16 +107,17 @@ def main():
     for p in cfg["planets"]:
         eid, label = str(p["id"]), p["label"]
         lon, lat, src = horizons_lonlat(eid, epoch)
-        if lon is None: lon, lat, src = swiss_lonlat(eid, jd)
+        if lon is None or eid == "2060":  # Force Swiss for Chiron
+            lon, lat, src = swiss_lonlat(eid, jd)
         feed["objects"].append(normalize(eid, label, lon, lat, src))
 
     # Asteroids/TNOs
-    for name, num in ASTEROIDS_TNOS.items():
+    for name,num in ASTEROIDS_TNOS.items():
         lon, lat, src = swiss_lonlat(str(num), jd)
         if lon is not None:
             feed["objects"].append(normalize(str(num), name, lon, lat, src))
         elif date_key in fallback and name in fallback[date_key]:
-            val = parse_fallback(fallback[date_key][name])
+            val = fallback[date_key][name]
             feed["objects"].append(normalize(name, name, val, 0.0, "fallback-json"))
         else:
             feed["objects"].append(normalize(name, name, None, 0.0, "missing"))
