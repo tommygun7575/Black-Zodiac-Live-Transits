@@ -1,9 +1,15 @@
 from typing import Tuple, Optional
+from scripts.utils.coords import ra_dec_to_ecl
+from astroquery.jplhorizons import Horizons
 
 def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float]]:
+    """
+    Query JPL Horizons for ecliptic longitude/latitude.
+    Fallback to RA/DEC conversion if needed.
+    """
     try:
-        from astroquery.jplhorizons import Horizons
-        obj = Horizons(id=name, location='500', epochs=when_iso)
+        # Horizons needs epochs as a list of strings
+        obj = Horizons(id=name, location="500", epochs=[when_iso])
         eph = obj.ephemerides()
 
         ecl_lon, ecl_lat = None, None
@@ -22,11 +28,12 @@ def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float
 
         # fallback RA/DEC -> ecliptic
         if (ecl_lon is None or ecl_lat is None) and {"RA", "DEC"}.issubset(eph.colnames):
-            from scripts.utils.coords import ra_dec_to_ecl
             ecl_lon, ecl_lat = ra_dec_to_ecl(float(eph["RA"][0]), float(eph["DEC"][0]), when_iso)
 
         if ecl_lon is None or ecl_lat is None:
             return None
+
         return (ecl_lon % 360.0, ecl_lat)
+
     except Exception:
         return None
