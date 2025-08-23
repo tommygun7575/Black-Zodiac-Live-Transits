@@ -22,12 +22,17 @@ jobs:
 
       - name: Verify committed ephemeris files
         run: |
-          echo "Ephemeris files present in repo root:"
+          echo "Checking for all required Swiss Ephemeris files..."
           ls -lh .
-          test -f sepl_18.se1 && echo "✅ sepl_18.se1 (planets)"
-          test -f seas_18.se1 && echo "✅ seas_18.se1 (asteroids core)"
-          test -f seasm18.se1 && echo "✅ seasm18.se1 (asteroids supplementary)"
-          test -f semo_18.se1 && echo "✅ semo_18.se1 (moon precision)"
+          # Core planetary & asteroid files
+          test -f sepl_18.se1   && echo "✅ sepl_18.se1   (planets Sun–Pluto)"       || (echo "❌ Missing sepl_18.se1" && exit 1)
+          test -f seas_18.se1   && echo "✅ seas_18.se1   (asteroids core, Chiron)" || (echo "❌ Missing seas_18.se1" && exit 1)
+          test -f seasm18.se1   && echo "✅ seasm18.se1   (asteroids supplementary)"|| (echo "❌ Missing seasm18.se1" && exit 1)
+          # Moon precision files
+          test -f semo_18.se1   && echo "✅ semo_18.se1   (Moon high precision)"    || (echo "❌ Missing semo_18.se1" && exit 1)
+          test -f semom18.se1   && echo "✅ semom18.se1   (Moon motion corrections)"|| (echo "❌ Missing semom18.se1" && exit 1)
+          # Combined planetary/lunar file
+          test -f seplm18.se1   && echo "✅ seplm18.se1   (Planets + Moon motions)" || (echo "❌ Missing seplm18.se1" && exit 1)
 
       - name: Generate 60-day feed
         run: python scripts/generate_feed_60day.py
