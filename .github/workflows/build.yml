@@ -2,7 +2,7 @@ name: Build Overlay Feed
 
 on:
   schedule:
-    # Run every 12 hours (10:30 UTC and 22:30 UTC ≈ 3:30 AM / 3:30 PM Pacific during PDT)
+    # Run twice daily at 10:30 UTC and 22:30 UTC (≈ 3:30 AM / 3:30 PM Pacific during PDT)
     - cron: "30 10,22 * * *"
   workflow_dispatch:
 
@@ -22,16 +22,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt swisseph astroquery
+        run: pip install -r requirements.txt
 
       - name: Verify required files
         run: |
           echo "Checking for required files..."
-          test -f data/aug_2025_to_feb_2026_asteroids_tnos_flat.json || (echo "❌ Missing Astro-Seek flat file" && exit 1)
+          test -f aug_2025_to_feb_2026_asteroids_tnos_flat.json || (echo "❌ Missing Astro-Seek flat file" && exit 1)
           test -f config/live_config.json || (echo "❌ Missing config/live_config.json" && exit 1)
 
       - name: Convert Astro-Seek flat file → fallback
-        run: python scripts/convert_flat_astroseek.py
+        run: python scripts/convert_flat_astroseek.py aug_2025_to_feb_2026_asteroids_tnos_flat.json
 
       - name: Build overlay feed
         run: python scripts/build_overlays.py
@@ -44,6 +44,6 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs/feed_overlay.json docs/feed_angles.json data/fallback_aug2025_2026.json
-          git commit -m "Daily update feed_overlay + angles" || echo "No changes"
+          git commit -m "Daily update overlay feed + angles" || echo "No changes"
           git pull --rebase origin main
           git push origin main
