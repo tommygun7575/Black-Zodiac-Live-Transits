@@ -1,256 +1,224 @@
 {
-  "generated_at_utc": "2025-08-22T23:14:00.473804Z",
+  "generated_at_utc": "2025-08-23T07:21:08.954211Z",
   "observer": "geocentric Earth",
-  "source": "JPL Horizons (fallback: Swiss for majors)",
+  "source": "JPL Horizons + Swiss + fallback JSON",
   "objects": [
     {
       "id": "10",
       "targetname": "Sun",
-      "ecl_lon_deg": 150.10719604042757,
-      "ecl_lat_deg": 3.959441546568519e-05,
+      "ecl_lon_deg": 150.43333595012453,
+      "ecl_lat_deg": 2.8083614415215542e-05,
       "source": "swiss"
     },
     {
       "id": "301",
       "targetname": "Moon",
-      "ecl_lon_deg": 146.64780133226617,
-      "ecl_lat_deg": 1.944481285531354,
+      "ecl_lon_deg": 151.0561728597332,
+      "ecl_lat_deg": 1.562935052436743,
       "source": "swiss"
     },
     {
       "id": "199",
       "targetname": "Mercury",
-      "ecl_lon_deg": 132.17008486352796,
-      "ecl_lat_deg": 0.02971031482154282,
+      "ecl_lon_deg": 132.621318789432,
+      "ecl_lat_deg": 0.10731110522947744,
       "source": "swiss"
     },
     {
       "id": "299",
       "targetname": "Venus",
-      "ecl_lon_deg": 116.76198731789347,
-      "ecl_lat_deg": -0.34466097166884513,
+      "ecl_lon_deg": 117.16457726698094,
+      "ecl_lat_deg": -0.3265823893482948,
       "source": "swiss"
     },
     {
       "id": "499",
       "targetname": "Mars",
-      "ecl_lon_deg": 190.09148271757488,
-      "ecl_lat_deg": 0.35392788560768024,
+      "ecl_lon_deg": 190.3079626782342,
+      "ecl_lat_deg": 0.35000660794835997,
       "source": "swiss"
     },
     {
       "id": "599",
       "targetname": "Jupiter",
-      "ecl_lon_deg": 106.1926001469554,
-      "ecl_lat_deg": -0.04707387951189106,
+      "ecl_lon_deg": 106.25749642449307,
+      "ecl_lat_deg": -0.0465334635247652,
       "source": "swiss"
     },
     {
       "id": "699",
       "targetname": "Saturn",
-      "ecl_lon_deg": 0.6130984482583335,
-      "ecl_lat_deg": -2.4544717793553374,
+      "ecl_lon_deg": 0.5924723993871004,
+      "ecl_lat_deg": -2.455493033662509,
       "source": "swiss"
     },
     {
       "id": "799",
       "targetname": "Uranus",
-      "ecl_lon_deg": 61.37822412649669,
-      "ecl_lat_deg": -0.20961704086709756,
+      "ecl_lon_deg": 61.38222852315583,
+      "ecl_lat_deg": -0.20962872472653607,
       "source": "swiss"
     },
     {
       "id": "899",
       "targetname": "Neptune",
-      "ecl_lon_deg": 1.5769493337566045,
-      "ecl_lat_deg": -1.363336813890172,
+      "ecl_lon_deg": 1.5692968885280445,
+      "ecl_lat_deg": -1.363517775342053,
       "source": "swiss"
     },
     {
       "id": "999",
       "targetname": "Pluto",
-      "ecl_lon_deg": 301.94694427326436,
-      "ecl_lat_deg": -3.782166913713017,
+      "ecl_lon_deg": 301.94014623289917,
+      "ecl_lat_deg": -3.7823443902794938,
       "source": "swiss"
+    },
+    {
+      "id": "2060",
+      "targetname": "Chiron",
+      "ecl_lon_deg": null,
+      "ecl_lat_deg": null,
+      "source": null
+    },
+    {
+      "id": "4",
+      "targetname": "Vesta",
+      "ecl_lon_deg": 190.3079626782342,
+      "ecl_lat_deg": 0.35000660794835997,
+      "source": "swiss"
+    },
+    {
+      "id": "Psyche",
+      "targetname": "Psyche",
+      "ecl_lon_deg": "15\u00b0 36",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Amor",
+      "targetname": "Amor",
+      "ecl_lon_deg": null,
+      "ecl_lat_deg": 0.0,
+      "source": "missing"
+    },
+    {
+      "id": "Eros",
+      "targetname": "Eros",
+      "ecl_lon_deg": "10\u00b0 20",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Sappho",
+      "targetname": "Sappho",
+      "ecl_lon_deg": "06\u00b0 16",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Karma",
+      "targetname": "Karma",
+      "ecl_lon_deg": "12\u00b0 39",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Chariklo",
+      "targetname": "Chariklo",
+      "ecl_lon_deg": "20\u00b0 53",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Pholus",
+      "targetname": "Pholus",
+      "ecl_lon_deg": "25\u00b0 38",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Eris",
+      "targetname": "Eris",
+      "ecl_lon_deg": "19\u00b0 22",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Sedna",
+      "targetname": "Sedna",
+      "ecl_lon_deg": "08\u00b0 47",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Haumea",
+      "targetname": "Haumea",
+      "ecl_lon_deg": "01\u00b0 50",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Makemake",
+      "targetname": "Makemake",
+      "ecl_lon_deg": "01\u00b0 20",
+      "ecl_lat_deg": 0.0,
+      "source": "fallback-json"
+    },
+    {
+      "id": "Varuna",
+      "targetname": "Varuna",
+      "ecl_lon_deg": null,
+      "ecl_lat_deg": 0.0,
+      "source": "missing"
+    },
+    {
+      "id": "Ixion",
+      "targetname": "Ixion",
+      "ecl_lon_deg": null,
+      "ecl_lat_deg": 0.0,
+      "source": "missing"
+    },
+    {
+      "id": "Typhon",
+      "targetname": "Typhon",
+      "ecl_lon_deg": null,
+      "ecl_lat_deg": 0.0,
+      "source": "missing"
+    },
+    {
+      "id": "Salacia",
+      "targetname": "Salacia",
+      "ecl_lon_deg": null,
+      "ecl_lat_deg": 0.0,
+      "source": "missing"
     },
     {
       "id": "Regulus",
       "targetname": "Regulus (Alpha Leo)",
-      "ra_deg": 152.0929625,
-      "dec_deg": 11.9672083,
-      "epoch": "J2000",
+      "ecl_lon_deg": 152.0929625,
+      "ecl_lat_deg": 11.9672083,
       "source": "fixed"
     },
     {
       "id": "Spica",
       "targetname": "Spica (Alpha Vir)",
-      "ra_deg": 201.2982475,
-      "dec_deg": -11.1613194,
-      "epoch": "J2000",
+      "ecl_lon_deg": 201.2982475,
+      "ecl_lat_deg": -11.1613194,
       "source": "fixed"
     },
     {
       "id": "Sirius",
       "targetname": "Sirius (Alpha CMa)",
-      "ra_deg": 101.28715533,
-      "dec_deg": -16.71611586,
-      "epoch": "J2000",
+      "ecl_lon_deg": 101.2871553,
+      "ecl_lat_deg": -16.7161159,
       "source": "fixed"
     },
     {
       "id": "Aldebaran",
       "targetname": "Aldebaran (Alpha Tau)",
-      "ra_deg": 68.9801625,
-      "dec_deg": 16.50930278,
-      "epoch": "J2000",
+      "ecl_lon_deg": 68.9801625,
+      "ecl_lat_deg": 16.5093028,
       "source": "fixed"
-    },
-    {
-      "id": "ASC@Tommy",
-      "targetname": "ASC (Tommy)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 320.7582141893163,
-      "source": "swiss"
-    },
-    {
-      "id": "MC@Tommy",
-      "targetname": "MC (Tommy)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 247.91603499372803,
-      "source": "swiss"
-    },
-    {
-      "id": "Houses@Tommy",
-      "targetname": "Houses (Tommy)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "houses_deg": [
-        8.907758954178473,
-        43.33167466709812,
-        67.91603499372803,
-        88.90514174590697,
-        110.94959118709039,
-        140.75821418931628,
-        188.90775895417846,
-        223.33167466709813,
-        247.91603499372803,
-        268.905141745907,
-        290.9495911870904
-      ],
-      "source": "swiss"
-    },
-    {
-      "id": "PartOfFortune@Tommy",
-      "targetname": "Part of Fortune (Tommy)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 317.29881948115485,
-      "branch": "day",
-      "source": "swiss+legacy"
-    },
-    {
-      "id": "PartOfSpirit@Tommy",
-      "targetname": "Part of Spirit (Tommy)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 324.21760889747765,
-      "branch": "day",
-      "source": "swiss+legacy"
-    },
-    {
-      "id": "ASC@Milena",
-      "targetname": "ASC (Milena)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 269.6010174144799,
-      "source": "swiss"
-    },
-    {
-      "id": "MC@Milena",
-      "targetname": "MC (Milena)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 201.89779223918615,
-      "source": "swiss"
-    },
-    {
-      "id": "Houses@Milena",
-      "targetname": "Houses (Milena)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "houses_deg": [
-        307.3354899038016,
-        347.9835681668907,
-        21.897792239186174,
-        47.85231242999714,
-        69.23357464609637,
-        89.60101741447988,
-        127.3354899038016,
-        167.98356816689068,
-        201.89779223918615,
-        227.85231242999714,
-        249.23357464609637
-      ],
-      "source": "swiss"
-    },
-    {
-      "id": "PartOfFortune@Milena",
-      "targetname": "Part of Fortune (Milena)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 266.14162270631846,
-      "branch": "day",
-      "source": "swiss+legacy"
-    },
-    {
-      "id": "PartOfSpirit@Milena",
-      "targetname": "Part of Spirit (Milena)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 273.06041212264125,
-      "branch": "day",
-      "source": "swiss+legacy"
-    },
-    {
-      "id": "ASC@Christine",
-      "targetname": "ASC (Christine)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 321.8279534553232,
-      "source": "swiss"
-    },
-    {
-      "id": "MC@Christine",
-      "targetname": "MC (Christine)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 248.54288091701096,
-      "source": "swiss"
-    },
-    {
-      "id": "Houses@Christine",
-      "targetname": "Houses (Christine)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "houses_deg": [
-        9.854135018815356,
-        44.05097331195632,
-        68.54288091701096,
-        89.54581371998182,
-        111.71273246110849,
-        141.8279534553232,
-        189.85413501881536,
-        224.0509733119563,
-        248.54288091701096,
-        269.5458137199818,
-        291.7127324611085
-      ],
-      "source": "swiss"
-    },
-    {
-      "id": "PartOfFortune@Christine",
-      "targetname": "Part of Fortune (Christine)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 318.36855874716184,
-      "branch": "day",
-      "source": "swiss+legacy"
-    },
-    {
-      "id": "PartOfSpirit@Christine",
-      "targetname": "Part of Spirit (Christine)",
-      "datetime_utc": "2025-08-22T23:14:00.473804Z",
-      "ecl_lon_deg": 325.28734816348464,
-      "branch": "day",
-      "source": "swiss+legacy"
     }
   ]
 }
