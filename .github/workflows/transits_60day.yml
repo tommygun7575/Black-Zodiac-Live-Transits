@@ -1,4 +1,4 @@
-name: Generate 60-Day Transit Feed (Full Black Zodiac 3.3.0)
+name: Generate 60-Day Transit Feed
 
 on:
   schedule:
@@ -16,20 +16,18 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Python deps
+      - name: Install deps
         run: |
-          python -m pip install --upgrade pip
           pip install pyswisseph astroquery pytz
 
       - name: Verify committed ephemeris files
         run: |
-          echo "Checking ephe/ folder contents:"
-          ls -lh ephe
-          echo "---- Required ----"
-          test -f ephe/sepl_18.se1 && echo "✅ sepl_18.se1 (planets)"
-          test -f ephe/seas_18.se1 && echo "✅ seas_18.se1 (asteroids core)"
-          test -f ephe/seasm18.se1 && echo "✅ seasm18.se1 (asteroids supplementary)"
-          test -f ephe/semo_18.se1 && echo "✅ semo_18.se1 (moon precision)"
+          echo "Ephemeris files present in repo root:"
+          ls -lh .
+          test -f sepl_18.se1 && echo "✅ sepl_18.se1 (planets)"
+          test -f seas_18.se1 && echo "✅ seas_18.se1 (asteroids core)"
+          test -f seasm18.se1 && echo "✅ seasm18.se1 (asteroids supplementary)"
+          test -f semo_18.se1 && echo "✅ semo_18.se1 (moon precision)"
 
       - name: Generate 60-day feed
         run: python scripts/generate_feed_60day.py
@@ -39,5 +37,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs/feed_60day.json
-          git commit -m "Update full 60-day transit feed" || echo "No changes"
+          git commit -m "Update 60-day transit feed" || echo "No changes"
           git push
