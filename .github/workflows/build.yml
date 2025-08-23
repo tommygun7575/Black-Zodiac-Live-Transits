@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # fetch full history so pull/rebase works
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -43,4 +45,5 @@ jobs:
           git config user.email "actions@github.com"
           git add docs/feed_now.json docs/feed_angles.json docs/feed_overlay.json
           git commit -m "Daily update feed_overlay.json" || echo "No changes"
-          git push
+          git pull --rebase origin main
+          git push origin main
