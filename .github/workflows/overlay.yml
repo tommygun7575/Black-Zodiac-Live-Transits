@@ -21,8 +21,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # 🔎 Debug: print first 20 lines of the script
+      - name: Show generate_feed_overlay.py head
+        run: head -n 20 scripts/generate_feed_overlay.py
+
       - name: Run generate_feed_overlay
-        run: PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
+        run: python scripts/generate_feed_overlay.py
         env:
           OVERLAY_OUT: docs/feed_overlay.json
           OVERLAY_TIME_UTC: ''
