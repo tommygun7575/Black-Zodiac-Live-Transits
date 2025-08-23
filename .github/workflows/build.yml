@@ -2,8 +2,8 @@ name: Build Overlay Feed
 
 on:
   schedule:
-    # Run twice daily: 11:00 & 23:00 UTC (04:00 & 16:00 Pacific)
-    - cron: "0 11,23 * * *"
+    # Run once daily at 10:30 UTC (≈ 3:30 AM Pacific during PDT)
+    - cron: "30 10 * * *"
   workflow_dispatch:
 
 jobs:
@@ -52,5 +52,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs/feed_now.json docs/feed_angles.json docs/feed_overlay.json
-          git commit -m "Update feed_overlay.json with planets + asteroids/TNOs + natal overlays" || echo "No changes"
+          git commit -m "Update feed_overlay.json (daily 3:30 AM Pacific run)" || echo "No changes"
           git push
