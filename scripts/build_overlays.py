@@ -20,7 +20,6 @@ from astroquery.jplhorizons import Horizons
 OUTPUT_FILE = Path("docs/feed_overlay.json")
 ASTROSEEK_FILE = Path("data/fallback_aug2025_2026.json")
 
-# Bodies to include
 BODIES = [
     # majors
     "Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto",
@@ -29,12 +28,11 @@ BODIES = [
     "Pholus","Chariklo",
     # TNOs
     "Eris","Sedna","Haumea","Makemake","Varuna","Ixion","Typhon","Salacia",
-    # fixed stars (static)
+    # fixed stars (static placeholders)
     "Regulus","Spica","Sirius","Aldebaran"
 ]
 
 def jpl_position(target, dt):
-    """Try JPL Horizons."""
     try:
         obj = Horizons(id=target, location="500@399", epochs=dt.timestamp(), id_type="majorbody")
         eph = obj.elements()
@@ -43,7 +41,6 @@ def jpl_position(target, dt):
         return None
 
 def swiss_position(target, jd):
-    """Fallback to Swiss Ephemeris."""
     mapping = {
         "Sun": swe.SUN, "Moon": swe.MOON, "Mercury": swe.MERCURY,
         "Venus": swe.VENUS, "Mars": swe.MARS, "Jupiter": swe.JUPITER,
@@ -60,7 +57,6 @@ def swiss_position(target, jd):
         return None
 
 def astroseek_lookup(target):
-    """Final fallback from Astro-Seek JSON file."""
     if not ASTROSEEK_FILE.exists():
         return None
     with open(ASTROSEEK_FILE, "r") as f:
