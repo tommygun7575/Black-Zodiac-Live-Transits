@@ -2,7 +2,7 @@ name: Generate 60-Day Transit Feed
 
 on:
   schedule:
-    - cron: "0 11,23 * * *"   # run every 12 hours at 11:00 & 23:00 UTC
+    - cron: "0 11,23 * * *"   # run every 12 hours at 11:00 & 23:00 UTC (04:00 & 16:00 Pacific)
   workflow_dispatch:
 
 jobs:
@@ -16,31 +16,28 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
           pip install pyswisseph astroquery pytz
 
-      - name: Verify committed ephemeris and fallback files
+      - name: Verify ephemeris + asteroid JSON
         run: |
-          echo "Checking for all required Swiss Ephemeris + asteroid JSON..."
+          echo "Checking for Swiss Ephemeris and fallback asteroid/TNO JSON..."
           test -f sepl_18.se1   || (echo "❌ Missing sepl_18.se1" && exit 1)
           test -f seas_18.se1   || (echo "❌ Missing seas_18.se1" && exit 1)
           test -f seasm18.se1   || (echo "❌ Missing seasm18.se1" && exit 1)
           test -f semo_18.se1   || (echo "❌ Missing semo_18.se1" && exit 1)
           test -f semom18.se1   || (echo "❌ Missing semom18.se1" && exit 1)
           test -f seplm18.se1   || (echo "❌ Missing seplm18.se1" && exit 1)
-          test -f aug_2025_to_feb_2026_asteroids_tnos.json || (echo "❌ Missing asteroid/TNO JSON" && exit 1)
+          test -f aug_2025_to_feb_2026_asteroids_tnos.json || (echo "❌ Missing aug_2025_to_feb_2026_asteroids_tnos.json" && exit 1)
 
-      - name: Generate planetary 60-day feed
+      - name: Generate 60-day feed (planets + asteroids/TNOs)
         run: python scripts/generate_feed_60day.py
-
-      - name: Supplement feed with asteroid/TNO JSON
-        run: python scripts/supplement_with_asteroids.py
 
       - name: Commit & push updated feed
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs/feed_60day.json
-          git commit -m "Update 60-day transit feed" || echo "No changes"
+          git commit -m "Update 60-day transit feed (Swiss + fallback asteroids/TNOs)" || echo "No changes"
           git push
