@@ -21,7 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # (Optional Debug) show what file GitHub runner sees
+      # Debug: check scripts folder and first lines of file
       - name: Show scripts folder
         run: ls -R scripts
 
@@ -29,7 +29,7 @@ jobs:
         run: head -n 20 scripts/generate_feed_overlay.py
 
       - name: Run generate_feed_overlay
-        run: python scripts/generate_feed_overlay.py
+        run: PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
         env:
           OVERLAY_OUT: docs/feed_overlay.json
           OVERLAY_TIME_UTC: ''
