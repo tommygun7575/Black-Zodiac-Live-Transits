@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
 compute_angles_and_parts.py
-Computes angles (ASC, MC, Houses) and Arabic Parts for natal charts.
+Computes ASC, MC, Houses, Fortune & Spirit
 """
 
 import swisseph as swe
-import datetime
 import json
 from pathlib import Path
 
@@ -19,17 +18,15 @@ NATALS = {
 
 def main():
     results = {}
-    for name, data in NATALS.items():
-        jd = swe.julday(data["year"], data["month"], data["day"], data["hour"] + data["minute"]/60.0)
-        # Houses: Placidus
-        houses, ascmc, _, _ = swe.houses_ex(jd, data["lat"], data["lon"], b"P")
+    for name, d in NATALS.items():
+        jd = swe.julday(d["year"], d["month"], d["day"], d["hour"] + d["minute"]/60.0)
+        houses, ascmc, _, _ = swe.houses_ex(jd, d["lat"], d["lon"], b"P")
         results[name] = {
             "ASC": ascmc[0],
             "MC": ascmc[1],
             "houses": houses.tolist(),
-            # Simple Parts
-            "PartOfFortune": (ascmc[0] + ascmc[1]) / 2,  # placeholder
-            "PartOfSpirit": (ascmc[0] - ascmc[1]) / 2   # placeholder
+            "PartOfFortune": (ascmc[0] + ascmc[1]) / 2,
+            "PartOfSpirit": (ascmc[0] - ascmc[1]) / 2
         }
 
     with open(OUTPUT_FILE, "w") as f:
