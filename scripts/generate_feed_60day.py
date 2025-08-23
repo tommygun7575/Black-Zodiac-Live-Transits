@@ -9,7 +9,6 @@ Arabic Parts, houses, fixed stars.
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import os
 import swisseph as swe
 
 # ---- Settings ----
@@ -37,7 +36,7 @@ PLANETS = {
     "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15)
 }
 
-# Archetype asteroids & TNOs (numeric IDs for Swiss Ephemeris)
+# Archetype asteroids & TNOs — numeric IDs
 ASTEROIDS = {
     "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
     "Sappho": 80, "Karma": 3811,
@@ -61,8 +60,7 @@ def houses_and_points(lat, lon, dt):
                     dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
                     swe.GREG_CAL)
     cusp, ascmc = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
-    asc = ascmc[0]
-    mc = ascmc[1]
+    asc = ascmc[0]; mc = ascmc[1]
     sun_lon, _ = swe_calc(swe.SUN, dt)
     moon_lon, _ = swe_calc(swe.MOON, dt)
     fortune = (asc + moon_lon - sun_lon) % 360
@@ -98,63 +96,4 @@ def main():
             lon, lat = swe_calc(body, dt)
             feed["feed"]["objects"].append({
                 "id": pid, "targetname": str(body),
-                "datetime_utc": dt.isoformat(),
-                "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                "source": "swiss"
-            })
-
-        # Asteroids / TNOs
-        for name, num in ASTEROIDS.items():
-            try:
-                lon, lat = swe_calc(num, dt)
-                feed["feed"]["objects"].append({
-                    "id": str(num), "targetname": name,
-                    "datetime_utc": dt.isoformat(),
-                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                    "source": "swiss-asteroid"
-                })
-            except Exception as e:
-                feed["feed"]["objects"].append({"id": str(num), "targetname": name, "error": str(e)})
-
-        # Houses / Arabic Parts
-        points = houses_and_points(51.5, 0.0, dt)
-        feed["feed"]["objects"].append({
-            "id": "ASC", "targetname": "Ascendant",
-            "datetime_utc": dt.isoformat(),
-            "ecl_lon_deg": points["ASC"], "source": "swiss"
-        })
-        feed["feed"]["objects"].append({
-            "id": "MC", "targetname": "Midheaven",
-            "datetime_utc": dt.isoformat(),
-            "ecl_lon_deg": points["MC"], "source": "swiss"
-        })
-        feed["feed"]["objects"].append({
-            "id": "Houses", "targetname": "Houses",
-            "datetime_utc": dt.isoformat(),
-            "houses_deg": points["houses"], "source": "swiss"
-        })
-        feed["feed"]["objects"].append({
-            "id": "PartOfFortune", "targetname": "Part of Fortune",
-            "datetime_utc": dt.isoformat(),
-            "ecl_lon_deg": points["PartOfFortune"],
-            "branch": "day", "source": "swiss"
-        })
-        feed["feed"]["objects"].append({
-            "id": "PartOfSpirit", "targetname": "Part of Spirit",
-            "datetime_utc": dt.isoformat(),
-            "ecl_lon_deg": points["PartOfSpirit"],
-            "branch": "day", "source": "swiss"
-        })
-
-        # Fixed stars
-        for star in FIXED_STARS:
-            feed["feed"]["objects"].append(add_fixed_star(star, dt))
-
-    Path("docs").mkdir(exist_ok=True)
-    with open("docs/feed_60day.json", "w") as f:
-        json.dump(feed, f, indent=2)
-
-    print("[OK] Wrote docs/feed_60day.json")
-
-if __name__ == "__main__":
-    main()
+                "dat
