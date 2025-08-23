@@ -1,3 +1,6 @@
+import sys, os
+# ensure repo root is on Python path
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 #!/usr/bin/env python3
 import json,os,sys
 from datetime import datetime,timezone
