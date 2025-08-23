@@ -26,6 +26,22 @@ jobs:
         env:
           OVERLAY_OUT: docs/feed_overlay.json
 
+      - name: Debug output (check Sun/Moon/Mercury)
+        run: |
+          echo "Checking generated feed_overlay.json..."
+          python - <<'EOF'
+          import json
+          with open("docs/feed_overlay.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+          charts = data.get("charts", {})
+          for who, chart in charts.items():
+              if "objects" in chart:
+                  objs = chart["objects"]
+                  for body in ["Sun", "Moon", "Mercury"]:
+                      if body in objs:
+                          print(f"{who} - {body}: {objs[body]['ecl_lon_deg']}° | source={objs[body]['used_source']}")
+          EOF
+
       - name: Commit updated overlay
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
