@@ -24,7 +24,7 @@ EPHE_PATH = "."
 swe.set_ephe_path(EPHE_PATH)
 
 # ---- Fallback JSON (Asteroids/TNOs) ----
-FALLBACK_PATH = "aug_2025_to_feb_2026_asteroids_tnos.json"
+FALLBACK_PATH = "aug_2025_to_feb_2026_asteroids_tnos_flat.json"
 try:
     with open(FALLBACK_PATH, "r") as f:
         fallback_data = json.load(f)
