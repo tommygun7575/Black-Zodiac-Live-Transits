@@ -7,6 +7,7 @@ from astroquery.jplhorizons import Horizons
 # 1. Body ID maps
 # -------------------------------
 
+# JPL IDs for major bodies
 JPL_IDS = {
     "Sun": 10, "Moon": 301,
     "Mercury": 199, "Venus": 299, "Mars": 499,
@@ -14,6 +15,7 @@ JPL_IDS = {
     "Neptune": 899, "Pluto": 999,
 }
 
+# Swiss constants
 SWISS_IDS = {
     "Sun": swe.SUN, "Moon": swe.MOON,
     "Mercury": swe.MERCURY, "Venus": swe.VENUS,
@@ -23,6 +25,7 @@ SWISS_IDS = {
     "Chiron": swe.CHIRON, "Pholus": swe.PHOLUS
 }
 
+# Swiss minor planets / TNOs (MPC numbers)
 SWISS_MINORS = {
     "Eris": 136199, "Sedna": 90377,
     "Haumea": 136108, "Makemake": 136472,
@@ -35,6 +38,7 @@ SWISS_MINORS = {
     "Euphrosyne": 31, "Chariklo": 10199,
 }
 
+# Fixed stars
 FIXED_STARS = {
     "Regulus": 150.0,
     "Spica": 204.75,
@@ -49,16 +53,23 @@ FIXED_STARS = {
 def normalize_deg(x):
     return x % 360.0
 
-def get_jpl(body, dt):
+# Batched Horizons call for majors
+def get_jpl_batch(dt):
+    ids = ",".join(str(v) for v in JPL_IDS.values())
     obj = Horizons(
-        id=JPL_IDS[body],
-        location="500@399",  # Earth geocentric
+        id=ids,
+        location="500@399",
         epochs=dt.strftime("%Y-%m-%d %H:%M")
     )
     eph = obj.ephemerides()
-    lon = float(eph["EclLon"][0])
-    lat = float(eph["EclLat"][0])
-    return lon, lat, "jpl"
+    result = {}
+    for name, jpl_id in JPL_IDS.items():
+        row = eph[eph["targetname"].str.contains(name, case=False)]
+        if len(row) > 0:
+            lon = float(row["EclLon"].values[0])
+            lat = float(row["EclLat"].values[0])
+            result[name] = (lon, lat, "jpl")
+    return result
 
 def get_swiss(body, jd):
     if body in SWISS_IDS:
@@ -70,15 +81,6 @@ def get_swiss(body, jd):
         lon, lat = res[0], res[1]
         return lon, lat, "swiss_minor"
     raise ValueError(f"No Swiss ID for {body}")
-
-def resolve_position(body, dt, jd):
-    if body in JPL_IDS:
-        try:
-            return get_jpl(body, dt)
-        except Exception as e:
-            print(f"[WARN] JPL fail for {body}: {e}")
-        return get_swiss(body, jd)
-    return get_swiss(body, jd)
 
 # -------------------------------
 # 3. Houses & Angles
@@ -113,70 +115,3 @@ def compute_parts(angles, objs):
     parts["PartOfVictory"]      = normalize_deg(asc + sun - moon + 60)
     parts["PartOfDelirium"]     = normalize_deg(asc + moon + sun)
     parts["PartOfIntelligence"] = normalize_deg(parts["PartOfSpirit"] - 30)
-
-    return parts
-
-# -------------------------------
-# 5. Main
-# -------------------------------
-
-def main():
-    dt = datetime.datetime.utcnow()
-    jd = swe.julday(
-        dt.year, dt.month, dt.day,
-        dt.hour + dt.minute/60.0 + dt.second/3600.0
-    )
-
-    # Observer = geocentric overlay
-    obs_lat, obs_lon = 0.0, 0.0
-    angles = compute_angles(jd, obs_lat, obs_lon)
-
-    # Body list
-    bodies = list(JPL_IDS.keys()) + \
-             [b for b in SWISS_IDS.keys() if b not in JPL_IDS] + \
-             list(SWISS_MINORS.keys())
-
-    objs = {}
-    overlay = {
-        "meta": {
-            "generated_at_utc": dt.isoformat(),
-            "observer": "geocentric Earth",
-            "source_hierarchy": ["jpl", "swiss", "swiss_minor", "fixed"],
-            "black_zodiac_version": "3.3.0"
-        },
-        "objects": [],
-        "angles": angles
-    }
-
-    # Planets, asteroids, TNOs
-    for b in bodies:
-        lon, lat, src = resolve_position(b, dt, jd)
-        objs[b] = {"lon": lon, "lat": lat}
-        overlay["objects"].append({
-            "id": b,
-            "targetname": b,
-            "ecl_lon_deg": lon,
-            "ecl_lat_deg": lat,
-            "source": src
-        })
-
-    # Fixed stars
-    for star, lon in FIXED_STARS.items():
-        overlay["objects"].append({
-            "id": star,
-            "targetname": star,
-            "ecl_lon_deg": lon,
-            "ecl_lat_deg": 0.0,
-            "source": "fixed"
-        })
-
-    # Arabic parts
-    overlay["angles"].update(compute_parts(angles, objs))
-
-    with open("docs/feed_overlay.json", "w") as f:
-        json.dump(overlay, f, indent=2)
-
-    print("[INFO] Overlay file written → docs/feed_overlay.json")
-
-if __name__ == "__main__":
-    main()
