@@ -1,74 +1,49 @@
-name: Build
+name: Build Overlay Feed
 
 on:
-  workflow_dispatch:
-    inputs:
-      note:
-        description: "Optional note to append to commit message"
-        required: false
-        default: ""
   schedule:
-    - cron: "0 11,23 * * *"   # 04:00 & 16:00 Pacific (every 12h)
-
-permissions:
-  contents: write
+    - cron: "0 11,23 * * *"   # every 12 hours (11:00 & 23:00 UTC = 04:00 & 16:00 Pacific)
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install pyswisseph astroquery pytz numpy
 
-      - name: Ensure Swiss path
-        run: mkdir -p .eph
-
-      - name: Generate JPL feed (with Swiss fallback for majors)
+      - name: Verify Swiss Ephemeris + fallback JSON
         run: |
-          python scripts/fetch_transits.py \
-            --config config/live_config.json \
-            --out docs/feed_now.json
+          echo "Checking for Swiss Ephemeris .se1 files + fallback asteroids/TNO JSON..."
+          test -f sepl_18.se1   || (echo "❌ Missing sepl_18.se1" && exit 1)
+          test -f seas_18.se1   || (echo "❌ Missing seas_18.se1" && exit 1)
+          test -f seasm18.se1   || (echo "❌ Missing seasm18.se1" && exit 1)
+          test -f semo_18.se1   || (echo "❌ Missing semo_18.se1" && exit 1)
+          test -f semom18.se1   || (echo "❌ Missing semom18.se1" && exit 1)
+          test -f seplm18.se1   || (echo "❌ Missing seplm18.se1" && exit 1)
+          test -f aug_2025_to_feb_2026_asteroids_tnos_flat.json || (echo "❌ Missing aug_2025_to_feb_2026_asteroids_tnos_flat.json" && exit 1)
 
-      - name: Show first lines of feed_now.json (debug)
-        run: head -n 120 docs/feed_now.json || true
+      - name: Fetch live transits (planets + asteroids/TNOs)
+        run: python scripts/fetch_transits.py --config config/live_config.json --out docs/feed_now.json
 
-      - name: Add Swiss angles + Arabic Parts
+      - name: Compute angles + Arabic Parts
+        run: python scripts/compute_angles_and_parts.py --feed docs/feed_now.json --out docs/feed_angles.json
+
+      - name: Build overlay feed (merge natal + transits)
+        run: python scripts/build_overlays.py --feed docs/feed_now.json --angles docs/feed_angles.json --out docs/feed_overlay.json
+
+      - name: Commit & push updated overlay feed
         run: |
-          python scripts/compute_angles_and_parts.py \
-            --feed docs/feed_now.json \
-            --targets config/targets.json \
-            --out docs/feed_now.json
-
-      - name: Build overlays (merge natal charts)
-        run: |
-          python scripts/build_overlays.py \
-            --feed docs/feed_now.json \
-            --natal_dir config/natal \
-            --out docs/feed_overlay.json
-
-      - name: Commit if changed
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/feed_now.json docs/feed_overlay.json || true
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            msg="chore(feed): update feeds (auto) [skip ci]"
-            if [ -n "${{ github.event.inputs.note }}" ]; then
-              msg="$msg - ${{ github.event.inputs.note }}"
-            fi
-            git commit -m "$msg"
-            git push
-          fi
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/feed_now.json docs/feed_angles.json docs/feed_overlay.json
+          git commit -m "Update feed_overlay.json with planets + asteroids/TNOs" || echo "No changes"
+          git push
