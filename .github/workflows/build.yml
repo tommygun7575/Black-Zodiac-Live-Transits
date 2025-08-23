@@ -24,13 +24,14 @@ jobs:
 
       - name: Verify Swiss Ephemeris + config + fallback JSON
         run: |
+          echo "Checking for required files..."
           test -f sepl_18.se1   || (echo "❌ Missing sepl_18.se1" && exit 1)
           test -f seas_18.se1   || (echo "❌ Missing seas_18.se1" && exit 1)
           test -f seasm18.se1   || (echo "❌ Missing seasm18.se1" && exit 1)
           test -f semo_18.se1   || (echo "❌ Missing semo_18.se1" && exit 1)
           test -f semom18.se1   || (echo "❌ Missing semom18.se1" && exit 1)
           test -f seplm18.se1   || (echo "❌ Missing seplm18.se1" && exit 1)
-          test -f aug_2025_to_feb_2026_asteroids_tnos_flat.json || (echo "❌ Missing fallback JSON" && exit 1)
+          test -f aug_2025_to_feb_2026_asteroids_tnos_flat.json || (echo "❌ Missing aug_2025_to_feb_2026_asteroids_tnos_flat.json" && exit 1)
           test -f config/live_config.json || (echo "❌ Missing config/live_config.json" && exit 1)
 
       - name: Generate full overlay feed
