@@ -84,15 +84,15 @@ def get_jpl_batch(dt, retries=3):
                 delay *= 2
     return {}
 
-# --- Swiss safe wrapper (no 3-value unpack!) ---
+# --- Swiss safe wrapper ---
 def get_swiss(body, jd):
     if body in SWISS_IDS:
-        res = swe.calc_ut(jd, SWISS_IDS[body])
-        lon, lat = res[0], res[1]
+        positions, err = swe.calc_ut(jd, SWISS_IDS[body])
+        lon, lat = positions[0], positions[1]
         return lon, lat, "swiss"
     if body in SWISS_MINORS:
-        res = swe.calc_ut(jd, SWISS_MINORS[body])
-        lon, lat = res[0], res[1]
+        positions, err = swe.calc_ut(jd, SWISS_MINORS[body])
+        lon, lat = positions[0], positions[1]
         return lon, lat, "swiss_minor"
     raise ValueError(f"No Swiss ID for {body}")
 
