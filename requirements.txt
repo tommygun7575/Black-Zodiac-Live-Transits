@@ -1,5 +1,13 @@
-numpy>=1.26,<2.0
-astropy>=5.3,<6.0
-astroquery>=0.4.7,<0.5
-pyswisseph>=2.10.3.2
-python-dateutil>=2.8.2
+# Math / array backbone
+numpy==1.26.4
+
+# Astronomy / astro tools
+astropy==5.3.4
+astroquery==0.4.7
+
+# Swiss Ephemeris
+pyswisseph==2.10.3.2
+
+# Date + timezone handling
+python-dateutil==2.9.0.post0
+pytz==2024.1
