@@ -8,7 +8,6 @@ from astroquery.jplhorizons import Horizons
 # 1. Body ID maps
 # -------------------------------
 
-# JPL IDs for major bodies
 JPL_IDS = {
     "Sun": 10, "Moon": 301,
     "Mercury": 199, "Venus": 299, "Mars": 499,
@@ -16,7 +15,6 @@ JPL_IDS = {
     "Neptune": 899, "Pluto": 999,
 }
 
-# Swiss constants
 SWISS_IDS = {
     "Sun": swe.SUN, "Moon": swe.MOON,
     "Mercury": swe.MERCURY, "Venus": swe.VENUS,
@@ -26,7 +24,6 @@ SWISS_IDS = {
     "Chiron": swe.CHIRON, "Pholus": swe.PHOLUS
 }
 
-# Swiss minor planets / TNOs (MPC numbers)
 SWISS_MINORS = {
     "Eris": 136199, "Sedna": 90377,
     "Haumea": 136108, "Makemake": 136472,
@@ -39,7 +36,6 @@ SWISS_MINORS = {
     "Euphrosyne": 31, "Chariklo": 10199,
 }
 
-# Fixed stars
 FIXED_STARS = {
     "Regulus": 150.0,
     "Spica": 204.75,
@@ -54,7 +50,7 @@ FIXED_STARS = {
 def normalize_deg(x):
     return x % 360.0
 
-# Batched Horizons call with retry/backoff
+# --- JPL batch with retry ---
 def get_jpl_batch(dt, retries=3):
     ids = ",".join(str(v) for v in JPL_IDS.values())
     delay = 2
@@ -73,7 +69,7 @@ def get_jpl_batch(dt, retries=3):
                     lon = float(row["EclLon"].values[0])
                     lat = float(row["EclLat"].values[0])
                     result[name] = (lon, lat, "jpl")
-            if result:  # success
+            if result:
                 return result
         except Exception as e:
             print(f"[WARN] JPL batch attempt {attempt+1} failed: {e}")
@@ -82,7 +78,7 @@ def get_jpl_batch(dt, retries=3):
                 delay *= 2
     return {}
 
-# Swiss safe wrapper
+# --- Swiss safe wrapper ---
 def get_swiss(body, jd):
     if body in SWISS_IDS:
         res = swe.calc_ut(jd, SWISS_IDS[body])
@@ -116,19 +112,18 @@ def compute_parts(angles, objs):
     moon = objs["Moon"]["lon"]
     asc = angles["ASC"]
 
-    parts = {}
-    parts["PartOfFortune"]      = normalize_deg(asc + moon - sun)
-    parts["PartOfSpirit"]       = normalize_deg(asc + sun - moon)
-    parts["PartOfKarma"]        = normalize_deg(asc + moon - sun + 30)
-    parts["PartOfTreachery"]    = angles["MC"]
-    parts["PartOfDeliverance"]  = normalize_deg(parts["PartOfFortune"] + 106)
-    parts["PartOfRebirth"]      = normalize_deg(parts["PartOfSpirit"] + 49)
-    parts["PartOfVengeance"]    = normalize_deg(asc - moon + sun)
-    parts["PartOfVictory"]      = normalize_deg(asc + sun - moon + 60)
-    parts["PartOfDelirium"]     = normalize_deg(asc + moon + sun)
-    parts["PartOfIntelligence"] = normalize_deg(parts["PartOfSpirit"] - 30)
-
-    return parts
+    return {
+        "PartOfFortune": normalize_deg(asc + moon - sun),
+        "PartOfSpirit": normalize_deg(asc + sun - moon),
+        "PartOfKarma": normalize_deg(asc + moon - sun + 30),
+        "PartOfTreachery": angles["MC"],
+        "PartOfDeliverance": normalize_deg(asc + moon - sun + 106),
+        "PartOfRebirth": normalize_deg(asc + sun - moon + 49),
+        "PartOfVengeance": normalize_deg(asc - moon + sun),
+        "PartOfVictory": normalize_deg(asc + sun - moon + 60),
+        "PartOfDelirium": normalize_deg(asc + moon + sun),
+        "PartOfIntelligence": normalize_deg(asc + sun - moon - 30),
+    }
 
 # -------------------------------
 # 5. Main
@@ -141,7 +136,6 @@ def main():
         dt.hour + dt.minute/60.0 + dt.second/3600.0
     )
 
-    # Observer = geocentric overlay
     obs_lat, obs_lon = 0.0, 0.0
     angles = compute_angles(jd, obs_lat, obs_lon)
 
@@ -149,19 +143,18 @@ def main():
              [b for b in SWISS_IDS.keys() if b not in JPL_IDS] + \
              list(SWISS_MINORS.keys())
 
-    objs = {}
-    overlay = {
+    objs, overlay = {}, {
         "meta": {
             "generated_at_utc": dt.isoformat(),
             "observer": "geocentric Earth",
-            "source_hierarchy": ["jpl_batch_retry", "swiss", "swiss_minor", "fixed"],
+            "source_hierarchy": ["jpl", "swiss", "swiss_minor", "fixed"],
             "black_zodiac_version": "3.3.0"
         },
         "objects": [],
         "angles": angles
     }
 
-    # --- JPL batch majors with retry ---
+    # --- JPL batch majors ---
     jpl_results = get_jpl_batch(dt)
 
     # Majors (Sun–Pluto)
