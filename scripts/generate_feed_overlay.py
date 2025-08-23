@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-import json, os, sys
+import sys, os
+# Ensure this script’s directory (scripts/) is on sys.path so we can import sources/ and utils/
+sys.path.append(os.path.dirname(__file__))
+
+import json
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 
-# Fixed imports (point to subpackages inside scripts/)
-from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
-from scripts.utils.coords import ra_dec_to_ecl
+# Plain imports, no "scripts." prefix
+from sources import horizons_client, miriade_client, mpc_client, swiss_client
+from utils.coords import ra_dec_to_ecl
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
