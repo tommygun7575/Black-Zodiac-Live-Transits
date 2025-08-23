@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-import json, os, sys
+import sys, os
+# Ensure repo root and scripts folder are on sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.dirname(__file__))
+
+import json
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 
-# Correct imports (no sys.path hacks)
 from sources import horizons_client, miriade_client, mpc_client, swiss_client
 from utils.coords import ra_dec_to_ecl
 
