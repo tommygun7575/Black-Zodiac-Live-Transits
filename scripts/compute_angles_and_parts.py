@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 compute_angles_and_parts.py — calculate ASC, MC, Houses, Fortune, Spirit
+for each natal chart in config/live_config.json.
+
+- Input: feed_now.json (generated_at_utc)
+- Input: config/live_config.json (natal charts)
+- Output: feed_angles.json (normalized schema)
 """
 
 import argparse, json, sys
@@ -12,36 +17,53 @@ import swisseph as swe
 
 HOUSE_SYSTEM = b'P'
 
-def julday(dt): return swe.julday(dt.year, dt.month, dt.day,
-                                  dt.hour+dt.minute/60+dt.second/3600.0)
+def julday(dt): 
+    return swe.julday(dt.year, dt.month, dt.day,
+                      dt.hour + dt.minute/60 + dt.second/3600.0)
 
 def compute_angles(lat, lon, dt):
     jd = julday(dt)
     cusp, ascmc = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
     asc, mc = ascmc[0], ascmc[1]
     sun, _ = swe.calc_ut(jd, swe.SUN); moon, _ = swe.calc_ut(jd, swe.MOON)
-    fortune = (asc+moon[0]-sun[0])%360; spirit=(asc+sun[0]-moon[0])%360
-    return {"id":"angles","ASC":asc,"MC":mc,"houses":cusp,
-            "PartOfFortune":fortune,"PartOfSpirit":spirit,"source":"swiss"}
+    fortune = (asc + moon[0] - sun[0]) % 360
+    spirit  = (asc + sun[0] - moon[0]) % 360
 
-def load(path): return json.loads(Path(path).read_text())
+    return [
+        {"id":"ASC","targetname":"Ascendant","ecl_lon_deg":asc,"ecl_lat_deg":0.0,"source":"swiss"},
+        {"id":"MC","targetname":"Midheaven","ecl_lon_deg":mc,"ecl_lat_deg":0.0,"source":"swiss"},
+        {"id":"Houses","targetname":"House Cusps","houses_deg":list(cusp),"source":"swiss"},
+        {"id":"PartOfFortune","targetname":"Part of Fortune","ecl_lon_deg":fortune,"ecl_lat_deg":0.0,"source":"swiss"},
+        {"id":"PartOfSpirit","targetname":"Part of Spirit","ecl_lon_deg":spirit,"ecl_lat_deg":0.0,"source":"swiss"}
+    ]
+
+def load(path): 
+    try: return json.loads(Path(path).read_text())
+    except Exception as e: 
+        print(f"[ERROR] Failed to load {path}: {e}", file=sys.stderr)
+        sys.exit(1)
 
 def main():
-    ap=argparse.ArgumentParser()
+    ap = argparse.ArgumentParser()
     ap.add_argument("--feed",required=True)
     ap.add_argument("--config",required=True)
     ap.add_argument("--out",required=True)
-    args=ap.parse_args()
+    args = ap.parse_args()
 
-    feed, cfg = load(args.feed), load(args.config)
-    dt = dtparse.parse(feed["generated_at_utc"])
-    results={"generated_at_utc":dt.isoformat(),"angles":{}}
+    feed = load(args.feed); cfg = load(args.config)
+    dt = dtparse.parse(feed["generated_at_utc"]) if "generated_at_utc" in feed else datetime.utcnow()
+
+    results = {
+        "generated_at_utc": dt.isoformat()+"Z",
+        "angles": {}
+    }
 
     for entry in cfg["natal_charts"]:
-        name,lat,lon=entry["name"],float(entry["lat"]),float(entry["lon"])
-        results["angles"][name]=compute_angles(lat,lon,dt)
+        name, lat, lon = entry["name"], float(entry["lat"]), float(entry["lon"])
+        results["angles"][name] = compute_angles(lat, lon, dt)
 
-    Path(args.out).write_text(json.dumps(results,indent=2))
-    print(f"[OK] wrote {args.out} with {len(results['angles'])} charts")
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.out).write_text(json.dumps(results, indent=2))
+    print(f"[OK] wrote {args.out} with {len(results['angles'])} natal charts")
 
 if __name__=="__main__": main()
