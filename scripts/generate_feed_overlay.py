@@ -15,11 +15,12 @@ def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
+# ⚡ Swiss first, then JPL, then others
 SOURCE_ORDER = (
+    ("swiss", swiss_client.get_ecliptic_lonlat),
     ("jpl", horizons_client.get_ecliptic_lonlat),
     ("miriade", miriade_client.get_ecliptic_lonlat),
     ("mpc", mpc_client.get_ecliptic_lonlat),
-    ("swiss", swiss_client.get_ecliptic_lonlat),
 )
 
 def iso_now() -> str:
@@ -42,13 +43,16 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
     for name in majors:
         got, used = None, None
         for label, func in SOURCE_ORDER:
-            pos = func(name, when_iso)
+            try:
+                pos = func(name, when_iso)
+            except Exception:
+                pos = None
             if pos:
                 got, used = pos, label
                 break
         out[name] = {
             "ecl_lon_deg": None if not got else float(got[0]),
-            "ecl_lat_deg": 0.0 if not got else float(got[1]),
+            "ecl_lat_deg": None if not got else float(got[1]),
             "source": "missing" if not used else used,
         }
 
@@ -59,17 +63,20 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
             name, sid = rec["name"], rec["id"]
             got, used = None, None
             for label, func in SOURCE_ORDER:
-                pos = func(sid, when_iso)
+                try:
+                    pos = func(sid, when_iso)
+                except Exception:
+                    pos = None
                 if pos:
                     got, used = pos, label
                     break
             out[name] = {
                 "ecl_lon_deg": None if not got else float(got[0]),
-                "ecl_lat_deg": 0.0 if not got else float(got[1]),
+                "ecl_lat_deg": None if not got else float(got[1]),
                 "source": "missing" if not used else used,
             }
 
-    # fixed stars
+    # fixed stars (always available)
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
