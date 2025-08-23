@@ -17,8 +17,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # run as a module so imports like "from scripts.sources ..." work
-      - run: python -m scripts.generate_feed_overlay
+      # add repo root to PYTHONPATH so "from scripts..." works
+      - name: Run generate_feed_overlay
+        run: PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
         env:
           OVERLAY_OUT: docs/feed_overlay.json
           OVERLAY_TIME_UTC: ''
