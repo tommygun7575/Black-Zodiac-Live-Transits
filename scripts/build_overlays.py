@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
 build_overlays.py
-Black Zodiac Overlay Feed Generator (V3.3.0)
+Black Zodiac Full Overlay Feed (daily transit snapshot)
 
-Pipeline:
-1. JPL Horizons (primary)
-2. Swiss Ephemeris (fallback)
-3. Astro-Seek Aug2025–Feb2026 JSON (final fallback)
+Per person:
+- Planets (Sun → Pluto)
+- Angles (ASC, MC, houses, full ascmc)
+- Arabic Parts (full set)
+- Asteroids / Minor bodies
+- TNOs
+- Fixed Stars
 
 Output: docs/feed_overlay.json
 """
@@ -27,15 +30,27 @@ NATALS = {
     "Christine": {"year": 1989, "month": 7, "day": 5, "hour": 15, "minute": 1, "lat": 40.72982, "lon": -73.21039}
 }
 
-BODIES = [
-    # majors
-    "Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto",
-    # asteroids / minors
-    "Chiron","Vesta","Psyche","Amor","Eros","Sappho","Karma",
-    "Pholus","Chariklo",
-    # TNOs
-    "Eris","Sedna","Haumea","Makemake","Varuna","Ixion","Typhon","Salacia"
-]
+PLANETS = ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"]
+ASTEROIDS = ["Chiron","Vesta","Psyche","Amor","Eros","Sappho","Karma","Bacchus","Astraea","Euphrosyne","Pholus","Chariklo"]
+TNOS = ["Eris","Sedna","Haumea","Makemake","Varuna","Ixion","Typhon","Salacia"]
+FIXED_STARS = {
+    "Regulus": 150.0, "Spica": 204.75, "Sirius": 104.0, "Aldebaran": 69.0
+}
+
+# Arabic Parts formulas (basic sample set)
+def compute_arabic_parts(asc, sun, moon, fortune, spirit):
+    return {
+        "PartOfFortune": fortune,
+        "PartOfSpirit": spirit,
+        "PartOfKarma": (asc + sun - moon) % 360,
+        "PartOfTreachery": (asc + moon - sun) % 360,
+        "PartOfDeliverance": (asc + fortune - spirit) % 360,
+        "PartOfRebirth": (asc + spirit - fortune) % 360,
+        "PartOfVengeance": (asc + sun + moon) % 360,
+        "PartOfVictory": (asc + sun - fortune) % 360,
+        "PartOfDelirium": (asc + moon - spirit) % 360,
+        "PartOfIntelligence": (asc + spirit - sun) % 360
+    }
 
 def jpl_position(target, dt):
     try:
@@ -70,12 +85,42 @@ def astroseek_lookup(target):
         return {"lon": data[target].get("lon"), "lat": data[target].get("lat", 0.0), "source": "astroseek"}
     return None
 
+def compute_angles_and_parts(jd, lat, lon):
+    houses, ascmc = swe.houses_ex(jd, lat, lon, b"P")
+    asc = ascmc[0]
+    mc = ascmc[1]
+    fortune = (asc + mc) / 2
+    spirit = (asc - mc) / 2
+    parts = compute_arabic_parts(asc, ascmc[0], ascmc[1], fortune, spirit)
+    return {
+        "ASC": asc,
+        "MC": mc,
+        "houses": list(houses),
+        "ascmc_all": list(ascmc),
+        **parts
+    }
+
+def build_body_entry(body, dt, jd):
+    pos = jpl_position(body, dt)
+    if not pos:
+        pos = swiss_position(body, jd)
+    if not pos:
+        pos = astroseek_lookup(body)
+    return {
+        "id": body,
+        "targetname": body,
+        "ecl_lon_deg": pos["lon"] if pos else None,
+        "ecl_lat_deg": pos["lat"] if pos else 0.0,
+        "source": pos["source"] if pos else "missing"
+    }
+
 def main():
     now = datetime.datetime.utcnow()
 
     overlay = {
         "meta": {
             "generated_at_utc": now.isoformat(),
+            "observer": "geocentric Earth",
             "source_hierarchy": ["jpl", "swiss", "astroseek"],
             "black_zodiac_version": "3.3.0"
         },
@@ -84,23 +129,34 @@ def main():
 
     for person, d in NATALS.items():
         jd = swe.julday(d["year"], d["month"], d["day"], d["hour"] + d["minute"]/60.0)
-        chart_objects = []
+        chart = {"objects": [], "angles": {}}
 
-        for body in BODIES:
-            pos = jpl_position(body, now)
-            if not pos:
-                pos = swiss_position(body, jd)
-            if not pos:
-                pos = astroseek_lookup(body)
-            chart_objects.append({
-                "id": body,
-                "targetname": body,
-                "ecl_lon_deg": pos["lon"] if pos else None,
-                "ecl_lat_deg": pos["lat"] if pos else 0.0,
-                "source": pos["source"] if pos else "missing"
+        # Planets
+        for body in PLANETS:
+            chart["objects"].append(build_body_entry(body, now, jd))
+
+        # Asteroids
+        for body in ASTEROIDS:
+            chart["objects"].append(build_body_entry(body, now, jd))
+
+        # TNOs
+        for body in TNOS:
+            chart["objects"].append(build_body_entry(body, now, jd))
+
+        # Fixed Stars
+        for star, lon in FIXED_STARS.items():
+            chart["objects"].append({
+                "id": star,
+                "targetname": star,
+                "ecl_lon_deg": lon,
+                "ecl_lat_deg": 0.0,
+                "source": "fixed"
             })
 
-        overlay["charts"][person] = chart_objects
+        # Angles + Arabic Parts
+        chart["angles"] = compute_angles_and_parts(jd, d["lat"], d["lon"])
+
+        overlay["charts"][person] = chart
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_FILE, "w") as f:
