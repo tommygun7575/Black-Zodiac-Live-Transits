@@ -25,7 +25,7 @@ if not os.path.isdir(EPHE_PATH):
 swe.set_ephe_path(EPHE_PATH)
 print("Using Swiss Ephemeris path:", EPHE_PATH)
 
-# Example fixed stars (expand if needed)
+# Example fixed stars
 FIXED_STARS = [
     {"id": "Regulus",   "label": "Regulus (Alpha Leo)",    "ra_deg": 152.0929625, "dec_deg": 11.9672083},
     {"id": "Spica",     "label": "Spica (Alpha Vir)",      "ra_deg": 201.2982475, "dec_deg": -11.1613194},
@@ -36,33 +36,32 @@ FIXED_STARS = [
 # ---- Helpers ----
 
 def swe_calc(body, dt):
-    """Swiss Ephemeris wrapper for planets."""
+    """Swiss Ephemeris wrapper for planets — returns lon, lat."""
     jd = swe.julday(
         dt.year, dt.month, dt.day,
-        dt.hour + dt.minute / 60 + dt.second / 3600.0,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
         swe.GREG_CAL
     )
-    try:
-        xx, _ = swe.calc_ut(jd, body)
-        return float(xx[0]), float(xx[1])  # lon, lat
-    except Exception as e:
-        raise RuntimeError(f"Swiss Ephemeris failed for body {body}: {e}")
+    flags = swe.FLG_SWIEPH | swe.FLG_SPEED
+    xx, ret = swe.calc_ut(jd, body, flags)
+    if ret < 0:
+        raise RuntimeError(f"Swiss Ephemeris failed for body {body}, ret={ret}")
+    return float(xx[0]), float(xx[1])  # longitude, latitude
 
 def houses_and_points(lat, lon, dt):
-    """Compute ASC, MC, houses, Parts of Fortune/Spirit."""
+    """Compute ASC, MC, houses, Fortune, Spirit (day formula)."""
     jd = swe.julday(
         dt.year, dt.month, dt.day,
-        dt.hour + dt.minute / 60 + dt.second / 3600.0,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
         swe.GREG_CAL
     )
-    ascmc, cusp, _ = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
-
+    cusp, ascmc, _ = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
     asc = ascmc[0]
     mc = ascmc[1]
 
-    # Simplified: Fortune/Spirit using day formula
     sun_lon, _ = swe_calc(swe.SUN, dt)
     moon_lon, _ = swe_calc(swe.MOON, dt)
+
     fortune = (asc + moon_lon - sun_lon) % 360
     spirit = (asc + sun_lon - moon_lon) % 360
 
@@ -75,7 +74,6 @@ def houses_and_points(lat, lon, dt):
     }
 
 def add_fixed_star(star, dt):
-    """Add fixed star entry."""
     return {
         "targetname": star["label"],
         "id": star["id"],
@@ -89,9 +87,7 @@ def add_fixed_star(star, dt):
 # ---- Main ----
 
 def main():
-    start = datetime.now(timezone.utc).replace(
-        hour=0, minute=0, second=0, microsecond=0
-    )
+    start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
     feed = {
         "feed": {
@@ -102,17 +98,17 @@ def main():
         }
     }
 
-    for d in range(DAYS_AHEAD):
+    planet_map = {
+        "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY,
+        "299": swe.VENUS, "499": swe.MARS, "599": swe.JUPITER,
+        "699": swe.SATURN, "799": swe.URANUS, "899": swe.NEPTUNE,
+        "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15)
+    }
+
+    for d in range(DAYS_AHEAD + 1):
         dt = start + timedelta(days=d)
 
-        # Planets Sun → Pluto + Chiron
-        planet_map = {
-            "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY,
-            "299": swe.VENUS, "499": swe.MARS, "599": swe.JUPITER,
-            "699": swe.SATURN, "799": swe.URANUS, "899": swe.NEPTUNE,
-            "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15)
-        }
-
+        # Planets
         for pid, body in planet_map.items():
             lon, lat = swe_calc(body, dt)
             feed["feed"]["objects"].append({
@@ -124,7 +120,7 @@ def main():
                 "source": "swiss"
             })
 
-        # Houses, ASC, MC, Parts (using Greenwich lat/lon = 51.5N, 0W)
+        # Houses etc. — Greenwich reference
         points = houses_and_points(51.5, 0.0, dt)
         feed["feed"]["objects"].append({
             "id": "ASC",
