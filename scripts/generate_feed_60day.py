@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 generate_feed_60day.py — build a 60-day projected transit feed.
-Full Black Zodiac 3.3.0 set with correct asteroid/TNO IDs.
+Full Black Zodiac 3.3.0:
+- Core planets, Chiron
+- Houses, ASC/MC, Parts of Fortune/Spirit
+- Fixed stars
+- Asteroids/TNOs (Swiss + fallback JSON)
 """
 
 import json
@@ -19,6 +23,14 @@ EPHE_PATH = "."
 # ---- Setup ----
 swe.set_ephe_path(EPHE_PATH)
 
+# ---- Fallback JSON ----
+FALLBACK_PATH = "sept_to_feb_2026_asteroids_tnos.json"
+try:
+    with open(FALLBACK_PATH, "r") as f:
+        ASTEROID_FALLBACK = {entry["date"]: entry for entry in json.load(f)}
+except FileNotFoundError:
+    ASTEROID_FALLBACK = {}
+
 # ---- Fixed stars ----
 FIXED_STARS = [
     {"id": "Regulus",   "label": "Regulus (Alpha Leo)",    "ra_deg": 152.0929625, "dec_deg": 11.9672083},
@@ -32,10 +44,12 @@ PLANETS = {
     "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY,
     "299": swe.VENUS, "499": swe.MARS, "599": swe.JUPITER,
     "699": swe.SATURN, "799": swe.URANUS, "899": swe.NEPTUNE,
-    "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15)
+    "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15),
+    "LILITH_MEAN": swe.MEAN_APOG,
+    "LILITH_TRUE": swe.OSCU_APOG
 }
 
-# ---- Archetype asteroids & TNOs ----
+# ---- Asteroids & TNOs ----
 ASTEROIDS = {
     "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
     "Sappho": 80, "Karma": 3811,
@@ -89,8 +103,9 @@ def main():
 
     for d in range(DAYS_AHEAD + 1):
         dt = start + timedelta(days=d)
+        date_key = dt.strftime("%Y-%m-%d")
 
-        # Planets + Chiron
+        # Planets + Chiron + Liliths
         for pid, body in PLANETS.items():
             lon, lat = swe_calc(body, dt)
             feed["feed"]["objects"].append({
@@ -110,19 +125,29 @@ def main():
                     "ecl_lon_deg": lon, "ecl_lat_deg": lat,
                     "source": "swiss-asteroid"
                 })
-            except Exception as e:
-                feed["feed"]["objects"].append({
-                    "id": str(num), "targetname": name,
-                    "error": str(e), "datetime_utc": dt.isoformat()
-                })
+            except Exception:
+                if date_key in ASTEROID_FALLBACK and name in ASTEROID_FALLBACK[date_key]:
+                    lon = ASTEROID_FALLBACK[date_key][name]
+                    feed["feed"]["objects"].append({
+                        "id": name, "targetname": name,
+                        "datetime_utc": dt.isoformat(),
+                        "ecl_lon_deg": lon,
+                        "source": "fallback-json"
+                    })
+                else:
+                    feed["feed"]["objects"].append({
+                        "id": name, "targetname": name,
+                        "datetime_utc": dt.isoformat(),
+                        "error": "no data available"
+                    })
 
-        # Houses / Arabic Parts
+        # Houses / Parts
         points = houses_and_points(51.5, 0.0, dt)
-        feed["feed"]["objects"].append({"id": "ASC","targetname":"Ascendant","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["ASC"],"source":"swiss"})
-        feed["feed"]["objects"].append({"id": "MC","targetname":"Midheaven","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["MC"],"source":"swiss"})
-        feed["feed"]["objects"].append({"id": "Houses","targetname":"Houses","datetime_utc":dt.isoformat(),"houses_deg":points["houses"],"source":"swiss"})
-        feed["feed"]["objects"].append({"id": "PartOfFortune","targetname":"Part of Fortune","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfFortune"],"branch":"day","source":"swiss"})
-        feed["feed"]["objects"].append({"id": "PartOfSpirit","targetname":"Part of Spirit","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfSpirit"],"branch":"day","source":"swiss"})
+        feed["feed"]["objects"].append({"id":"ASC","targetname":"Ascendant","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["ASC"],"source":"swiss"})
+        feed["feed"]["objects"].append({"id":"MC","targetname":"Midheaven","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["MC"],"source":"swiss"})
+        feed["feed"]["objects"].append({"id":"Houses","targetname":"Houses","datetime_utc":dt.isoformat(),"houses_deg":points["houses"],"source":"swiss"})
+        feed["feed"]["objects"].append({"id":"PartOfFortune","targetname":"Part of Fortune","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfFortune"],"branch":"day","source":"swiss"})
+        feed["feed"]["objects"].append({"id":"PartOfSpirit","targetname":"Part of Spirit","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfSpirit"],"branch":"day","source":"swiss"})
 
         # Fixed stars
         for star in FIXED_STARS:
