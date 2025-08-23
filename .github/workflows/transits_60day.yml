@@ -8,8 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
@@ -18,13 +20,11 @@ jobs:
         run: |
           pip install pyswisseph astroquery pytz
 
-      - name: Fetch Swiss Ephemeris files (official archive)
+      # New step: verify files committed instead of fetching
+      - name: Verify committed ephemeris files
         run: |
-          mkdir -p ephe
-          curl -sSL ftp://ftp.astro.com/pub/swisseph/ephe/seas_18.tar.gz -o seas_18.tar.gz
-          tar -xzf seas_18.tar.gz -C ephe
-          echo "Ephemeris files downloaded:"
-          ls -l ephe | head -20
+          echo "Ephemeris files present in repo:"
+          ls -lh ephe
 
       - name: Generate 60-day feed
         run: python scripts/generate_feed_60day.py
