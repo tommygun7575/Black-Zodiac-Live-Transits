@@ -72,7 +72,7 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
             ("jpl", horizons_client.get_ecliptic_lonlat)
         ])
 
-    # ---- Aethers: Swiss first (always supported now), Miriade fallback ----
+    # ---- Aethers: Swiss first (guaranteed now), Miriade fallback ----
     for name in AETHERS:
         out[name] = resolve_body(name, [
             ("swiss", swiss_client.get_ecliptic_lonlat),
