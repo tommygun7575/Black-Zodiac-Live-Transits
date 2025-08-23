@@ -15,15 +15,9 @@ import swisseph as swe
 DAYS_AHEAD = 60
 HOUSE_SYSTEM = b'P'  # Placidus
 OBSERVER = "geocentric Earth"
-EPHE_PATH = "ephe"
+EPHE_PATH = "."  # .se1 files are in repo root now
 
 # ---- Setup ----
-if not os.path.isdir(EPHE_PATH):
-    raise RuntimeError(
-        f"Ephemeris path '{EPHE_PATH}' not found. "
-        "Commit ephe/ with sepl_18.se1, seas_18.se1, seasm18.se1, semo_18.se1"
-    )
-
 swe.set_ephe_path(EPHE_PATH)
 
 # ---- Fixed stars ----
@@ -42,11 +36,13 @@ PLANETS = {
     "999": swe.PLUTO, "2060": getattr(swe, "CHIRON", 15)
 }
 
-# Archetype asteroids & TNOs
-ASTEROIDS = [
-    "Vesta", "Psyche", "Amor", "Eros", "Sappho", "Karma",
-    "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia"
-]
+# Archetype asteroids & TNOs — numeric IDs for Swiss Ephemeris
+ASTEROIDS = {
+    "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
+    "Sappho": 80, "Karma": 3811,
+    "Haumea": 136108, "Makemake": 136472, "Varuna": 20000,
+    "Ixion": 28978, "Typhon": 42355, "Salacia": 120347
+}
 
 # ---- Helpers ----
 def swe_calc(body, dt):
@@ -57,15 +53,14 @@ def swe_calc(body, dt):
     xx, ret = swe.calc_ut(jd, body, flags)
     if ret < 0:
         raise RuntimeError(f"Swiss Ephemeris failed for body {body}, ret={ret}")
-    return float(xx[0]), float(xx[1])  # longitude, latitude
+    return float(xx[0]), float(xx[1])
 
 def houses_and_points(lat, lon, dt):
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
                     swe.GREG_CAL)
     cusp, ascmc, _ = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
-    asc = ascmc[0]
-    mc = ascmc[1]
+    asc = ascmc[0]; mc = ascmc[1]
     sun_lon, _ = swe_calc(swe.SUN, dt)
     moon_lon, _ = swe_calc(swe.MOON, dt)
     fortune = (asc + moon_lon - sun_lon) % 360
@@ -80,24 +75,6 @@ def add_fixed_star(star, dt):
         "ra_deg": star["ra_deg"], "dec_deg": star["dec_deg"],
         "epoch": "J2000", "source": "fixed"
     }
-
-def add_asteroid(name, dt):
-    jd = swe.julday(dt.year, dt.month, dt.day,
-                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-                    swe.GREG_CAL)
-    try:
-        xx, ret = swe.calc_ut(jd, name)
-        if ret >= 0:
-            return {
-                "id": name, "targetname": name,
-                "datetime_utc": dt.isoformat(),
-                "ecl_lon_deg": float(xx[0]),
-                "ecl_lat_deg": float(xx[1]),
-                "source": "swiss-asteroid"
-            }
-    except Exception as e:
-        return {"id": name, "error": str(e)}
-    return None
 
 # ---- Main ----
 def main():
@@ -125,9 +102,17 @@ def main():
             })
 
         # Asteroids / TNOs
-        for name in ASTEROIDS:
-            pos = add_asteroid(name, dt)
-            if pos: feed["feed"]["objects"].append(pos)
+        for name, num in ASTEROIDS.items():
+            try:
+                lon, lat = swe_calc(num, dt)
+                feed["feed"]["objects"].append({
+                    "id": str(num), "targetname": name,
+                    "datetime_utc": dt.isoformat(),
+                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                    "source": "swiss-asteroid"
+                })
+            except Exception as e:
+                feed["feed"]["objects"].append({"id": str(num), "targetname": name, "error": str(e)})
 
         # Houses / Arabic Parts
         points = houses_and_points(51.5, 0.0, dt)
