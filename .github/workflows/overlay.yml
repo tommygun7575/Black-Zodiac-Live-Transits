@@ -2,7 +2,7 @@ name: build-overlay
 
 on:
   schedule:
-    # Run daily at 04:00 Pacific
+    # Run daily at 04:00 Pacific (11:00 UTC)
     - cron: '0 11 * * *'
   workflow_dispatch: {}
 
@@ -21,18 +21,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Debug: check scripts folder and first lines of file
-      - name: Show scripts folder
-        run: ls -R scripts
-
-      - name: Show head of overlay script
-        run: head -n 20 scripts/generate_feed_overlay.py
-
       - name: Run generate_feed_overlay
         run: PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
         env:
           OVERLAY_OUT: docs/feed_overlay.json
-          OVERLAY_TIME_UTC: ''
 
       - name: Commit updated overlay
         uses: stefanzweifel/git-auto-commit-action@v5
