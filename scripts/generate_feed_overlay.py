@@ -5,7 +5,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import json,os,sys
 from datetime import datetime,timezone
 from typing import Dict,Any,List
-from scripts.sources import horizons_client,miriade_client,mpc_client,swiss_client
+from sources import horizons_client, miriade_client, mpc_client, swiss_client
+
 from scripts.utils.coords import ra_dec_to_ecl
 
 ROOT=os.path.dirname(os.path.dirname(__file__))
