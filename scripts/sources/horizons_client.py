@@ -6,15 +6,15 @@ def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float
         obj = Horizons(id=name, location='500', epochs=when_iso)
         eph = obj.ephemerides()
 
+        ecl_lon, ecl_lat = None, None
+
         # longitude
-        ecl_lon = None
         for lon_key in ("EclLon", "EclipticLon", "ELON"):
             if lon_key in eph.colnames:
                 ecl_lon = float(eph[lon_key][0])
                 break
 
         # latitude
-        ecl_lat = None
         for lat_key in ("EclLat", "EclipticLat", "ELAT"):
             if lat_key in eph.colnames:
                 ecl_lat = float(eph[lat_key][0])
