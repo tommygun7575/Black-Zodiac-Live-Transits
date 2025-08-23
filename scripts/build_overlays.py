@@ -50,7 +50,7 @@ FIXED_STARS = {
 def normalize_deg(x):
     return x % 360.0
 
-# --- JPL batch with retry ---
+# --- JPL batch with retry + validation ---
 def get_jpl_batch(dt, retries=3):
     ids = ",".join(str(v) for v in JPL_IDS.values())
     delay = 2
@@ -62,15 +62,27 @@ def get_jpl_batch(dt, retries=3):
                 epochs=dt.strftime("%Y-%m-%d %H:%M")
             )
             eph = obj.ephemerides()
+
+            # ---- HARD VALIDATION ----
+            if "EclLon" not in eph.columns or "EclLat" not in eph.columns:
+                raise RuntimeError("Horizons returned malformed ephemeris (missing EclLon/EclLat)")
+
             result = {}
             for name, jpl_id in JPL_IDS.items():
                 row = eph[eph["targetname"].str.contains(name, case=False)]
                 if len(row) > 0:
-                    lon = float(row["EclLon"].values[0])
-                    lat = float(row["EclLat"].values[0])
-                    result[name] = (lon, lat, "jpl")
+                    try:
+                        lon = float(row["EclLon"].values[0])
+                        lat = float(row["EclLat"].values[0])
+                        # sanity check
+                        if not (0.0 <= lon < 360.0):
+                            raise ValueError(f"Bad longitude for {name}: {lon}")
+                        result[name] = (lon, lat, "jpl")
+                    except Exception as e:
+                        print(f"[WARN] Bad Horizons data for {name}: {e}")
             if result:
                 return result
+
         except Exception as e:
             print(f"[WARN] JPL batch attempt {attempt+1} failed: {e}")
             if attempt < retries - 1:
