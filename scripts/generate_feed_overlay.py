@@ -9,6 +9,7 @@ from scripts.utils.coords import ra_dec_to_ecl
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
+NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 
 def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
@@ -76,38 +77,39 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
 
     return out
 
-def merge_into(existing: Dict[str, Any],
+def merge_into(natal_bundle: Dict[str, Any],
                positions: Dict[str, Dict[str, Any]],
                when_iso: str) -> Dict[str, Any]:
-    meta = existing.get("meta", {})
-    meta.update({
+    meta = {
         "generated_at_utc": when_iso,
         "source_order": [s for s, _ in SOURCE_ORDER]
-    })
+    }
 
-    charts = existing.get("charts")
-    if charts and isinstance(charts, dict):
-        for who, chart in charts.items():
-            # ensure objects is always a dict
-            if not isinstance(chart.get("objects"), dict):
-                chart["objects"] = {}
-            chart["objects"].update(positions)
-        out = {"meta": meta, "charts": charts}
-    else:
-        out = {"meta": meta, "objects": positions}
+    charts = {}
+    for who, natal in natal_bundle.items():
+        if who.startswith("_meta"):
+            continue
+        charts[who] = {
+            "birth": natal.get("birth", {}),
+            "natal": natal.get("planets", {}),
+            "objects": positions
+        }
 
-    return out
-
+    return {"meta": meta, "charts": charts}
 
 def main(argv: List[str]):
     out_path = os.environ.get("OVERLAY_OUT",
                               os.path.join("docs", "feed_overlay.json"))
     when_iso = os.environ.get("OVERLAY_TIME_UTC", iso_now())
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    existing = load_existing(out_path)
+
+    natal_bundle = load_json(NATAL)
     positions = compute_positions(when_iso)
-    merged = merge_into(existing, positions, when_iso)
-    json.dump(merged, open(out_path, "w"), indent=2, ensure_ascii=False)
+    merged = merge_into(natal_bundle, positions, when_iso)
+
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(merged, f, indent=2, ensure_ascii=False)
+
     print(f"wrote {out_path}")
 
 if __name__ == "__main__":
