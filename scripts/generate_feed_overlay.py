@@ -3,13 +3,12 @@ import json, os, sys
 from datetime import datetime, timezone
 from typing import Dict, Any, List
 from math import fmod
-
-# Explicit imports
-from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
-from scripts.utils.coords import ra_dec_to_ecl
-
 import swisseph as swe
 from dateutil import parser
+
+# Source imports
+from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
+from scripts.utils.coords import ra_dec_to_ecl
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
@@ -22,12 +21,12 @@ def load_json(path: str) -> dict:
 def iso_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
-# ---- Utility for degree math ----
+# ---- Degree math ----
 def normalize(deg: float) -> float:
     return fmod(deg + 360.0, 360.0)
 
-# ---- Compute Arabic Parts ----
-def compute_arabic_parts(objects: Dict[str, Dict[str, Any]], asc: float, sun: float, moon: float) -> Dict[str, Dict[str, Any]]:
+# ---- Arabic Parts ----
+def compute_arabic_parts(asc: float, sun: float, moon: float) -> Dict[str, Dict[str, Any]]:
     parts = {}
     is_day = (sun - asc) % 360 < 180
 
@@ -46,42 +45,39 @@ def compute_arabic_parts(objects: Dict[str, Dict[str, Any]], asc: float, sun: fl
     parts["Part_of_Deliverance"] = {"ecl_lon_deg": normalize(deliverance), "ecl_lat_deg": 0.0, "used_source": "calculated"}
     return parts
 
-# ---- Compute House Cusps ----
+# ---- House Cusps ----
 def compute_house_cusps(lat: float, lon: float, when_iso: str, hsys: str = "P") -> Dict[str, Dict[str, Any]]:
     dt = parser.isoparse(when_iso)
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute/60.0 + dt.second/3600.0)
-    try:
-        cusps, ascmc = swe.houses(jd, lat, lon, hsys)
-        houses = {}
-        for i, cusp in enumerate(cusps, start=1):
-            houses[f"House_{i}"] = {
-                "ecl_lon_deg": cusp,
-                "ecl_lat_deg": 0.0,
-                "used_source": f"houses-{hsys}"
-            }
-        houses["ASC"] = {"ecl_lon_deg": ascmc[0], "ecl_lat_deg": 0.0, "used_source": "houses"}
-        houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
-        return houses
-    except Exception:
-        return {}
+    cusps, ascmc = swe.houses(jd, lat, lon, hsys)
+    houses = {}
+    for i, cusp in enumerate(cusps, start=1):
+        houses[f"House_{i}"] = {"ecl_lon_deg": cusp, "ecl_lat_deg": 0.0, "used_source": f"houses-{hsys}"}
+    houses["ASC"] = {"ecl_lon_deg": ascmc[0], "ecl_lat_deg": 0.0, "used_source": "houses"}
+    houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
+    return houses
 
+# ---- Harmonics (simplified: 8th, 9th) ----
+def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    harmonics = {}
+    for body, pos in base_positions.items():
+        if pos["ecl_lon_deg"] is None: 
+            continue
+        lon = pos["ecl_lon_deg"]
+        harmonics[f"{body}_h8"] = {"ecl_lon_deg": normalize(lon*8 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic8"}
+        harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
+    return harmonics
+
+# ---- Master compute ----
 def compute_positions(when_iso: str, lat: float, lon: float) -> Dict[str, Dict[str, Any]]:
     out = {}
 
-    # ---- Categories ----
-    MAJORS = ["Sun","Moon","Mercury","Venus","Mars",
-              "Jupiter","Saturn","Uranus","Neptune","Pluto","Chiron"]
-
-    ASTEROIDS = ["Ceres","Pallas","Juno","Vesta","Psyche",
-                 "Amor","Eros","Astraea","Sappho","Karma","Bacchus"]
-
-    TNOs = ["Eris","Sedna","Haumea","Makemake","Varuna",
-            "Ixion","Typhon","Salacia","2002 AW197","2003 VS2"]
-
+    MAJORS = ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto","Chiron"]
+    ASTEROIDS = ["Ceres","Pallas","Juno","Vesta","Psyche","Amor","Eros","Astraea","Sappho","Karma","Bacchus"]
+    TNOs = ["Eris","Sedna","Haumea","Makemake","Varuna","Ixion","Typhon","Salacia","2002 AW197","2003 VS2"]
     AETHERS = ["Vulcan","Persephone","Hades","Proserpina","Isis"]
 
-    # ---- Helper to query with fallbacks ----
     def resolve_body(name: str, sources) -> Dict[str, Any]:
         got, used = None, None
         for label, func in sources:
@@ -92,10 +88,6 @@ def compute_positions(when_iso: str, lat: float, lon: float) -> Dict[str, Dict[s
             if pos:
                 got, used = pos, label
                 break
-        if used:
-            print(f"{name:12s} → {used:7s} | lon={got[0]:.2f} lat={got[1]:.2f}")
-        else:
-            print(f"{name:12s} → missing")
         return {
             "ecl_lon_deg": None if not got else float(got[0]),
             "ecl_lat_deg": None if not got else float(got[1]),
@@ -104,38 +96,26 @@ def compute_positions(when_iso: str, lat: float, lon: float) -> Dict[str, Dict[s
 
     # Majors
     for name in MAJORS:
-        out[name] = resolve_body(name, [
-            ("jpl", horizons_client.get_ecliptic_lonlat),
-            ("swiss", swiss_client.get_ecliptic_lonlat)
-        ])
-
+        out[name] = resolve_body(name, [("jpl", horizons_client.get_ecliptic_lonlat),
+                                        ("swiss", swiss_client.get_ecliptic_lonlat)])
     # Asteroids
     for name in ASTEROIDS:
-        out[name] = resolve_body(name, [
-            ("jpl", horizons_client.get_ecliptic_lonlat),
-            ("swiss", swiss_client.get_ecliptic_lonlat)
-        ])
-
+        out[name] = resolve_body(name, [("jpl", horizons_client.get_ecliptic_lonlat),
+                                        ("swiss", swiss_client.get_ecliptic_lonlat)])
     # TNOs
     for name in TNOs:
-        out[name] = resolve_body(name, [
-            ("swiss", swiss_client.get_ecliptic_lonlat),
-            ("miriade", miriade_client.get_ecliptic_lonlat),
-            ("jpl", horizons_client.get_ecliptic_lonlat)
-        ])
-
+        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat),
+                                        ("miriade", miriade_client.get_ecliptic_lonlat),
+                                        ("jpl", horizons_client.get_ecliptic_lonlat)])
     # Aethers
     for name in AETHERS:
-        out[name] = resolve_body(name, [
-            ("swiss", swiss_client.get_ecliptic_lonlat),
-            ("miriade", miriade_client.get_ecliptic_lonlat)
-        ])
+        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat),
+                                        ("miriade", miriade_client.get_ecliptic_lonlat)])
 
     # Fixed Stars
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
-        print(f"{s['id']:12s} → fixed   | lon={lam:.2f} lat={bet:.2f}")
         out[s["id"]] = {"ecl_lon_deg": lam, "ecl_lat_deg": bet, "used_source": "fixed"}
 
     # Houses
@@ -144,16 +124,16 @@ def compute_positions(when_iso: str, lat: float, lon: float) -> Dict[str, Dict[s
 
     # Arabic Parts (needs ASC, Sun, Moon)
     if "ASC" in out and "Sun" in out and "Moon" in out:
-        asc = out["ASC"]["ecl_lon_deg"]
-        sun = out["Sun"]["ecl_lon_deg"]
-        moon = out["Moon"]["ecl_lon_deg"]
-        if asc is not None and sun is not None and moon is not None:
-            parts = compute_arabic_parts(out, asc, sun, moon)
-            out.update(parts)
+        asc, sun, moon = out["ASC"]["ecl_lon_deg"], out["Sun"]["ecl_lon_deg"], out["Moon"]["ecl_lon_deg"]
+        if None not in (asc, sun, moon):
+            out.update(compute_arabic_parts(asc, sun, moon))
+
+    # Harmonics
+    out.update(compute_harmonics(out))
 
     return out
 
-def merge_into(natal_bundle: Dict[str, Any], positions: Dict[str, Dict[str, Any]], when_iso: str) -> Dict[str, Any]:
+def merge_into(natal_bundle: Dict[str, Any], when_iso: str) -> Dict[str, Any]:
     meta = {
         "generated_at_utc": when_iso,
         "source_order": [
@@ -162,7 +142,8 @@ def merge_into(natal_bundle: Dict[str, Any], positions: Dict[str, Dict[str, Any]
             "miriade (tnos/aethers fill)",
             "fixed (stars)",
             "houses (cusps, ASC, MC)",
-            "calculated (arabic parts)"
+            "calculated (arabic parts)",
+            "calculated (harmonics)"
         ]
     }
 
@@ -171,8 +152,7 @@ def merge_into(natal_bundle: Dict[str, Any], positions: Dict[str, Dict[str, Any]
         if who.startswith("_meta"):
             continue
         birth = natal.get("birth", {})
-        lat = birth.get("lat")
-        lon = birth.get("lon")
+        lat, lon = birth.get("lat"), birth.get("lon")
         charts[who] = {
             "birth": birth,
             "natal": natal.get("planets", {}),
@@ -187,7 +167,7 @@ def main(argv: List[str]):
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
     natal_bundle = load_json(NATAL)
-    merged = merge_into(natal_bundle, {}, when_iso)
+    merged = merge_into(natal_bundle, when_iso)
 
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(merged, f, indent=2, ensure_ascii=False)
