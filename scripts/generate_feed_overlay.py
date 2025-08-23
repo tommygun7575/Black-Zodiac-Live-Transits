@@ -10,10 +10,15 @@ from dateutil import parser
 from scripts.sources import horizons_client, miriade_client, mpc_client, swiss_client
 from scripts.utils.coords import ra_dec_to_ecl
 
+# ---- Setup ----
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
 NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 
+# Point Swiss Ephemeris at the .se1 files in repo root
+swe.set_ephe_path(ROOT)
+
+# ---- Helpers ----
 def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -96,18 +101,18 @@ def compute_positions(when_iso: str, lat: float, lon: float) -> Dict[str, Dict[s
             "used_source": "missing" if not used else used
         }
 
-    # Majors (guaranteed fallback)
+    # Majors (Swiss first, fallback if needed)
     for name in MAJORS:
         out[name] = resolve_body(name, [
-            ("jpl", horizons_client.get_ecliptic_lonlat),
-            ("swiss", swiss_client.get_ecliptic_lonlat)
+            ("swiss", swiss_client.get_ecliptic_lonlat),
+            ("jpl", horizons_client.get_ecliptic_lonlat)
         ], force_fallback=True)
 
-    # Asteroids (guaranteed fallback)
+    # Asteroids (Swiss first, fallback if needed)
     for name in ASTEROIDS:
         out[name] = resolve_body(name, [
-            ("jpl", horizons_client.get_ecliptic_lonlat),
-            ("swiss", swiss_client.get_ecliptic_lonlat)
+            ("swiss", swiss_client.get_ecliptic_lonlat),
+            ("jpl", horizons_client.get_ecliptic_lonlat)
         ], force_fallback=True)
 
     # TNOs
@@ -145,12 +150,13 @@ def compute_positions(when_iso: str, lat: float, lon: float) -> Dict[str, Dict[s
 
     return out
 
+# ---- Merge ----
 def merge_into(natal_bundle: Dict[str, Any], when_iso: str) -> Dict[str, Any]:
     meta = {
         "generated_at_utc": when_iso,
         "source_order": [
-            "jpl (majors/asteroids)",
-            "swiss (tnos/aethers/fallback)",
+            "swiss (majors/asteroids/tnos/aethers)",
+            "jpl (fallback for majors/asteroids/tnos)",
             "miriade (tnos/aethers fill)",
             "fixed (stars)",
             "houses (cusps, ASC, MC)",
@@ -174,11 +180,10 @@ def merge_into(natal_bundle: Dict[str, Any], when_iso: str) -> Dict[str, Any]:
 
     return {"meta": meta, "charts": charts}
 
+# ---- Main ----
 def main(argv):
     out_path = os.environ.get("OVERLAY_OUT", os.path.join("docs", "feed_overlay.json"))
-    when_iso = os.environ.get("OVERLAY_TIME_UTC")
-    if not when_iso:
-        when_iso = iso_now()
+    when_iso = os.environ.get("OVERLAY_TIME_UTC") or iso_now()
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     natal_bundle = load_json(NATAL)
