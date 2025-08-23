@@ -50,7 +50,8 @@ def compute_house_cusps(lat: float, lon: float, when_iso: str, hsys: str = "P") 
     dt = parser.isoparse(when_iso)
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute/60.0 + dt.second/3600.0)
-    cusps, ascmc = swe.houses(jd, lat, lon, hsys)
+    # Swiss requires house system as a byte string, not plain str
+    cusps, ascmc = swe.houses(jd, lat, lon, hsys.encode("utf-8"))
     houses = {}
     for i, cusp in enumerate(cusps, start=1):
         houses[f"House_{i}"] = {"ecl_lon_deg": cusp, "ecl_lat_deg": 0.0, "used_source": f"houses-{hsys}"}
