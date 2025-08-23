@@ -1,9 +1,9 @@
 {
   "meta": {
-    "generated_at_utc": "2025-08-23T23:14:28Z",
+    "generated_at_utc": "2025-08-23T23:42:29Z",
     "source_order": [
-      "jpl (majors/asteroids)",
-      "swiss (tnos/aethers/fallback)",
+      "swiss (majors/asteroids/tnos/aethers)",
+      "jpl (fallback for majors/asteroids/tnos)",
       "miriade (tnos/aethers fill)",
       "fixed (stars)",
       "houses (cusps, ASC, MC)",
@@ -273,27 +273,27 @@
           "used_source": "missing"
         },
         "Vulcan": {
-          "ecl_lon_deg": 154.34323496324942,
+          "ecl_lon_deg": 154.362410814967,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Persephone": {
-          "ecl_lon_deg": 135.6518755092693,
+          "ecl_lon_deg": 135.65349035878899,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Hades": {
-          "ecl_lon_deg": 252.76055731481756,
+          "ecl_lon_deg": 252.76082969907293,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Proserpina": {
-          "ecl_lon_deg": 123.64587351851878,
+          "ecl_lon_deg": 123.64595134259253,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Isis": {
-          "ecl_lon_deg": 347.86709490744397,
+          "ecl_lon_deg": 347.871958912001,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
@@ -393,87 +393,87 @@
           "used_source": "fixed"
         },
         "House_1": {
-          "ecl_lon_deg": 322.395228156237,
+          "ecl_lon_deg": 333.30624186144826,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_2": {
-          "ecl_lon_deg": 10.49721460280785,
+          "ecl_lon_deg": 20.49160693647845,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_3": {
-          "ecl_lon_deg": 44.56063601886916,
+          "ecl_lon_deg": 52.22953649955373,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_4": {
-          "ecl_lon_deg": 68.95336137432639,
+          "ecl_lon_deg": 75.5109677922049,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_5": {
-          "ecl_lon_deg": 89.91526666739912,
+          "ecl_lon_deg": 96.41671533615147,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_6": {
-          "ecl_lon_deg": 112.10870204208027,
+          "ecl_lon_deg": 119.72785600570751,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_7": {
-          "ecl_lon_deg": 142.395228156237,
+          "ecl_lon_deg": 153.30624186144826,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_8": {
-          "ecl_lon_deg": 190.49721460280784,
+          "ecl_lon_deg": 200.49160693647846,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_9": {
-          "ecl_lon_deg": 224.56063601886916,
+          "ecl_lon_deg": 232.22953649955372,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_10": {
-          "ecl_lon_deg": 248.9533613743264,
+          "ecl_lon_deg": 255.5109677922049,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_11": {
-          "ecl_lon_deg": 269.9152666673991,
+          "ecl_lon_deg": 276.41671533615147,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_12": {
-          "ecl_lon_deg": 292.10870204208027,
+          "ecl_lon_deg": 299.7278560057075,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "ASC": {
-          "ecl_lon_deg": 322.395228156237,
+          "ecl_lon_deg": 333.30624186144826,
           "ecl_lat_deg": 0.0,
           "used_source": "houses"
         },
         "MC": {
-          "ecl_lon_deg": 248.9533613743264,
+          "ecl_lon_deg": 255.5109677922049,
           "ecl_lat_deg": 0.0,
           "used_source": "houses"
         },
         "Part_of_Fortune": {
-          "ecl_lon_deg": 322.39522815623695,
+          "ecl_lon_deg": 333.30624186144826,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
         "Part_of_Spirit": {
-          "ecl_lon_deg": 322.39522815623695,
+          "ecl_lon_deg": 333.30624186144826,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
         "Part_of_Karma": {
-          "ecl_lon_deg": 322.39522815623695,
+          "ecl_lon_deg": 333.30624186144826,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
@@ -488,7 +488,7 @@
           "used_source": "calculated"
         },
         "Part_of_Deliverance": {
-          "ecl_lon_deg": 322.39522815623695,
+          "ecl_lon_deg": 333.30624186144826,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
@@ -713,52 +713,52 @@
           "used_source": "harmonic9"
         },
         "Vulcan_h8": {
-          "ecl_lon_deg": 154.74587970599532,
+          "ecl_lon_deg": 154.89928651973605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Vulcan_h9": {
-          "ecl_lon_deg": 309.08911466924474,
+          "ecl_lon_deg": 309.26169733470306,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Persephone_h8": {
-          "ecl_lon_deg": 5.215004074154422,
+          "ecl_lon_deg": 5.227922870311886,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Persephone_h9": {
-          "ecl_lon_deg": 140.86687958342372,
+          "ecl_lon_deg": 140.88141322910087,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Hades_h8": {
-          "ecl_lon_deg": 222.0844585185405,
+          "ecl_lon_deg": 222.08663759258343,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Hades_h9": {
-          "ecl_lon_deg": 114.84501583335805,
+          "ecl_lon_deg": 114.84746729165636,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Proserpina_h8": {
-          "ecl_lon_deg": 269.16698814815027,
+          "ecl_lon_deg": 269.1676107407402,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Proserpina_h9": {
-          "ecl_lon_deg": 32.81286166666905,
+          "ecl_lon_deg": 32.81356208333273,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Isis_h8": {
-          "ecl_lon_deg": 262.93675925955176,
+          "ecl_lon_deg": 262.97567129600793,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Isis_h9": {
-          "ecl_lon_deg": 250.80385416699573,
+          "ecl_lon_deg": 250.84763020800892,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
@@ -953,172 +953,172 @@
           "used_source": "harmonic9"
         },
         "House_1_h8": {
-          "ecl_lon_deg": 59.16182524989608,
+          "ecl_lon_deg": 146.44993489158605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_1_h9": {
-          "ecl_lon_deg": 21.557053406133036,
+          "ecl_lon_deg": 119.7561767530342,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_2_h8": {
-          "ecl_lon_deg": 83.97771682246281,
+          "ecl_lon_deg": 163.93285549182758,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_2_h9": {
-          "ecl_lon_deg": 94.47493142527065,
+          "ecl_lon_deg": 184.42446242830601,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_3_h8": {
-          "ecl_lon_deg": 356.4850881509533,
+          "ecl_lon_deg": 57.83629199642985,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_3_h9": {
-          "ecl_lon_deg": 41.04572416982245,
+          "ecl_lon_deg": 110.06582849598357,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_4_h8": {
-          "ecl_lon_deg": 191.62689099461113,
+          "ecl_lon_deg": 244.08774233763916,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_4_h9": {
-          "ecl_lon_deg": 260.5802523689375,
+          "ecl_lon_deg": 319.598710129844,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_5_h8": {
-          "ecl_lon_deg": 359.322133339193,
+          "ecl_lon_deg": 51.333722689211754,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_5_h9": {
-          "ecl_lon_deg": 89.23740000659211,
+          "ecl_lon_deg": 147.75043802536322,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_6_h8": {
-          "ecl_lon_deg": 176.86961633664214,
+          "ecl_lon_deg": 237.82284804566007,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_6_h9": {
-          "ecl_lon_deg": 288.9783183787224,
+          "ecl_lon_deg": 357.5507040513676,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_7_h8": {
-          "ecl_lon_deg": 59.16182524989608,
+          "ecl_lon_deg": 146.44993489158605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_7_h9": {
-          "ecl_lon_deg": 201.55705340613304,
+          "ecl_lon_deg": 299.7561767530342,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_8_h8": {
-          "ecl_lon_deg": 83.97771682246275,
+          "ecl_lon_deg": 163.9328554918277,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_8_h9": {
-          "ecl_lon_deg": 274.4749314252706,
+          "ecl_lon_deg": 4.424462428306242,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_9_h8": {
-          "ecl_lon_deg": 356.4850881509533,
+          "ecl_lon_deg": 57.836291996429736,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_9_h9": {
-          "ecl_lon_deg": 221.0457241698225,
+          "ecl_lon_deg": 290.0658284959836,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_10_h8": {
-          "ecl_lon_deg": 191.62689099461113,
+          "ecl_lon_deg": 244.08774233763916,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_10_h9": {
-          "ecl_lon_deg": 80.58025236893764,
+          "ecl_lon_deg": 139.59871012984422,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_11_h8": {
-          "ecl_lon_deg": 359.322133339193,
+          "ecl_lon_deg": 51.333722689211754,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_11_h9": {
-          "ecl_lon_deg": 269.237400006592,
+          "ecl_lon_deg": 327.7504380253631,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_12_h8": {
-          "ecl_lon_deg": 176.86961633664214,
+          "ecl_lon_deg": 237.82284804566007,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_12_h9": {
-          "ecl_lon_deg": 108.97831837872218,
+          "ecl_lon_deg": 177.55070405136757,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "ASC_h8": {
-          "ecl_lon_deg": 59.16182524989608,
+          "ecl_lon_deg": 146.44993489158605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "ASC_h9": {
-          "ecl_lon_deg": 21.557053406133036,
+          "ecl_lon_deg": 119.7561767530342,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "MC_h8": {
-          "ecl_lon_deg": 191.62689099461113,
+          "ecl_lon_deg": 244.08774233763916,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "MC_h9": {
-          "ecl_lon_deg": 80.58025236893764,
+          "ecl_lon_deg": 139.59871012984422,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Fortune_h8": {
-          "ecl_lon_deg": 59.16182524989563,
+          "ecl_lon_deg": 146.44993489158605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Fortune_h9": {
-          "ecl_lon_deg": 21.55705340613258,
+          "ecl_lon_deg": 119.7561767530342,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Spirit_h8": {
-          "ecl_lon_deg": 59.16182524989563,
+          "ecl_lon_deg": 146.44993489158605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Spirit_h9": {
-          "ecl_lon_deg": 21.55705340613258,
+          "ecl_lon_deg": 119.7561767530342,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Karma_h8": {
-          "ecl_lon_deg": 59.16182524989563,
+          "ecl_lon_deg": 146.44993489158605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Karma_h9": {
-          "ecl_lon_deg": 21.55705340613258,
+          "ecl_lon_deg": 119.7561767530342,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
@@ -1143,12 +1143,12 @@
           "used_source": "harmonic9"
         },
         "Part_of_Deliverance_h8": {
-          "ecl_lon_deg": 59.16182524989563,
+          "ecl_lon_deg": 146.44993489158605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Deliverance_h9": {
-          "ecl_lon_deg": 21.55705340613258,
+          "ecl_lon_deg": 119.7561767530342,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         }
@@ -1415,27 +1415,27 @@
           "used_source": "missing"
         },
         "Vulcan": {
-          "ecl_lon_deg": 154.34323496324942,
+          "ecl_lon_deg": 154.362410814967,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Persephone": {
-          "ecl_lon_deg": 135.6518755092693,
+          "ecl_lon_deg": 135.65349035878899,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Hades": {
-          "ecl_lon_deg": 252.76055731481756,
+          "ecl_lon_deg": 252.76082969907293,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Proserpina": {
-          "ecl_lon_deg": 123.64587351851878,
+          "ecl_lon_deg": 123.64595134259253,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Isis": {
-          "ecl_lon_deg": 347.86709490744397,
+          "ecl_lon_deg": 347.871958912001,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
@@ -1535,87 +1535,87 @@
           "used_source": "fixed"
         },
         "House_1": {
-          "ecl_lon_deg": 270.6134203079945,
+          "ecl_lon_deg": 277.2510906364935,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_2": {
-          "ecl_lon_deg": 308.62306003629254,
+          "ecl_lon_deg": 317.0875434043194,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_3": {
-          "ecl_lon_deg": 349.33471240292647,
+          "ecl_lon_deg": 357.9856307872124,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_4": {
-          "ecl_lon_deg": 23.071752966696863,
+          "ecl_lon_deg": 30.47974653280687,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_5": {
-          "ecl_lon_deg": 48.86236279249101,
+          "ecl_lon_deg": 55.258420655608234,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_6": {
-          "ecl_lon_deg": 70.1799331327806,
+          "ecl_lon_deg": 76.2522952289126,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_7": {
-          "ecl_lon_deg": 90.61342030799449,
+          "ecl_lon_deg": 97.25109063649347,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_8": {
-          "ecl_lon_deg": 128.62306003629254,
+          "ecl_lon_deg": 137.08754340431938,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_9": {
-          "ecl_lon_deg": 169.33471240292647,
+          "ecl_lon_deg": 177.98563078721236,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_10": {
-          "ecl_lon_deg": 203.07175296669686,
+          "ecl_lon_deg": 210.4797465328069,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_11": {
-          "ecl_lon_deg": 228.86236279249098,
+          "ecl_lon_deg": 235.25842065560826,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_12": {
-          "ecl_lon_deg": 250.1799331327806,
+          "ecl_lon_deg": 256.2522952289126,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "ASC": {
-          "ecl_lon_deg": 270.6134203079945,
+          "ecl_lon_deg": 277.2510906364935,
           "ecl_lat_deg": 0.0,
           "used_source": "houses"
         },
         "MC": {
-          "ecl_lon_deg": 203.07175296669686,
+          "ecl_lon_deg": 210.4797465328069,
           "ecl_lat_deg": 0.0,
           "used_source": "houses"
         },
         "Part_of_Fortune": {
-          "ecl_lon_deg": 270.6134203079945,
+          "ecl_lon_deg": 277.2510906364935,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
         "Part_of_Spirit": {
-          "ecl_lon_deg": 270.6134203079945,
+          "ecl_lon_deg": 277.2510906364935,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
         "Part_of_Karma": {
-          "ecl_lon_deg": 270.6134203079945,
+          "ecl_lon_deg": 277.2510906364935,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
@@ -1630,7 +1630,7 @@
           "used_source": "calculated"
         },
         "Part_of_Deliverance": {
-          "ecl_lon_deg": 270.6134203079945,
+          "ecl_lon_deg": 277.2510906364935,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
@@ -1855,52 +1855,52 @@
           "used_source": "harmonic9"
         },
         "Vulcan_h8": {
-          "ecl_lon_deg": 154.74587970599532,
+          "ecl_lon_deg": 154.89928651973605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Vulcan_h9": {
-          "ecl_lon_deg": 309.08911466924474,
+          "ecl_lon_deg": 309.26169733470306,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Persephone_h8": {
-          "ecl_lon_deg": 5.215004074154422,
+          "ecl_lon_deg": 5.227922870311886,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Persephone_h9": {
-          "ecl_lon_deg": 140.86687958342372,
+          "ecl_lon_deg": 140.88141322910087,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Hades_h8": {
-          "ecl_lon_deg": 222.0844585185405,
+          "ecl_lon_deg": 222.08663759258343,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Hades_h9": {
-          "ecl_lon_deg": 114.84501583335805,
+          "ecl_lon_deg": 114.84746729165636,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Proserpina_h8": {
-          "ecl_lon_deg": 269.16698814815027,
+          "ecl_lon_deg": 269.1676107407402,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Proserpina_h9": {
-          "ecl_lon_deg": 32.81286166666905,
+          "ecl_lon_deg": 32.81356208333273,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Isis_h8": {
-          "ecl_lon_deg": 262.93675925955176,
+          "ecl_lon_deg": 262.97567129600793,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Isis_h9": {
-          "ecl_lon_deg": 250.80385416699573,
+          "ecl_lon_deg": 250.84763020800892,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
@@ -2095,172 +2095,172 @@
           "used_source": "harmonic9"
         },
         "House_1_h8": {
-          "ecl_lon_deg": 4.907362463955906,
+          "ecl_lon_deg": 58.00872509194778,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_1_h9": {
-          "ecl_lon_deg": 275.5207827719505,
+          "ecl_lon_deg": 335.259815728441,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_2_h8": {
-          "ecl_lon_deg": 308.98448029034034,
+          "ecl_lon_deg": 16.70034723455501,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_2_h9": {
-          "ecl_lon_deg": 257.6075403266327,
+          "ecl_lon_deg": 333.78789063887416,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_3_h8": {
-          "ecl_lon_deg": 274.67769922341176,
+          "ecl_lon_deg": 343.8850462976993,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_3_h9": {
-          "ecl_lon_deg": 264.01241162633823,
+          "ecl_lon_deg": 341.8706770849117,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_4_h8": {
-          "ecl_lon_deg": 184.5740237335749,
+          "ecl_lon_deg": 243.83797226245497,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_4_h9": {
-          "ecl_lon_deg": 207.64577670027177,
+          "ecl_lon_deg": 274.31771879526184,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_5_h8": {
-          "ecl_lon_deg": 30.8989023399281,
+          "ecl_lon_deg": 82.06736524486587,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_5_h9": {
-          "ecl_lon_deg": 79.76126513241911,
+          "ecl_lon_deg": 137.3257859004741,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_6_h8": {
-          "ecl_lon_deg": 201.43946506224484,
+          "ecl_lon_deg": 250.0183618313008,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_6_h9": {
-          "ecl_lon_deg": 271.6193981950255,
+          "ecl_lon_deg": 326.27065706021335,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_7_h8": {
-          "ecl_lon_deg": 4.907362463955906,
+          "ecl_lon_deg": 58.00872509194778,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_7_h9": {
-          "ecl_lon_deg": 95.5207827719504,
+          "ecl_lon_deg": 155.25981572844125,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_8_h8": {
-          "ecl_lon_deg": 308.98448029034034,
+          "ecl_lon_deg": 16.70034723455501,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_8_h9": {
-          "ecl_lon_deg": 77.60754032663294,
+          "ecl_lon_deg": 153.7878906388744,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_9_h8": {
-          "ecl_lon_deg": 274.67769922341176,
+          "ecl_lon_deg": 343.88504629769886,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_9_h9": {
-          "ecl_lon_deg": 84.01241162633823,
+          "ecl_lon_deg": 161.87067708491122,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_10_h8": {
-          "ecl_lon_deg": 184.5740237335749,
+          "ecl_lon_deg": 243.8379722624552,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_10_h9": {
-          "ecl_lon_deg": 27.645776700271654,
+          "ecl_lon_deg": 94.31771879526218,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_11_h8": {
-          "ecl_lon_deg": 30.898902339927872,
+          "ecl_lon_deg": 82.0673652448661,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_11_h9": {
-          "ecl_lon_deg": 259.7612651324189,
+          "ecl_lon_deg": 317.32578590047433,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_12_h8": {
-          "ecl_lon_deg": 201.43946506224484,
+          "ecl_lon_deg": 250.0183618313008,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_12_h9": {
-          "ecl_lon_deg": 91.6193981950255,
+          "ecl_lon_deg": 146.27065706021358,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "ASC_h8": {
-          "ecl_lon_deg": 4.907362463955906,
+          "ecl_lon_deg": 58.00872509194778,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "ASC_h9": {
-          "ecl_lon_deg": 275.5207827719505,
+          "ecl_lon_deg": 335.259815728441,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "MC_h8": {
-          "ecl_lon_deg": 184.5740237335749,
+          "ecl_lon_deg": 243.8379722624552,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "MC_h9": {
-          "ecl_lon_deg": 27.645776700271654,
+          "ecl_lon_deg": 94.31771879526218,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Fortune_h8": {
-          "ecl_lon_deg": 4.907362463955906,
+          "ecl_lon_deg": 58.00872509194778,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Fortune_h9": {
-          "ecl_lon_deg": 275.5207827719505,
+          "ecl_lon_deg": 335.259815728441,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Spirit_h8": {
-          "ecl_lon_deg": 4.907362463955906,
+          "ecl_lon_deg": 58.00872509194778,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Spirit_h9": {
-          "ecl_lon_deg": 275.5207827719505,
+          "ecl_lon_deg": 335.259815728441,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Karma_h8": {
-          "ecl_lon_deg": 4.907362463955906,
+          "ecl_lon_deg": 58.00872509194778,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Karma_h9": {
-          "ecl_lon_deg": 275.5207827719505,
+          "ecl_lon_deg": 335.259815728441,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
@@ -2285,12 +2285,12 @@
           "used_source": "harmonic9"
         },
         "Part_of_Deliverance_h8": {
-          "ecl_lon_deg": 4.907362463955906,
+          "ecl_lon_deg": 58.00872509194778,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Deliverance_h9": {
-          "ecl_lon_deg": 275.5207827719505,
+          "ecl_lon_deg": 335.259815728441,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         }
@@ -2558,27 +2558,27 @@
           "used_source": "missing"
         },
         "Vulcan": {
-          "ecl_lon_deg": 154.34323496324942,
+          "ecl_lon_deg": 154.362410814967,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Persephone": {
-          "ecl_lon_deg": 135.6518755092693,
+          "ecl_lon_deg": 135.65349035878899,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Hades": {
-          "ecl_lon_deg": 252.76055731481756,
+          "ecl_lon_deg": 252.76082969907293,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Proserpina": {
-          "ecl_lon_deg": 123.64587351851878,
+          "ecl_lon_deg": 123.64595134259253,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
         "Isis": {
-          "ecl_lon_deg": 347.86709490744397,
+          "ecl_lon_deg": 347.871958912001,
           "ecl_lat_deg": 0.0,
           "used_source": "swiss"
         },
@@ -2678,87 +2678,87 @@
           "used_source": "fixed"
         },
         "House_1": {
-          "ecl_lon_deg": 323.4753600104414,
+          "ecl_lon_deg": 334.4435458746764,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_2": {
-          "ecl_lon_deg": 11.438747813631933,
+          "ecl_lon_deg": 21.394712703958525,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_3": {
-          "ecl_lon_deg": 45.27536753874021,
+          "ecl_lon_deg": 52.91566609049958,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_4": {
-          "ecl_lon_deg": 69.57880342316957,
+          "ecl_lon_deg": 76.12890739215771,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_5": {
-          "ecl_lon_deg": 90.55757953775185,
+          "ecl_lon_deg": 97.07124111644026,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_6": {
-          "ecl_lon_deg": 112.8775016483213,
+          "ecl_lon_deg": 120.53464457074296,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_7": {
-          "ecl_lon_deg": 143.47536001044142,
+          "ecl_lon_deg": 154.44354587467637,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_8": {
-          "ecl_lon_deg": 191.43874781363192,
+          "ecl_lon_deg": 201.39471270395853,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_9": {
-          "ecl_lon_deg": 225.27536753874023,
+          "ecl_lon_deg": 232.91566609049957,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_10": {
-          "ecl_lon_deg": 249.57880342316957,
+          "ecl_lon_deg": 256.1289073921577,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_11": {
-          "ecl_lon_deg": 270.55757953775185,
+          "ecl_lon_deg": 277.07124111644026,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "House_12": {
-          "ecl_lon_deg": 292.8775016483213,
+          "ecl_lon_deg": 300.53464457074296,
           "ecl_lat_deg": 0.0,
           "used_source": "houses-P"
         },
         "ASC": {
-          "ecl_lon_deg": 323.4753600104414,
+          "ecl_lon_deg": 334.4435458746764,
           "ecl_lat_deg": 0.0,
           "used_source": "houses"
         },
         "MC": {
-          "ecl_lon_deg": 249.57880342316957,
+          "ecl_lon_deg": 256.1289073921577,
           "ecl_lat_deg": 0.0,
           "used_source": "houses"
         },
         "Part_of_Fortune": {
-          "ecl_lon_deg": 323.47536001044136,
+          "ecl_lon_deg": 334.4435458746764,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
         "Part_of_Spirit": {
-          "ecl_lon_deg": 323.47536001044136,
+          "ecl_lon_deg": 334.4435458746764,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
         "Part_of_Karma": {
-          "ecl_lon_deg": 323.47536001044136,
+          "ecl_lon_deg": 334.4435458746764,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
@@ -2773,7 +2773,7 @@
           "used_source": "calculated"
         },
         "Part_of_Deliverance": {
-          "ecl_lon_deg": 323.47536001044136,
+          "ecl_lon_deg": 334.4435458746764,
           "ecl_lat_deg": 0.0,
           "used_source": "calculated"
         },
@@ -2998,52 +2998,52 @@
           "used_source": "harmonic9"
         },
         "Vulcan_h8": {
-          "ecl_lon_deg": 154.74587970599532,
+          "ecl_lon_deg": 154.89928651973605,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Vulcan_h9": {
-          "ecl_lon_deg": 309.08911466924474,
+          "ecl_lon_deg": 309.26169733470306,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Persephone_h8": {
-          "ecl_lon_deg": 5.215004074154422,
+          "ecl_lon_deg": 5.227922870311886,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Persephone_h9": {
-          "ecl_lon_deg": 140.86687958342372,
+          "ecl_lon_deg": 140.88141322910087,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Hades_h8": {
-          "ecl_lon_deg": 222.0844585185405,
+          "ecl_lon_deg": 222.08663759258343,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Hades_h9": {
-          "ecl_lon_deg": 114.84501583335805,
+          "ecl_lon_deg": 114.84746729165636,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Proserpina_h8": {
-          "ecl_lon_deg": 269.16698814815027,
+          "ecl_lon_deg": 269.1676107407402,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Proserpina_h9": {
-          "ecl_lon_deg": 32.81286166666905,
+          "ecl_lon_deg": 32.81356208333273,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Isis_h8": {
-          "ecl_lon_deg": 262.93675925955176,
+          "ecl_lon_deg": 262.97567129600793,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Isis_h9": {
-          "ecl_lon_deg": 250.80385416699573,
+          "ecl_lon_deg": 250.84763020800892,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
@@ -3238,172 +3238,172 @@
           "used_source": "harmonic9"
         },
         "House_1_h8": {
-          "ecl_lon_deg": 67.80288008353136,
+          "ecl_lon_deg": 155.548366997411,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_1_h9": {
-          "ecl_lon_deg": 31.278240093972727,
+          "ecl_lon_deg": 129.9919128720876,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_2_h8": {
-          "ecl_lon_deg": 91.50998250905548,
+          "ecl_lon_deg": 171.15770163166826,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_2_h9": {
-          "ecl_lon_deg": 102.94873032268742,
+          "ecl_lon_deg": 192.55241433562674,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_3_h8": {
-          "ecl_lon_deg": 2.2029403099217006,
+          "ecl_lon_deg": 63.32532872399662,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_3_h9": {
-          "ecl_lon_deg": 47.47830784866193,
+          "ecl_lon_deg": 116.24099481449622,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_4_h8": {
-          "ecl_lon_deg": 196.6304273853566,
+          "ecl_lon_deg": 249.0312591372617,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_4_h9": {
-          "ecl_lon_deg": 266.2092308085262,
+          "ecl_lon_deg": 325.1601665294195,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_5_h8": {
-          "ecl_lon_deg": 4.460636302014791,
+          "ecl_lon_deg": 56.5699289315221,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_5_h9": {
-          "ecl_lon_deg": 95.01821583976664,
+          "ecl_lon_deg": 153.6411700479623,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_6_h8": {
-          "ecl_lon_deg": 183.0200131865704,
+          "ecl_lon_deg": 244.27715656594364,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_6_h9": {
-          "ecl_lon_deg": 295.8975148348917,
+          "ecl_lon_deg": 4.811801136686654,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_7_h8": {
-          "ecl_lon_deg": 67.80288008353136,
+          "ecl_lon_deg": 155.548366997411,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_7_h9": {
-          "ecl_lon_deg": 211.27824009397273,
+          "ecl_lon_deg": 309.99191287208737,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_8_h8": {
-          "ecl_lon_deg": 91.50998250905536,
+          "ecl_lon_deg": 171.15770163166826,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_8_h9": {
-          "ecl_lon_deg": 282.9487303226872,
+          "ecl_lon_deg": 12.552414335626736,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_9_h8": {
-          "ecl_lon_deg": 2.2029403099218143,
+          "ecl_lon_deg": 63.32532872399656,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_9_h9": {
-          "ecl_lon_deg": 227.4783078486621,
+          "ecl_lon_deg": 296.24099481449593,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_10_h8": {
-          "ecl_lon_deg": 196.6304273853566,
+          "ecl_lon_deg": 249.0312591372617,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_10_h9": {
-          "ecl_lon_deg": 86.20923080852617,
+          "ecl_lon_deg": 145.16016652941926,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_11_h8": {
-          "ecl_lon_deg": 4.460636302014791,
+          "ecl_lon_deg": 56.5699289315221,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_11_h9": {
-          "ecl_lon_deg": 275.0182158397665,
+          "ecl_lon_deg": 333.64117004796253,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "House_12_h8": {
-          "ecl_lon_deg": 183.0200131865704,
+          "ecl_lon_deg": 244.27715656594364,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "House_12_h9": {
-          "ecl_lon_deg": 115.89751483489181,
+          "ecl_lon_deg": 184.81180113668643,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "ASC_h8": {
-          "ecl_lon_deg": 67.80288008353136,
+          "ecl_lon_deg": 155.548366997411,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "ASC_h9": {
-          "ecl_lon_deg": 31.278240093972727,
+          "ecl_lon_deg": 129.9919128720876,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "MC_h8": {
-          "ecl_lon_deg": 196.6304273853566,
+          "ecl_lon_deg": 249.0312591372617,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "MC_h9": {
-          "ecl_lon_deg": 86.20923080852617,
+          "ecl_lon_deg": 145.16016652941926,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Fortune_h8": {
-          "ecl_lon_deg": 67.80288008353091,
+          "ecl_lon_deg": 155.548366997411,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Fortune_h9": {
-          "ecl_lon_deg": 31.278240093972272,
+          "ecl_lon_deg": 129.9919128720876,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Spirit_h8": {
-          "ecl_lon_deg": 67.80288008353091,
+          "ecl_lon_deg": 155.548366997411,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Spirit_h9": {
-          "ecl_lon_deg": 31.278240093972272,
+          "ecl_lon_deg": 129.9919128720876,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
         "Part_of_Karma_h8": {
-          "ecl_lon_deg": 67.80288008353091,
+          "ecl_lon_deg": 155.548366997411,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Karma_h9": {
-          "ecl_lon_deg": 31.278240093972272,
+          "ecl_lon_deg": 129.9919128720876,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         },
@@ -3428,12 +3428,12 @@
           "used_source": "harmonic9"
         },
         "Part_of_Deliverance_h8": {
-          "ecl_lon_deg": 67.80288008353091,
+          "ecl_lon_deg": 155.548366997411,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic8"
         },
         "Part_of_Deliverance_h9": {
-          "ecl_lon_deg": 31.278240093972272,
+          "ecl_lon_deg": 129.9919128720876,
           "ecl_lat_deg": 0.0,
           "used_source": "harmonic9"
         }
