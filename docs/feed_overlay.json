@@ -3,7 +3,7 @@
     "generated_at_utc": "2025-08-23T07:21:08.954211Z",
     "observer": "geocentric Earth",
     "source": "overlay-builder",
-    "augmented_at_utc": "2025-08-23T07:21:11.718851Z",
+    "augmented_at_utc": "2025-08-23T07:31:00.786174Z",
     "black_zodiac_version": "3.3.0"
   },
   "objects": [
@@ -227,100 +227,176 @@
     {
       "id": "Vulcan",
       "targetname": "Vulcan",
-      "source": "symbolic",
-      "note": "Aether placeholder"
+      "source": "symbolic"
     },
     {
       "id": "Persephone",
       "targetname": "Persephone",
-      "source": "symbolic",
-      "note": "Aether placeholder"
+      "source": "symbolic"
     },
     {
       "id": "Hades",
       "targetname": "Hades",
-      "source": "symbolic",
-      "note": "Aether placeholder"
+      "source": "symbolic"
     },
     {
       "id": "Proserpina",
       "targetname": "Proserpina",
-      "source": "symbolic",
-      "note": "Aether placeholder"
+      "source": "symbolic"
     },
     {
       "id": "Isis",
       "targetname": "Isis",
-      "source": "symbolic",
-      "note": "Aether placeholder"
+      "source": "symbolic"
     }
   ],
   "angles": {
-    "Tommy": {
-      "id": "angles",
-      "ASC": 115.67633423646235,
-      "MC": 8.992019099076657,
-      "houses": [
-        115.67633423646235,
-        135.49262257198387,
-        159.0449490999348,
-        188.99201909907666,
-        225.68499199812612,
-        263.40474938863076,
-        295.67633423646237,
-        315.4926225719839,
-        339.0449490999348,
-        8.992019099076657,
-        45.68499199812614,
-        83.40474938863078
-      ],
-      "PartOfFortune": 116.29917114607102,
-      "PartOfSpirit": 115.05349732685366,
-      "source": "swiss"
-    },
-    "Milena": {
-      "id": "angles",
-      "ASC": 73.38330049062148,
-      "MC": 319.95050247694826,
-      "houses": [
-        73.38330049062148,
-        95.56806299476975,
-        116.37845323644441,
-        139.95050247694826,
-        170.57961130785702,
-        211.0486540015521,
-        253.38330049062148,
-        275.5680629947698,
-        296.37845323644444,
-        319.95050247694826,
-        350.57961130785696,
-        31.048654001552116
-      ],
-      "PartOfFortune": 74.00613740023016,
-      "PartOfSpirit": 72.7604635810128,
-      "source": "swiss"
-    },
-    "Christine": {
-      "id": "angles",
-      "ASC": 116.1399929444822,
-      "MC": 9.71487954795621,
-      "houses": [
-        116.1399929444822,
-        136.01844263505103,
-        159.671232554971,
-        189.7148795479562,
-        226.39553201735714,
-        263.97410949416485,
-        296.1399929444822,
-        316.01844263505103,
-        339.67123255497097,
-        9.71487954795621,
-        46.39553201735715,
-        83.97410949416486
-      ],
-      "PartOfFortune": 116.76282985409088,
-      "PartOfSpirit": 115.51715603487352,
-      "source": "swiss"
-    }
+    "Tommy": [
+      {
+        "id": "ASC",
+        "targetname": "Ascendant",
+        "ecl_lon_deg": 115.67633423646235,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "MC",
+        "targetname": "Midheaven",
+        "ecl_lon_deg": 8.992019099076657,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "Houses",
+        "targetname": "House Cusps",
+        "houses_deg": [
+          115.67633423646235,
+          135.49262257198387,
+          159.0449490999348,
+          188.99201909907666,
+          225.68499199812612,
+          263.40474938863076,
+          295.67633423646237,
+          315.4926225719839,
+          339.0449490999348,
+          8.992019099076657,
+          45.68499199812614,
+          83.40474938863078
+        ],
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfFortune",
+        "targetname": "Part of Fortune",
+        "ecl_lon_deg": 116.29917114607102,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfSpirit",
+        "targetname": "Part of Spirit",
+        "ecl_lon_deg": 115.05349732685366,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      }
+    ],
+    "Milena": [
+      {
+        "id": "ASC",
+        "targetname": "Ascendant",
+        "ecl_lon_deg": 73.38330049062148,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "MC",
+        "targetname": "Midheaven",
+        "ecl_lon_deg": 319.95050247694826,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "Houses",
+        "targetname": "House Cusps",
+        "houses_deg": [
+          73.38330049062148,
+          95.56806299476975,
+          116.37845323644441,
+          139.95050247694826,
+          170.57961130785702,
+          211.0486540015521,
+          253.38330049062148,
+          275.5680629947698,
+          296.37845323644444,
+          319.95050247694826,
+          350.57961130785696,
+          31.048654001552116
+        ],
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfFortune",
+        "targetname": "Part of Fortune",
+        "ecl_lon_deg": 74.00613740023016,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfSpirit",
+        "targetname": "Part of Spirit",
+        "ecl_lon_deg": 72.7604635810128,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      }
+    ],
+    "Christine": [
+      {
+        "id": "ASC",
+        "targetname": "Ascendant",
+        "ecl_lon_deg": 116.1399929444822,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "MC",
+        "targetname": "Midheaven",
+        "ecl_lon_deg": 9.71487954795621,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "Houses",
+        "targetname": "House Cusps",
+        "houses_deg": [
+          116.1399929444822,
+          136.01844263505103,
+          159.671232554971,
+          189.7148795479562,
+          226.39553201735714,
+          263.97410949416485,
+          296.1399929444822,
+          316.01844263505103,
+          339.67123255497097,
+          9.71487954795621,
+          46.39553201735715,
+          83.97410949416486
+        ],
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfFortune",
+        "targetname": "Part of Fortune",
+        "ecl_lon_deg": 116.76282985409088,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      },
+      {
+        "id": "PartOfSpirit",
+        "targetname": "Part of Spirit",
+        "ecl_lon_deg": 115.51715603487352,
+        "ecl_lat_deg": 0.0,
+        "source": "swiss"
+      }
+    ]
   }
 }
