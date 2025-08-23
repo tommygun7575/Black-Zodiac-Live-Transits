@@ -1,7 +1,7 @@
 name: build-overlay
 on:
   schedule:
-    - cron: '0 11 * * *'   # runs daily at 11:00 UTC = 4:00 AM Pacific
+    - cron: '0 11 * * *'   # daily at 11:00 UTC = 4 AM Pacific
   workflow_dispatch: {}
 jobs:
   overlay:
@@ -17,6 +17,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # run as a module so imports like "from scripts.sources ..." work
       - run: python -m scripts.generate_feed_overlay
         env:
           OVERLAY_OUT: docs/feed_overlay.json
