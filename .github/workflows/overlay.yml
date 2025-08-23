@@ -13,18 +13,19 @@ jobs:
         with:
           python-version: '3.11'
 
-      - run: |
+      - name: Install dependencies
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # add repo root to PYTHONPATH so "from scripts..." works
       - name: Run generate_feed_overlay
         run: PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
         env:
           OVERLAY_OUT: docs/feed_overlay.json
           OVERLAY_TIME_UTC: ''
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Commit updated overlay
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'ci(overlay): refresh feed_overlay.json'
           file_pattern: docs/feed_overlay.json
