@@ -115,3 +115,89 @@ def compute_parts(angles, objs):
     parts["PartOfVictory"]      = normalize_deg(asc + sun - moon + 60)
     parts["PartOfDelirium"]     = normalize_deg(asc + moon + sun)
     parts["PartOfIntelligence"] = normalize_deg(parts["PartOfSpirit"] - 30)
+
+    return parts
+
+# -------------------------------
+# 5. Main
+# -------------------------------
+
+def main():
+    dt = datetime.datetime.utcnow()
+    jd = swe.julday(
+        dt.year, dt.month, dt.day,
+        dt.hour + dt.minute/60.0 + dt.second/3600.0
+    )
+
+    # Angles from Placidus houses
+    obs_lat, obs_lon = 0.0, 0.0
+    angles = compute_angles(jd, obs_lat, obs_lon)
+
+    bodies = list(JPL_IDS.keys()) + \
+             [b for b in SWISS_IDS.keys() if b not in JPL_IDS] + \
+             list(SWISS_MINORS.keys())
+
+    objs = {}
+    overlay = {
+        "meta": {
+            "generated_at_utc": dt.isoformat(),
+            "observer": "geocentric Earth",
+            "source_hierarchy": ["jpl_batch", "swiss", "swiss_minor", "fixed"],
+            "black_zodiac_version": "3.3.0"
+        },
+        "objects": [],
+        "angles": angles
+    }
+
+    # --- JPL batch majors ---
+    jpl_results = {}
+    try:
+        jpl_results = get_jpl_batch(dt)
+    except Exception as e:
+        print(f"[WARN] JPL batch fail: {e}")
+
+    # Populate majors (JPL or Swiss fallback)
+    for b in JPL_IDS.keys():
+        if b in jpl_results:
+            lon, lat, src = jpl_results[b]
+        else:
+            lon, lat, src = get_swiss(b, jd)
+        objs[b] = {"lon": lon, "lat": lat}
+        overlay["objects"].append({
+            "id": b, "targetname": b,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "source": src
+        })
+
+    # Populate Swiss-only bodies (Chiron, Pholus, minors, TNOs)
+    for b in [bb for bb in bodies if b not in JPL_IDS]:
+        lon, lat, src = get_swiss(b, jd)
+        objs[b] = {"lon": lon, "lat": lat}
+        overlay["objects"].append({
+            "id": b, "targetname": b,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "source": src
+        })
+
+    # Fixed stars
+    for star, lon in FIXED_STARS.items():
+        overlay["objects"].append({
+            "id": star,
+            "targetname": star,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": 0.0,
+            "source": "fixed"
+        })
+
+    # Arabic Parts
+    overlay["angles"].update(compute_parts(angles, objs))
+
+    with open("docs/feed_overlay.json", "w") as f:
+        json.dump(overlay, f, indent=2)
+
+    print("[INFO] Overlay file written → docs/feed_overlay.json")
+
+if __name__ == "__main__":
+    main()
