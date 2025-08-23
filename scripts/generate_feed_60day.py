@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 generate_feed_60day.py — build a 60-day projected transit feed.
-Full Black Zodiac 3.3.0:
+Black Zodiac 3.3.0:
 - Core planets, Chiron
 - Houses, ASC/MC, Parts of Fortune/Spirit
 - Fixed stars
-- Asteroids/TNOs (Swiss + fallback JSON)
+- Asteroids/TNOs (Swiss first, fallback to JSON Aug 2025 – Feb 2026)
 """
 
 import json
@@ -23,12 +23,13 @@ EPHE_PATH = "."
 # ---- Setup ----
 swe.set_ephe_path(EPHE_PATH)
 
-# ---- Fallback JSON ----
-FALLBACK_PATH = "sept_to_feb_2026_asteroids_tnos.json"
+# ---- Fallback JSON (Asteroids/TNOs) ----
+FALLBACK_PATH = "aug_2025_to_feb_2026_asteroids_tnos.json"
 try:
     with open(FALLBACK_PATH, "r") as f:
-        ASTEROID_FALLBACK = {entry["date"]: entry for entry in json.load(f)}
-except FileNotFoundError:
+        fallback_data = json.load(f)
+        ASTEROID_FALLBACK = {entry["date"]: entry for entry in fallback_data["data"]}
+except Exception:
     ASTEROID_FALLBACK = {}
 
 # ---- Fixed stars ----
@@ -54,7 +55,8 @@ ASTEROIDS = {
     "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
     "Sappho": 80, "Karma": 3811,
     "Haumea": 136108, "Makemake": 136472, "Varuna": 20000,
-    "Ixion": 28978, "Typhon": 42355, "Salacia": 120347
+    "Ixion": 28978, "Typhon": 42355, "Salacia": 120347,
+    "Chariklo": 10199, "Eris": 136199, "Pholus": 5145, "Sedna": 90377
 }
 
 # ---- Helpers ----
@@ -157,7 +159,7 @@ def main():
     with open("docs/feed_60day.json", "w") as f:
         json.dump(feed, f, indent=2)
 
-    print("[OK] Wrote docs/feed_60day.json")
+    print("[OK] Wrote docs/feed_60day.json with planets + asteroids/TNOs (Swiss + fallback)")
 
 if __name__ == "__main__":
     main()
