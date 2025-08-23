@@ -2,7 +2,7 @@ name: Build Overlay Feed
 
 on:
   schedule:
-    - cron: "0 11,23 * * *"   # every 12 hours (11:00 & 23:00 UTC = 04:00 & 16:00 Pacific)
+    - cron: "0 11,23 * * *"   # run every 12 hours at 11:00 & 23:00 UTC (04:00 & 16:00 Pacific)
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyswisseph astroquery pytz numpy
+          pip install pyswisseph astroquery pytz numpy python-dateutil
 
       - name: Verify Swiss Ephemeris + fallback JSON
         run: |
