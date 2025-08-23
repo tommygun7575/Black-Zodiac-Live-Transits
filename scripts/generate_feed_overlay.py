@@ -80,17 +80,24 @@ def merge_into(existing: Dict[str, Any],
                positions: Dict[str, Dict[str, Any]],
                when_iso: str) -> Dict[str, Any]:
     meta = existing.get("meta", {})
-    meta.update({"generated_at_utc": when_iso,
-                 "source_order": [s for s, _ in SOURCE_ORDER]})
+    meta.update({
+        "generated_at_utc": when_iso,
+        "source_order": [s for s, _ in SOURCE_ORDER]
+    })
+
     charts = existing.get("charts")
     if charts and isinstance(charts, dict):
         for who, chart in charts.items():
-            chart.setdefault("objects", {})
+            # ensure objects is always a dict
+            if not isinstance(chart.get("objects"), dict):
+                chart["objects"] = {}
             chart["objects"].update(positions)
         out = {"meta": meta, "charts": charts}
     else:
         out = {"meta": meta, "objects": positions}
+
     return out
+
 
 def main(argv: List[str]):
     out_path = os.environ.get("OVERLAY_OUT",
