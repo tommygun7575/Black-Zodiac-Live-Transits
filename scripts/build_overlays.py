@@ -1,5 +1,6 @@
 import json
 import datetime
+import time
 import swisseph as swe
 from astroquery.jplhorizons import Horizons
 
@@ -53,24 +54,35 @@ FIXED_STARS = {
 def normalize_deg(x):
     return x % 360.0
 
-# Batched Horizons call for majors
-def get_jpl_batch(dt):
+# Batched Horizons call with retry/backoff
+def get_jpl_batch(dt, retries=3):
     ids = ",".join(str(v) for v in JPL_IDS.values())
-    obj = Horizons(
-        id=ids,
-        location="500@399",
-        epochs=dt.strftime("%Y-%m-%d %H:%M")
-    )
-    eph = obj.ephemerides()
-    result = {}
-    for name, jpl_id in JPL_IDS.items():
-        row = eph[eph["targetname"].str.contains(name, case=False)]
-        if len(row) > 0:
-            lon = float(row["EclLon"].values[0])
-            lat = float(row["EclLat"].values[0])
-            result[name] = (lon, lat, "jpl")
-    return result
+    delay = 2
+    for attempt in range(retries):
+        try:
+            obj = Horizons(
+                id=ids,
+                location="500@399",  # Earth geocentric
+                epochs=dt.strftime("%Y-%m-%d %H:%M")
+            )
+            eph = obj.ephemerides()
+            result = {}
+            for name, jpl_id in JPL_IDS.items():
+                row = eph[eph["targetname"].str.contains(name, case=False)]
+                if len(row) > 0:
+                    lon = float(row["EclLon"].values[0])
+                    lat = float(row["EclLat"].values[0])
+                    result[name] = (lon, lat, "jpl")
+            if result:  # success
+                return result
+        except Exception as e:
+            print(f"[WARN] JPL batch attempt {attempt+1} failed: {e}")
+            if attempt < retries - 1:
+                time.sleep(delay)
+                delay *= 2
+    return {}
 
+# Swiss safe wrapper
 def get_swiss(body, jd):
     if body in SWISS_IDS:
         res = swe.calc_ut(jd, SWISS_IDS[body])
@@ -129,7 +141,7 @@ def main():
         dt.hour + dt.minute/60.0 + dt.second/3600.0
     )
 
-    # Angles from Placidus houses
+    # Observer = geocentric overlay
     obs_lat, obs_lon = 0.0, 0.0
     angles = compute_angles(jd, obs_lat, obs_lon)
 
@@ -142,21 +154,17 @@ def main():
         "meta": {
             "generated_at_utc": dt.isoformat(),
             "observer": "geocentric Earth",
-            "source_hierarchy": ["jpl_batch", "swiss", "swiss_minor", "fixed"],
+            "source_hierarchy": ["jpl_batch_retry", "swiss", "swiss_minor", "fixed"],
             "black_zodiac_version": "3.3.0"
         },
         "objects": [],
         "angles": angles
     }
 
-    # --- JPL batch majors ---
-    jpl_results = {}
-    try:
-        jpl_results = get_jpl_batch(dt)
-    except Exception as e:
-        print(f"[WARN] JPL batch fail: {e}")
+    # --- JPL batch majors with retry ---
+    jpl_results = get_jpl_batch(dt)
 
-    # Populate majors (JPL or Swiss fallback)
+    # Majors (Sun–Pluto)
     for b in JPL_IDS.keys():
         if b in jpl_results:
             lon, lat, src = jpl_results[b]
@@ -170,8 +178,8 @@ def main():
             "source": src
         })
 
-    # Populate Swiss-only bodies (Chiron, Pholus, minors, TNOs)
-    for b in [bb for bb in bodies if b not in JPL_IDS]:
+    # Swiss-only (Chiron, Pholus, minors, TNOs)
+    for b in [bb for bb in bodies if bb not in JPL_IDS]:
         lon, lat, src = get_swiss(b, jd)
         objs[b] = {"lon": lon, "lat": lat}
         overlay["objects"].append({
