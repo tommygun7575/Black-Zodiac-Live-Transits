@@ -1,168 +1,96 @@
-#!/usr/bin/env python3
-"""
-build_overlays.py
-Black Zodiac Full Overlay Feed (daily transit snapshot)
-
-Per person:
-- Planets (Sun → Pluto)
-- Angles (ASC, MC, houses, full ascmc)
-- Arabic Parts (full set)
-- Asteroids / Minor bodies
-- TNOs
-- Fixed Stars
-
-Output: docs/feed_overlay.json
-"""
-
 import json
 import datetime
-from pathlib import Path
 import swisseph as swe
 from astroquery.jplhorizons import Horizons
 
-OUTPUT_FILE = Path("docs/feed_overlay.json")
-ASTROSEEK_FILE = Path("data/fallback_aug2025_2026.json")
-
-# Natal data
-NATALS = {
-    "Tommy": {"year": 1975, "month": 9, "day": 12, "hour": 9, "minute": 20, "lat": 40.84478, "lon": -73.86483},
-    "Milena": {"year": 1992, "month": 3, "day": 29, "hour": 14, "minute": 4, "lat": 39.1638, "lon": -119.7674},
-    "Christine": {"year": 1989, "month": 7, "day": 5, "hour": 15, "minute": 1, "lat": 40.72982, "lon": -73.21039}
+# --- Body IDs ---
+JPL_IDS = {
+    "Sun": 10, "Moon": 301,
+    "Mercury": 199, "Venus": 299, "Mars": 499,
+    "Jupiter": 599, "Saturn": 699, "Uranus": 799,
+    "Neptune": 899, "Pluto": 999,
 }
 
-PLANETS = ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"]
-ASTEROIDS = ["Chiron","Vesta","Psyche","Amor","Eros","Sappho","Karma","Bacchus","Astraea","Euphrosyne","Pholus","Chariklo"]
-TNOS = ["Eris","Sedna","Haumea","Makemake","Varuna","Ixion","Typhon","Salacia"]
-FIXED_STARS = {
-    "Regulus": 150.0, "Spica": 204.75, "Sirius": 104.0, "Aldebaran": 69.0
+SWISS_IDS = {
+    "Sun": swe.SUN, "Moon": swe.MOON,
+    "Mercury": swe.MERCURY, "Venus": swe.VENUS,
+    "Mars": swe.MARS, "Jupiter": swe.JUPITER,
+    "Saturn": swe.SATURN, "Uranus": swe.URANUS,
+    "Neptune": swe.NEPTUNE, "Pluto": swe.PLUTO,
+    "Chiron": swe.CHIRON, "Pholus": swe.PHOLUS
+    # Add Eris, Sedna, Haumea, Makemake, Ixion, etc. once minor planet .se1 files are in /ephe
 }
 
-# Arabic Parts formulas (basic sample set)
-def compute_arabic_parts(asc, sun, moon, fortune, spirit):
-    return {
-        "PartOfFortune": fortune,
-        "PartOfSpirit": spirit,
-        "PartOfKarma": (asc + sun - moon) % 360,
-        "PartOfTreachery": (asc + moon - sun) % 360,
-        "PartOfDeliverance": (asc + fortune - spirit) % 360,
-        "PartOfRebirth": (asc + spirit - fortune) % 360,
-        "PartOfVengeance": (asc + sun + moon) % 360,
-        "PartOfVictory": (asc + sun - fortune) % 360,
-        "PartOfDelirium": (asc + moon - spirit) % 360,
-        "PartOfIntelligence": (asc + spirit - sun) % 360
-    }
+# --- JPL Horizons resolver ---
+def get_jpl(body, dt):
+    if body not in JPL_IDS:
+        raise ValueError(f"No JPL ID for {body}")
+    obj = Horizons(
+        id=JPL_IDS[body],
+        location='500@399',  # Earth geocentric
+        epochs=dt.strftime("%Y-%m-%d %H:%M")
+    )
+    eph = obj.ephemerides()
+    lon = float(eph['EclLon'][0])
+    lat = float(eph['EclLat'][0])
+    return lon, lat, "jpl"
 
-def jpl_position(target, dt):
+# --- Swiss Ephemeris resolver ---
+def get_swiss(body, jd):
+    if body not in SWISS_IDS:
+        raise ValueError(f"No Swiss ID for {body}")
+    lon, lat, _ = swe.calc_ut(jd, SWISS_IDS[body])
+    return lon, lat, "swiss"
+
+# --- Position resolver ---
+def resolve_position(body, dt, jd):
     try:
-        obj = Horizons(id=target, location="500@399", epochs=dt.timestamp(), id_type="majorbody")
-        eph = obj.elements()
-        return {"lon": float(eph['Q'][0]), "lat": 0.0, "source": "jpl"}
-    except Exception:
-        return None
-
-def swiss_position(target, jd):
-    mapping = {
-        "Sun": swe.SUN, "Moon": swe.MOON, "Mercury": swe.MERCURY,
-        "Venus": swe.VENUS, "Mars": swe.MARS, "Jupiter": swe.JUPITER,
-        "Saturn": swe.SATURN, "Uranus": swe.URANUS,
-        "Neptune": swe.NEPTUNE, "Pluto": swe.PLUTO,
-        "Chiron": swe.CHIRON, "Vesta": swe.VESTA
-    }
-    if target not in mapping:
-        return None
+        return get_jpl(body, dt)
+    except Exception as e:
+        print(f"[WARN] JPL fail for {body}: {e}")
     try:
-        lon, lat, _ = swe.calc_ut(jd, mapping[target])
-        return {"lon": lon, "lat": lat, "source": "swiss"}
-    except Exception:
-        return None
+        return get_swiss(body, jd)
+    except Exception as e:
+        print(f"[WARN] Swiss fail for {body}: {e}")
+    raise RuntimeError(f"Unable to resolve {body} at {dt}")
 
-def astroseek_lookup(target):
-    if not ASTROSEEK_FILE.exists():
-        return None
-    with open(ASTROSEEK_FILE, "r") as f:
-        data = json.load(f)
-    if target in data:
-        return {"lon": data[target].get("lon"), "lat": data[target].get("lat", 0.0), "source": "astroseek"}
-    return None
-
-def compute_angles_and_parts(jd, lat, lon):
-    houses, ascmc = swe.houses_ex(jd, lat, lon, b"P")
-    asc = ascmc[0]
-    mc = ascmc[1]
-    fortune = (asc + mc) / 2
-    spirit = (asc - mc) / 2
-    parts = compute_arabic_parts(asc, ascmc[0], ascmc[1], fortune, spirit)
-    return {
-        "ASC": asc,
-        "MC": mc,
-        "houses": list(houses),
-        "ascmc_all": list(ascmc),
-        **parts
-    }
-
-def build_body_entry(body, dt, jd):
-    pos = jpl_position(body, dt)
-    if not pos:
-        pos = swiss_position(body, jd)
-    if not pos:
-        pos = astroseek_lookup(body)
-    return {
-        "id": body,
-        "targetname": body,
-        "ecl_lon_deg": pos["lon"] if pos else None,
-        "ecl_lat_deg": pos["lat"] if pos else 0.0,
-        "source": pos["source"] if pos else "missing"
-    }
-
+# --- Main builder ---
 def main():
-    now = datetime.datetime.utcnow()
+    dt = datetime.datetime.utcnow()
+    jd = swe.julday(dt.year, dt.month, dt.day,
+                    dt.hour + dt.minute/60.0 + dt.second/3600.0)
+
+    # Bodies to calculate
+    bodies = [
+        "Sun", "Moon", "Mercury", "Venus", "Mars",
+        "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
+        "Chiron", "Pholus"
+    ]
 
     overlay = {
         "meta": {
-            "generated_at_utc": now.isoformat(),
+            "generated_at_utc": dt.isoformat(),
             "observer": "geocentric Earth",
-            "source_hierarchy": ["jpl", "swiss", "astroseek"],
+            "source_hierarchy": ["jpl", "swiss"],
             "black_zodiac_version": "3.3.0"
         },
-        "charts": {}
+        "objects": []
     }
 
-    for person, d in NATALS.items():
-        jd = swe.julday(d["year"], d["month"], d["day"], d["hour"] + d["minute"]/60.0)
-        chart = {"objects": [], "angles": {}}
+    for b in bodies:
+        lon, lat, src = resolve_position(b, dt, jd)
+        overlay["objects"].append({
+            "id": b,
+            "targetname": b,
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "source": src
+        })
 
-        # Planets
-        for body in PLANETS:
-            chart["objects"].append(build_body_entry(body, now, jd))
-
-        # Asteroids
-        for body in ASTEROIDS:
-            chart["objects"].append(build_body_entry(body, now, jd))
-
-        # TNOs
-        for body in TNOS:
-            chart["objects"].append(build_body_entry(body, now, jd))
-
-        # Fixed Stars
-        for star, lon in FIXED_STARS.items():
-            chart["objects"].append({
-                "id": star,
-                "targetname": star,
-                "ecl_lon_deg": lon,
-                "ecl_lat_deg": 0.0,
-                "source": "fixed"
-            })
-
-        # Angles + Arabic Parts
-        chart["angles"] = compute_angles_and_parts(jd, d["lat"], d["lon"])
-
-        overlay["charts"][person] = chart
-
-    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_FILE, "w") as f:
+    with open("docs/feed_overlay.json", "w") as f:
         json.dump(overlay, f, indent=2)
 
-    print(f"[OK] Overlay feed written to {OUTPUT_FILE}")
+    print("[INFO] Overlay file written → docs/feed_overlay.json")
 
 if __name__ == "__main__":
     main()
