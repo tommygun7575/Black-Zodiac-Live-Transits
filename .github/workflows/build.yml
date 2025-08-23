@@ -2,7 +2,8 @@ name: Build Overlay Feed
 
 on:
   schedule:
-    - cron: "0 11,23 * * *"   # run every 12 hours at 11:00 & 23:00 UTC (04:00 & 16:00 Pacific)
+    # Run twice daily: 11:00 & 23:00 UTC (04:00 & 16:00 Pacific)
+    - cron: "0 11,23 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
@@ -35,7 +38,7 @@ jobs:
         run: python scripts/fetch_transits.py --config config/live_config.json --out docs/feed_now.json
 
       - name: Compute angles + Arabic Parts
-        run: python scripts/compute_angles_and_parts.py --feed docs/feed_now.json --out docs/feed_angles.json
+        run: python scripts/compute_angles_and_parts.py --feed docs/feed_now.json --config config/live_config.json --out docs/feed_angles.json
 
       - name: Build overlay feed (merge natal + transits)
         run: python scripts/build_overlays.py --feed docs/feed_now.json --angles docs/feed_angles.json --out docs/feed_overlay.json
