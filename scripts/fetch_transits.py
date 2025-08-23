@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 fetch_transits.py — Build the live transit feed (planets + asteroids/TNOs + stars).
-
 - JPL Horizons (preferred) + Swiss fallback
 - Augmented with fallback JSON for asteroids/TNOs
-- Normalized schema across feeds
-- Fixes: Chiron always resolved, fallback strings converted to floats
+- Normalized schema: id, targetname, ecl_lon_deg, ecl_lat_deg, source
 """
 
-import argparse, json, sys, re
+import argparse, json, re, sys
 from pathlib import Path
 from datetime import datetime
 from astroquery.jplhorizons import Horizons
@@ -20,22 +18,20 @@ LOCATION = "500@399"  # geocentric Earth
 
 ASTEROIDS_TNOS = {
     "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
-    "Sappho": 80, "Karma": 3811,
-    "Chariklo": 10199, "Pholus": 5145,
-    "Eris": 136199, "Sedna": 90377,
-    "Haumea": 136108, "Makemake": 136472,
+    "Sappho": 80, "Karma": 3811, "Chariklo": 10199, "Pholus": 5145,
+    "Eris": 136199, "Sedna": 90377, "Haumea": 136108, "Makemake": 136472,
     "Varuna": 20000, "Ixion": 28978, "Typhon": 42355, "Salacia": 120347
 }
 
+# Always include Chiron explicitly
 _SWE_MAJOR = {
-    "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY,
-    "299": swe.VENUS, "499": swe.MARS, "599": swe.JUPITER,
-    "699": swe.SATURN, "799": swe.URANUS, "899": swe.NEPTUNE,
-    "999": swe.PLUTO,
-    "2060": swe.CHIRON  # force Chiron resolution
+    "10": swe.SUN, "301": swe.MOON, "199": swe.MERCURY, "299": swe.VENUS,
+    "499": swe.MARS, "599": swe.JUPITER, "699": swe.SATURN,
+    "799": swe.URANUS, "899": swe.NEPTUNE, "999": swe.PLUTO,
+    "2060": swe.CHIRON
 }
 
-def jd_ut(dt): 
+def jd_ut(dt):
     return swe.julday(dt.year, dt.month, dt.day,
                       dt.hour + dt.minute/60 + dt.second/3600.0)
 
@@ -43,36 +39,28 @@ def horizons_lonlat(eid, epoch):
     try:
         h = Horizons(id=eid, location=LOCATION, epochs=epoch)
         eph = h.ephemerides(quantities="1")
-        lon = float(eph["EclLon"][0]); lat = float(eph["EclLat"][0])
-        return lon, lat, "horizons"
+        return float(eph["EclLon"][0]), float(eph["EclLat"][0]), "horizons"
     except Exception:
         return None, None, None
 
 def swiss_lonlat(eid, jd):
     try:
-        body = _SWE_MAJOR.get(eid, None)
-        if body is None:
-            body = int(eid)
+        body = _SWE_MAJOR.get(eid, int(eid))
         xx, _ = swe.calc_ut(jd, body)
         return float(xx[0]), float(xx[1]), "swiss"
     except Exception:
         return None, None, None
 
-def parse_fallback_value(val):
-    """Convert fallback JSON values (e.g. '15° 36') into floats (decimal degrees)."""
-    if val is None: 
-        return None
-    if isinstance(val, (int, float)): 
-        return float(val)
+def parse_fallback(val):
+    if val is None: return None
+    if isinstance(val, (int, float)): return float(val)
     if isinstance(val, str):
-        match = re.match(r"(\d+)[°:\s](\d+)", val)
-        if match:
-            deg, mins = map(float, match.groups())
+        m = re.match(r"(\d+)[°:\s](\d+)", val)
+        if m:
+            deg, mins = map(float, m.groups())
             return deg + mins/60.0
-        try:
-            return float(val)
-        except: 
-            return None
+        try: return float(val)
+        except: return None
     return None
 
 def load_fallback():
@@ -82,13 +70,12 @@ def load_fallback():
     except Exception:
         return {}
 
-def normalize_obj(obj):
+def normalize(id_, name, lon, lat, src):
     return {
-        "id": obj.get("id",""),
-        "targetname": obj.get("targetname",""),
-        "ecl_lon_deg": obj.get("ecl_lon_deg"),
-        "ecl_lat_deg": obj.get("ecl_lat_deg", 0.0),
-        "source": obj.get("source","unknown")
+        "id": id_, "targetname": name,
+        "ecl_lon_deg": float(lon) if lon is not None else None,
+        "ecl_lat_deg": float(lat) if lat is not None else 0.0,
+        "source": src or "unknown"
     }
 
 def main():
@@ -102,6 +89,7 @@ def main():
     epoch = now.strftime("%Y-%m-%d %H:%M")
     jd = jd_ut(now)
     date_key = now.strftime("%Y-%m-%d")
+    fallback = load_fallback()
 
     feed = {
         "generated_at_utc": now.isoformat()+"Z",
@@ -110,9 +98,32 @@ def main():
         "objects": []
     }
 
-    fallback = load_fallback()
-
     # Planets + Chiron
     for p in cfg["planets"]:
         eid, label = str(p["id"]), p["label"]
-        lon, lat,
+        lon, lat, src = horizons_lonlat(eid, epoch)
+        if lon is None: lon, lat, src = swiss_lonlat(eid, jd)
+        feed["objects"].append(normalize(eid, label, lon, lat, src))
+
+    # Asteroids/TNOs
+    for name, num in ASTEROIDS_TNOS.items():
+        lon, lat, src = swiss_lonlat(str(num), jd)
+        if lon is not None:
+            feed["objects"].append(normalize(str(num), name, lon, lat, src))
+        elif date_key in fallback and name in fallback[date_key]:
+            val = parse_fallback(fallback[date_key][name])
+            feed["objects"].append(normalize(name, name, val, 0.0, "fallback-json"))
+        else:
+            feed["objects"].append(normalize(name, name, None, 0.0, "missing"))
+
+    # Fixed stars
+    for star in cfg["fixed_stars"]:
+        feed["objects"].append(normalize(star["id"], star["label"],
+            star["ra_deg"], star["dec_deg"], "fixed"))
+
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.out).write_text(json.dumps(feed, indent=2))
+    print(f"[OK] wrote {args.out} with {len(feed['objects'])} objects")
+
+if __name__=="__main__":
+    main()
