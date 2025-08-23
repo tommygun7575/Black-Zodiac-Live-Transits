@@ -28,11 +28,12 @@ BODIES = [
     "Pholus","Chariklo",
     # TNOs
     "Eris","Sedna","Haumea","Makemake","Varuna","Ixion","Typhon","Salacia",
-    # fixed stars (static placeholders)
+    # fixed stars (static placeholders — handled separately if needed)
     "Regulus","Spica","Sirius","Aldebaran"
 ]
 
 def jpl_position(target, dt):
+    """Try JPL Horizons for a body."""
     try:
         obj = Horizons(id=target, location="500@399", epochs=dt.timestamp(), id_type="majorbody")
         eph = obj.elements()
@@ -41,6 +42,7 @@ def jpl_position(target, dt):
         return None
 
 def swiss_position(target, jd):
+    """Fallback to Swiss Ephemeris."""
     mapping = {
         "Sun": swe.SUN, "Moon": swe.MOON, "Mercury": swe.MERCURY,
         "Venus": swe.VENUS, "Mars": swe.MARS, "Jupiter": swe.JUPITER,
@@ -57,6 +59,7 @@ def swiss_position(target, jd):
         return None
 
 def astroseek_lookup(target):
+    """Final fallback from Astro-Seek JSON file."""
     if not ASTROSEEK_FILE.exists():
         return None
     with open(ASTROSEEK_FILE, "r") as f:
