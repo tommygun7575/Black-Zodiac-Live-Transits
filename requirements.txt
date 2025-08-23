@@ -1,13 +1,6 @@
-# Math / array backbone
-numpy==1.26.4
-
-# Astronomy / astro tools
-astropy==5.3.4
-astroquery==0.4.7
-
-# Swiss Ephemeris (PyPI wrapper)
-pyswisseph==2.10.3.2
-
-# Date + timezone handling
-python-dateutil==2.9.0.post0
-pytz==2024.1
+numpy>=1.26
+pytz>=2024.1
+python-dateutil>=2.9
+astropy>=6.0
+skyfield>=1.49
+astroquery>=0.4.7
