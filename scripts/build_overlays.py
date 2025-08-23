@@ -62,10 +62,12 @@ def get_jpl(body, dt):
 
 def get_swiss(body, jd):
     if body in SWISS_IDS:
-        lon, lat, _ = swe.calc_ut(jd, SWISS_IDS[body])
+        res = swe.calc_ut(jd, SWISS_IDS[body])
+        lon, lat = res[0], res[1]
         return lon, lat, "swiss"
     if body in SWISS_MINORS:
-        lon, lat, _ = swe.calc_ut(jd, SWISS_MINORS[body])
+        res = swe.calc_ut(jd, SWISS_MINORS[body])
+        lon, lat = res[0], res[1]
         return lon, lat, "swiss_minor"
     raise ValueError(f"No Swiss ID for {body}")
 
@@ -83,7 +85,6 @@ def resolve_position(body, dt, jd):
 # -------------------------------
 
 def compute_angles(jd, lat, lon):
-    # Placidus houses
     ascmc, cusps = swe.houses(jd, lat, lon, b'P')
     return {
         "ASC": normalize_deg(ascmc[0]),
@@ -102,16 +103,16 @@ def compute_parts(angles, objs):
     asc = angles["ASC"]
 
     parts = {}
-    parts["PartOfFortune"]     = normalize_deg(asc + moon - sun)
-    parts["PartOfSpirit"]      = normalize_deg(asc + sun - moon)
-    parts["PartOfKarma"]       = normalize_deg(asc + moon - sun + 30)
-    parts["PartOfTreachery"]   = angles["MC"]
-    parts["PartOfDeliverance"] = normalize_deg(parts["PartOfFortune"] + 106)
-    parts["PartOfRebirth"]     = normalize_deg(parts["PartOfSpirit"] + 49)
-    parts["PartOfVengeance"]   = normalize_deg(asc - moon + sun)
-    parts["PartOfVictory"]     = normalize_deg(asc + sun - moon + 60)
-    parts["PartOfDelirium"]    = normalize_deg(asc + moon + sun)
-    parts["PartOfIntelligence"]= normalize_deg(parts["PartOfSpirit"] - 30)
+    parts["PartOfFortune"]      = normalize_deg(asc + moon - sun)
+    parts["PartOfSpirit"]       = normalize_deg(asc + sun - moon)
+    parts["PartOfKarma"]        = normalize_deg(asc + moon - sun + 30)
+    parts["PartOfTreachery"]    = angles["MC"]
+    parts["PartOfDeliverance"]  = normalize_deg(parts["PartOfFortune"] + 106)
+    parts["PartOfRebirth"]      = normalize_deg(parts["PartOfSpirit"] + 49)
+    parts["PartOfVengeance"]    = normalize_deg(asc - moon + sun)
+    parts["PartOfVictory"]      = normalize_deg(asc + sun - moon + 60)
+    parts["PartOfDelirium"]     = normalize_deg(asc + moon + sun)
+    parts["PartOfIntelligence"] = normalize_deg(parts["PartOfSpirit"] - 30)
 
     return parts
 
@@ -126,11 +127,11 @@ def main():
         dt.hour + dt.minute/60.0 + dt.second/3600.0
     )
 
-    # Example observer coords (geocentric overlay)
+    # Observer = geocentric overlay
     obs_lat, obs_lon = 0.0, 0.0
     angles = compute_angles(jd, obs_lat, obs_lon)
 
-    # Body list: majors + minors
+    # Body list
     bodies = list(JPL_IDS.keys()) + \
              [b for b in SWISS_IDS.keys() if b not in JPL_IDS] + \
              list(SWISS_MINORS.keys())
