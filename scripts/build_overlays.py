@@ -5,7 +5,7 @@ import swisseph as swe
 from astroquery.jplhorizons import Horizons
 
 # -------------------------------
-# 1. Body ID maps
+# 1. Object ID Mappings
 # -------------------------------
 
 JPL_IDS = {
@@ -25,68 +25,50 @@ SWISS_IDS = {
 }
 
 SWISS_MINORS = {
-    "Eris": 136199, "Sedna": 90377,
-    "Haumea": 136108, "Makemake": 136472,
-    "Ixion": 28978, "Varuna": 20000,
-    "Salacia": 120347, "Typhon": 42355,
-    "Vesta": 4, "Psyche": 16,
-    "Amor": 1221, "Eros": 433,
-    "Sappho": 80, "Karma": 3811,
-    "Bacchus": 2063, "Astraea": 5,
+    "Eris": 136199, "Sedna": 90377, "Haumea": 136108, "Makemake": 136472,
+    "Ixion": 28978, "Varuna": 20000, "Salacia": 120347, "Typhon": 42355,
+    "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
+    "Sappho": 80, "Karma": 3811, "Bacchus": 2063, "Astraea": 5,
     "Euphrosyne": 31, "Chariklo": 10199,
 }
 
 FIXED_STARS = {
-    "Regulus": 150.0,
-    "Spica": 204.75,
-    "Sirius": 104.0,
-    "Aldebaran": 69.0
+    "Regulus": 150.0, "Spica": 204.75,
+    "Sirius": 104.0, "Aldebaran": 69.0
 }
 
 # -------------------------------
-# 2. Helpers
+# 2. Utility Functions
 # -------------------------------
 
-def normalize_deg(x):
-    return x % 360.0
+def normalize_deg(deg):
+    return deg % 360.0
 
-# --- JPL batch with retry + validation ---
 def get_jpl_batch(dt, retries=3):
     ids = ",".join(str(v) for v in JPL_IDS.values())
     delay = 2
     for attempt in range(retries):
         try:
-            obj = Horizons(
-                id=ids,
-                location="500@399",  # Earth geocentric
-                epochs=dt.strftime("%Y-%m-%d %H:%M")
-            )
-           eph = obj.ephemerides()
+            obj = Horizons(id=ids, location="500@399", epochs=dt.strftime("%Y-%m-%d %H:%M"))
+            eph = obj.ephemerides()
 
-# Check required columns exist
-if "EclLon" not in eph.columns or "EclLat" not in eph.columns:
-    raise RuntimeError("Horizons returned malformed ephemeris (missing EclLon/EclLat)")
+            if "EclLon" not in eph.columns or "EclLat" not in eph.columns:
+                raise RuntimeError("Missing EclLon/EclLat in Horizons response")
 
-result = {}
-for name in JPL_IDS.keys():
-    try:
-        row = eph[eph["targetname"].str.contains(name, case=False)]
-        if len(row) > 0:
-            lon = float(row["EclLon"].values[0])
-            lat = float(row["EclLat"].values[0])
-
-            # sanity check ranges
-            if not (0.0 <= lon < 360.0):
-                raise ValueError(f"Bad longitude for {name}: {lon}")
-
-            result[name] = (lon, lat, "jpl")
-    except Exception as e:
-        print(f"[WARN] Skipping {name} due to bad Horizons data: {e}")
-
-if result:
-    return result
-
-
+            result = {}
+            for name in JPL_IDS:
+                try:
+                    row = eph[eph["targetname"].str.contains(name, case=False)]
+                    if not row.empty:
+                        lon = float(row["EclLon"].values[0])
+                        lat = float(row["EclLat"].values[0])
+                        if not (0.0 <= lon < 360.0):
+                            raise ValueError(f"Invalid longitude for {name}: {lon}")
+                        result[name] = (lon, lat, "jpl")
+                except Exception as e:
+                    print(f"[WARN] Skipping {name}: {e}")
+            if result:
+                return result
         except Exception as e:
             print(f"[WARN] JPL batch attempt {attempt+1} failed: {e}")
             if attempt < retries - 1:
@@ -94,20 +76,20 @@ if result:
                 delay *= 2
     return {}
 
-# --- Swiss safe wrapper ---
 def get_swiss(body, jd):
-    if body in SWISS_IDS:
-        positions, err = swe.calc_ut(jd, SWISS_IDS[body])
-        lon, lat = positions[0], positions[1]
-        return lon, lat, "swiss"
-    if body in SWISS_MINORS:
-        positions, err = swe.calc_ut(jd, SWISS_MINORS[body])
-        lon, lat = positions[0], positions[1]
-        return lon, lat, "swiss_minor"
+    try:
+        if body in SWISS_IDS:
+            pos, _ = swe.calc_ut(jd, SWISS_IDS[body])
+            return pos[0], pos[1], "swiss"
+        elif body in SWISS_MINORS:
+            pos, _ = swe.calc_ut(jd, SWISS_MINORS[body])
+            return pos[0], pos[1], "swiss_minor"
+    except Exception as e:
+        print(f"[ERROR] SwissEphem failed for {body}: {e}")
     raise ValueError(f"No Swiss ID for {body}")
 
 # -------------------------------
-# 3. Houses & Angles
+# 3. Chart Geometry
 # -------------------------------
 
 def compute_angles(jd, lat, lon):
@@ -120,14 +102,13 @@ def compute_angles(jd, lat, lon):
     }
 
 # -------------------------------
-# 4. Arabic Parts
+# 4. Arabic Part Calculations
 # -------------------------------
 
 def compute_parts(angles, objs):
     sun = objs["Sun"]["lon"]
     moon = objs["Moon"]["lon"]
     asc = angles["ASC"]
-
     return {
         "PartOfFortune": normalize_deg(asc + moon - sun),
         "PartOfSpirit": normalize_deg(asc + sun - moon),
@@ -142,24 +123,19 @@ def compute_parts(angles, objs):
     }
 
 # -------------------------------
-# 5. Main
+# 5. Main Execution
 # -------------------------------
 
 def main():
     dt = datetime.datetime.utcnow()
-    jd = swe.julday(
-        dt.year, dt.month, dt.day,
-        dt.hour + dt.minute/60.0 + dt.second/3600.0
-    )
-
+    jd = swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0 + dt.second/3600.0)
     obs_lat, obs_lon = 0.0, 0.0
+
     angles = compute_angles(jd, obs_lat, obs_lon)
+    bodies = list(JPL_IDS) + [b for b in SWISS_IDS if b not in JPL_IDS] + list(SWISS_MINORS)
+    objs = {}
 
-    bodies = list(JPL_IDS.keys()) + \
-             [b for b in SWISS_IDS.keys() if b not in JPL_IDS] + \
-             list(SWISS_MINORS.keys())
-
-    objs, overlay = {}, {
+    overlay = {
         "meta": {
             "generated_at_utc": dt.isoformat(),
             "observer": "geocentric Earth",
@@ -170,45 +146,33 @@ def main():
         "angles": angles
     }
 
-    # --- JPL batch majors ---
     jpl_results = get_jpl_batch(dt)
 
-    # Majors (Sun–Pluto)
-    for b in JPL_IDS.keys():
-        if b in jpl_results:
-            lon, lat, src = jpl_results[b]
-        else:
-            lon, lat, src = get_swiss(b, jd)
-        objs[b] = {"lon": lon, "lat": lat}
+    for body in JPL_IDS:
+        lon, lat, src = jpl_results.get(body, get_swiss(body, jd))
+        objs[body] = {"lon": lon, "lat": lat}
         overlay["objects"].append({
-            "id": b, "targetname": b,
-            "ecl_lon_deg": lon,
-            "ecl_lat_deg": lat,
+            "id": body, "targetname": body,
+            "ecl_lon_deg": lon, "ecl_lat_deg": lat,
             "source": src
         })
 
-    # Swiss-only (Chiron, Pholus, minors, TNOs)
-    for b in [bb for bb in bodies if bb not in JPL_IDS]:
-        lon, lat, src = get_swiss(b, jd)
-        objs[b] = {"lon": lon, "lat": lat}
+    for body in [b for b in bodies if b not in JPL_IDS]:
+        lon, lat, src = get_swiss(body, jd)
+        objs[body] = {"lon": lon, "lat": lat}
         overlay["objects"].append({
-            "id": b, "targetname": b,
-            "ecl_lon_deg": lon,
-            "ecl_lat_deg": lat,
+            "id": body, "targetname": body,
+            "ecl_lon_deg": lon, "ecl_lat_deg": lat,
             "source": src
         })
 
-    # Fixed stars
     for star, lon in FIXED_STARS.items():
         overlay["objects"].append({
-            "id": star,
-            "targetname": star,
-            "ecl_lon_deg": lon,
-            "ecl_lat_deg": 0.0,
+            "id": star, "targetname": star,
+            "ecl_lon_deg": lon, "ecl_lat_deg": 0.0,
             "source": "fixed"
         })
 
-    # Arabic Parts
     overlay["angles"].update(compute_parts(angles, objs))
 
     with open("docs/feed_overlay.json", "w") as f:
