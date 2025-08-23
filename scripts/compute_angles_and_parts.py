@@ -26,14 +26,14 @@ def main():
             d["hour"] + d["minute"] / 60.0
         )
 
-        # ✅ pyswisseph returns ONLY 2 values
+        # ✅ pyswisseph on your system returns exactly 2 values
         houses, ascmc = swe.houses_ex(jd, d["lat"], d["lon"], b"P")
 
         results[name] = {
-            "ASC": ascmc[0],       # Ascendant
-            "MC": ascmc[1],        # Midheaven
-            "houses": list(houses),    # 12 house cusps
-            "ascmc_all": list(ascmc)   # full 10-element array
+            "ASC": ascmc[0],          # Ascendant
+            "MC": ascmc[1],           # Midheaven
+            "houses": list(houses),   # 12 house cusps
+            "ascmc_all": list(ascmc)  # all 10 angles (ASC, MC, IC, DSC, Vertex, etc.)
         }
 
         # Arabic Parts (basic)
