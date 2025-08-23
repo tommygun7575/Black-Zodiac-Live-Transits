@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 compute_angles_and_parts.py
-Computes ASC, MC, all house cusps, all 10 ascmc values,
+Computes ASC, MC, all house cusps, full ascmc array,
 and Arabic Parts (Fortune & Spirit).
 """
 
@@ -11,7 +11,6 @@ from pathlib import Path
 
 OUTPUT_FILE = Path("docs/feed_angles.json")
 
-# Natal charts
 NATALS = {
     "Tommy": {"year": 1975, "month": 9, "day": 12, "hour": 9, "minute": 20, "lat": 40.84478, "lon": -73.86483},
     "Milena": {"year": 1992, "month": 3, "day": 29, "hour": 14, "minute": 4, "lat": 39.1638, "lon": -119.7674},
@@ -27,18 +26,17 @@ def main():
             d["hour"] + d["minute"] / 60.0
         )
 
-        # ✅ FIX: unpack ONLY 2 values
+        # ✅ pyswisseph returns ONLY 2 values
         houses, ascmc = swe.houses_ex(jd, d["lat"], d["lon"], b"P")
 
-        # Build result
         results[name] = {
-            "ASC": ascmc[0],
-            "MC": ascmc[1],
-            "houses": list(houses),
-            "ascmc_all": list(ascmc)  # all 10 values: ASC, MC, ARMC, Vertex, etc.
+            "ASC": ascmc[0],       # Ascendant
+            "MC": ascmc[1],        # Midheaven
+            "houses": list(houses),    # 12 house cusps
+            "ascmc_all": list(ascmc)   # full 10-element array
         }
 
-        # Arabic Parts
+        # Arabic Parts (basic)
         results[name]["PartOfFortune"] = (ascmc[0] + ascmc[1]) / 2
         results[name]["PartOfSpirit"] = (ascmc[0] - ascmc[1]) / 2
 
