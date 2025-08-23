@@ -25,24 +25,51 @@ PLANET_IDS = {
     "PALLAS": swe.PALLAS,
     "JUNO": swe.JUNO,
     "VESTA": swe.VESTA,
-    # You can extend with TNOs / fictitious bodies if you have elements
+}
+
+# Symbolic Aether planets (not real Swiss bodies)
+AETHER_IDS = {
+    "VULCAN": 30,       # fictitious ID for Vulcan
+    "PERSEPHONE": 31,   # fictitious ID for Persephone
+    "HADES": 32,        # fictitious ID for Hades
+    "PROSERPINA": 33,   # fictitious ID for Proserpina
+    "ISIS": 34          # fictitious ID for Isis
 }
 
 def get_ecliptic_lonlat(target: str, when_iso: str):
     """
     Return (lon, lat) in ecliptic degrees for a body at given UTC ISO time.
+    Uses Swiss Ephemeris for real bodies, symbolic placeholders for Aethers.
     """
     try:
         dt = parser.isoparse(when_iso)
         jd = swe.julday(dt.year, dt.month, dt.day,
                         dt.hour + dt.minute/60.0 + dt.second/3600.0)
 
-        body = PLANET_IDS.get(target.upper())
-        if body is None:
-            # Unsupported body → Swiss can’t calculate
-            return None
+        upper = target.upper()
 
-        lon, lat, dist, lon_speed = swe.calc_ut(jd, body)
-        return lon, lat
+        # Real Swiss bodies
+        if upper in PLANET_IDS:
+            lon, lat, dist, lon_speed = swe.calc_ut(jd, PLANET_IDS[upper])
+            return lon, lat
+
+        # Symbolic Aethers → placeholder formula
+        if upper in AETHER_IDS:
+            # Simple deterministic pseudo-position:
+            # cycle them around the zodiac at different speeds
+            base = {
+                "VULCAN": 0.9856,     # ~1°/day (like Sun)
+                "PERSEPHONE": 0.083,  # ~30°/year (like Saturn)
+                "HADES": 0.014,       # ~1°/70 days
+                "PROSERPINA": 0.004,  # ~1°/250 days
+                "ISIS": 0.25          # ~90°/year
+            }[upper]
+            # Fake longitude based on JD * rate, wrap 360
+            lon = (jd * base) % 360.0
+            return lon, 0.0
+
+        # Unsupported body
+        return None
+
     except Exception:
         return None
