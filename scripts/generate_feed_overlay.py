@@ -156,7 +156,7 @@ def merge_into(natal_bundle: Dict[str, Any], when_iso: str) -> Dict[str, Any]:
 
     return {"meta": meta, "charts": charts}
 
-def main(argv: List[str]):
+def main(argv):
     out_path = os.environ.get("OVERLAY_OUT", os.path.join("docs", "feed_overlay.json"))
     when_iso = os.environ.get("OVERLAY_TIME_UTC")
     if not when_iso:
