@@ -1,0 +1,23 @@
+name: build-overlay
+on:
+  schedule:
+    - cron: '0 11 * * *'   # 11:00 UTC = 4:00 AM Pacific
+  workflow_dispatch: {}
+jobs:
+  overlay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - run: python scripts/generate_feed_overlay.py
+        env:
+          OVERLAY_OUT: docs/feed_overlay.json
+          OVERLAY_TIME_UTC: ''
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'ci(overlay): refresh feed_overlay.json'
+          file_pattern: docs/feed_overlay.json
