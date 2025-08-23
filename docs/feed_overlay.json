@@ -1,412 +1,854 @@
 {
   "meta": {
-    "generated_at_utc": "2025-08-23T07:53:43.071298Z",
+    "generated_at_utc": "2025-08-23T09:32:00.708056",
     "observer": "geocentric Earth",
-    "source": "overlay-builder",
-    "augmented_at_utc": "2025-08-23T07:53:46.771811Z",
+    "source_hierarchy": [
+      "jpl",
+      "swiss",
+      "astroseek"
+    ],
     "black_zodiac_version": "3.3.0"
   },
-  "objects": [
-    {
-      "id": "10",
-      "targetname": "Sun",
-      "ecl_lon_deg": 150.45515234375668,
-      "ecl_lat_deg": 2.7303757367241546e-05,
-      "source": "swiss"
+  "charts": {
+    "Tommy": {
+      "objects": [
+        {
+          "id": "Sun",
+          "targetname": "Sun",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Moon",
+          "targetname": "Moon",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Mercury",
+          "targetname": "Mercury",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Venus",
+          "targetname": "Venus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Mars",
+          "targetname": "Mars",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Jupiter",
+          "targetname": "Jupiter",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Saturn",
+          "targetname": "Saturn",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Uranus",
+          "targetname": "Uranus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Neptune",
+          "targetname": "Neptune",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Pluto",
+          "targetname": "Pluto",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Chiron",
+          "targetname": "Chiron",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Vesta",
+          "targetname": "Vesta",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Psyche",
+          "targetname": "Psyche",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Amor",
+          "targetname": "Amor",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Eros",
+          "targetname": "Eros",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Sappho",
+          "targetname": "Sappho",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Karma",
+          "targetname": "Karma",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Bacchus",
+          "targetname": "Bacchus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Astraea",
+          "targetname": "Astraea",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Euphrosyne",
+          "targetname": "Euphrosyne",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Pholus",
+          "targetname": "Pholus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Chariklo",
+          "targetname": "Chariklo",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Eris",
+          "targetname": "Eris",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Sedna",
+          "targetname": "Sedna",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Haumea",
+          "targetname": "Haumea",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Makemake",
+          "targetname": "Makemake",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Varuna",
+          "targetname": "Varuna",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Ixion",
+          "targetname": "Ixion",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Typhon",
+          "targetname": "Typhon",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Salacia",
+          "targetname": "Salacia",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Regulus",
+          "targetname": "Regulus",
+          "ecl_lon_deg": 150.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Spica",
+          "targetname": "Spica",
+          "ecl_lon_deg": 204.75,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Sirius",
+          "targetname": "Sirius",
+          "ecl_lon_deg": 104.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Aldebaran",
+          "targetname": "Aldebaran",
+          "ecl_lon_deg": 69.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        }
+      ],
+      "angles": {
+        "ASC": 153.85334867495558,
+        "MC": 59.11519058110598,
+        "houses": [
+          153.85334867495558,
+          177.29547227073198,
+          205.862689640249,
+          239.115190581106,
+          273.8691475713067,
+          305.9294054823334,
+          333.85334867495555,
+          357.295472270732,
+          25.86268964024896,
+          59.11519058110598,
+          93.86914757130668,
+          125.92940548233337
+        ],
+        "ascmc_all": [
+          153.85334867495558,
+          59.11519058110598,
+          56.89838641080418,
+          299.4561724676479,
+          144.60330556056797,
+          127.86732145628571,
+          156.03612971884002,
+          307.8673214562857
+        ],
+        "PartOfFortune": 106.48426962803077,
+        "PartOfSpirit": 47.3690790469248,
+        "PartOfKarma": 248.59150676880517,
+        "PartOfTreachery": 59.11519058110596,
+        "PartOfDeliverance": 212.96853925606155,
+        "PartOfRebirth": 94.73815809384962,
+        "PartOfVengeance": 6.821887931017159,
+        "PartOfVictory": 201.2224277218804,
+        "PartOfDelirium": 165.59946020913674,
+        "PartOfIntelligence": 47.36907904692481
+      }
     },
-    {
-      "id": "301",
-      "targetname": "Moon",
-      "ecl_lon_deg": 151.34993028770282,
-      "ecl_lat_deg": 1.5371458957810764,
-      "source": "swiss"
+    "Milena": {
+      "objects": [
+        {
+          "id": "Sun",
+          "targetname": "Sun",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Moon",
+          "targetname": "Moon",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Mercury",
+          "targetname": "Mercury",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Venus",
+          "targetname": "Venus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Mars",
+          "targetname": "Mars",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Jupiter",
+          "targetname": "Jupiter",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Saturn",
+          "targetname": "Saturn",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Uranus",
+          "targetname": "Uranus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Neptune",
+          "targetname": "Neptune",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Pluto",
+          "targetname": "Pluto",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Chiron",
+          "targetname": "Chiron",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Vesta",
+          "targetname": "Vesta",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Psyche",
+          "targetname": "Psyche",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Amor",
+          "targetname": "Amor",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Eros",
+          "targetname": "Eros",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Sappho",
+          "targetname": "Sappho",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Karma",
+          "targetname": "Karma",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Bacchus",
+          "targetname": "Bacchus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Astraea",
+          "targetname": "Astraea",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Euphrosyne",
+          "targetname": "Euphrosyne",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Pholus",
+          "targetname": "Pholus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Chariklo",
+          "targetname": "Chariklo",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Eris",
+          "targetname": "Eris",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Sedna",
+          "targetname": "Sedna",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Haumea",
+          "targetname": "Haumea",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Makemake",
+          "targetname": "Makemake",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Varuna",
+          "targetname": "Varuna",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Ixion",
+          "targetname": "Ixion",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Typhon",
+          "targetname": "Typhon",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Salacia",
+          "targetname": "Salacia",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Regulus",
+          "targetname": "Regulus",
+          "ecl_lon_deg": 150.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Spica",
+          "targetname": "Spica",
+          "ecl_lon_deg": 204.75,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Sirius",
+          "targetname": "Sirius",
+          "ecl_lon_deg": 104.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Aldebaran",
+          "targetname": "Aldebaran",
+          "ecl_lon_deg": 69.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        }
+      ],
+      "angles": {
+        "ASC": 14.148253255692385,
+        "MC": 277.7687148802512,
+        "houses": [
+          14.148253255692385,
+          51.14831305058097,
+          76.29049880489859,
+          97.7687148802512,
+          120.49301945437662,
+          150.03253569908372,
+          194.1482532556924,
+          231.14831305058095,
+          256.29049880489856,
+          277.7687148802512,
+          300.4930194543766,
+          330.0325356990837
+        ],
+        "ascmc_all": [
+          14.148253255692385,
+          277.7687148802512,
+          278.45782073543506,
+          186.01497880459897,
+          9.206108971074555,
+          6.810651370260416,
+          19.337702862387122,
+          186.8106513702604
+        ],
+        "PartOfFortune": 145.9584840679718,
+        "PartOfSpirit": -131.8102308122794,
+        "PartOfKarma": 110.52779163113357,
+        "PartOfTreachery": 277.7687148802512,
+        "PartOfDeliverance": 291.9169681359436,
+        "PartOfRebirth": 96.3795383754412,
+        "PartOfVengeance": 306.065221391636,
+        "PartOfVictory": 242.33802244341297,
+        "PartOfDelirium": 63.72719894822296,
+        "PartOfIntelligence": 228.1897691877206
+      }
     },
-    {
-      "id": "199",
-      "targetname": "Mercury",
-      "ecl_lon_deg": 132.65187876610452,
-      "ecl_lat_deg": 0.11244838709752955,
-      "source": "swiss"
-    },
-    {
-      "id": "299",
-      "targetname": "Venus",
-      "ecl_lon_deg": 117.19151078367344,
-      "ecl_lat_deg": -0.32537413507084384,
-      "source": "swiss"
-    },
-    {
-      "id": "499",
-      "targetname": "Mars",
-      "ecl_lon_deg": 190.32244696641504,
-      "ecl_lat_deg": 0.3497444289748217,
-      "source": "swiss"
-    },
-    {
-      "id": "599",
-      "targetname": "Jupiter",
-      "ecl_lon_deg": 106.26183194029988,
-      "ecl_lat_deg": -0.04649729894973306,
-      "source": "swiss"
-    },
-    {
-      "id": "699",
-      "targetname": "Saturn",
-      "ecl_lon_deg": 0.5910882631111973,
-      "ecl_lat_deg": -2.455561066943698,
-      "source": "swiss"
-    },
-    {
-      "id": "799",
-      "targetname": "Uranus",
-      "ecl_lon_deg": 61.382492906643385,
-      "ecl_lat_deg": -0.20962950725875318,
-      "source": "swiss"
-    },
-    {
-      "id": "899",
-      "targetname": "Neptune",
-      "ecl_lon_deg": 1.5687836975386427,
-      "ecl_lat_deg": -1.363529832647192,
-      "source": "swiss"
-    },
-    {
-      "id": "999",
-      "targetname": "Pluto",
-      "ecl_lon_deg": 301.9396924478912,
-      "ecl_lat_deg": -3.7823561437547926,
-      "source": "swiss"
-    },
-    {
-      "id": "2060",
-      "targetname": "Chiron",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "unknown"
-    },
-    {
-      "id": "4",
-      "targetname": "Vesta",
-      "ecl_lon_deg": 190.32244696641504,
-      "ecl_lat_deg": 0.3497444289748217,
-      "source": "swiss"
-    },
-    {
-      "id": "Psyche",
-      "targetname": "Psyche",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Amor",
-      "targetname": "Amor",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "missing"
-    },
-    {
-      "id": "Eros",
-      "targetname": "Eros",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Sappho",
-      "targetname": "Sappho",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Karma",
-      "targetname": "Karma",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Chariklo",
-      "targetname": "Chariklo",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Pholus",
-      "targetname": "Pholus",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Eris",
-      "targetname": "Eris",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Sedna",
-      "targetname": "Sedna",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Haumea",
-      "targetname": "Haumea",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Makemake",
-      "targetname": "Makemake",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "fallback-json"
-    },
-    {
-      "id": "Varuna",
-      "targetname": "Varuna",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "missing"
-    },
-    {
-      "id": "Ixion",
-      "targetname": "Ixion",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "missing"
-    },
-    {
-      "id": "Typhon",
-      "targetname": "Typhon",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "missing"
-    },
-    {
-      "id": "Salacia",
-      "targetname": "Salacia",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "missing"
-    },
-    {
-      "id": "Regulus",
-      "targetname": "Regulus (Alpha Leo)",
-      "ecl_lon_deg": 152.0929625,
-      "ecl_lat_deg": 11.9672083,
-      "source": "fixed"
-    },
-    {
-      "id": "Spica",
-      "targetname": "Spica (Alpha Vir)",
-      "ecl_lon_deg": 201.2982475,
-      "ecl_lat_deg": -11.1613194,
-      "source": "fixed"
-    },
-    {
-      "id": "Sirius",
-      "targetname": "Sirius (Alpha CMa)",
-      "ecl_lon_deg": 101.2871553,
-      "ecl_lat_deg": -16.7161159,
-      "source": "fixed"
-    },
-    {
-      "id": "Aldebaran",
-      "targetname": "Aldebaran (Alpha Tau)",
-      "ecl_lon_deg": 68.9801625,
-      "ecl_lat_deg": 16.5093028,
-      "source": "fixed"
-    },
-    {
-      "id": "Vulcan",
-      "targetname": "Vulcan",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "symbolic"
-    },
-    {
-      "id": "Persephone",
-      "targetname": "Persephone",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "symbolic"
-    },
-    {
-      "id": "Hades",
-      "targetname": "Hades",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "symbolic"
-    },
-    {
-      "id": "Proserpina",
-      "targetname": "Proserpina",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "symbolic"
-    },
-    {
-      "id": "Isis",
-      "targetname": "Isis",
-      "ecl_lon_deg": null,
-      "ecl_lat_deg": 0.0,
-      "source": "symbolic"
+    "Christine": {
+      "objects": [
+        {
+          "id": "Sun",
+          "targetname": "Sun",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Moon",
+          "targetname": "Moon",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Mercury",
+          "targetname": "Mercury",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Venus",
+          "targetname": "Venus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Mars",
+          "targetname": "Mars",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Jupiter",
+          "targetname": "Jupiter",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Saturn",
+          "targetname": "Saturn",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Uranus",
+          "targetname": "Uranus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Neptune",
+          "targetname": "Neptune",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Pluto",
+          "targetname": "Pluto",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Chiron",
+          "targetname": "Chiron",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Vesta",
+          "targetname": "Vesta",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Psyche",
+          "targetname": "Psyche",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Amor",
+          "targetname": "Amor",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Eros",
+          "targetname": "Eros",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Sappho",
+          "targetname": "Sappho",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Karma",
+          "targetname": "Karma",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Bacchus",
+          "targetname": "Bacchus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Astraea",
+          "targetname": "Astraea",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Euphrosyne",
+          "targetname": "Euphrosyne",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Pholus",
+          "targetname": "Pholus",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Chariklo",
+          "targetname": "Chariklo",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Eris",
+          "targetname": "Eris",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Sedna",
+          "targetname": "Sedna",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Haumea",
+          "targetname": "Haumea",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Makemake",
+          "targetname": "Makemake",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Varuna",
+          "targetname": "Varuna",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Ixion",
+          "targetname": "Ixion",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Typhon",
+          "targetname": "Typhon",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Salacia",
+          "targetname": "Salacia",
+          "ecl_lon_deg": null,
+          "ecl_lat_deg": 0.0,
+          "source": "missing"
+        },
+        {
+          "id": "Regulus",
+          "targetname": "Regulus",
+          "ecl_lon_deg": 150.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Spica",
+          "targetname": "Spica",
+          "ecl_lon_deg": 204.75,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Sirius",
+          "targetname": "Sirius",
+          "ecl_lon_deg": 104.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        },
+        {
+          "id": "Aldebaran",
+          "targetname": "Aldebaran",
+          "ecl_lon_deg": 69.0,
+          "ecl_lat_deg": 0.0,
+          "source": "fixed"
+        }
+      ],
+      "angles": {
+        "ASC": 168.60087858229306,
+        "MC": 76.76889354454909,
+        "houses": [
+          168.60087858229306,
+          193.61563721960422,
+          223.3633537702928,
+          256.7688935445491,
+          290.67579027577756,
+          321.6897571767057,
+          348.60087858229303,
+          13.615637219604196,
+          43.363353770292804,
+          76.76889354454909,
+          110.67579027577759,
+          141.68975717670568
+        ],
+        "ascmc_all": [
+          168.60087858229306,
+          76.76889354454909,
+          75.62593513278976,
+          329.80962410803636,
+          164.39334598824186,
+          155.55746524466747,
+          169.5861222873882,
+          335.55746524466747
+        ],
+        "PartOfFortune": 122.68488606342108,
+        "PartOfSpirit": 45.91599251887199,
+        "PartOfKarma": 260.43286362003704,
+        "PartOfTreachery": 76.76889354454909,
+        "PartOfDeliverance": 245.36977212684218,
+        "PartOfRebirth": 91.83198503774399,
+        "PartOfVengeance": 53.970650709135214,
+        "PartOfVictory": 214.51687110116507,
+        "PartOfDelirium": 199.45377960797015,
+        "PartOfIntelligence": 45.915992518872
+      }
     }
-  ],
-  "angles": {
-    "Tommy": [
-      {
-        "id": "ASC",
-        "targetname": "Ascendant",
-        "ecl_lon_deg": 122.17491157446155,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "MC",
-        "targetname": "Midheaven",
-        "ecl_lon_deg": 17.81647222383169,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "Houses",
-        "targetname": "House Cusps",
-        "houses_deg": [
-          122.17491157446155,
-          142.40107917618198,
-          166.87823322537955,
-          197.81647222383168,
-          234.53209673926102,
-          271.0128827365037,
-          302.17491157446153,
-          322.40107917618195,
-          346.8782332253795,
-          17.81647222383169,
-          54.53209673926101,
-          91.0128827365037
-        ],
-        "source": "swiss"
-      },
-      {
-        "id": "PartOfFortune",
-        "targetname": "Part of Fortune",
-        "ecl_lon_deg": 123.06968951840767,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "PartOfSpirit",
-        "targetname": "Part of Spirit",
-        "ecl_lon_deg": 121.28013363051542,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      }
-    ],
-    "Milena": [
-      {
-        "id": "ASC",
-        "targetname": "Ascendant",
-        "ecl_lon_deg": 81.67409147487541,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "MC",
-        "targetname": "Midheaven",
-        "ecl_lon_deg": 328.36913601818395,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "Houses",
-        "targetname": "House Cusps",
-        "houses_deg": [
-          81.67409147487541,
-          102.78605699341165,
-          123.74283318047456,
-          148.36913601818395,
-          180.65248885560834,
-          221.5421364581652,
-          261.6740914748754,
-          282.78605699341165,
-          303.7428331804746,
-          328.36913601818395,
-          0.6524888556083279,
-          41.5421364581652
-        ],
-        "source": "swiss"
-      },
-      {
-        "id": "PartOfFortune",
-        "targetname": "Part of Fortune",
-        "ecl_lon_deg": 82.56886941882155,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "PartOfSpirit",
-        "targetname": "Part of Spirit",
-        "ecl_lon_deg": 80.77931353092927,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      }
-    ],
-    "Christine": [
-      {
-        "id": "ASC",
-        "targetname": "Ascendant",
-        "ecl_lon_deg": 122.63727563650278,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "MC",
-        "targetname": "Midheaven",
-        "ecl_lon_deg": 18.53119373143605,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "Houses",
-        "targetname": "House Cusps",
-        "houses_deg": [
-          122.63727563650278,
-          142.9353629446894,
-          167.51377478027567,
-          198.53119373143605,
-          235.20973802621853,
-          271.558664309439,
-          302.63727563650275,
-          322.93536294468936,
-          347.51377478027564,
-          18.53119373143605,
-          55.20973802621854,
-          91.55866430943897
-        ],
-        "source": "swiss"
-      },
-      {
-        "id": "PartOfFortune",
-        "targetname": "Part of Fortune",
-        "ecl_lon_deg": 123.53205358044889,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      },
-      {
-        "id": "PartOfSpirit",
-        "targetname": "Part of Spirit",
-        "ecl_lon_deg": 121.74249769255664,
-        "ecl_lat_deg": 0.0,
-        "source": "swiss"
-      }
-    ]
   }
 }
