@@ -44,14 +44,17 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
             if pos:
                 got, used = pos, label
                 break
+
+        # Logging to Actions console
         if used:
             print(f"{name:12s} → {used:7s} | lon={got[0]:.2f} lat={got[1]:.2f}")
         else:
             print(f"{name:12s} → missing")
+
         return {
             "ecl_lon_deg": None if not got else float(got[0]),
             "ecl_lat_deg": None if not got else float(got[1]),
-            "source": "missing" if not used else used
+            "used_source": "missing" if not used else used
         }
 
     # ---- Majors: JPL first, Swiss fallback ----
@@ -88,7 +91,11 @@ def compute_positions(when_iso: str) -> Dict[str, Dict[str, Any]]:
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
         print(f"{s['id']:12s} → fixed   | lon={lam:.2f} lat={bet:.2f}")
-        out[s["id"]] = {"ecl_lon_deg": lam, "ecl_lat_deg": bet, "source": "fixed"}
+        out[s["id"]] = {
+            "ecl_lon_deg": lam,
+            "ecl_lat_deg": bet,
+            "used_source": "fixed"
+        }
 
     return out
 
