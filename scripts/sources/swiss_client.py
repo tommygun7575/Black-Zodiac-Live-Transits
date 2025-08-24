@@ -4,9 +4,9 @@ import swisseph as swe
 from dateutil import parser
 
 # --- Set Swiss Ephemeris data path ---
+# Your .se1 ephemeris files (seas_18.se1, semo_18.se1, etc.) live in repo root
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-EPHE_PATH = os.path.join(ROOT, "ephe")
-swe.set_ephe_path(EPHE_PATH)
+swe.set_ephe_path(ROOT)
 
 # Map names to Swiss constants / MPC IDs
 PLANET_IDS = {
@@ -58,7 +58,7 @@ PLANET_IDS = {
     "LILITH": swe.MEAN_APOG
 }
 
-# Symbolic Aether planets
+# Symbolic Aether planets (pseudo-calculated)
 AETHER_IDS = {
     "VULCAN": 30,
     "PERSEPHONE": 31,
