@@ -1,8 +1,10 @@
 from typing import Tuple, Optional
 from astroquery.jplhorizons import Horizons
 from dateutil import parser
+import swisseph as swe
 
-# Mapping of names to JPL Horizons target IDs (for major planets, asteroids, and TNOs)
+# Mapping of names to JPL Horizons target IDs
+# Adding extra asteroids, TNOs, and dwarf planets for completeness
 HORIZONS_IDS = {
     # Majors
     "SUN": "10",
@@ -34,11 +36,13 @@ HORIZONS_IDS = {
     "BACCHUS": "2063",
     "HYGIEA": "10",
 
-    # Minor bodies
-    "NESSUS": "7066",      # Nessus added here
+    # Minor bodies / Centaurs
+    "NESSUS": "7066",      # Nessus
     "PHOLUS": "5145",      # Pholus
+    "LAMPREIA": "45508",   # Lampreia (Minor planet)
+    "OKINA": "37232",      # Okina (Centaur)
 
-    # TNOs
+    # TNOs / Dwarf Planets
     "ERIS": "136199",
     "SEDNA": "90377",
     "HAUMEA": "136108",
@@ -51,6 +55,14 @@ HORIZONS_IDS = {
     "2003 VS2": "84922",
     "ORCUS": "90482",
     "QUAOAR": "50000",
+    
+    # Additional TNOs (often tracked for astrology)
+    "2004 XR190": "90482",  # Object in the Kuiper Belt
+    "2005 TB190": "90377",  # Object in the Kuiper Belt
+
+    # Comets (not all comets are included in Horizons)
+    "HALLEY": "1P",         # Halley's Comet
+    "NEOWISE": "C/2020 F3", # Comet NEOWISE
 }
 
 def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float]]:
