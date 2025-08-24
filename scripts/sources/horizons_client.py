@@ -1,11 +1,10 @@
 from typing import Tuple, Optional
-from scripts.utils.coords import ra_dec_to_ecl
 from astroquery.jplhorizons import Horizons
 from dateutil import parser
-import swisseph as swe
 
-# Mapping of names to JPL Horizons target IDs
+# Mapping of names to JPL Horizons target IDs (for major planets, asteroids, and TNOs)
 HORIZONS_IDS = {
+    # Majors
     "SUN": "10",
     "MOON": "301",
     "MERCURY": "199",
@@ -17,12 +16,14 @@ HORIZONS_IDS = {
     "URANUS": "799",
     "NEPTUNE": "899",
     "PLUTO": "999",
-    "CHIRON": "2060",       # Chiron
+    "CHIRON": "2060",       # Chiron (comet/centaur ID)
+
     # Classical asteroids
     "CERES": "1",
     "PALLAS": "2",
     "JUNO": "3",
     "VESTA": "4",
+
     # Additional asteroids
     "PSYCHE": "16",
     "EROS": "433",
@@ -31,6 +32,12 @@ HORIZONS_IDS = {
     "SAPPHO": "80",
     "KARMA": "3811",
     "BACCHUS": "2063",
+    "HYGIEA": "10",
+
+    # Minor bodies
+    "NESSUS": "7066",      # Nessus added here
+    "PHOLUS": "5145",      # Pholus
+
     # TNOs
     "ERIS": "136199",
     "SEDNA": "90377",
@@ -44,13 +51,12 @@ HORIZONS_IDS = {
     "2003 VS2": "84922",
     "ORCUS": "90482",
     "QUAOAR": "50000",
-    # Add any additional bodies here
 }
 
 def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float]]:
     """
-    Query JPL Horizons for ecliptic longitude/latitude (geocentric).
-    Falls back to RA/DEC conversion if needed.
+    Query JPL Horizons for ecliptic longitude/latitude.
+    Fallback to RA/DEC conversion if needed.
     """
     try:
         # Translate body name to Horizons ID
