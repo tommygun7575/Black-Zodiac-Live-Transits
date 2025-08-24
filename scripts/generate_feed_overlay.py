@@ -12,7 +12,6 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
 NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 
-# Ensure Swiss ephemeris is pointed correctly
 swe.set_ephe_path(os.path.join(ROOT, "ephe"))
 
 NAME_ALIASES = {
@@ -74,7 +73,7 @@ def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Di
         harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
     return harmonics
 
-# Resolver
+# Resolver with debug logging
 def resolve_body(name, sources, when_iso, force_fallback=False):
     got, used = None, None
     aliases = NAME_ALIASES.get(name, [name])
@@ -82,17 +81,20 @@ def resolve_body(name, sources, when_iso, force_fallback=False):
         for label, func in sources:
             try:
                 pos = func(alias, when_iso)
-            except Exception:
+            except Exception as e:
+                print(f"[RESOLVER] {name} via {label} → ERROR: {e}")
                 pos = None
             if pos:
                 lon, lat = pos
                 if lon is not None and lat is not None and not (math.isnan(lon) or math.isnan(lat)):
                     got, used = (lon, lat), label
+                    print(f"[RESOLVER] {name} → picked {label} (lon={lon:.6f}, lat={lat:.6f})")
                     break
         if got:
             break
     if not got and force_fallback:
         got, used = (0.0, 0.0), "calculated-fallback"
+        print(f"[RESOLVER] {name} → forced fallback")
     return {"ecl_lon_deg": None if not got else float(got[0]),
             "ecl_lat_deg": None if not got else float(got[1]),
             "used_source": "missing" if not used else used}
@@ -107,15 +109,14 @@ def compute_positions(when_iso, lat, lon):
             "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
 
-    # Force Sun to Swiss only
+    # Sun → Swiss only
     out["Sun"] = resolve_body("Sun", [
         ("swiss", swiss_client.get_ecliptic_lonlat)
     ], when_iso, force_fallback=True)
 
     # Other majors
     for name in MAJORS:
-        if name == "Sun":
-            continue
+        if name == "Sun": continue
         out[name] = resolve_body(name, [
             ("jpl", horizons_client.get_ecliptic_lonlat),
             ("swiss", swiss_client.get_ecliptic_lonlat),
@@ -186,7 +187,6 @@ def merge_into(natal_bundle, when_iso):
 def main(argv):
     when_iso = os.environ.get("OVERLAY_TIME_UTC") or iso_now()
 
-    # Convert UTC → Pacific
     utc_dt = parser.isoparse(when_iso).replace(tzinfo=pytz.utc)
     pacific = pytz.timezone("America/Los_Angeles")
     pac_dt = utc_dt.astimezone(pacific)
