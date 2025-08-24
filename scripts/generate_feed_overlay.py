@@ -4,7 +4,6 @@ from typing import Dict, Any
 from math import fmod
 import swisseph as swe
 from dateutil import parser
-
 from scripts.sources import horizons_client, swiss_client
 from scripts.utils.coords import ra_dec_to_ecl
 
@@ -25,7 +24,7 @@ def iso_now() -> str:
 def normalize(deg: float) -> float:
     return fmod(deg + 360.0, 360.0)
 
-# Arabic Parts
+# Arabic Parts calculation
 def compute_arabic_parts(asc, sun, moon):
     parts = {}
     is_day = (sun - asc) % 360 < 180
@@ -46,7 +45,7 @@ def compute_arabic_parts(asc, sun, moon):
         parts[name] = {"ecl_lon_deg": normalize(lon), "ecl_lat_deg": 0.0, "used_source": "calculated"}
     return parts
 
-# Houses
+# Houses calculation
 def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     dt = parser.isoparse(when_iso)
     jd = swe.julday(dt.year, dt.month, dt.day,
@@ -58,16 +57,22 @@ def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
     return houses
 
-# Harmonics
-def compute_harmonics(base_positions):
-    harmonics = {}
-    for body, pos in base_positions.items():
-        if pos["ecl_lon_deg"] is None:
-            continue
-        lon = pos["ecl_lon_deg"]
-        harmonics[f"{body}_h8"] = {"ecl_lon_deg": normalize(lon*8 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic8"}
-        harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
-    return harmonics
+# Majors and objects resolution
+def resolve_body(name, sources, force_fallback=False):
+    got, used = None, None
+    for label, func in sources:
+        try:
+            pos = func(name, when_iso)
+        except Exception:
+            pos = None
+        if pos:
+            got, used = pos, label
+            break
+    if not got and force_fallback:
+        got, used = (0.0, 0.0), "calculated-fallback"
+    return {"ecl_lon_deg": None if not got else float(got[0]),
+            "ecl_lat_deg": None if not got else float(got[1]),
+            "used_source": "missing" if not used else used}
 
 def compute_positions(when_iso, lat, lon):
     out = {}
@@ -75,22 +80,6 @@ def compute_positions(when_iso, lat, lon):
     ASTEROIDS = ["Ceres", "Pallas", "Juno", "Vesta", "Psyche", "Amor", "Eros", "Astraea", "Sappho", "Karma", "Bacchus", "Hygiea", "Nessus"]
     TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
-
-    def resolve_body(name, sources, force_fallback=False):
-        got, used = None, None
-        for label, func in sources:
-            try:
-                pos = func(name, when_iso)
-            except Exception:
-                pos = None
-            if pos:
-                got, used = pos, label
-                break
-        if not got and force_fallback:
-            got, used = (0.0, 0.0), "calculated-fallback"
-        return {"ecl_lon_deg": None if not got else float(got[0]),
-                "ecl_lat_deg": None if not got else float(got[1]),
-                "used_source": "missing" if not used else used}
 
     # Majors (Horizons first, fallback to Swiss)
     for name in MAJORS:
