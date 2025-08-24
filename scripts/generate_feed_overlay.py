@@ -1,4 +1,4 @@
-import json, os, sys
+import json, os, sys, math
 from datetime import datetime, timezone
 from typing import Dict, Any
 from math import fmod
@@ -11,6 +11,7 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
 NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 
+# Ensure Swiss ephemeris is pointed correctly
 swe.set_ephe_path(os.path.join(ROOT, "ephe"))
 
 def load_json(path: str) -> dict:
@@ -23,7 +24,7 @@ def iso_now() -> str:
 def normalize(deg: float) -> float:
     return fmod(deg + 360.0, 360.0)
 
-# Arabic Parts
+# Arabic Parts calculation
 def compute_arabic_parts(asc, sun, moon):
     parts = {}
     is_day = (sun - asc) % 360 < 180
@@ -41,33 +42,59 @@ def compute_arabic_parts(asc, sun, moon):
         "Part_of_Victory": victory,
         "Part_of_Deliverance": deliverance,
     }.items():
-        parts[name] = {"ecl_lon_deg": normalize(lon), "ecl_lat_deg": 0.0, "used_source": "calculated"}
+        parts[name] = {
+            "ecl_lon_deg": normalize(lon),
+            "ecl_lat_deg": 0.0,
+            "used_source": "calculated"
+        }
     return parts
 
-# Houses
+# Houses calculation
 def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     dt = parser.isoparse(when_iso)
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute/60.0 + dt.second/3600.0)
     cusps, ascmc = swe.houses(jd, lat, lon, hsys.encode("utf-8"))
-    houses = {f"House_{i}": {"ecl_lon_deg": cusp, "ecl_lat_deg": 0.0, "used_source": f"houses-{hsys}"} 
-              for i, cusp in enumerate(cusps, start=1)}
-    houses["ASC"] = {"ecl_lon_deg": ascmc[0], "ecl_lat_deg": 0.0, "used_source": "houses"}
-    houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
+    houses = {
+        f"House_{i}": {
+            "ecl_lon_deg": cusp,
+            "ecl_lat_deg": 0.0,
+            "used_source": f"houses-{hsys}"
+        }
+        for i, cusp in enumerate(cusps, start=1)
+    }
+    houses["ASC"] = {
+        "ecl_lon_deg": ascmc[0],
+        "ecl_lat_deg": 0.0,
+        "used_source": "houses"
+    }
+    houses["MC"] = {
+        "ecl_lon_deg": ascmc[1],
+        "ecl_lat_deg": 0.0,
+        "used_source": "houses"
+    }
     return houses
 
-# Harmonics
+# Harmonics calculation
 def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     harmonics = {}
     for body, pos in base_positions.items():
         if pos["ecl_lon_deg"] is None:
             continue
         lon = pos["ecl_lon_deg"]
-        harmonics[f"{body}_h8"] = {"ecl_lon_deg": normalize(lon*8 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic8"}
-        harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
+        harmonics[f"{body}_h8"] = {
+            "ecl_lon_deg": normalize(lon*8 % 360),
+            "ecl_lat_deg": 0.0,
+            "used_source": "harmonic8"
+        }
+        harmonics[f"{body}_h9"] = {
+            "ecl_lon_deg": normalize(lon*9 % 360),
+            "ecl_lat_deg": 0.0,
+            "used_source": "harmonic9"
+        }
     return harmonics
 
-# Core resolver
+# Hardened resolver (skips NaN)
 def resolve_body(name, sources, when_iso, force_fallback=False):
     got, used = None, None
     for label, func in sources:
@@ -76,19 +103,27 @@ def resolve_body(name, sources, when_iso, force_fallback=False):
         except Exception:
             pos = None
         if pos:
-            got, used = pos, label
-            break
+            lon, lat = pos
+            if lon is not None and lat is not None and not (math.isnan(lon) or math.isnan(lat)):
+                got, used = (lon, lat), label
+                break  # valid result found, stop trying
+            # else skip and try next source
     if not got and force_fallback:
         got, used = (0.0, 0.0), "calculated-fallback"
-    return {"ecl_lon_deg": None if not got else float(got[0]),
-            "ecl_lat_deg": None if not got else float(got[1]),
-            "used_source": "missing" if not used else used}
+    return {
+        "ecl_lon_deg": None if not got else float(got[0]),
+        "ecl_lat_deg": None if not got else float(got[1]),
+        "used_source": "missing" if not used else used
+    }
 
 def compute_positions(when_iso, lat, lon):
     out = {}
-    MAJORS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
-    ASTEROIDS = ["Ceres", "Pallas", "Juno", "Vesta", "Psyche", "Amor", "Eros", "Astraea", "Sappho", "Karma", "Bacchus", "Hygiea", "Nessus"]
-    TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
+    MAJORS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter",
+              "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
+    ASTEROIDS = ["Ceres", "Pallas", "Juno", "Vesta", "Psyche", "Amor",
+                 "Eros", "Astraea", "Sappho", "Karma", "Bacchus", "Hygiea", "Nessus"]
+    TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion",
+            "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
 
     # Majors
@@ -117,13 +152,19 @@ def compute_positions(when_iso, lat, lon):
 
     # Aethers (Swiss only)
     for name in AETHERS:
-        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat)], when_iso)
+        out[name] = resolve_body(name, [
+            ("swiss", swiss_client.get_ecliptic_lonlat)
+        ], when_iso, force_fallback=True)
 
     # Fixed stars
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
-        out[s["id"]] = {"ecl_lon_deg": lam, "ecl_lat_deg": bet, "used_source": "fixed"}
+        out[s["id"]] = {
+            "ecl_lon_deg": lam,
+            "ecl_lat_deg": bet,
+            "used_source": "fixed"
+        }
 
     out.update(compute_house_cusps(lat, lon, when_iso))
     if "ASC" in out and "Sun" in out and "Moon" in out:
@@ -149,12 +190,15 @@ def merge_into(natal_bundle, when_iso):
     }
     charts = {}
     for who, natal in natal_bundle.items():
-        if who.startswith("_meta"): continue
+        if who.startswith("_meta"):
+            continue
         birth = natal.get("birth", {})
         lat, lon = birth.get("lat"), birth.get("lon")
-        charts[who] = {"birth": birth,
-                       "natal": natal.get("planets", {}),
-                       "objects": compute_positions(when_iso, lat, lon)}
+        charts[who] = {
+            "birth": birth,
+            "natal": natal.get("planets", {}),
+            "objects": compute_positions(when_iso, lat, lon)
+        }
     return {"meta": meta, "charts": charts}
 
 def main(argv):
