@@ -73,7 +73,7 @@ def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Di
         harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
     return harmonics
 
-# Resolver with debug logging
+# Resolver with debug
 def resolve_body(name, sources, when_iso, force_fallback=False):
     got, used = None, None
     aliases = NAME_ALIASES.get(name, [name])
@@ -86,15 +86,14 @@ def resolve_body(name, sources, when_iso, force_fallback=False):
                 pos = None
             if pos:
                 lon, lat = pos
-                if lon is not None and lat is not None and not (math.isnan(lon) or math.isnan(lat)):
-                    got, used = (lon, lat), label
-                    print(f"[RESOLVER] {name} → picked {label} (lon={lon:.6f}, lat={lat:.6f})")
-                    break
+                got, used = (lon, lat), label
+                print(f"[RESOLVER] {name} → picked {label} (lon={lon:.6f}, lat={lat:.6f})")
+                break
         if got:
             break
     if not got and force_fallback:
         got, used = (0.0, 0.0), "calculated-fallback"
-        print(f"[RESOLVER] {name} → forced fallback")
+        print(f"[RESOLVER] {name} → FORCED FALLBACK")
     return {"ecl_lon_deg": None if not got else float(got[0]),
             "ecl_lat_deg": None if not got else float(got[1]),
             "used_source": "missing" if not used else used}
@@ -109,8 +108,9 @@ def compute_positions(when_iso, lat, lon):
             "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
 
-    # Sun → Swiss only
+    # Sun → Horizons first, fallback Swiss
     out["Sun"] = resolve_body("Sun", [
+        ("jpl", horizons_client.get_ecliptic_lonlat),
         ("swiss", swiss_client.get_ecliptic_lonlat)
     ], when_iso, force_fallback=True)
 
@@ -139,11 +139,10 @@ def compute_positions(when_iso, lat, lon):
             ("miriade", miriade_client.get_ecliptic_lonlat)
         ], when_iso, force_fallback=True)
 
-    # Aethers
+    # Aethers → Swiss only
     for name in AETHERS:
-        out[name] = resolve_body(name, [
-            ("swiss", swiss_client.get_ecliptic_lonlat)
-        ], when_iso, force_fallback=True)
+        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat)],
+                                 when_iso, force_fallback=True)
 
     # Fixed stars
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
@@ -163,10 +162,9 @@ def merge_into(natal_bundle, when_iso):
     meta = {
         "generated_at_utc": when_iso,
         "source_order": [
-            "swiss (Sun forced)",
-            "jpl (majors/asteroids/tnos)",
-            "swiss (fallback)",
-            "miriade (fallback)",
+            "jpl (Horizons, Sun+planets first)",
+            "swiss (fallback Sun+planets)",
+            "miriade (fallback asteroids/TNOs)",
             "fixed (stars)",
             "houses (cusps, ASC, MC)",
             "calculated (arabic parts)",
