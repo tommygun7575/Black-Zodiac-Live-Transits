@@ -57,6 +57,17 @@ def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
     return houses
 
+# Harmonics calculation
+def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    harmonics = {}
+    for body, pos in base_positions.items():
+        if pos["ecl_lon_deg"] is None:
+            continue
+        lon = pos["ecl_lon_deg"]
+        harmonics[f"{body}_h8"] = {"ecl_lon_deg": normalize(lon*8 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic8"}
+        harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
+    return harmonics
+
 # Majors and objects resolution
 def resolve_body(name, sources, force_fallback=False):
     got, used = None, None
