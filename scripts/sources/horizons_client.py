@@ -2,11 +2,10 @@ from typing import Tuple, Optional
 from astroquery.jplhorizons import Horizons
 from dateutil import parser
 import swisseph as swe
+from scripts.utils.coords import ra_dec_to_ecl
 
 # Mapping of names to JPL Horizons target IDs
-# Adding extra asteroids, TNOs, and dwarf planets for completeness
 HORIZONS_IDS = {
-    # Majors
     "SUN": "10",
     "MOON": "301",
     "MERCURY": "199",
@@ -18,89 +17,47 @@ HORIZONS_IDS = {
     "URANUS": "799",
     "NEPTUNE": "899",
     "PLUTO": "999",
-    "CHIRON": "2060",       # Chiron (comet/centaur ID)
-
-    # Classical asteroids
-    "CERES": "1",
-    "PALLAS": "2",
-    "JUNO": "3",
-    "VESTA": "4",
-
-    # Additional asteroids
-    "PSYCHE": "16",
-    "EROS": "433",
-    "AMOR": "1221",
-    "ASTRAEA": "5",
-    "SAPPHO": "80",
-    "KARMA": "3811",
-    "BACCHUS": "2063",
-    "HYGIEA": "10",
-
-    # Minor bodies / Centaurs
-    "NESSUS": "7066",      # Nessus
-    "PHOLUS": "5145",      # Pholus
-    "LAMPREIA": "45508",   # Lampreia (Minor planet)
-    "OKINA": "37232",      # Okina (Centaur)
-
-    # TNOs / Dwarf Planets
-    "ERIS": "136199",
-    "SEDNA": "90377",
-    "HAUMEA": "136108",
-    "MAKEMAKE": "136472",
-    "VARUNA": "20000",
-    "IXION": "28978",
-    "TYPHON": "42355",
-    "SALACIA": "120347",
-    "2002 AW197": "55565",
-    "2003 VS2": "84922",
-    "ORCUS": "90482",
-    "QUAOAR": "50000",
-    
-    # Additional TNOs (often tracked for astrology)
-    "2004 XR190": "90482",  # Object in the Kuiper Belt
-    "2005 TB190": "90377",  # Object in the Kuiper Belt
-
-    # Comets (not all comets are included in Horizons)
-    "HALLEY": "1P",         # Halley's Comet
-    "NEOWISE": "C/2020 F3", # Comet NEOWISE
+    "CHIRON": "2060",
+    "CERES": "1", "PALLAS": "2", "JUNO": "3", "VESTA": "4",
+    "PSYCHE": "16", "EROS": "433", "AMOR": "1221", "ASTRAEA": "5",
+    "SAPPHO": "80", "KARMA": "3811", "BACCHUS": "2063",
+    "HYGIEA": "10", "NESSUS": "7066",
+    "ERIS": "136199", "SEDNA": "90377", "HAUMEA": "136108",
+    "MAKEMAKE": "136472", "VARUNA": "20000", "IXION": "28978",
+    "TYPHON": "42355", "SALACIA": "120347", "2002 AW197": "55565",
+    "2003 VS2": "84922", "ORCUS": "90482", "QUAOAR": "50000"
 }
 
-def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float]]:
+def get_ecliptic_lonlat(target: str, when_iso: str) -> Optional[Tuple[float, float]]:
     """
     Query JPL Horizons for ecliptic longitude/latitude.
-    Fallback to RA/DEC conversion if needed.
+    Handles both numeric IDs and body names.
     """
     try:
-        # Translate body name to Horizons ID
-        target_id = HORIZONS_IDS.get(name.upper())
-        if not target_id:
-            print(f"[Horizons] {name} not found in HORIZONS_IDS.")
-            return None
+        # Normalize
+        tid = HORIZONS_IDS.get(target.upper(), target)
 
-        # Convert ISO time → Julian Date for Horizons
+        # Parse ISO → JD
         dt = parser.isoparse(when_iso)
         jd = swe.julday(dt.year, dt.month, dt.day,
                         dt.hour + dt.minute/60.0 + dt.second/3600.0)
 
-        # Horizons object
-        obj = Horizons(id=target_id, location="500@0", epochs=[jd])
+        obj = Horizons(id=tid, location="500@0", epochs=[jd])
         eph = obj.ephemerides()
 
         ecl_lon, ecl_lat = None, None
 
-        # longitude
+        # Extract columns
         for lon_key in ("EclLon", "EclipticLon", "ELON"):
             if lon_key in eph.colnames:
                 ecl_lon = float(eph[lon_key][0])
                 break
-
-        # latitude
         for lat_key in ("EclLat", "EclipticLat", "ELAT"):
             if lat_key in eph.colnames:
                 ecl_lat = float(eph[lat_key][0])
                 break
 
-        # fallback RA/DEC -> ecliptic
+        # fallback RA/DEC
         if (ecl_lon is None or ecl_lat is None) and {"RA", "DEC"}.issubset(eph.colnames):
             ecl_lon, ecl_lat = ra_dec_to_ecl(float(eph["RA"][0]), float(eph["DEC"][0]), when_iso)
 
@@ -110,5 +67,5 @@ def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float
         return (ecl_lon % 360.0, ecl_lat)
 
     except Exception as e:
-        print(f"[Horizons] error for {name} at {when_iso}: {e}")
+        print(f"[Horizons] error for {target} at {when_iso}: {e}")
         return None
