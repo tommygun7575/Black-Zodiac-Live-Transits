@@ -1,3 +1,4 @@
+# scripts/sources/swiss_client.py
 import os
 import swisseph as swe
 from dateutil import parser
@@ -67,16 +68,25 @@ AETHER_IDS = {
 }
 
 def get_ecliptic_lonlat(target: str, when_iso: str):
+    """
+    Return (lon, lat) for a body at given UTC ISO time.
+    Uses Swiss Ephemeris for real bodies, deterministic pseudo-positions for Aethers.
+    """
     try:
         dt = parser.isoparse(when_iso)
         jd = swe.julday(dt.year, dt.month, dt.day,
                         dt.hour + dt.minute/60.0 + dt.second/3600.0)
         upper = target.upper()
 
+        # Real Swiss bodies
         if upper in PLANET_IDS:
-            lon, lat, dist = swe.calc_ut(jd, PLANET_IDS[upper])[0:3]
+            rc, xx = swe.calc_ut(jd, PLANET_IDS[upper])
+            if rc < 0:
+                return None
+            lon, lat = xx[0], xx[1]
             return lon, lat
 
+        # Symbolic Aethers
         if upper in AETHER_IDS:
             base = {
                 "VULCAN": 0.9856,
