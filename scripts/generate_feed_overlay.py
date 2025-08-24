@@ -68,7 +68,7 @@ def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
     return houses
 
-# Harmonics
+# Harmonics calculation
 def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     harmonics = {}
     for body, pos in base_positions.items():
@@ -109,16 +109,46 @@ def compute_positions(when_iso, lat, lon):
     TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
 
-    for name in MAJORS + ASTEROIDS + TNOs:
+    # Special case: Sun (Swiss → JPL → Miriade → fallback)
+    out["Sun"] = resolve_body("Sun", [
+        ("swiss", swiss_client.get_ecliptic_lonlat),
+        ("jpl", horizons_client.get_ecliptic_lonlat),
+        ("miriade", miriade_client.get_ecliptic_lonlat)
+    ], when_iso, force_fallback=True)
+
+    # Majors (excluding Sun, JPL → Swiss → Miriade → fallback)
+    for name in MAJORS:
+        if name == "Sun":
+            continue
         out[name] = resolve_body(name, [
             ("jpl", horizons_client.get_ecliptic_lonlat),
-            ("miriade", miriade_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat)
+        ], when_iso, force_fallback=True)
+
+    # Asteroids
+    for name in ASTEROIDS:
+        out[name] = resolve_body(name, [
+            ("jpl", horizons_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat)
+        ], when_iso, force_fallback=True)
+
+    # TNOs
+    for name in TNOs:
+        out[name] = resolve_body(name, [
+            ("jpl", horizons_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat)
+        ], when_iso, force_fallback=True)
+
+    # Aethers (Swiss only)
+    for name in AETHERS:
+        out[name] = resolve_body(name, [
             ("swiss", swiss_client.get_ecliptic_lonlat)
         ], when_iso, force_fallback=True)
 
-    for name in AETHERS:
-        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat)], when_iso, force_fallback=True)
-
+    # Fixed stars
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
@@ -137,8 +167,8 @@ def merge_into(natal_bundle, when_iso):
         "generated_at_utc": when_iso,
         "source_order": [
             "jpl (majors/asteroids/tnos)",
-            "miriade (fallback)",
             "swiss (fallback)",
+            "miriade (fallback)",
             "fixed (stars)",
             "houses (cusps, ASC, MC)",
             "calculated (arabic parts)",
