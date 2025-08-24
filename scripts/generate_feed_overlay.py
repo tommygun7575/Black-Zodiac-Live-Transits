@@ -4,6 +4,7 @@ from typing import Dict, Any
 from math import fmod
 import swisseph as swe
 from dateutil import parser
+import pytz
 from scripts.sources import horizons_client, swiss_client, miriade_client
 from scripts.utils.coords import ra_dec_to_ecl
 
@@ -14,10 +15,10 @@ NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 # Ensure Swiss ephemeris is pointed correctly
 swe.set_ephe_path(os.path.join(ROOT, "ephe"))
 
-# Aliases for special cases
+# Aliases for Sun/Moon
 NAME_ALIASES = {
-    "Sun": ["Sun", "SUN", "10"],    # Horizons prefers "10"
-    "Moon": ["Moon", "MOON", "301"] # Horizons prefers "301"
+    "Sun": ["Sun", "SUN", "10"],
+    "Moon": ["Moon", "MOON", "301"]
 }
 
 def load_json(path: str) -> dict:
@@ -61,46 +62,24 @@ def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute/60.0 + dt.second/3600.0)
     cusps, ascmc = swe.houses(jd, lat, lon, hsys.encode("utf-8"))
-    houses = {
-        f"House_{i}": {
-            "ecl_lon_deg": cusp,
-            "ecl_lat_deg": 0.0,
-            "used_source": f"houses-{hsys}"
-        }
-        for i, cusp in enumerate(cusps, start=1)
-    }
-    houses["ASC"] = {
-        "ecl_lon_deg": ascmc[0],
-        "ecl_lat_deg": 0.0,
-        "used_source": "houses"
-    }
-    houses["MC"] = {
-        "ecl_lon_deg": ascmc[1],
-        "ecl_lat_deg": 0.0,
-        "used_source": "houses"
-    }
+    houses = {f"House_{i}": {"ecl_lon_deg": cusp, "ecl_lat_deg": 0.0, "used_source": f"houses-{hsys}"} 
+              for i, cusp in enumerate(cusps, start=1)}
+    houses["ASC"] = {"ecl_lon_deg": ascmc[0], "ecl_lat_deg": 0.0, "used_source": "houses"}
+    houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
     return houses
 
-# Harmonics calculation
+# Harmonics
 def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     harmonics = {}
     for body, pos in base_positions.items():
         if pos["ecl_lon_deg"] is None:
             continue
         lon = pos["ecl_lon_deg"]
-        harmonics[f"{body}_h8"] = {
-            "ecl_lon_deg": normalize(lon*8 % 360),
-            "ecl_lat_deg": 0.0,
-            "used_source": "harmonic8"
-        }
-        harmonics[f"{body}_h9"] = {
-            "ecl_lon_deg": normalize(lon*9 % 360),
-            "ecl_lat_deg": 0.0,
-            "used_source": "harmonic9"
-        }
+        harmonics[f"{body}_h8"] = {"ecl_lon_deg": normalize(lon*8 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic8"}
+        harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
     return harmonics
 
-# Hardened resolver with alias + NaN skip
+# Resolver
 def resolve_body(name, sources, when_iso, force_fallback=False):
     got, used = None, None
     aliases = NAME_ALIASES.get(name, [name])
@@ -119,61 +98,31 @@ def resolve_body(name, sources, when_iso, force_fallback=False):
             break
     if not got and force_fallback:
         got, used = (0.0, 0.0), "calculated-fallback"
-    return {
-        "ecl_lon_deg": None if not got else float(got[0]),
-        "ecl_lat_deg": None if not got else float(got[1]),
-        "used_source": "missing" if not used else used
-    }
+    return {"ecl_lon_deg": None if not got else float(got[0]),
+            "ecl_lat_deg": None if not got else float(got[1]),
+            "used_source": "missing" if not used else used}
 
 def compute_positions(when_iso, lat, lon):
     out = {}
-    MAJORS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter",
-              "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
-    ASTEROIDS = ["Ceres", "Pallas", "Juno", "Vesta", "Psyche", "Amor",
-                 "Eros", "Astraea", "Sappho", "Karma", "Bacchus", "Hygiea", "Nessus"]
-    TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion",
-            "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
+    MAJORS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
+    ASTEROIDS = ["Ceres", "Pallas", "Juno", "Vesta", "Psyche", "Amor", "Eros", "Astraea", "Sappho", "Karma", "Bacchus", "Hygiea", "Nessus"]
+    TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
 
-    # Majors
-    for name in MAJORS:
+    for name in MAJORS + ASTEROIDS + TNOs:
         out[name] = resolve_body(name, [
             ("jpl", horizons_client.get_ecliptic_lonlat),
             ("miriade", miriade_client.get_ecliptic_lonlat),
             ("swiss", swiss_client.get_ecliptic_lonlat)
         ], when_iso, force_fallback=True)
 
-    # Asteroids
-    for name in ASTEROIDS:
-        out[name] = resolve_body(name, [
-            ("jpl", horizons_client.get_ecliptic_lonlat),
-            ("miriade", miriade_client.get_ecliptic_lonlat),
-            ("swiss", swiss_client.get_ecliptic_lonlat)
-        ], when_iso, force_fallback=True)
-
-    # TNOs
-    for name in TNOs:
-        out[name] = resolve_body(name, [
-            ("jpl", horizons_client.get_ecliptic_lonlat),
-            ("miriade", miriade_client.get_ecliptic_lonlat),
-            ("swiss", swiss_client.get_ecliptic_lonlat)
-        ], when_iso, force_fallback=True)
-
-    # Aethers (Swiss only)
     for name in AETHERS:
-        out[name] = resolve_body(name, [
-            ("swiss", swiss_client.get_ecliptic_lonlat)
-        ], when_iso, force_fallback=True)
+        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat)], when_iso, force_fallback=True)
 
-    # Fixed stars
     stars = load_json(os.path.join(DATA, "fixed_stars.json"))["stars"]
     for s in stars:
         lam, bet = ra_dec_to_ecl(s["ra_deg"], s["dec_deg"], when_iso)
-        out[s["id"]] = {
-            "ecl_lon_deg": lam,
-            "ecl_lat_deg": bet,
-            "used_source": "fixed"
-        }
+        out[s["id"]] = {"ecl_lon_deg": lam, "ecl_lat_deg": bet, "used_source": "fixed"}
 
     out.update(compute_house_cusps(lat, lon, when_iso))
     if "ASC" in out and "Sun" in out and "Moon" in out:
@@ -199,26 +148,33 @@ def merge_into(natal_bundle, when_iso):
     }
     charts = {}
     for who, natal in natal_bundle.items():
-        if who.startswith("_meta"):
-            continue
+        if who.startswith("_meta"): continue
         birth = natal.get("birth", {})
         lat, lon = birth.get("lat"), birth.get("lon")
-        charts[who] = {
-            "birth": birth,
-            "natal": natal.get("planets", {}),
-            "objects": compute_positions(when_iso, lat, lon)
-        }
+        charts[who] = {"birth": birth, "natal": natal.get("planets", {}), "objects": compute_positions(when_iso, lat, lon)}
     return {"meta": meta, "charts": charts}
 
 def main(argv):
-    out_path = os.environ.get("OVERLAY_OUT", os.path.join("docs", "feed_overlay.json"))
     when_iso = os.environ.get("OVERLAY_TIME_UTC") or iso_now()
+
+    # Convert UTC → Pacific
+    utc_dt = parser.isoparse(when_iso).replace(tzinfo=pytz.utc)
+    pacific = pytz.timezone("America/Los_Angeles")
+    pac_dt = utc_dt.astimezone(pacific)
+
+    # Filename with Pacific time
+    dt_tag = pac_dt.strftime("%b-%d-%Y_%I-%M%p_Pacific")
+    out_name = f"feed_overlay_{dt_tag}.json"
+    out_path = os.path.join("docs", out_name)
+
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     natal_bundle = load_json(NATAL)
     merged = merge_into(natal_bundle, when_iso)
+
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(merged, f, indent=2, ensure_ascii=False)
-    print(f"wrote {out_path}")
+
+    print(f"[OK] wrote overlay → {out_path}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
