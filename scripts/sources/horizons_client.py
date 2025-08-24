@@ -4,19 +4,68 @@ from astroquery.jplhorizons import Horizons
 from dateutil import parser
 import swisseph as swe
 
+# Mapping of names to JPL Horizons target IDs
+HORIZONS_IDS = {
+    "SUN": "10",
+    "MOON": "301",
+    "MERCURY": "199",
+    "VENUS": "299",
+    "EARTH": "399",
+    "MARS": "499",
+    "JUPITER": "599",
+    "SATURN": "699",
+    "URANUS": "799",
+    "NEPTUNE": "899",
+    "PLUTO": "999",
+    "CHIRON": "2060",       # Chiron
+    # Classical asteroids
+    "CERES": "1",
+    "PALLAS": "2",
+    "JUNO": "3",
+    "VESTA": "4",
+    # Additional asteroids
+    "PSYCHE": "16",
+    "EROS": "433",
+    "AMOR": "1221",
+    "ASTRAEA": "5",
+    "SAPPHO": "80",
+    "KARMA": "3811",
+    "BACCHUS": "2063",
+    # TNOs
+    "ERIS": "136199",
+    "SEDNA": "90377",
+    "HAUMEA": "136108",
+    "MAKEMAKE": "136472",
+    "VARUNA": "20000",
+    "IXION": "28978",
+    "TYPHON": "42355",
+    "SALACIA": "120347",
+    "2002 AW197": "55565",
+    "2003 VS2": "84922",
+    "ORCUS": "90482",
+    "QUAOAR": "50000",
+    # Add any additional bodies here
+}
+
 def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float]]:
     """
     Query JPL Horizons for ecliptic longitude/latitude (geocentric).
     Falls back to RA/DEC conversion if needed.
     """
     try:
+        # Translate body name to Horizons ID
+        target_id = HORIZONS_IDS.get(name.upper())
+        if not target_id:
+            print(f"[Horizons] {name} not found in HORIZONS_IDS.")
+            return None
+
         # Convert ISO time → Julian Date for Horizons
         dt = parser.isoparse(when_iso)
         jd = swe.julday(dt.year, dt.month, dt.day,
                         dt.hour + dt.minute/60.0 + dt.second/3600.0)
 
         # Horizons object
-        obj = Horizons(id=name, location="500@0", epochs=[jd])
+        obj = Horizons(id=target_id, location="500@0", epochs=[jd])
         eph = obj.ephemerides()
 
         ecl_lon, ecl_lat = None, None
