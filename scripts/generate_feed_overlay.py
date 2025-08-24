@@ -15,9 +15,8 @@ NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 # Ensure Swiss ephemeris is pointed correctly
 swe.set_ephe_path(os.path.join(ROOT, "ephe"))
 
-# Aliases for Sun/Moon
 NAME_ALIASES = {
-    "Sun": ["Sun", "SUN", "10"],
+    "Sun": ["Sun", "SUN"],
     "Moon": ["Moon", "MOON", "301"]
 }
 
@@ -31,7 +30,7 @@ def iso_now() -> str:
 def normalize(deg: float) -> float:
     return fmod(deg + 360.0, 360.0)
 
-# Arabic Parts calculation
+# Arabic Parts
 def compute_arabic_parts(asc, sun, moon):
     parts = {}
     is_day = (sun - asc) % 360 < 180
@@ -49,14 +48,10 @@ def compute_arabic_parts(asc, sun, moon):
         "Part_of_Victory": victory,
         "Part_of_Deliverance": deliverance,
     }.items():
-        parts[name] = {
-            "ecl_lon_deg": normalize(lon),
-            "ecl_lat_deg": 0.0,
-            "used_source": "calculated"
-        }
+        parts[name] = {"ecl_lon_deg": normalize(lon), "ecl_lat_deg": 0.0, "used_source": "calculated"}
     return parts
 
-# Houses calculation
+# Houses
 def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     dt = parser.isoparse(when_iso)
     jd = swe.julday(dt.year, dt.month, dt.day,
@@ -68,7 +63,7 @@ def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
     return houses
 
-# Harmonics calculation
+# Harmonics
 def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     harmonics = {}
     for body, pos in base_positions.items():
@@ -104,19 +99,20 @@ def resolve_body(name, sources, when_iso, force_fallback=False):
 
 def compute_positions(when_iso, lat, lon):
     out = {}
-    MAJORS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
-    ASTEROIDS = ["Ceres", "Pallas", "Juno", "Vesta", "Psyche", "Amor", "Eros", "Astraea", "Sappho", "Karma", "Bacchus", "Hygiea", "Nessus"]
-    TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
+    MAJORS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter",
+              "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"]
+    ASTEROIDS = ["Ceres", "Pallas", "Juno", "Vesta", "Psyche", "Amor",
+                 "Eros", "Astraea", "Sappho", "Karma", "Bacchus", "Hygiea", "Nessus"]
+    TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion",
+            "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
 
-    # Special case: Sun (Swiss → JPL → Miriade → fallback)
+    # Force Sun to Swiss only
     out["Sun"] = resolve_body("Sun", [
-        ("swiss", swiss_client.get_ecliptic_lonlat),
-        ("jpl", horizons_client.get_ecliptic_lonlat),
-        ("miriade", miriade_client.get_ecliptic_lonlat)
+        ("swiss", swiss_client.get_ecliptic_lonlat)
     ], when_iso, force_fallback=True)
 
-    # Majors (excluding Sun, JPL → Swiss → Miriade → fallback)
+    # Other majors
     for name in MAJORS:
         if name == "Sun":
             continue
@@ -142,7 +138,7 @@ def compute_positions(when_iso, lat, lon):
             ("miriade", miriade_client.get_ecliptic_lonlat)
         ], when_iso, force_fallback=True)
 
-    # Aethers (Swiss only)
+    # Aethers
     for name in AETHERS:
         out[name] = resolve_body(name, [
             ("swiss", swiss_client.get_ecliptic_lonlat)
@@ -166,6 +162,7 @@ def merge_into(natal_bundle, when_iso):
     meta = {
         "generated_at_utc": when_iso,
         "source_order": [
+            "swiss (Sun forced)",
             "jpl (majors/asteroids/tnos)",
             "swiss (fallback)",
             "miriade (fallback)",
@@ -181,7 +178,9 @@ def merge_into(natal_bundle, when_iso):
         if who.startswith("_meta"): continue
         birth = natal.get("birth", {})
         lat, lon = birth.get("lat"), birth.get("lon")
-        charts[who] = {"birth": birth, "natal": natal.get("planets", {}), "objects": compute_positions(when_iso, lat, lon)}
+        charts[who] = {"birth": birth,
+                       "natal": natal.get("planets", {}),
+                       "objects": compute_positions(when_iso, lat, lon)}
     return {"meta": meta, "charts": charts}
 
 def main(argv):
@@ -192,7 +191,6 @@ def main(argv):
     pacific = pytz.timezone("America/Los_Angeles")
     pac_dt = utc_dt.astimezone(pacific)
 
-    # Filename with Pacific time
     dt_tag = pac_dt.strftime("%b-%d-%Y_%I-%M%p_Pacific")
     out_name = f"feed_overlay_{dt_tag}.json"
     out_path = os.path.join("docs", out_name)
