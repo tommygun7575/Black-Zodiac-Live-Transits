@@ -4,36 +4,14 @@ from typing import Dict, Any
 from math import fmod
 import swisseph as swe
 from dateutil import parser
-from scripts.sources import horizons_client, swiss_client
+from scripts.sources import horizons_client, swiss_client, miriade_client
 from scripts.utils.coords import ra_dec_to_ecl
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
 NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 
-# Ensure Swiss ephemeris is pointed correctly
 swe.set_ephe_path(os.path.join(ROOT, "ephe"))
-
-# Map object names to JPL Horizons numeric IDs
-JPL_IDS = {
-    "Sun": "10", "Moon": "301", "Mercury": "199", "Venus": "299", "Mars": "499",
-    "Jupiter": "599", "Saturn": "699", "Uranus": "799", "Neptune": "899", "Pluto": "999",
-    "Chiron": "2060", "Ceres": "1", "Pallas": "2", "Juno": "3", "Vesta": "4",
-    "Psyche": "16", "Amor": "1221", "Eros": "433", "Astraea": "5", "Sappho": "80",
-    "Karma": "3811", "Bacchus": "2063", "Hygiea": "10", "Nessus": "7066",
-    "Eris": "136199", "Haumea": "136108", "Makemake": "136472", "Sedna": "90377",
-    "Quaoar": "50000", "Ixion": "28978", "Orcus": "90482", "Varuna": "20000",
-    "Salacia": "120347", "Typhon": "42355"
-}
-
-def horizons_wrapper(name, when_iso):
-    """Wrap Horizons call with numeric ID lookup."""
-    if name not in JPL_IDS:
-        return None
-    try:
-        return horizons_client.get_ecliptic_lonlat(JPL_IDS[name], when_iso)
-    except Exception:
-        return None
 
 def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
@@ -45,7 +23,7 @@ def iso_now() -> str:
 def normalize(deg: float) -> float:
     return fmod(deg + 360.0, 360.0)
 
-# Arabic Parts calculation
+# Arabic Parts
 def compute_arabic_parts(asc, sun, moon):
     parts = {}
     is_day = (sun - asc) % 360 < 180
@@ -66,7 +44,7 @@ def compute_arabic_parts(asc, sun, moon):
         parts[name] = {"ecl_lon_deg": normalize(lon), "ecl_lat_deg": 0.0, "used_source": "calculated"}
     return parts
 
-# Houses calculation
+# Houses
 def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     dt = parser.isoparse(when_iso)
     jd = swe.julday(dt.year, dt.month, dt.day,
@@ -78,7 +56,7 @@ def compute_house_cusps(lat, lon, when_iso, hsys="P"):
     houses["MC"] = {"ecl_lon_deg": ascmc[1], "ecl_lat_deg": 0.0, "used_source": "houses"}
     return houses
 
-# Harmonics calculation
+# Harmonics
 def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     harmonics = {}
     for body, pos in base_positions.items():
@@ -89,7 +67,7 @@ def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Di
         harmonics[f"{body}_h9"] = {"ecl_lon_deg": normalize(lon*9 % 360), "ecl_lat_deg": 0.0, "used_source": "harmonic9"}
     return harmonics
 
-# Majors and objects resolution
+# Core resolver
 def resolve_body(name, sources, when_iso, force_fallback=False):
     got, used = None, None
     for label, func in sources:
@@ -113,22 +91,31 @@ def compute_positions(when_iso, lat, lon):
     TNOs = ["Eris", "Sedna", "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia", "2002 AW197", "2003 VS2", "Orcus", "Quaoar"]
     AETHERS = ["Vulcan", "Persephone", "Hades", "Proserpina", "Isis"]
 
-    # Majors (Horizons first, fallback to Swiss)
+    # Majors
     for name in MAJORS:
-        out[name] = resolve_body(name, [("jpl", horizons_wrapper),
-                                        ("swiss", swiss_client.get_ecliptic_lonlat)], when_iso, force_fallback=True)
+        out[name] = resolve_body(name, [
+            ("jpl", horizons_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat)
+        ], when_iso, force_fallback=True)
 
-    # Asteroids (Horizons first, fallback to Swiss)
+    # Asteroids
     for name in ASTEROIDS:
-        out[name] = resolve_body(name, [("jpl", horizons_wrapper),
-                                        ("swiss", swiss_client.get_ecliptic_lonlat)], when_iso, force_fallback=True)
+        out[name] = resolve_body(name, [
+            ("jpl", horizons_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat)
+        ], when_iso, force_fallback=True)
 
-    # TNOs (Horizons first, fallback to Swiss)
+    # TNOs
     for name in TNOs:
-        out[name] = resolve_body(name, [("jpl", horizons_wrapper),
-                                        ("swiss", swiss_client.get_ecliptic_lonlat)], when_iso)
+        out[name] = resolve_body(name, [
+            ("jpl", horizons_client.get_ecliptic_lonlat),
+            ("miriade", miriade_client.get_ecliptic_lonlat),
+            ("swiss", swiss_client.get_ecliptic_lonlat)
+        ], when_iso, force_fallback=True)
 
-    # Aethers
+    # Aethers (Swiss only)
     for name in AETHERS:
         out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat)], when_iso)
 
@@ -151,6 +138,7 @@ def merge_into(natal_bundle, when_iso):
         "generated_at_utc": when_iso,
         "source_order": [
             "jpl (majors/asteroids/tnos)",
+            "miriade (fallback)",
             "swiss (fallback)",
             "fixed (stars)",
             "houses (cusps, ASC, MC)",
