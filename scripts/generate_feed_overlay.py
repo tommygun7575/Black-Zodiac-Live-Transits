@@ -14,6 +14,12 @@ NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 # Ensure Swiss ephemeris is pointed correctly
 swe.set_ephe_path(os.path.join(ROOT, "ephe"))
 
+# Aliases for special cases
+NAME_ALIASES = {
+    "Sun": ["Sun", "SUN", "10"],    # Horizons prefers "10"
+    "Moon": ["Moon", "MOON", "301"] # Horizons prefers "301"
+}
+
 def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -94,20 +100,23 @@ def compute_harmonics(base_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Di
         }
     return harmonics
 
-# Hardened resolver (skips NaN)
+# Hardened resolver with alias + NaN skip
 def resolve_body(name, sources, when_iso, force_fallback=False):
     got, used = None, None
-    for label, func in sources:
-        try:
-            pos = func(name, when_iso)
-        except Exception:
-            pos = None
-        if pos:
-            lon, lat = pos
-            if lon is not None and lat is not None and not (math.isnan(lon) or math.isnan(lat)):
-                got, used = (lon, lat), label
-                break  # valid result found, stop trying
-            # else skip and try next source
+    aliases = NAME_ALIASES.get(name, [name])
+    for alias in aliases:
+        for label, func in sources:
+            try:
+                pos = func(alias, when_iso)
+            except Exception:
+                pos = None
+            if pos:
+                lon, lat = pos
+                if lon is not None and lat is not None and not (math.isnan(lon) or math.isnan(lat)):
+                    got, used = (lon, lat), label
+                    break
+        if got:
+            break
     if not got and force_fallback:
         got, used = (0.0, 0.0), "calculated-fallback"
     return {
