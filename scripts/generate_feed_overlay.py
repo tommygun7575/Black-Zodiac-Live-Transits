@@ -6,14 +6,14 @@ from math import fmod
 import swisseph as swe
 from dateutil import parser
 
-from scripts.sources import horizons_client, miriade_client, swiss_client
+from scripts.sources import horizons_client, swiss_client
 from scripts.utils.coords import ra_dec_to_ecl
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA = os.path.join(ROOT, "data")
 NATAL = os.path.join("config", "natal", "3_combined_kitchen_sink.json")
 
-# Make sure Swiss ephemeris is pointed correctly
+# Ensure Swiss ephemeris is pointed correctly
 swe.set_ephe_path(os.path.join(ROOT, "ephe"))
 
 def load_json(path: str) -> dict:
@@ -93,16 +93,23 @@ def compute_positions(when_iso, lat, lon):
                 "ecl_lat_deg": None if not got else float(got[1]),
                 "used_source": "missing" if not used else used}
 
+    # Majors (Horizons first, fallback to Swiss)
     for name in MAJORS:
-        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat),
-                                        ("jpl", horizons_client.get_ecliptic_lonlat)], force_fallback=True)
+        out[name] = resolve_body(name, [("jpl", horizons_client.get_ecliptic_lonlat),
+                                        ("swiss", swiss_client.get_ecliptic_lonlat)], force_fallback=True)
+
+    # Asteroids (Horizons first, fallback to Swiss)
     for name in ASTEROIDS:
-        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat),
-                                        ("jpl", horizons_client.get_ecliptic_lonlat)], force_fallback=True)
+        out[name] = resolve_body(name, [("jpl", horizons_client.get_ecliptic_lonlat),
+                                        ("swiss", swiss_client.get_ecliptic_lonlat)], force_fallback=True)
+
+    # TNOs
     for name in TNOs:
-        out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat),
-                                        ("miriade", miriade_client.get_ecliptic_lonlat),
-                                        ("jpl", horizons_client.get_ecliptic_lonlat)])
+        out[name] = resolve_body(name, [("jpl", horizons_client.get_ecliptic_lonlat),
+                                        ("swiss", swiss_client.get_ecliptic_lonlat),
+                                        ("miriade", miriade_client.get_ecliptic_lonlat)])
+
+    # Aethers
     for name in AETHERS:
         out[name] = resolve_body(name, [("swiss", swiss_client.get_ecliptic_lonlat),
                                         ("miriade", miriade_client.get_ecliptic_lonlat)])
@@ -125,8 +132,8 @@ def merge_into(natal_bundle, when_iso):
     meta = {
         "generated_at_utc": when_iso,
         "source_order": [
-            "swiss (majors/asteroids/tnos/aethers)",
-            "jpl (fallback)",
+            "jpl (majors/asteroids/tnos)",
+            "swiss (fallback)",
             "miriade (tnos/aethers fill)",
             "fixed (stars)",
             "houses (cusps, ASC, MC)",
