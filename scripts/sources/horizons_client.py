@@ -1,15 +1,22 @@
 from typing import Tuple, Optional
 from scripts.utils.coords import ra_dec_to_ecl
 from astroquery.jplhorizons import Horizons
+from dateutil import parser
+import swisseph as swe
 
 def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float]]:
     """
-    Query JPL Horizons for ecliptic longitude/latitude.
-    Fallback to RA/DEC conversion if needed.
+    Query JPL Horizons for ecliptic longitude/latitude (geocentric).
+    Falls back to RA/DEC conversion if needed.
     """
     try:
-        # Horizons needs epochs as a list of strings
-        obj = Horizons(id=name, location="500", epochs=[when_iso])
+        # Convert ISO time → Julian Date for Horizons
+        dt = parser.isoparse(when_iso)
+        jd = swe.julday(dt.year, dt.month, dt.day,
+                        dt.hour + dt.minute/60.0 + dt.second/3600.0)
+
+        # Horizons object
+        obj = Horizons(id=name, location="500@0", epochs=[jd])
         eph = obj.ephemerides()
 
         ecl_lon, ecl_lat = None, None
@@ -35,5 +42,6 @@ def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float
 
         return (ecl_lon % 360.0, ecl_lat)
 
-    except Exception:
+    except Exception as e:
+        print(f"[Horizons] error for {name} at {when_iso}: {e}")
         return None
