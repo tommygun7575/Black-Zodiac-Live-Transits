@@ -2,7 +2,7 @@ name: Feed 6-Month Overlay
 
 on:
   schedule:
-    # Run every Feb 24 and Aug 24 at 18:00 UTC (≈ 10:00 Pacific Standard, 11:00 Pacific Daylight)
+    # Run every Feb 24 and Aug 24 at 18:00 UTC
     - cron: '0 18 24 2,8 *'
   workflow_dispatch: {}
 
@@ -40,7 +40,6 @@ jobs:
 
       - name: Rename output with Pacific timestamp
         run: |
-          pip install pytz
           TS=$(python - <<'EOF'
 import datetime, pytz
 utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
