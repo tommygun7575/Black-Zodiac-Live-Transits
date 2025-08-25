@@ -40,15 +40,16 @@ jobs:
 
       - name: Rename output with Pacific timestamp
         run: |
+          pip install pytz
           TS=$(python - <<'EOF'
 import datetime, pytz
-utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
-pacific = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
-print(pacific.strftime("%Y-%m-%dT%I-%M%p_Pacific"))
+utc = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
+pacific = utc.astimezone(pytz.timezone("America/Los_Angeles"))
+print(pacific.strftime("%Y-%m-%d_%I-%M%p_Pacific"))
 EOF
 )
-          cp docs/feed_6month.json docs/feed_6month_$TS.json
-          echo "📦 Saved as docs/feed_6month_$TS.json"
+          cp docs/feed_6month.json docs/feed_6month_${TS}.json
+          echo "📦 Saved as docs/feed_6month_${TS}.json"
 
       - name: Commit results
         run: |
