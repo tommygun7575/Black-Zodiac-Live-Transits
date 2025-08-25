@@ -1,43 +1,28 @@
-name: Generate 60-Day Transit Feed
+name: build-6month
 
 on:
-  schedule:
-    - cron: "0 11,23 * * *"   # run every 12 hours at 11:00 & 23:00 UTC (04:00 & 16:00 Pacific)
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
-  build:
+  overlay:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-
+          python-version: '3.11'
       - name: Install dependencies
         run: |
-          pip install pyswisseph astroquery pytz
-
-      - name: Verify ephemeris + asteroid JSON
+          python -m pip install --upgrade pip
+          pip install swisseph astroquery
+      - name: Generate 6-month feed
         run: |
-          echo "Checking for Swiss Ephemeris and fallback asteroid/TNO JSON..."
-          test -f sepl_18.se1   || (echo "❌ Missing sepl_18.se1" && exit 1)
-          test -f seas_18.se1   || (echo "❌ Missing seas_18.se1" && exit 1)
-          test -f seasm18.se1   || (echo "❌ Missing seasm18.se1" && exit 1)
-          test -f semo_18.se1   || (echo "❌ Missing semo_18.se1" && exit 1)
-          test -f semom18.se1   || (echo "❌ Missing semom18.se1" && exit 1)
-          test -f seplm18.se1   || (echo "❌ Missing seplm18.se1" && exit 1)
-          test -f aug_2025_to_feb_2026_asteroids_tnos_flat.json || (echo "❌ Missing aug_2025_to_feb_2026_asteroids_tnos_flat.json" && exit 1)
-
-      - name: Generate 60-day feed (planets + asteroids/TNOs)
-        run: python scripts/generate_feed_60day.py
-
-      - name: Commit & push updated feed
+          python scripts/generate_feed_6month.py
+      - name: Commit results
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add docs/feed_60day.json
-          git commit -m "Update 60-day transit feed (Swiss + fallback asteroids/TNOs)" || echo "No changes"
+          git add docs/feed_6month.json
+          git commit -m "Update 6-month transit feed" || echo "No changes"
           git push
