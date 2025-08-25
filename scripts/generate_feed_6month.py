@@ -1,17 +1,26 @@
 #!/usr/bin/env python3
+import os
 import json
 import datetime
-import pytz
 import numpy as np
+import pandas as pd
+from astroquery.jplhorizons import Horizons
 import swisseph as swe
-import os
 
-# --- Config ---
+# -------------------------------
+# Config
+# -------------------------------
 SE_EPHE_PATH = os.environ.get("SE_EPHE_PATH", "ephe")
 swe.set_ephe_path(SE_EPHE_PATH)
 
-# Major planets via Horizons
-HORIZONS_OBJECTS = {
+OUTPUT_FILE = "docs/feed_6month.json"
+
+# Start at Aug 24 2025 18:00 UTC
+START_DATE = datetime.datetime(2025, 8, 24, 18, 0, 0)
+DAYS = 180   # 6 months forward
+
+# Horizons target IDs for major planets
+HORIZONS_IDS = {
     "Sun": 10,
     "Moon": 301,
     "Mercury": 199,
@@ -24,118 +33,109 @@ HORIZONS_OBJECTS = {
     "Pluto": 999,
 }
 
-# Minor bodies via Swiss
-SWISS_OBJECTS = {
+SWISS_IDS = {
+    "Sun": swe.SUN,
+    "Moon": swe.MOON,
+    "Mercury": swe.MERCURY,
+    "Venus": swe.VENUS,
+    "Mars": swe.MARS,
+    "Jupiter": swe.JUPITER,
+    "Saturn": swe.SATURN,
+    "Uranus": swe.URANUS,
+    "Neptune": swe.NEPTUNE,
+    "Pluto": swe.PLUTO,
     "Chiron": swe.CHIRON,
     "Ceres": swe.CERES,
     "Pallas": swe.PALLAS,
     "Juno": swe.JUNO,
     "Vesta": swe.VESTA,
-    "Haumea": swe.HAUMEA,
-    "Makemake": swe.MAKEMAKE,
+    "Haumea": 136108,
+    "Makemake": 136472,
     "Varuna": 20000,
     "Ixion": 28978,
     "Typhon": 42355,
-    "Salacia": 120347,
+    "Salacia": 120347
 }
 
-# Arabic Parts formulas (simplified, day formula)
-def calc_arabic_parts(positions):
-    parts = {}
+# -------------------------------
+# Helpers
+# -------------------------------
+
+def jd_from_datetime(dt):
+    """Convert datetime to Julian Day"""
+    return swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0 + dt.second/3600.0)
+
+def get_from_horizons(body, dt):
+    """Try to get lon/lat from JPL Horizons"""
     try:
-        sun = positions.get("Sun", {}).get("ecl_lon")
-        moon = positions.get("Moon", {}).get("ecl_lon")
-        asc = positions.get("ASC", {}).get("ecl_lon")
-        if None not in (sun, moon, asc):
-            parts["Fortune"] = (asc + moon - sun) % 360
-            parts["Spirit"]  = (asc + sun - moon) % 360
+        obj = Horizons(
+            id=HORIZONS_IDS[body],
+            location="@earth",
+            epochs=dt.strftime("%Y-%m-%d %H:%M"),
+            id_type="majorbody"
+        )
+        eph = obj.ephemerides()
+        lon = float(eph["EclLon"][0])
+        lat = float(eph["EclLat"][0])
+        return lon, lat, "jpl"
     except Exception:
-        pass
-    return parts
-
-# Harmonics (simple nth multiple of longitudes)
-def calc_harmonics(positions, harmonics=[7,9,11]):
-    harm = {}
-    for n in harmonics:
-        harm[str(n)] = {}
-        for body, pos in positions.items():
-            lon = pos.get("ecl_lon")
-            if lon is not None:
-                harm[str(n)][body] = (lon * n) % 360
-    return harm
-
-def fetch_from_swiss(obj_id, jd):
-    try:
-        lon, lat, _ = swe.calc_ut(jd, obj_id)
-        return lon, lat, "swiss"
-    except Exception as e:
         return None
 
+def get_from_swiss(body, dt):
+    """Try to get lon/lat from Swiss Ephemeris"""
+    try:
+        jd = jd_from_datetime(dt)
+        lon, lat, dist, speed = swe.calc_ut(jd, SWISS_IDS[body])
+        return lon, lat, "swiss"
+    except Exception:
+        return None
+
+def fallback(body):
+    """Last resort if Horizons and Swiss fail"""
+    return np.nan, np.nan, "fallback"
+
+def compute_parts_and_harmonics(chart):
+    """Dummy placeholder for Arabic Parts and Harmonics"""
+    # Expand with your formulas later — right now just adds markers
+    chart["arabic_parts"] = {"Part_of_Fortune": np.nan}
+    chart["harmonics"] = {"H9": np.nan, "H13": np.nan}
+    return chart
+
+# -------------------------------
+# Main
+# -------------------------------
 def main():
-    start = datetime.datetime(2025, 8, 24, 18, 0, tzinfo=pytz.utc)
-    days = 183
-    results = {}
-
-    for i in range(days):
-        dt = start + datetime.timedelta(days=i)
-        jd = swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0)
-        date_key = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
-        positions = {}
-
-        # Major planets
-        for name, sid in HORIZONS_OBJECTS.items():
-            try:
-                lon, lat, _ = swe.calc_ut(jd, getattr(swe, name.upper()))
-                positions[name] = {"ecl_lon": lon, "ecl_lat": lat, "src": "swiss"}
-            except Exception:
-                positions[name] = {"ecl_lon": None, "ecl_lat": None, "src": "nan"}
-
-        # Minor bodies
-        for name, sid in SWISS_OBJECTS.items():
-            res = fetch_from_swiss(sid, jd)
-            if res is None:
-                positions[name] = {"ecl_lon": None, "ecl_lat": None, "src": "nan"}
-            else:
-                lon, lat, src = res
-                positions[name] = {"ecl_lon": lon, "ecl_lat": lat, "src": src}
-
-        # Houses (for Asc/MC → Arabic Parts)
-        try:
-            ascmc = swe.houses(jd, 40.7, -74.0)  # Bronx, NY default
-            asc = ascmc[0][0]
-            mc = ascmc[0][9]
-            positions["ASC"] = {"ecl_lon": asc, "ecl_lat": 0.0, "src": "calc"}
-            positions["MC"]  = {"ecl_lon": mc, "ecl_lat": 0.0, "src": "calc"}
-        except Exception:
-            pass
-
-        # Arabic Parts
-        arabic = calc_arabic_parts(positions)
-
-        # Harmonics
-        harmonics = calc_harmonics(positions)
-
-        results[date_key] = {
-            "positions": positions,
-            "arabic_parts": arabic,
-            "harmonics": harmonics,
-        }
-
-    utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
-    pacific_now = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
-
-    meta = {
-        "generated_at_utc": utc_now.isoformat(),
-        "generated_at_pacific": pacific_now.isoformat(),
-        "source_order": ["jpl", "swiss", "calculated"],
-        "contains": ["positions", "arabic_parts", "harmonics"],
+    results = {
+        "meta": {
+            "generated_at_utc": datetime.datetime.utcnow().isoformat(),
+            "start_date": START_DATE.isoformat(),
+            "days": DAYS,
+            "source_order": ["jpl", "swiss", "calculated-fallback"]
+        },
+        "charts": {}
     }
 
-    out = {"meta": meta, "results": results}
-    with open("docs/feed_6month.json", "w") as f:
-        json.dump(out, f, indent=2)
+    for day in range(DAYS):
+        dt = START_DATE + datetime.timedelta(days=day)
+        date_key = dt.strftime("%Y-%m-%d")
 
-    print("✅ 6-month feed written with harmonics + arabic parts")
+        chart = {}
+        for body in SWISS_IDS.keys():
+            data = get_from_horizons(body, dt)
+            if data is None:
+                data = get_from_swiss(body, dt)
+            if data is None:
+                data = fallback(body)
+            lon, lat, source = data
+            chart[body] = {"lon": lon, "lat": lat, "source": source}
+
+        chart = compute_parts_and_harmonics(chart)
+        results["charts"][date_key] = chart
+
+    with open(OUTPUT_FILE, "w") as f:
+        json.dump(results, f, indent=2)
+
+    print(f"✅ Wrote {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
