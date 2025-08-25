@@ -48,9 +48,11 @@ FIXED_STAR_FILE = os.path.join(EPHE_PATH, "sefstars.txt")
 
 # ---- Helpers ----
 def swe_calc(body, dt):
-    jd = swe.julday(dt.year, dt.month, dt.day,
-                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-                    swe.GREG_CAL)
+    jd = swe.julday(
+        dt.year, dt.month, dt.day,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
+        swe.GREG_CAL
+    )
     flags = swe.FLG_SWIEPH | swe.FLG_SPEED
     xx, ret = swe.calc_ut(jd, body, flags)
     if ret < 0:
@@ -58,16 +60,21 @@ def swe_calc(body, dt):
     return float(xx[0]), float(xx[1])
 
 def houses_and_parts(lat, lon, dt):
-    jd = swe.julday(dt.year, dt.month, dt.day,
-                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-                    swe.GREG_CAL)
+    jd = swe.julday(
+        dt.year, dt.month, dt.day,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
+        swe.GREG_CAL
+    )
     cusp, ascmc = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
     asc = ascmc[0]; mc = ascmc[1]
     sun_lon, _ = swe_calc(swe.SUN, dt)
     moon_lon, _ = swe_calc(swe.MOON, dt)
     fortune = (asc + moon_lon - sun_lon) % 360
     spirit = (asc + sun_lon - moon_lon) % 360
-    return {"ASC": asc, "MC": mc, "PartOfFortune": fortune, "PartOfSpirit": spirit}
+    return {
+        "ASC": asc, "MC": mc,
+        "PartOfFortune": fortune, "PartOfSpirit": spirit
+    }
 
 def get_fixed_stars(dt):
     stars = []
@@ -89,7 +96,10 @@ def get_fixed_stars(dt):
 
 def horizons_ephem(target_id, dt):
     try:
-        obj = Horizons(id=target_id, location="@399", epochs=dt.timestamp()/86400.0 + 2440587.5)
+        obj = Horizons(
+            id=target_id, location="@399",
+            epochs=dt.timestamp()/86400.0 + 2440587.5
+        )
         eph = obj.ephemerides()
         return float(eph["EclLon"][0]), float(eph["EclLat"][0])
     except Exception:
