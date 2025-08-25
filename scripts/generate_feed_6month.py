@@ -1,125 +1,129 @@
+#!/usr/bin/env python3
 import os
+import sys
 import json
 import datetime
-import swisseph as swe
+import pytz
 import numpy as np
-import pandas as pd
 from astroquery.jplhorizons import Horizons
+import pyswisseph as swe   # ✅ use pyswisseph, not swisseph
 
-# Paths
-EPHE_PATH = os.getenv("SE_EPHE_PATH", "ephe")
-swe.set_ephe_path(EPHE_PATH)
+# Configure Swiss Ephemeris path (your repo has /ephe with .se1 files)
+swe.set_ephe_path(os.path.join(os.getcwd(), "ephe"))
 
-# Bodies we want to calculate
-MAJOR_PLANETS = [
-    "Sun", "Moon", "Mercury", "Venus", "Mars",
-    "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
-]
-MINOR_BODIES = ["Chiron", "Ceres", "Pallas", "Juno", "Vesta"]
-TNOs = ["Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia"]
-ALL_OBJECTS = MAJOR_PLANETS + MINOR_BODIES + TNOs
+# Bodies for Horizons + Swiss fallback
+JPL_IDS = {
+    "Sun": 10, "Moon": 301, "Mercury": 199, "Venus": 299,
+    "Mars": 499, "Jupiter": 599, "Saturn": 699,
+    "Uranus": 799, "Neptune": 899, "Pluto": 999,
+    "Chiron": 2060, "Ceres": 1, "Pallas": 2, "Juno": 3, "Vesta": 4
+}
 
-# Harmonics (2nd, 3rd, 5th, 7th as examples)
-HARMONICS = [2, 3, 5, 7]
+SWISS_IDS = {
+    "Sun": swe.SUN, "Moon": swe.MOON, "Mercury": swe.MERCURY,
+    "Venus": swe.VENUS, "Mars": swe.MARS, "Jupiter": swe.JUPITER,
+    "Saturn": swe.SATURN, "Uranus": swe.URANUS, "Neptune": swe.NEPTUNE,
+    "Pluto": swe.PLUTO, "Chiron": swe.CHIRON,
+    "Ceres": swe.CERES, "Pallas": swe.PALLAS,
+    "Juno": swe.JUNO, "Vesta": swe.VESTA
+}
 
-# Arabic Parts (basic ones: Fortune, Spirit, Eros, Marriage)
-def compute_arabic_parts(positions):
-    parts = {}
+FIXED_STAR_FILE = "sefstars.txt"
+
+def get_fixed_stars():
+    stars = {}
+    if not os.path.exists(FIXED_STAR_FILE):
+        return stars
+    with open(FIXED_STAR_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = [p.strip() for p in line.split(",") if p.strip()]
+            if len(parts) < 3:
+                continue
+            try:
+                name = parts[0]
+                lon = float(parts[1])
+                lat = float(parts[2])
+                stars[name] = (lon, lat, "fixed")
+            except ValueError:
+                continue
+    return stars
+
+def swe_calc(body, dt):
+    jd = swe.julday(dt.year, dt.month, dt.day, 
+                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0)
+    lon, lat, _ = swe.calc_ut(jd, SWISS_IDS[body])  # ✅ pyswisseph format
+    return lon % 360.0, lat
+
+def get_jpl_ephemeris(body, dt):
     try:
-        # Fortune = ASC + Moon - Sun
-        parts["Fortune"] = (positions["ASC"] + positions["Moon"] - positions["Sun"]) % 360
-        # Spirit = ASC + Sun - Moon
-        parts["Spirit"] = (positions["ASC"] + positions["Sun"] - positions["Moon"]) % 360
-        # Eros = ASC + Venus - Sun
-        parts["Eros"] = (positions["ASC"] + positions["Venus"] - positions["Sun"]) % 360
-        # Marriage = ASC + Descendant - Venus
-        parts["Marriage"] = (positions["ASC"] + positions["DSC"] - positions["Venus"]) % 360
-    except Exception as e:
-        print(f"Arabic Parts calc failed: {e}")
-    return parts
-
-# Get positions from Swiss Ephemeris
-def get_swiss_position(body, jd):
-    try:
-        if body == "Sun":
-            flag = swe.FLG_SWIEPH | swe.FLG_SPEED
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.SUN, flag)
-        elif body == "Moon":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.MOON)
-        elif body == "Mercury":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.MERCURY)
-        elif body == "Venus":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.VENUS)
-        elif body == "Mars":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.MARS)
-        elif body == "Jupiter":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.JUPITER)
-        elif body == "Saturn":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.SATURN)
-        elif body == "Uranus":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.URANUS)
-        elif body == "Neptune":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.NEPTUNE)
-        elif body == "Pluto":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.PLUTO)
-        elif body == "Chiron":
-            lon, lat, dist, _ = swe.calc_ut(jd, swe.CHIRON)
-        else:
-            return None
-        return float(lon) % 360
-    except Exception as e:
-        print(f"Swiss failed for {body} at JD {jd}: {e}")
+        obj = Horizons(id=JPL_IDS[body], location="500@399",
+                       epochs=dt.strftime("%Y-%m-%d %H:%M"),
+                       id_type="majorbody")
+        eph = obj.ephemerides()
+        lon = float(eph["EclLon"][0])
+        lat = float(eph["EclLat"][0])
+        return lon, lat
+    except Exception:
         return None
 
-# Harmonics calculation
-def compute_harmonics(base_positions, harmonics):
-    harmonic_positions = {}
-    for h in harmonics:
-        harmonic_positions[f"H{h}"] = {body: (lon * h) % 360 for body, lon in base_positions.items()}
-    return harmonic_positions
+def get_positions(dt):
+    result = {}
+    for body in JPL_IDS.keys():
+        coords = get_jpl_ephemeris(body, dt)
+        if coords:
+            result[body] = (coords[0], coords[1], "jpl")
+        else:
+            try:
+                lon, lat = swe_calc(body, dt)
+                result[body] = (lon, lat, "swiss")
+            except Exception:
+                continue
+    return result
 
 def main():
-    # Start from Aug 24, 2025 18:00 UTC
-    start_dt = datetime.datetime(2025, 8, 24, 18, 0, 0)
-    jd_start = swe.julday(start_dt.year, start_dt.month, start_dt.day,
-                          start_dt.hour + start_dt.minute/60.0)
+    now = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
+    six_months = now + datetime.timedelta(days=180)
+    step_days = 1  # daily sampling
 
-    # 6-month span (approx 180 days)
-    steps = 180
-    results = {"meta": {"start": start_dt.isoformat(), "source": "horizons→swiss→calculated"}}
-    results["days"] = []
+    data = {
+        "meta": {
+            "generated_at_utc": now.isoformat(),
+            "range_utc": [now.isoformat(), six_months.isoformat()],
+            "source_order": ["jpl", "swiss", "fixed"]
+        },
+        "transits": {}
+    }
 
-    for i in range(steps + 1):
-        dt = start_dt + datetime.timedelta(days=i)
-        jd = swe.julday(dt.year, dt.month, dt.day,
-                        dt.hour + dt.minute/60.0)
-        positions = {}
+    stars = get_fixed_stars()
 
-        # Calculate planetary positions
-        for body in MAJOR_PLANETS + MINOR_BODIES:
-            pos = get_swiss_position(body, jd)
-            if pos is not None:
-                positions[body] = pos
+    dt = now
+    while dt <= six_months:
+        day_key = dt.strftime("%Y-%m-%d")
+        data["transits"][day_key] = {}
+        positions = get_positions(dt)
+        for body, (lon, lat, src) in positions.items():
+            data["transits"][day_key][body] = {
+                "ecl_lon_deg": lon,
+                "ecl_lat_deg": lat,
+                "source": src
+            }
+        for star, (lon, lat, src) in stars.items():
+            data["transits"][day_key][star] = {
+                "ecl_lon_deg": lon,
+                "ecl_lat_deg": lat,
+                "source": src
+            }
+        dt += datetime.timedelta(days=step_days)
 
-        # Add harmonics
-        harmonics_data = compute_harmonics(positions, HARMONICS)
-
-        # Add Arabic parts
-        arabic_data = compute_arabic_parts(positions)
-
-        results["days"].append({
-            "date": dt.isoformat(),
-            "positions": positions,
-            "harmonics": harmonics_data,
-            "arabic_parts": arabic_data
-        })
-
-    # Save JSON
+    outpath = os.path.join("docs", "feed_6month.json")
     os.makedirs("docs", exist_ok=True)
-    with open("docs/feed_6month.json", "w") as f:
-        json.dump(results, f, indent=2)
+    with open(outpath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
 
-    print("✅ 6-month feed generated:", "docs/feed_6month.json")
+    print(f"✅ 6-month feed written to {outpath}")
 
 if __name__ == "__main__":
     main()
