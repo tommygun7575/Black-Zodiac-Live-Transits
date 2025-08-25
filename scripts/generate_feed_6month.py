@@ -1,190 +1,79 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-generate_feed_6month.py — build a 6-month projected transit feed.
-Generalized dataset for GPT Store users (no natal data).
-Source hierarchy: Horizons → Swiss → Miriade → JSON fallback
-Covers Aug 24, 2025 @ 18:00 Pacific → Feb 24, 2026
-"""
-
-import json
-import os
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-
-import swisseph as swe
+import os, sys, json, warnings
+from datetime import datetime, timedelta
 from astroquery.jplhorizons import Horizons
+import swisseph as swe
 
-# ---- Settings ----
-DAYS_AHEAD = 184   # ~6 months
-HOUSE_SYSTEM = b'P'
-OBSERVER = "geocentric Earth"
+warnings.filterwarnings("ignore", message=".*masked element.*")
 
-# Ephemeris path from repo
-EPHE_PATH = os.environ.get("SE_EPHE_PATH", "./ephe")
-swe.set_ephe_path(EPHE_PATH)
+# Bodies to compute (simplified list; extend as needed)
+BODIES = [
+    "Sun", "Moon", "Mercury", "Venus", "Mars",
+    "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
+    "Chiron", "Ceres", "Pallas", "Juno", "Vesta",
+    "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia"
+]
 
-# Hard-coded start: Aug 24, 2025 18:00 Pacific = Aug 25, 2025 01:00 UTC
-START_UTC = datetime(2025, 8, 25, 1, 0, tzinfo=timezone.utc)
+OUTPUT_FILE = "docs/feed_6month.json"
 
-# ---- Bodies ----
-PLANETS = {
-    "Sun": "10", "Moon": "301", "Mercury": "199",
-    "Venus": "299", "Mars": "499", "Jupiter": "599",
-    "Saturn": "699", "Uranus": "799", "Neptune": "899",
-    "Pluto": "999"
-}
-# TNOs / asteroids
-ASTEROIDS_TNOS = {
-    "Chiron": "2060", "Eros": "433", "Psyche": "16", "Vesta": "4",
-    "Amor": "1221", "Sappho": "80", "Karma": "3811",
-    "Haumea": "136108", "Makemake": "136472", "Varuna": "20000",
-    "Ixion": "28978", "Typhon": "42355", "Salacia": "120347",
-    "Chariklo": "10199", "Eris": "136199", "Pholus": "5145", "Sedna": "90377"
-}
-
-# Fixed stars
-FIXED_STAR_FILE = os.path.join(EPHE_PATH, "sefstars.txt")
-
-# ---- Helpers ----
-def swe_calc(body, dt):
-    jd = swe.julday(
-        dt.year, dt.month, dt.day,
-        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-        swe.GREG_CAL
-    )
-    flags = swe.FLG_SWIEPH | swe.FLG_SPEED
-    xx, ret = swe.calc_ut(jd, body, flags)
-    if ret < 0:
-        raise RuntimeError(f"Swiss Ephemeris failed for body {body}, ret={ret}")
-    return float(xx[0]), float(xx[1])
-
-def houses_and_parts(lat, lon, dt):
-    jd = swe.julday(
-        dt.year, dt.month, dt.day,
-        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-        swe.GREG_CAL
-    )
-    cusp, ascmc = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
-    asc = ascmc[0]; mc = ascmc[1]
-    sun_lon, _ = swe_calc(swe.SUN, dt)
-    moon_lon, _ = swe_calc(swe.MOON, dt)
-    fortune = (asc + moon_lon - sun_lon) % 360
-    spirit = (asc + sun_lon - moon_lon) % 360
-    return {"ASC": asc, "MC": mc, "PartOfFortune": fortune, "PartOfSpirit": spirit}
-
-def get_fixed_stars(dt):
-    stars = []
-    if os.path.exists(FIXED_STAR_FILE):
-        with open(FIXED_STAR_FILE, "r") as f:
-            for line in f:
-                if line.strip() and not line.startswith("#"):
-                    parts = line.replace(",", "").split()
-                    if len(parts) >= 3:
-                        try:
-                            stars.append({
-                                "id": parts[0],
-                                "label": parts[1],
-                                "ra_deg": float(parts[2]),
-                                "datetime_utc": dt.isoformat(),
-                                "epoch": "J2000",
-                                "source": "fixed"
-                            })
-                        except ValueError:
-                            # Skip lines with bad formatting
-                            continue
-    return stars
-
-def horizons_ephem(target_id, dt):
+def get_from_horizons(body, jd, id_type="majorbody"):
     try:
-        obj = Horizons(
-            id=target_id, location="@399",
-            epochs=dt.timestamp()/86400.0 + 2440587.5
-        )
+        obj = Horizons(id=body, id_type=id_type,
+                       location="@earth", epochs=jd)
         eph = obj.ephemerides()
-        return float(eph["EclLon"][0]), float(eph["EclLat"][0])
+        lon = float(eph["EclLon"][0])
+        lat = float(eph["EclLat"][0])
+        if not (0.0 <= lon < 360.0):
+            raise ValueError("Bad longitude")
+        return lon, lat, "jpl"
     except Exception:
+        print(f"[Fallback] Horizons failed for {body} at JD {jd} → using Swiss")
         return None
 
-# ---- Main ----
+def get_from_swiss(body, jd, flag=swe.FLG_SWIEPH):
+    try:
+        if body.lower() == "sun": bid = swe.SUN
+        elif body.lower() == "moon": bid = swe.MOON
+        elif body.lower() == "mercury": bid = swe.MERCURY
+        elif body.lower() == "venus": bid = swe.VENUS
+        elif body.lower() == "mars": bid = swe.MARS
+        elif body.lower() == "jupiter": bid = swe.JUPITER
+        elif body.lower() == "saturn": bid = swe.SATURN
+        elif body.lower() == "uranus": bid = swe.URANUS
+        elif body.lower() == "neptune": bid = swe.NEPTUNE
+        elif body.lower() == "pluto": bid = swe.PLUTO
+        else: bid = swe.PLUTO  # default if unmapped
+        lon, lat, dist, _ = swe.calc_ut(jd, bid, flag)
+        return lon % 360, lat, "swiss"
+    except Exception as e:
+        print(f"[Error] Swiss failed for {body} at JD {jd}: {e}")
+        return None
+
 def main():
-    feed = {
-        "meta": {
-            "generated_at_utc": datetime.utcnow().isoformat(),
-            "observer": OBSERVER,
-            "window": "2025-08-24T18:00-07:00 → 2026-02-24T18:00-08:00",
-            "range_days": DAYS_AHEAD,
-            "source_order": ["jpl", "swiss", "miriade", "fallback"]
-        },
-        "transits": []
-    }
+    start = datetime(2025, 8, 24)
+    end   = datetime(2026, 2, 24)
+    delta = timedelta(days=1)
 
-    for d in range(DAYS_AHEAD + 1):
-        dt = START_UTC + timedelta(days=d)
-        date_key = dt.strftime("%Y-%m-%d")
-        day_entry = {"date": date_key, "objects": []}
+    swe.set_ephe_path("ephe")  # Swiss ephemeris files
+    jd_start = swe.julday(start.year, start.month, start.day, 0.0)
 
-        # --- Horizons majors first ---
-        for name, hid in PLANETS.items():
-            pos = horizons_ephem(hid, dt)
-            if pos:
-                lon, lat = pos
-                day_entry["objects"].append({
-                    "id": name, "datetime_utc": dt.isoformat(),
-                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                    "source": "jpl"
-                })
-            else:
-                lon, lat = swe_calc(getattr(swe, name.upper(), swe.SUN), dt)
-                day_entry["objects"].append({
-                    "id": name, "datetime_utc": dt.isoformat(),
-                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                    "source": "swiss"
-                })
+    results = {}
+    d = start
+    while d <= end:
+        jd = swe.julday(d.year, d.month, d.day, 0.0)
+        results[str(d.date())] = {}
+        for body in BODIES:
+            pos = get_from_horizons(body, jd)
+            if pos is None:
+                pos = get_from_swiss(body, jd)
+            results[str(d.date())][body] = pos
+        d += delta
 
-        # --- Asteroids/TNOs ---
-        for name, hid in ASTEROIDS_TNOS.items():
-            pos = horizons_ephem(hid, dt)
-            if pos:
-                lon, lat = pos
-                day_entry["objects"].append({
-                    "id": name, "datetime_utc": dt.isoformat(),
-                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                    "source": "jpl"
-                })
-            else:
-                try:
-                    lon, lat = swe_calc(int(hid), dt)
-                    day_entry["objects"].append({
-                        "id": name, "datetime_utc": dt.isoformat(),
-                        "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                        "source": "swiss-asteroid"
-                    })
-                except Exception:
-                    day_entry["objects"].append({
-                        "id": name, "datetime_utc": dt.isoformat(),
-                        "error": "no data available"
-                    })
+    with open(OUTPUT_FILE, "w") as f:
+        json.dump({"generated_at_utc": datetime.utcnow().isoformat(),
+                   "results": results}, f, indent=2)
 
-        # --- Houses / Parts (Swiss only) ---
-        points = houses_and_parts(0.0, 0.0, dt)
-        for pid, val in points.items():
-            day_entry["objects"].append({
-                "id": pid, "datetime_utc": dt.isoformat(),
-                "ecl_lon_deg": val, "source": "swiss"
-            })
-
-        # --- Fixed stars ---
-        for star in get_fixed_stars(dt):
-            day_entry["objects"].append(star)
-
-        feed["transits"].append(day_entry)
-
-    Path("docs").mkdir(exist_ok=True)
-    with open("docs/feed_6month.json", "w") as f:
-        json.dump(feed, f, indent=2)
-
-    print("[OK] Wrote docs/feed_6month.json with 6-month transit dataset")
+    print(f"Finished generating {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
