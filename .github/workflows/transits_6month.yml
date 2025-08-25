@@ -33,9 +33,9 @@ jobs:
           echo "⬇️ Downloading Swiss Ephemeris ephe.zip from pyswisseph release..."
           curl -Lf https://github.com/cyjoelchen/pyswisseph/releases/download/4.10.4/ephe.zip -o ephe/ephe.zip
           unzip -o ephe/ephe.zip -d ephe
-          echo "🔍 Verifying..."
+          echo "🔍 Verifying required ephemeris file is present..."
           if [ ! -f "ephe/seas_18.se1" ]; then
-            echo "❌ ERROR: Ephemeris verification failed — required files missing."
+            echo "❌ ERROR: Expected file seas_18.se1 not found in 'ephe/'."
             ls -l ephe
             exit 1
           fi
@@ -44,8 +44,7 @@ jobs:
       - name: Generate 6-month feed
         env:
           SE_EPHE_PATH: ephe
-        run: |
-          python scripts/generate_feed_6month.py
+        run: python scripts/generate_feed_6month.py
 
       - name: Commit results
         run: |
