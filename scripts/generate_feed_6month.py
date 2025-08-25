@@ -6,20 +6,45 @@ import swisseph as swe
 
 warnings.filterwarnings("ignore", message=".*masked element.*")
 
-# Split bodies into two groups
+# Horizons (majors only)
 HORIZONS_BODIES = [
     "Sun", "Moon", "Mercury", "Venus", "Mars",
     "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
-    # add "Chiron" here if you want it from Horizons
 ]
 
+# Swiss (minor planets, asteroids, TNOs)
 SWISS_BODIES = [
     "Chiron", "Ceres", "Pallas", "Juno", "Vesta",
     "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia"
-    # add other asteroids or minor bodies here
 ]
 
+# Harmonics we want
+HARMONICS = [2, 3, 5, 7, 9]
+
 OUTPUT_FILE = "docs/feed_6month.json"
+STARS_FILE = "sefstars.txt"
+
+def load_fixed_stars(path=STARS_FILE):
+    stars = {}
+    if not os.path.exists(path):
+        print(f"[Warn] Fixed stars file {path} not found, skipping.")
+        return stars
+    with open(path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            try:
+                parts = [p.strip() for p in line.replace(",", " ").split()]
+                if len(parts) < 3:
+                    continue
+                name = parts[0]
+                lon = float(parts[1])
+                lat = float(parts[2])
+                stars[name] = (lon, lat, "fixed")
+            except Exception as e:
+                print(f"[Skip] Could not parse star line: {line} ({e})")
+    return stars
 
 def get_from_horizons(body, jd):
     try:
@@ -37,7 +62,6 @@ def get_from_horizons(body, jd):
 
 def get_from_swiss(body, jd, flag=swe.FLG_SWIEPH):
     try:
-        # Map common bodies to Swiss constants
         mapping = {
             "sun": swe.SUN, "moon": swe.MOON,
             "mercury": swe.MERCURY, "venus": swe.VENUS,
@@ -48,18 +72,32 @@ def get_from_swiss(body, jd, flag=swe.FLG_SWIEPH):
             "pallas": swe.PALLAS, "juno": swe.JUNO,
             "vesta": swe.VESTA
         }
-        bid = mapping.get(body.lower(), swe.PLUTO)  # fallback id
-
+        bid = mapping.get(body.lower(), swe.PLUTO)
         result = swe.calc_ut(jd, bid, flag)
-        if isinstance(result, (list, tuple)):
-            if len(result) >= 2:
-                lon = result[0] % 360
-                lat = result[1]
-                return lon, lat, "swiss"
+        if isinstance(result, (list, tuple)) and len(result) >= 2:
+            lon = result[0] % 360
+            lat = result[1]
+            return lon, lat, "swiss"
         raise ValueError(f"Unexpected Swiss return for {body}: {result}")
     except Exception as e:
         print(f"[Error] Swiss failed for {body} at JD {jd}: {e}")
         return None
+
+def apply_harmonics(day_data):
+    """Add harmonic overlays for each body in a given day's dataset."""
+    for h in HARMONICS:
+        for body, pos in list(day_data.items()):
+            if pos is None or not isinstance(pos, (list, tuple)):
+                continue
+            try:
+                lon = pos[0]
+                # Harmonic longitude calculation
+                h_lon = (lon * h) % 360
+                key = f"{body}_H{h}"
+                day_data[key] = (h_lon, pos[1], f"h{h}")
+            except Exception:
+                continue
+    return day_data
 
 def main():
     start = datetime(2025, 8, 24)
@@ -67,6 +105,8 @@ def main():
     delta = timedelta(days=1)
 
     swe.set_ephe_path("ephe")
+    fixed_stars = load_fixed_stars()
+
     results = {}
     d = start
     while d <= end:
@@ -84,6 +124,13 @@ def main():
         for body in SWISS_BODIES:
             pos = get_from_swiss(body, jd)
             results[str(d.date())][body] = pos
+
+        # Fixed stars (same each day)
+        for name, starpos in fixed_stars.items():
+            results[str(d.date())][name] = starpos
+
+        # Apply harmonics
+        results[str(d.date())] = apply_harmonics(results[str(d.date())])
 
         d += delta
 
