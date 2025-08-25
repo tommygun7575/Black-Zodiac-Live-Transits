@@ -24,13 +24,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ephe
-          key: swisseph-ephe-v4
+          key: swisseph-ephe-v4.10.4
 
       - name: Download Swiss Ephemeris data (if cache miss)
         if: steps.cache-ephe.outputs.cache-hit != 'true'
         run: |
           mkdir -p ephe
-          curl -L https://www.astro.com/ftp/swisseph/ephe/ephe.tar.gz -o ephe/ephe.tar.gz
+          curl -L https://github.com/cyjoelchen/pyswisseph/releases/download/ephe-4.10.4/ephe.tar.gz -o ephe/ephe.tar.gz
           tar -xzf ephe/ephe.tar.gz -C ephe
 
       - name: Generate 6-month feed
