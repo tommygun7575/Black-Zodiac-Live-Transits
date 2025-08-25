@@ -2,7 +2,7 @@ name: Feed 6-Month Overlay
 
 on:
   schedule:
-    # Run every Feb 24 and Aug 24 at 18:00 UTC
+    # Run every Feb 24 and Aug 24 at 18:00 UTC (≈ 10:00 Pacific Standard, 11:00 Pacific Daylight)
     - cron: '0 18 24 2,8 *'
   workflow_dispatch: {}
 
@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install swisseph astroquery requests numpy pandas
+          pip install swisseph astroquery requests numpy pandas pytz
 
       - name: Verify Swiss Ephemeris files
         run: |
@@ -38,9 +38,16 @@ jobs:
         run: |
           PYTHONPATH=$(pwd) python scripts/generate_feed_6month.py
 
-      - name: Rename output with timestamp
+      - name: Rename output with Pacific timestamp
         run: |
-          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          pip install pytz
+          TS=$(python - <<'EOF'
+import datetime, pytz
+utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+pacific = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
+print(pacific.strftime("%Y-%m-%dT%I-%M%p_Pacific"))
+EOF
+)
           cp docs/feed_6month.json docs/feed_6month_$TS.json
           echo "📦 Saved as docs/feed_6month_$TS.json"
 
