@@ -24,17 +24,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ephe
-          key: swisseph-ephe-v1
+          key: swisseph-ephe-v2
 
       - name: Download Swiss Ephemeris data (if cache miss)
         if: steps.cache-ephe.outputs.cache-hit != 'true'
         run: |
           mkdir -p ephe
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seas_18.zip -o ephe/seas_18.zip
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sepl_18.zip -o ephe/sepl_18.zip
-          curl -L https://www.astro.com/ftp/swisseph/ephe/semo_18.zip -o ephe/semo_18.zip
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sele_18.zip -o ephe/sele_18.zip
-          unzip -o "ephe/*.zip" -d ephe
+          curl -L https://www.astro.com/ftp/swisseph/ephe/seas_18.se1 -o ephe/seas_18.se1
+          curl -L https://www.astro.com/ftp/swisseph/ephe/sepl_18.se1 -o ephe/sepl_18.se1
+          curl -L https://www.astro.com/ftp/swisseph/ephe/semo_18.se1 -o ephe/semo_18.se1
+          curl -L https://www.astro.com/ftp/swisseph/ephe/sele_18.se1 -o ephe/sele_18.se1
 
       - name: Generate 6-month feed
         env:
