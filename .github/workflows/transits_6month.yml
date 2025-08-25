@@ -30,14 +30,20 @@ jobs:
         if: steps.cache-ephe.outputs.cache-hit != 'true'
         run: |
           mkdir -p ephe
-          echo "⬇️ Downloading Swiss Ephemeris from swisseph-ephemeris mirror..."
-          curl -L https://github.com/aloistr/swisseph-ephemeris/archive/refs/heads/master.zip -o ephe/ephe.zip
+          echo "⬇️ Downloading Swiss Ephemeris repo archive..."
+          curl -Lf https://github.com/aloistr/swisseph-ephemeris/archive/refs/heads/master.zip -o ephe/ephe.zip
+          if [ ! -s ephe/ephe.zip ]; then
+            echo "❌ ERROR: Failed to download Swiss ephemeris archive."
+            exit 1
+          fi
           unzip -o ephe/ephe.zip -d ephe
-          # move contents up into ephe/
-          mv ephe/swisseph-ephemeris-master/* ephe/ || true
-          echo "🔍 Verifying..."
+          # Move contents up into ephe/ so Swiss can find them
+          if [ -d "ephe/swisseph-ephemeris-master" ]; then
+            mv ephe/swisseph-ephemeris-master/* ephe/ || true
+          fi
+          echo "🔍 Verifying Swiss ephemeris files..."
           if [ ! -f "ephe/seas_18.se1" ]; then
-            echo "❌ ERROR: Ephemeris verification failed — files missing."
+            echo "❌ ERROR: Ephemeris verification failed — required files missing."
             ls -l ephe
             exit 1
           fi
