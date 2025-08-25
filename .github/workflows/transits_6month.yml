@@ -2,14 +2,13 @@ name: Feed 6-Month Overlay
 
 on:
   schedule:
-    # Run every Feb 24 and Aug 24 at 18:00 UTC (≈ 10:00 Pacific Standard / 11:00 Pacific Daylight)
+    # Run every Feb 24 and Aug 24 at 18:00 UTC (10:00 Pacific Standard / 11:00 Pacific Daylight)
     - cron: '0 18 24 2,8 *'
   workflow_dispatch: {}
 
 jobs:
   overlay:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -21,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install swisseph astroquery requests numpy pandas
+          pip install pyswisseph astroquery requests numpy pandas
 
       - name: Verify Swiss Ephemeris files
         run: |
