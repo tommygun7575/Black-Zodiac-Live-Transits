@@ -24,18 +24,24 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ephe
-          key: swisseph-ephe-v4.10.4
+          key: swisseph-ephe-ftp-v1
 
       - name: Download Swiss Ephemeris data (if cache miss)
         if: steps.cache-ephe.outputs.cache-hit != 'true'
         run: |
           mkdir -p ephe
-          echo "⬇️ Downloading Swiss Ephemeris ephe.zip from pyswisseph release..."
-          curl -Lf https://github.com/cyjoelchen/pyswisseph/releases/download/4.10.4/ephe.zip -o ephe/ephe.zip
-          unzip -o ephe/ephe.zip -d ephe
-          echo "🔍 Verifying required ephemeris file is present..."
+          base_url=ftp://ftp.astro.com/pub/swisseph/ephe
+          echo "⬇️ Downloading Swiss Ephemeris .se1 files from $base_url"
+          for file in seas_18.se1 sepl_18.se1 semo_18.se1 sele_18.se1 \
+                      seur_18.se1 sene_18.se1 seplu_18.se1 sech_18.se1 \
+                      seph_18.se1 sesa_18.se1 seve_18.se1 sema_18.se1 \
+                      seju_18.se1 seme_18.se1; do
+            echo "  - $file"
+            curl -Lf $base_url/$file -o ephe/$file
+          done
+          echo "🔍 Verifying ephemeris files..."
           if [ ! -f "ephe/seas_18.se1" ]; then
-            echo "❌ ERROR: Expected file seas_18.se1 not found in 'ephe/'."
+            echo "❌ ERROR: Core file seas_18.se1 missing."
             ls -l ephe
             exit 1
           fi
@@ -44,7 +50,8 @@ jobs:
       - name: Generate 6-month feed
         env:
           SE_EPHE_PATH: ephe
-        run: python scripts/generate_feed_6month.py
+        run: |
+          python scripts/generate_feed_6month.py
 
       - name: Commit results
         run: |
