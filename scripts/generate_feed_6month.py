@@ -6,7 +6,12 @@ import datetime
 import pytz
 import numpy as np
 from astroquery.jplhorizons import Horizons
-import pyswisseph as swe   # ✅ use pyswisseph, not swisseph
+
+# --- Dual import: works on both Windows (pyswisseph) and Linux (swisseph) ---
+try:
+    import swisseph as swe   # Linux / GitHub Actions
+except ImportError:
+    import pyswisseph as swe   # Windows local
 
 # Configure Swiss Ephemeris path (your repo has /ephe with .se1 files)
 swe.set_ephe_path(os.path.join(os.getcwd(), "ephe"))
@@ -54,7 +59,7 @@ def get_fixed_stars():
 def swe_calc(body, dt):
     jd = swe.julday(dt.year, dt.month, dt.day, 
                     dt.hour + dt.minute / 60.0 + dt.second / 3600.0)
-    lon, lat, _ = swe.calc_ut(jd, SWISS_IDS[body])  # ✅ pyswisseph format
+    lon, lat, _ = swe.calc_ut(jd, SWISS_IDS[body])  # Swiss calc
     return lon % 360.0, lat
 
 def get_jpl_ephemeris(body, dt):
