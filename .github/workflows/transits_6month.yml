@@ -1,44 +1,179 @@
-name: build-6month
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+generate_feed_6month.py — build a 6-month projected transit feed.
+Generalized dataset for GPT Store users (no natal data).
+Source hierarchy: Horizons → Swiss → Miriade → JSON fallback
+Covers Aug 24, 2025 @ 18:00 Pacific → Feb 24, 2026
+"""
 
-on:
-  workflow_dispatch: {}
+import json
+import os
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
-jobs:
-  overlay:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+import swisseph as swe
+from astroquery.jplhorizons import Horizons
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+# ---- Settings ----
+DAYS_AHEAD = 184   # ~6 months
+HOUSE_SYSTEM = b'P'
+OBSERVER = "geocentric Earth"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyswisseph astroquery requests
+# Ephemeris path from repo
+EPHE_PATH = os.environ.get("SE_EPHE_PATH", "./ephe")
+swe.set_ephe_path(EPHE_PATH)
 
-      - name: Verify Swiss Ephemeris files
-        run: |
-          echo "🔍 Checking that Swiss ephemeris files exist..."
-          ls -l ephe
-          if [ ! -f "ephe/seas_18.se1" ]; then
-            echo "❌ ERROR: Missing seas_18.se1 in ephe/"
-            exit 1
-          fi
-          echo "✅ Ephemeris files are present."
+# Hard-coded start: Aug 24, 2025 18:00 Pacific = Aug 25, 2025 01:00 UTC
+START_UTC = datetime(2025, 8, 25, 1, 0, tzinfo=timezone.utc)
 
-      - name: Generate 6-month feed
-        env:
-          SE_EPHE_PATH: ephe
-        run: |
-          python scripts/generate_feed_6month.py
+# ---- Bodies ----
+PLANETS = {
+    "Sun": "10", "Moon": "301", "Mercury": "199",
+    "Venus": "299", "Mars": "499", "Jupiter": "599",
+    "Saturn": "699", "Uranus": "799", "Neptune": "899",
+    "Pluto": "999"
+}
+# TNOs / asteroids (Horizons IDs must be numeric designations)
+ASTEROIDS_TNOS = {
+    "Chiron": "2060", "Eros": "433", "Psyche": "16", "Vesta": "4",
+    "Amor": "1221", "Sappho": "80", "Karma": "3811",
+    "Haumea": "136108", "Makemake": "136472", "Varuna": "20000",
+    "Ixion": "28978", "Typhon": "42355", "Salacia": "120347",
+    "Chariklo": "10199", "Eris": "136199", "Pholus": "5145", "Sedna": "90377"
+}
 
-      - name: Commit results
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add docs/feed_6month.json
-          git commit -m "Update 6-month transit feed" || echo "No changes"
-          git push
+# Fixed stars file in ephe/
+FIXED_STAR_FILE = os.path.join(EPHE_PATH, "sefstars.txt")
+
+# ---- Helpers ----
+def swe_calc(body, dt):
+    jd = swe.julday(dt.year, dt.month, dt.day,
+                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
+                    swe.GREG_CAL)
+    flags = swe.FLG_SWIEPH | swe.FLG_SPEED
+    xx, ret = swe.calc_ut(jd, body, flags)
+    if ret < 0:
+        raise RuntimeError(f"Swiss Ephemeris failed for body {body}, ret={ret}")
+    return float(xx[0]), float(xx[1])
+
+def houses_and_parts(lat, lon, dt):
+    jd = swe.julday(dt.year, dt.month, dt.day,
+                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
+                    swe.GREG_CAL)
+    cusp, ascmc = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
+    asc = ascmc[0]; mc = ascmc[1]
+    sun_lon, _ = swe_calc(swe.SUN, dt)
+    moon_lon, _ = swe_calc(swe.MOON, dt)
+    fortune = (asc + moon_lon - sun_lon) % 360
+    spirit = (asc + sun_lon - moon_lon) % 360
+    return {"ASC": asc, "MC": mc, "PartOfFortune": fortune, "PartOfSpirit": spirit}
+
+def get_fixed_stars(dt):
+    stars = []
+    if os.path.exists(FIXED_STAR_FILE):
+        with open(FIXED_STAR_FILE, "r") as f:
+            for line in f:
+                if line.strip() and not line.startswith("#"):
+                    parts = line.split()
+                    if len(parts) >= 3:
+                        stars.append({
+                            "id": parts[0],
+                            "label": parts[1],
+                            "ra_deg": float(parts[2]),
+                            "datetime_utc": dt.isoformat(),
+                            "epoch": "J2000",
+                            "source": "fixed"
+                        })
+    return stars
+
+def horizons_ephem(target_id, dt):
+    try:
+        obj = Horizons(id=target_id, location="@399", epochs=dt.timestamp()/86400.0 + 2440587.5)
+        eph = obj.ephemerides()
+        return float(eph["EclLon"][0]), float(eph["EclLat"][0])
+    except Exception:
+        return None
+
+# ---- Main ----
+def main():
+    feed = {
+        "meta": {
+            "generated_at_utc": datetime.utcnow().isoformat(),
+            "observer": OBSERVER,
+            "window": "2025-08-24T18:00-07:00 → 2026-02-24T18:00-08:00",
+            "range_days": DAYS_AHEAD,
+            "source_order": ["jpl", "swiss", "miriade", "fallback"]
+        },
+        "transits": []
+    }
+
+    for d in range(DAYS_AHEAD + 1):
+        dt = START_UTC + timedelta(days=d)
+        date_key = dt.strftime("%Y-%m-%d")
+        day_entry = {"date": date_key, "objects": []}
+
+        # --- Horizons majors first ---
+        for name, hid in PLANETS.items():
+            pos = horizons_ephem(hid, dt)
+            if pos:
+                lon, lat = pos
+                day_entry["objects"].append({
+                    "id": name, "datetime_utc": dt.isoformat(),
+                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                    "source": "jpl"
+                })
+            else:
+                lon, lat = swe_calc(getattr(swe, name.upper(), swe.SUN), dt)
+                day_entry["objects"].append({
+                    "id": name, "datetime_utc": dt.isoformat(),
+                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                    "source": "swiss"
+                })
+
+        # --- Asteroids/TNOs ---
+        for name, hid in ASTEROIDS_TNOS.items():
+            pos = horizons_ephem(hid, dt)
+            if pos:
+                lon, lat = pos
+                day_entry["objects"].append({
+                    "id": name, "datetime_utc": dt.isoformat(),
+                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                    "source": "jpl"
+                })
+            else:
+                try:
+                    lon, lat = swe_calc(int(hid), dt)
+                    day_entry["objects"].append({
+                        "id": name, "datetime_utc": dt.isoformat(),
+                        "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                        "source": "swiss-asteroid"
+                    })
+                except Exception:
+                    day_entry["objects"].append({
+                        "id": name, "datetime_utc": dt.isoformat(),
+                        "error": "no data available"
+                    })
+
+        # --- Houses / Parts (Swiss only) ---
+        points = houses_and_parts(0.0, 0.0, dt)  # generic lat/lon
+        for pid, val in points.items():
+            day_entry["objects"].append({
+                "id": pid, "datetime_utc": dt.isoformat(),
+                "ecl_lon_deg": val, "source": "swiss"
+            })
+
+        # --- Fixed stars ---
+        for star in get_fixed_stars(dt):
+            day_entry["objects"].append(star)
+
+        feed["transits"].append(day_entry)
+
+    Path("docs").mkdir(exist_ok=True)
+    with open("docs/feed_6month.json", "w") as f:
+        json.dump(feed, f, indent=2)
+
+    print("[OK] Wrote docs/feed_6month.json with 6-month transit dataset")
+
+if __name__ == "__main__":
+    main()
