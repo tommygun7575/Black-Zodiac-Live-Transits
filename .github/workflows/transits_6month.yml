@@ -2,17 +2,15 @@ name: Feed 6-Month Overlay
 
 on:
   schedule:
-    # Run daily at 04:00 Pacific (11:00 UTC)
-    - cron: '0 11 * * *'
+    # Run at 6 PM Pacific (02:00 UTC next day) on Feb 24 and Aug 24
+    - cron: '0 2 25 2,8 *'
   workflow_dispatch: {}
 
 jobs:
   overlay:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -22,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install astroquery pyswisseph requests
+          pip install pyswisseph astroquery requests
 
       - name: Verify Swiss Ephemeris files
         run: |
@@ -45,5 +43,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add docs/feed_6month.json
-          git commit -m "Update 6-month feed overlay" || echo "No changes"
+          git commit -m "Update 6-month transit overlay" || echo "No changes"
           git push
