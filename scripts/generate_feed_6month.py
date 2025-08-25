@@ -7,8 +7,8 @@ import swisseph as swe
 
 # === CONFIG ===
 OUTPUT_FILE = "docs/feed_6month.json"
-# Hardcoded start: Aug 24, 2025 @ 18:00 UTC
-START_DATETIME = datetime.datetime(2025, 8, 24, 18, 0, 0)
+# Hardcoded epoch start
+START_DATETIME = datetime.datetime(2025, 8, 24, 18, 0, 0)  # 6 PM UTC
 DAYS_AHEAD = 180
 
 # === OBJECT LIST (mirrors overlay) ===
@@ -107,7 +107,11 @@ def main():
         timeline[date.isoformat()] = chart
 
     out = {
-        "meta": {"generated_at_utc": datetime.datetime.utcnow().isoformat()},
+        "meta": {
+            "generated_at_utc": datetime.datetime.utcnow().isoformat(),
+            "start_epoch_utc": START_DATETIME.isoformat(),
+            "days_span": DAYS_AHEAD
+        },
         "timeline": timeline,
     }
 
