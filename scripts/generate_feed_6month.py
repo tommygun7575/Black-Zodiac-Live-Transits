@@ -8,6 +8,7 @@ Covers Aug 24, 2025 @ 18:00 Pacific → Feb 24, 2026
 """
 
 import json
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import swisseph as swe
@@ -16,13 +17,13 @@ import swisseph as swe
 DAYS_AHEAD = 184   # ~6 months
 HOUSE_SYSTEM = b'P'
 OBSERVER = "geocentric Earth"
-EPHE_PATH = "."
+
+# Ephemeris path from workflow (default current dir)
+EPHE_PATH = os.environ.get("SE_EPHE_PATH", ".")
+swe.set_ephe_path(EPHE_PATH)
 
 # Hard-coded start: Aug 24, 2025 18:00 Pacific = Aug 25, 2025 01:00 UTC
 START_UTC = datetime(2025, 8, 25, 1, 0, tzinfo=timezone.utc)
-
-# ---- Setup ----
-swe.set_ephe_path(EPHE_PATH)
 
 # ---- Fallback JSON (Asteroids/TNOs) ----
 FALLBACK_PATH = "aug_2025_to_feb_2026_asteroids_tnos_flat.json"
@@ -51,7 +52,7 @@ PLANETS = {
     "NorthNode": swe.MEAN_NODE, "SouthNode": swe.TRUE_NODE
 }
 
-# ---- Asteroids & TNOs (relevant to master config) ----
+# ---- Asteroids & TNOs ----
 ASTEROIDS = {
     "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
     "Sappho": 80, "Karma": 3811,
