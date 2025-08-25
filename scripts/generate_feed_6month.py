@@ -79,16 +79,20 @@ def get_fixed_stars(dt):
         with open(FIXED_STAR_FILE, "r") as f:
             for line in f:
                 if line.strip() and not line.startswith("#"):
-                    parts = line.split()
+                    parts = line.replace(",", "").split()
                     if len(parts) >= 3:
-                        stars.append({
-                            "id": parts[0],
-                            "label": parts[1],
-                            "ra_deg": float(parts[2]),
-                            "datetime_utc": dt.isoformat(),
-                            "epoch": "J2000",
-                            "source": "fixed"
-                        })
+                        try:
+                            stars.append({
+                                "id": parts[0],
+                                "label": parts[1],
+                                "ra_deg": float(parts[2]),
+                                "datetime_utc": dt.isoformat(),
+                                "epoch": "J2000",
+                                "source": "fixed"
+                            })
+                        except ValueError:
+                            # Skip lines with bad formatting
+                            continue
     return stars
 
 def horizons_ephem(target_id, dt):
