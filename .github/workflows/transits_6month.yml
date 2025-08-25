@@ -24,33 +24,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ephe
-          key: swisseph-ephe-v3
+          key: swisseph-ephe-v4
 
       - name: Download Swiss Ephemeris data (if cache miss)
         if: steps.cache-ephe.outputs.cache-hit != 'true'
         run: |
           mkdir -p ephe
-          # Core planetary/asteroid files
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seas_18.se1 -o ephe/seas_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sepl_18.se1 -o ephe/sepl_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/semo_18.se1 -o ephe/semo_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sele_18.se1 -o ephe/sele_18.se1
-          # Additional key Swiss files
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seas_18.se1 -o ephe/seas_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seplm_18.se1 -o ephe/seplm_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sem0_18.se1 -o ephe/sem0_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/semo_18.se1 -o ephe/semo_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sepv_18.se1 -o ephe/sepv_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seur_18.se1 -o ephe/seur_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sene_18.se1 -o ephe/sene_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seplu_18.se1 -o ephe/seplu_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sech_18.se1 -o ephe/sech_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seph_18.se1 -o ephe/seph_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sesa_18.se1 -o ephe/sesa_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seve_18.se1 -o ephe/seve_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seme_18.se1 -o ephe/seme_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/seju_18.se1 -o ephe/seju_18.se1
-          curl -L https://www.astro.com/ftp/swisseph/ephe/sema_18.se1 -o ephe/sema_18.se1
+          curl -L https://www.astro.com/ftp/swisseph/ephe/ephe.tar.gz -o ephe/ephe.tar.gz
+          tar -xzf ephe/ephe.tar.gz -C ephe
 
       - name: Generate 6-month feed
         env:
