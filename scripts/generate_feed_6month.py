@@ -6,19 +6,24 @@ import swisseph as swe
 
 warnings.filterwarnings("ignore", message=".*masked element.*")
 
-# Bodies to compute (simplified list; extend as needed)
-BODIES = [
+# Split bodies into two groups
+HORIZONS_BODIES = [
     "Sun", "Moon", "Mercury", "Venus", "Mars",
-    "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
+    "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
+    # add "Chiron" here if you want it from Horizons
+]
+
+SWISS_BODIES = [
     "Chiron", "Ceres", "Pallas", "Juno", "Vesta",
     "Haumea", "Makemake", "Varuna", "Ixion", "Typhon", "Salacia"
+    # add other asteroids or minor bodies here
 ]
 
 OUTPUT_FILE = "docs/feed_6month.json"
 
-def get_from_horizons(body, jd, id_type="majorbody"):
+def get_from_horizons(body, jd):
     try:
-        obj = Horizons(id=body, id_type=id_type,
+        obj = Horizons(id=body, id_type="majorbody",
                        location="@earth", epochs=jd)
         eph = obj.ephemerides()
         lon = float(eph["EclLon"][0])
@@ -26,25 +31,32 @@ def get_from_horizons(body, jd, id_type="majorbody"):
         if not (0.0 <= lon < 360.0):
             raise ValueError("Bad longitude")
         return lon, lat, "jpl"
-    except Exception:
-        print(f"[Fallback] Horizons failed for {body} at JD {jd} → using Swiss")
+    except Exception as e:
+        print(f"[Error] Horizons failed for {body} at JD {jd}: {e}")
         return None
 
 def get_from_swiss(body, jd, flag=swe.FLG_SWIEPH):
     try:
-        if body.lower() == "sun": bid = swe.SUN
-        elif body.lower() == "moon": bid = swe.MOON
-        elif body.lower() == "mercury": bid = swe.MERCURY
-        elif body.lower() == "venus": bid = swe.VENUS
-        elif body.lower() == "mars": bid = swe.MARS
-        elif body.lower() == "jupiter": bid = swe.JUPITER
-        elif body.lower() == "saturn": bid = swe.SATURN
-        elif body.lower() == "uranus": bid = swe.URANUS
-        elif body.lower() == "neptune": bid = swe.NEPTUNE
-        elif body.lower() == "pluto": bid = swe.PLUTO
-        else: bid = swe.PLUTO  # default if unmapped
-        lon, lat, dist, _ = swe.calc_ut(jd, bid, flag)
-        return lon % 360, lat, "swiss"
+        # Map common bodies to Swiss constants
+        mapping = {
+            "sun": swe.SUN, "moon": swe.MOON,
+            "mercury": swe.MERCURY, "venus": swe.VENUS,
+            "mars": swe.MARS, "jupiter": swe.JUPITER,
+            "saturn": swe.SATURN, "uranus": swe.URANUS,
+            "neptune": swe.NEPTUNE, "pluto": swe.PLUTO,
+            "chiron": swe.CHIRON, "ceres": swe.CERES,
+            "pallas": swe.PALLAS, "juno": swe.JUNO,
+            "vesta": swe.VESTA
+        }
+        bid = mapping.get(body.lower(), swe.PLUTO)  # fallback id
+
+        result = swe.calc_ut(jd, bid, flag)
+        if isinstance(result, (list, tuple)):
+            if len(result) >= 2:
+                lon = result[0] % 360
+                lat = result[1]
+                return lon, lat, "swiss"
+        raise ValueError(f"Unexpected Swiss return for {body}: {result}")
     except Exception as e:
         print(f"[Error] Swiss failed for {body} at JD {jd}: {e}")
         return None
@@ -54,24 +66,32 @@ def main():
     end   = datetime(2026, 2, 24)
     delta = timedelta(days=1)
 
-    swe.set_ephe_path("ephe")  # Swiss ephemeris files
-    jd_start = swe.julday(start.year, start.month, start.day, 0.0)
-
+    swe.set_ephe_path("ephe")
     results = {}
     d = start
     while d <= end:
         jd = swe.julday(d.year, d.month, d.day, 0.0)
         results[str(d.date())] = {}
-        for body in BODIES:
+
+        # Horizons group
+        for body in HORIZONS_BODIES:
             pos = get_from_horizons(body, jd)
             if pos is None:
                 pos = get_from_swiss(body, jd)
             results[str(d.date())][body] = pos
+
+        # Swiss-only group
+        for body in SWISS_BODIES:
+            pos = get_from_swiss(body, jd)
+            results[str(d.date())][body] = pos
+
         d += delta
 
     with open(OUTPUT_FILE, "w") as f:
-        json.dump({"generated_at_utc": datetime.utcnow().isoformat(),
-                   "results": results}, f, indent=2)
+        json.dump({
+            "generated_at_utc": datetime.utcnow().isoformat(),
+            "results": results
+        }, f, indent=2)
 
     print(f"Finished generating {OUTPUT_FILE}")
 
