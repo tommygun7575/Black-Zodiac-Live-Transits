@@ -11,61 +11,48 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
 import swisseph as swe
+from astroquery.jplhorizons import Horizons
 
 # ---- Settings ----
 DAYS_AHEAD = 184   # ~6 months
 HOUSE_SYSTEM = b'P'
 OBSERVER = "geocentric Earth"
 
-# Ephemeris path from workflow (default current dir)
-EPHE_PATH = os.environ.get("SE_EPHE_PATH", ".")
+# Ephemeris path from repo
+EPHE_PATH = os.environ.get("SE_EPHE_PATH", "./ephe")
 swe.set_ephe_path(EPHE_PATH)
 
 # Hard-coded start: Aug 24, 2025 18:00 Pacific = Aug 25, 2025 01:00 UTC
 START_UTC = datetime(2025, 8, 25, 1, 0, tzinfo=timezone.utc)
 
-# ---- Fallback JSON (Asteroids/TNOs) ----
-FALLBACK_PATH = "aug_2025_to_feb_2026_asteroids_tnos_flat.json"
-try:
-    with open(FALLBACK_PATH, "r") as f:
-        fallback_data = json.load(f)
-        ASTEROID_FALLBACK = {entry["date"]: entry for entry in fallback_data["data"]}
-except Exception:
-    ASTEROID_FALLBACK = {}
-
-# ---- Fixed stars ----
-FIXED_STARS = [
-    {"id": "Regulus",   "label": "Regulus (Alpha Leo)",    "ra_deg": 152.0929625, "dec_deg": 11.9672083},
-    {"id": "Spica",     "label": "Spica (Alpha Vir)",      "ra_deg": 201.2982475, "dec_deg": -11.1613194},
-    {"id": "Sirius",    "label": "Sirius (Alpha CMa)",     "ra_deg": 101.2871553, "dec_deg": -16.7161159},
-    {"id": "Aldebaran", "label": "Aldebaran (Alpha Tau)",  "ra_deg": 68.9801625,  "dec_deg": 16.5093028},
-]
-
-# ---- Core planets, Nodes, Chiron, Liliths ----
+# ---- Bodies ----
 PLANETS = {
-    "Sun": swe.SUN, "Moon": swe.MOON, "Mercury": swe.MERCURY,
-    "Venus": swe.VENUS, "Mars": swe.MARS, "Jupiter": swe.JUPITER,
-    "Saturn": swe.SATURN, "Uranus": swe.URANUS, "Neptune": swe.NEPTUNE,
-    "Pluto": swe.PLUTO, "Chiron": getattr(swe, "CHIRON", 15),
-    "LilithMean": swe.MEAN_APOG, "LilithTrue": swe.OSCU_APOG,
-    "NorthNode": swe.MEAN_NODE, "SouthNode": swe.TRUE_NODE
+    "Sun": "10", "Moon": "301", "Mercury": "199",
+    "Venus": "299", "Mars": "499", "Jupiter": "599",
+    "Saturn": "699", "Uranus": "799", "Neptune": "899",
+    "Pluto": "999"
+}
+# TNOs / asteroids
+ASTEROIDS_TNOS = {
+    "Chiron": "2060", "Eros": "433", "Psyche": "16", "Vesta": "4",
+    "Amor": "1221", "Sappho": "80", "Karma": "3811",
+    "Haumea": "136108", "Makemake": "136472", "Varuna": "20000",
+    "Ixion": "28978", "Typhon": "42355", "Salacia": "120347",
+    "Chariklo": "10199", "Eris": "136199", "Pholus": "5145", "Sedna": "90377"
 }
 
-# ---- Asteroids & TNOs ----
-ASTEROIDS = {
-    "Vesta": 4, "Psyche": 16, "Amor": 1221, "Eros": 433,
-    "Sappho": 80, "Karma": 3811,
-    "Haumea": 136108, "Makemake": 136472, "Varuna": 20000,
-    "Ixion": 28978, "Typhon": 42355, "Salacia": 120347,
-    "Chariklo": 10199, "Eris": 136199, "Pholus": 5145, "Sedna": 90377
-}
+# Fixed stars
+FIXED_STAR_FILE = os.path.join(EPHE_PATH, "sefstars.txt")
 
 # ---- Helpers ----
 def swe_calc(body, dt):
-    jd = swe.julday(dt.year, dt.month, dt.day,
-                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-                    swe.GREG_CAL)
+    jd = swe.julday(
+        dt.year, dt.month, dt.day,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
+        swe.GREG_CAL
+    )
     flags = swe.FLG_SWIEPH | swe.FLG_SPEED
     xx, ret = swe.calc_ut(jd, body, flags)
     if ret < 0:
@@ -73,25 +60,47 @@ def swe_calc(body, dt):
     return float(xx[0]), float(xx[1])
 
 def houses_and_parts(lat, lon, dt):
-    jd = swe.julday(dt.year, dt.month, dt.day,
-                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-                    swe.GREG_CAL)
+    jd = swe.julday(
+        dt.year, dt.month, dt.day,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
+        swe.GREG_CAL
+    )
     cusp, ascmc = swe.houses_ex(jd, lat, lon, HOUSE_SYSTEM)
     asc = ascmc[0]; mc = ascmc[1]
     sun_lon, _ = swe_calc(swe.SUN, dt)
     moon_lon, _ = swe_calc(swe.MOON, dt)
     fortune = (asc + moon_lon - sun_lon) % 360
     spirit = (asc + sun_lon - moon_lon) % 360
-    return {"ASC": asc, "MC": mc, "houses": cusp,
-            "PartOfFortune": fortune, "PartOfSpirit": spirit}
+    return {"ASC": asc, "MC": mc, "PartOfFortune": fortune, "PartOfSpirit": spirit}
 
-def add_fixed_star(star, dt):
-    return {
-        "id": star["id"], "targetname": star["label"],
-        "datetime_utc": dt.isoformat(),
-        "ra_deg": star["ra_deg"], "dec_deg": star["dec_deg"],
-        "epoch": "J2000", "source": "fixed"
-    }
+def get_fixed_stars(dt):
+    stars = []
+    if os.path.exists(FIXED_STAR_FILE):
+        with open(FIXED_STAR_FILE, "r") as f:
+            for line in f:
+                if line.strip() and not line.startswith("#"):
+                    parts = line.split()
+                    if len(parts) >= 3:
+                        stars.append({
+                            "id": parts[0],
+                            "label": parts[1],
+                            "ra_deg": float(parts[2]),
+                            "datetime_utc": dt.isoformat(),
+                            "epoch": "J2000",
+                            "source": "fixed"
+                        })
+    return stars
+
+def horizons_ephem(target_id, dt):
+    try:
+        obj = Horizons(
+            id=target_id, location="@399",
+            epochs=dt.timestamp()/86400.0 + 2440587.5
+        )
+        eph = obj.ephemerides()
+        return float(eph["EclLon"][0]), float(eph["EclLat"][0])
+    except Exception:
+        return None
 
 # ---- Main ----
 def main():
@@ -111,48 +120,59 @@ def main():
         date_key = dt.strftime("%Y-%m-%d")
         day_entry = {"date": date_key, "objects": []}
 
-        # Planets + Chiron + Liliths + Nodes
-        for name, body in PLANETS.items():
-            lon, lat = swe_calc(body, dt)
-            day_entry["objects"].append({
-                "id": name, "datetime_utc": dt.isoformat(),
-                "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                "source": "swiss"
-            })
-
-        # Asteroids & TNOs
-        for name, num in ASTEROIDS.items():
-            try:
-                lon, lat = swe_calc(num, dt)
+        # --- Horizons majors first ---
+        for name, hid in PLANETS.items():
+            pos = horizons_ephem(hid, dt)
+            if pos:
+                lon, lat = pos
                 day_entry["objects"].append({
                     "id": name, "datetime_utc": dt.isoformat(),
                     "ecl_lon_deg": lon, "ecl_lat_deg": lat,
-                    "source": "swiss-asteroid"
+                    "source": "jpl"
                 })
-            except Exception:
-                if date_key in ASTEROID_FALLBACK and name in ASTEROID_FALLBACK[date_key]:
-                    lon = ASTEROID_FALLBACK[date_key][name]
+            else:
+                lon, lat = swe_calc(getattr(swe, name.upper(), swe.SUN), dt)
+                day_entry["objects"].append({
+                    "id": name, "datetime_utc": dt.isoformat(),
+                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                    "source": "swiss"
+                })
+
+        # --- Asteroids/TNOs ---
+        for name, hid in ASTEROIDS_TNOS.items():
+            pos = horizons_ephem(hid, dt)
+            if pos:
+                lon, lat = pos
+                day_entry["objects"].append({
+                    "id": name, "datetime_utc": dt.isoformat(),
+                    "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                    "source": "jpl"
+                })
+            else:
+                try:
+                    lon, lat = swe_calc(int(hid), dt)
                     day_entry["objects"].append({
                         "id": name, "datetime_utc": dt.isoformat(),
-                        "ecl_lon_deg": lon,
-                        "source": "fallback-json"
+                        "ecl_lon_deg": lon, "ecl_lat_deg": lat,
+                        "source": "swiss-asteroid"
                     })
-                else:
+                except Exception:
                     day_entry["objects"].append({
                         "id": name, "datetime_utc": dt.isoformat(),
                         "error": "no data available"
                     })
 
-        # Houses / Parts (generic lat/lon = 0,0 for general feed)
+        # --- Houses / Parts (Swiss only) ---
         points = houses_and_parts(0.0, 0.0, dt)
-        day_entry["objects"].append({"id":"ASC","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["ASC"],"source":"swiss"})
-        day_entry["objects"].append({"id":"MC","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["MC"],"source":"swiss"})
-        day_entry["objects"].append({"id":"PartOfFortune","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfFortune"],"branch":"day","source":"swiss"})
-        day_entry["objects"].append({"id":"PartOfSpirit","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["PartOfSpirit"],"branch":"day","source":"swiss"})
+        for pid, val in points.items():
+            day_entry["objects"].append({
+                "id": pid, "datetime_utc": dt.isoformat(),
+                "ecl_lon_deg": val, "source": "swiss"
+            })
 
-        # Fixed stars
-        for star in FIXED_STARS:
-            day_entry["objects"].append(add_fixed_star(star, dt))
+        # --- Fixed stars ---
+        for star in get_fixed_stars(dt):
+            day_entry["objects"].append(star)
 
         feed["transits"].append(day_entry)
 
