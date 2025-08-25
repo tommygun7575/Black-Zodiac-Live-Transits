@@ -17,9 +17,28 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyswisseph astroquery
+          pip install pyswisseph astroquery requests
+
+      - name: Cache Swiss Ephemeris
+        id: cache-ephe
+        uses: actions/cache@v4
+        with:
+          path: ephe
+          key: swisseph-ephe-v1
+
+      - name: Download Swiss Ephemeris data (if cache miss)
+        if: steps.cache-ephe.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ephe
+          curl -L https://www.astro.com/ftp/swisseph/ephe/seas_18.zip -o ephe/seas_18.zip
+          curl -L https://www.astro.com/ftp/swisseph/ephe/sepl_18.zip -o ephe/sepl_18.zip
+          curl -L https://www.astro.com/ftp/swisseph/ephe/semo_18.zip -o ephe/semo_18.zip
+          curl -L https://www.astro.com/ftp/swisseph/ephe/sele_18.zip -o ephe/sele_18.zip
+          unzip -o "ephe/*.zip" -d ephe
 
       - name: Generate 6-month feed
+        env:
+          SE_EPHE_PATH: ephe
         run: |
           python scripts/generate_feed_6month.py
 
