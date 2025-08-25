@@ -142,7 +142,7 @@ def main():
                         "error": "no data available"
                     })
 
-        # Houses / Parts (default lat/lon = 0,0 for general feed)
+        # Houses / Parts (generic lat/lon = 0,0 for general feed)
         points = houses_and_parts(0.0, 0.0, dt)
         day_entry["objects"].append({"id":"ASC","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["ASC"],"source":"swiss"})
         day_entry["objects"].append({"id":"MC","datetime_utc":dt.isoformat(),"ecl_lon_deg":points["MC"],"source":"swiss"})
@@ -163,4 +163,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
