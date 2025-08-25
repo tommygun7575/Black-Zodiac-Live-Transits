@@ -63,9 +63,24 @@ def get_fixed_stars():
 def swe_calc(body, dt):
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute / 60.0 + dt.second / 3600.0)
-    # ✅ Correct for pyswisseph 2.10.3.2: returns 4 values
-    lon, lat, dist, retflag = swe.calc_ut(jd, SWISS_IDS[body])
-    return lon % 360.0, lat
+    result = swe.calc_ut(jd, SWISS_IDS[body])
+
+    # Normalize return format
+    if isinstance(result, tuple):
+        # Case 1: (lon, lat)
+        if len(result) == 2 and all(isinstance(x, (int, float)) for x in result):
+            lon, lat = result
+            return lon % 360.0, lat
+        # Case 2: (lon, lat, dist)
+        if len(result) == 3:
+            lon, lat, dist = result
+            return lon % 360.0, lat
+        # Case 3: ((lon, lat, dist), retflag)
+        if len(result) == 2 and isinstance(result[0], (list, tuple)):
+            lon, lat, dist = result[0]
+            return lon % 360.0, lat
+
+    raise RuntimeError(f"Unexpected Swiss return format: {result}")
 
 def get_jpl_ephemeris(body, dt):
     try:
