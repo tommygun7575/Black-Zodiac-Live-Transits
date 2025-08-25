@@ -7,7 +7,8 @@ import swisseph as swe
 
 # === CONFIG ===
 OUTPUT_FILE = "docs/feed_6month.json"
-START_DATE = datetime.date.today()
+# Hardcoded start: Aug 24, 2025 @ 18:00 UTC
+START_DATETIME = datetime.datetime(2025, 8, 24, 18, 0, 0)
 DAYS_AHEAD = 180
 
 # === OBJECT LIST (mirrors overlay) ===
@@ -60,7 +61,7 @@ def get_from_swiss(jd, body_const):
         return None
 
 def fallback_calculated(name, jd):
-    # simple placeholder for calc fallback (parts, harmonics etc.)
+    # fallback for calculated values
     if name == "Sun":
         lon = (swe.calc_ut(jd, swe.SUN)[0] + 180.0) % 360.0
         lat = 0.0
@@ -77,10 +78,15 @@ def compute_extras(date_iso, chart):
 # === MAIN ===
 def main():
     timeline = {}
-    jd0 = swe.julday(START_DATE.year, START_DATE.month, START_DATE.day, 0.0)
+    jd0 = swe.julday(
+        START_DATETIME.year,
+        START_DATETIME.month,
+        START_DATETIME.day,
+        START_DATETIME.hour + START_DATETIME.minute / 60.0,
+    )
 
     for d in range(DAYS_AHEAD):
-        date = START_DATE + datetime.timedelta(days=d)
+        date = START_DATETIME + datetime.timedelta(days=d)
         jd = jd0 + d
         chart = {}
 
