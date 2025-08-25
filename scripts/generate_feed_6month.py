@@ -3,16 +3,14 @@ import json
 import datetime
 import pytz
 import numpy as np
-import pandas as pd
-
-from astroquery.jplhorizons import Horizons
 import swisseph as swe
 import os
 
-# Paths
+# --- Config ---
 SE_EPHE_PATH = os.environ.get("SE_EPHE_PATH", "ephe")
+swe.set_ephe_path(SE_EPHE_PATH)
 
-# Objects to calculate
+# Major planets via Horizons
 HORIZONS_OBJECTS = {
     "Sun": 10,
     "Moon": 301,
@@ -24,10 +22,11 @@ HORIZONS_OBJECTS = {
     "Uranus": 799,
     "Neptune": 899,
     "Pluto": 999,
-    "Chiron": 2060,
 }
 
+# Minor bodies via Swiss
 SWISS_OBJECTS = {
+    "Chiron": swe.CHIRON,
     "Ceres": swe.CERES,
     "Pallas": swe.PALLAS,
     "Juno": swe.JUNO,
@@ -40,58 +39,88 @@ SWISS_OBJECTS = {
     "Salacia": 120347,
 }
 
-def fetch_from_horizons(obj_id, jd):
+# Arabic Parts formulas (simplified, day formula)
+def calc_arabic_parts(positions):
+    parts = {}
     try:
-        eph = Horizons(id=obj_id, location="500@399", epochs=jd).ephemerides()
-        lon = float(eph["EclLon"][0])
-        lat = float(eph["EclLat"][0])
-        return lon, lat, "jpl"
-    except Exception as e:
-        print(f"[Fallback] Horizons failed for {obj_id} → {e}")
-        return None
+        sun = positions.get("Sun", {}).get("ecl_lon")
+        moon = positions.get("Moon", {}).get("ecl_lon")
+        asc = positions.get("ASC", {}).get("ecl_lon")
+        if None not in (sun, moon, asc):
+            parts["Fortune"] = (asc + moon - sun) % 360
+            parts["Spirit"]  = (asc + sun - moon) % 360
+    except Exception:
+        pass
+    return parts
+
+# Harmonics (simple nth multiple of longitudes)
+def calc_harmonics(positions, harmonics=[7,9,11]):
+    harm = {}
+    for n in harmonics:
+        harm[str(n)] = {}
+        for body, pos in positions.items():
+            lon = pos.get("ecl_lon")
+            if lon is not None:
+                harm[str(n)][body] = (lon * n) % 360
+    return harm
 
 def fetch_from_swiss(obj_id, jd):
     try:
         lon, lat, _ = swe.calc_ut(jd, obj_id)
         return lon, lat, "swiss"
     except Exception as e:
-        print(f"Error: Swiss failed for {obj_id}: {e}")
         return None
 
 def main():
-    # Start Aug 24, 2025 18:00 UTC, step daily, 6 months
     start = datetime.datetime(2025, 8, 24, 18, 0, tzinfo=pytz.utc)
-    days = 183  # ~6 months
+    days = 183
     results = {}
 
     for i in range(days):
         dt = start + datetime.timedelta(days=i)
         jd = swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute/60.0)
         date_key = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+        positions = {}
 
-        results[date_key] = {}
+        # Major planets
+        for name, sid in HORIZONS_OBJECTS.items():
+            try:
+                lon, lat, _ = swe.calc_ut(jd, getattr(swe, name.upper()))
+                positions[name] = {"ecl_lon": lon, "ecl_lat": lat, "src": "swiss"}
+            except Exception:
+                positions[name] = {"ecl_lon": None, "ecl_lat": None, "src": "nan"}
 
-        # Horizons first
-        for name, hid in HORIZONS_OBJECTS.items():
-            res = fetch_from_horizons(hid, jd)
-            if res is None:
-                res = fetch_from_swiss(getattr(swe, name.upper(), None), jd)
-            if res is None:
-                results[date_key][name] = {"ecl_lon": None, "ecl_lat": None, "src": "nan"}
-            else:
-                lon, lat, src = res
-                results[date_key][name] = {"ecl_lon": lon, "ecl_lat": lat, "src": src}
-
-        # Swiss for minor bodies
+        # Minor bodies
         for name, sid in SWISS_OBJECTS.items():
             res = fetch_from_swiss(sid, jd)
             if res is None:
-                results[date_key][name] = {"ecl_lon": None, "ecl_lat": None, "src": "nan"}
+                positions[name] = {"ecl_lon": None, "ecl_lat": None, "src": "nan"}
             else:
                 lon, lat, src = res
-                results[date_key][name] = {"ecl_lon": lon, "ecl_lat": lat, "src": src}
+                positions[name] = {"ecl_lon": lon, "ecl_lat": lat, "src": src}
 
-    # Metadata
+        # Houses (for Asc/MC → Arabic Parts)
+        try:
+            ascmc = swe.houses(jd, 40.7, -74.0)  # Bronx, NY default
+            asc = ascmc[0][0]
+            mc = ascmc[0][9]
+            positions["ASC"] = {"ecl_lon": asc, "ecl_lat": 0.0, "src": "calc"}
+            positions["MC"]  = {"ecl_lon": mc, "ecl_lat": 0.0, "src": "calc"}
+        except Exception:
+            pass
+
+        # Arabic Parts
+        arabic = calc_arabic_parts(positions)
+
+        # Harmonics
+        harmonics = calc_harmonics(positions)
+
+        results[date_key] = {
+            "positions": positions,
+            "arabic_parts": arabic,
+            "harmonics": harmonics,
+        }
+
     utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
     pacific_now = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
 
@@ -99,13 +128,14 @@ def main():
         "generated_at_utc": utc_now.isoformat(),
         "generated_at_pacific": pacific_now.isoformat(),
         "source_order": ["jpl", "swiss", "calculated"],
+        "contains": ["positions", "arabic_parts", "harmonics"],
     }
 
     out = {"meta": meta, "results": results}
     with open("docs/feed_6month.json", "w") as f:
         json.dump(out, f, indent=2)
 
-    print("✅ 6-month feed written to docs/feed_6month.json")
+    print("✅ 6-month feed written with harmonics + arabic parts")
 
 if __name__ == "__main__":
     main()
