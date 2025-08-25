@@ -63,8 +63,8 @@ def get_fixed_stars():
 def swe_calc(body, dt):
     jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute / 60.0 + dt.second / 3600.0)
-    # ✅ FIXED: only 2 values returned
-    lon, lat = swe.calc_ut(jd, SWISS_IDS[body])
+    # ✅ Correct unpacking: ( (lon, lat, dist), retflag )
+    (lon, lat, dist), retflag = swe.calc_ut(jd, SWISS_IDS[body])
     return lon % 360.0, lat
 
 def get_jpl_ephemeris(body, dt):
