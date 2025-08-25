@@ -7,7 +7,7 @@ import pytz
 import numpy as np
 from astroquery.jplhorizons import Horizons
 
-# --- Dual import: works on both Windows (pyswisseph) and Linux (swisseph) ---
+# --- Dual import: Linux (swisseph) vs Windows (pyswisseph) ---
 try:
     import swisseph as swe   # Linux / GitHub Actions
 except ImportError:
@@ -57,17 +57,19 @@ def get_fixed_stars():
     return stars
 
 def swe_calc(body, dt):
-    jd = swe.julday(dt.year, dt.month, dt.day, 
+    jd = swe.julday(dt.year, dt.month, dt.day,
                     dt.hour + dt.minute / 60.0 + dt.second / 3600.0)
-    lon, lat, _ = swe.calc_ut(jd, SWISS_IDS[body])  # Swiss calc
+    lon, lat, _ = swe.calc_ut(jd, SWISS_IDS[body])
     return lon % 360.0, lat
 
 def get_jpl_ephemeris(body, dt):
     try:
         obj = Horizons(id=JPL_IDS[body], location="500@399",
                        epochs=dt.strftime("%Y-%m-%d %H:%M"),
-                       id_type="majorbody")
+                       id_type=None)  # future-proof, no deprecation warning
         eph = obj.ephemerides()
+        if len(eph) == 0:
+            return None
         lon = float(eph["EclLon"][0])
         lat = float(eph["EclLat"][0])
         return lon, lat
@@ -77,7 +79,12 @@ def get_jpl_ephemeris(body, dt):
 def get_positions(dt):
     result = {}
     for body in JPL_IDS.keys():
-        coords = get_jpl_ephemeris(body, dt)
+        coords = None
+        try:
+            coords = get_jpl_ephemeris(body, dt)
+        except Exception:
+            coords = None
+
         if coords:
             result[body] = (coords[0], coords[1], "jpl")
         else:
@@ -85,7 +92,7 @@ def get_positions(dt):
                 lon, lat = swe_calc(body, dt)
                 result[body] = (lon, lat, "swiss")
             except Exception:
-                continue
+                result[body] = (None, None, "missing")
     return result
 
 def main():
