@@ -30,7 +30,7 @@ jobs:
         if: steps.cache-ephe.outputs.cache-hit != 'true'
         run: |
           mkdir -p ephe
-          curl -L https://github.com/cyjoelchen/pyswisseph/releases/download/4.10.4/ephe.zip -o ephe/ephe.zip
+          curl -L https://github.com/cyjoelchen/pyswisseph/releases/download/ephe-4.10.4/ephe.zip -o ephe/ephe.zip
           unzip -o ephe/ephe.zip -d ephe
 
       - name: Generate 6-month feed
