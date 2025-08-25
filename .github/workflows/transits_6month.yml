@@ -19,33 +19,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyswisseph astroquery requests
 
-      - name: Cache Swiss Ephemeris
-        id: cache-ephe
-        uses: actions/cache@v4
-        with:
-          path: ephe
-          key: swisseph-ephe-ftp-v1
-
-      - name: Download Swiss Ephemeris data (if cache miss)
-        if: steps.cache-ephe.outputs.cache-hit != 'true'
+      - name: Verify Swiss Ephemeris files
         run: |
-          mkdir -p ephe
-          base_url=ftp://ftp.astro.com/pub/swisseph/ephe
-          echo "⬇️ Downloading Swiss Ephemeris .se1 files from $base_url"
-          for file in seas_18.se1 sepl_18.se1 semo_18.se1 sele_18.se1 \
-                      seur_18.se1 sene_18.se1 seplu_18.se1 sech_18.se1 \
-                      seph_18.se1 sesa_18.se1 seve_18.se1 sema_18.se1 \
-                      seju_18.se1 seme_18.se1; do
-            echo "  - $file"
-            curl -Lf $base_url/$file -o ephe/$file
-          done
-          echo "🔍 Verifying ephemeris files..."
+          echo "🔍 Checking that Swiss ephemeris files exist..."
+          ls -l ephe
           if [ ! -f "ephe/seas_18.se1" ]; then
-            echo "❌ ERROR: Core file seas_18.se1 missing."
-            ls -l ephe
+            echo "❌ ERROR: Missing seas_18.se1 in ephe/"
             exit 1
           fi
-          echo "✅ Swiss ephemeris installed correctly."
+          echo "✅ Ephemeris files are present."
 
       - name: Generate 6-month feed
         env:
