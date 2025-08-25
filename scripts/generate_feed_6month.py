@@ -13,8 +13,12 @@ try:
 except ImportError:
     import pyswisseph as swe   # Windows local
 
-# Configure Swiss Ephemeris path (your repo has /ephe with .se1 files)
-swe.set_ephe_path(os.path.join(os.getcwd(), "ephe"))
+# Configure Swiss Ephemeris path
+EPHE_PATH = os.path.join(os.getcwd(), "ephe")
+swe.set_ephe_path(EPHE_PATH)
+
+if not os.path.exists(EPHE_PATH):
+    raise RuntimeError(f"❌ Swiss ephemeris path not found: {EPHE_PATH}")
 
 # Bodies for Horizons + Swiss fallback
 JPL_IDS = {
@@ -66,7 +70,7 @@ def get_jpl_ephemeris(body, dt):
     try:
         obj = Horizons(id=JPL_IDS[body], location="500@399",
                        epochs=dt.strftime("%Y-%m-%d %H:%M"),
-                       id_type=None)  # future-proof, no deprecation warning
+                       id_type=None)
         eph = obj.ephemerides()
         if len(eph) == 0:
             return None
@@ -79,20 +83,16 @@ def get_jpl_ephemeris(body, dt):
 def get_positions(dt):
     result = {}
     for body in JPL_IDS.keys():
-        coords = None
-        try:
-            coords = get_jpl_ephemeris(body, dt)
-        except Exception:
-            coords = None
+        coords = get_jpl_ephemeris(body, dt)
 
-        if coords:
+        if coords:  # JPL success
             result[body] = (coords[0], coords[1], "jpl")
-        else:
+        else:  # fallback to Swiss
             try:
                 lon, lat = swe_calc(body, dt)
                 result[body] = (lon, lat, "swiss")
-            except Exception:
-                result[body] = (None, None, "missing")
+            except Exception as e:
+                raise RuntimeError(f"❌ Swiss failed for {body} on {dt}: {e}")
     return result
 
 def main():
