@@ -30,8 +30,16 @@ jobs:
         if: steps.cache-ephe.outputs.cache-hit != 'true'
         run: |
           mkdir -p ephe
-          curl -L https://github.com/cyjoelchen/pyswisseph/releases/download/ephe-4.10.4/ephe.zip -o ephe/ephe.zip
+          echo "⬇️ Downloading Swiss Ephemeris ephe.zip..."
+          curl -L https://github.com/cyjoelchen/pyswisseph/releases/download/v4.10.4/ephe.zip -o ephe/ephe.zip
           unzip -o ephe/ephe.zip -d ephe
+          echo "🔍 Verifying ephemeris files..."
+          if [ ! -f "ephe/seas_18.se1" ]; then
+            echo "❌ ERROR: Ephemeris verification failed — required files missing after unzip."
+            ls -l ephe
+            exit 1
+          fi
+          echo "✅ Swiss ephemeris installed correctly."
 
       - name: Generate 6-month feed
         env:
