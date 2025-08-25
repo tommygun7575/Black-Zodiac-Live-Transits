@@ -38,10 +38,16 @@ jobs:
         run: |
           PYTHONPATH=$(pwd) python scripts/generate_feed_6month.py
 
+      - name: Rename output with timestamp
+        run: |
+          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          cp docs/feed_6month.json docs/feed_6month_$TS.json
+          echo "📦 Saved as docs/feed_6month_$TS.json"
+
       - name: Commit results
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add docs/feed_6month.json
+          git add docs/feed_6month*.json
           git commit -m "Update 6-month transit overlay" || echo "No changes"
           git push
