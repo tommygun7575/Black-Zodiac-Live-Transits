@@ -1,0 +1,3923 @@
+{
+  "meta": {
+    "generated_at_utc": "2025-08-26T11:09:18Z",
+    "source_order": [
+      "jpl (Horizons, Sun+planets first)",
+      "swiss (fallback Sun+planets)",
+      "miriade (fallback asteroids/TNOs)",
+      "fixed (stars)",
+      "houses (cusps, ASC, MC)",
+      "calculated (arabic parts)",
+      "calculated (harmonics)",
+      "calculated-fallback"
+    ]
+  },
+  "charts": {
+    "Tommy": {
+      "birth": {
+        "date": "1975-09-12",
+        "time": "09:20",
+        "place": "Bronx, NY, USA",
+        "lat": 40.85,
+        "lon": -73.8667,
+        "tz": "America/New_York"
+      },
+      "natal": {
+        "Sun": {
+          "sign": "Virgo",
+          "degree": 19.15,
+          "house": 12
+        },
+        "Moon": {
+          "sign": "Sagittarius",
+          "degree": 19.83,
+          "house": 3
+        },
+        "Mercury": {
+          "sign": "Libra",
+          "degree": 15.78,
+          "house": 1
+        },
+        "Venus": {
+          "sign": "Leo",
+          "degree": 26.03,
+          "house": 11,
+          "retrograde": true
+        },
+        "Mars": {
+          "sign": "Gemini",
+          "degree": 16.28,
+          "house": 9
+        },
+        "Jupiter": {
+          "sign": "Aries",
+          "degree": 23.37,
+          "house": 7,
+          "retrograde": true
+        },
+        "Saturn": {
+          "sign": "Cancer",
+          "degree": 29.55,
+          "house": 10
+        },
+        "Uranus": {
+          "sign": "Scorpio",
+          "degree": 0.2,
+          "house": 2
+        },
+        "Neptune": {
+          "sign": "Sagittarius",
+          "degree": 9.15,
+          "house": 3
+        },
+        "Pluto": {
+          "sign": "Libra",
+          "degree": 8.35,
+          "house": 1
+        },
+        "Node": {
+          "sign": "Scorpio",
+          "degree": 25.1,
+          "house": 2,
+          "retrograde": true
+        },
+        "Lilith": {
+          "sign": "Pisces",
+          "degree": 24.52,
+          "house": 6
+        },
+        "Chiron": {
+          "sign": "Aries",
+          "degree": 27.42,
+          "house": 7,
+          "retrograde": true
+        },
+        "Fortune": {
+          "sign": "Capricorn",
+          "degree": 22.07,
+          "house": 4
+        },
+        "Vertex": {
+          "sign": "Taurus",
+          "degree": 21.87,
+          "house": 8
+        },
+        "ASC": {
+          "sign": "Libra",
+          "degree": 21.38
+        },
+        "MC": {
+          "sign": "Cancer",
+          "degree": 25.1
+        }
+      },
+      "objects": {
+        "Sun": {
+          "ecl_lon_deg": 153.12665087107666,
+          "ecl_lat_deg": -0.0013349970198333824,
+          "used_source": "jpl"
+        },
+        "Moon": {
+          "ecl_lon_deg": 333.0349,
+          "ecl_lat_deg": -0.004,
+          "used_source": "jpl"
+        },
+        "Mercury": {
+          "ecl_lon_deg": 70.696,
+          "ecl_lat_deg": 2.6799,
+          "used_source": "jpl"
+        },
+        "Venus": {
+          "ecl_lon_deg": 71.6108,
+          "ecl_lat_deg": -0.296,
+          "used_source": "jpl"
+        },
+        "Mars": {
+          "ecl_lon_deg": 215.5445,
+          "ecl_lat_deg": 0.4452,
+          "used_source": "jpl"
+        },
+        "Jupiter": {
+          "ecl_lon_deg": 98.325,
+          "ecl_lat_deg": -0.0499,
+          "used_source": "jpl"
+        },
+        "Saturn": {
+          "ecl_lon_deg": 357.2852,
+          "ecl_lat_deg": -2.2298,
+          "used_source": "jpl"
+        },
+        "Uranus": {
+          "ecl_lon_deg": 58.0885,
+          "ecl_lat_deg": -0.2121,
+          "used_source": "jpl"
+        },
+        "Neptune": {
+          "ecl_lon_deg": 0.2218,
+          "ecl_lat_deg": -1.3247,
+          "used_source": "jpl"
+        },
+        "Pluto": {
+          "ecl_lon_deg": 302.3745,
+          "ecl_lat_deg": -3.6885,
+          "used_source": "jpl"
+        },
+        "Chiron": {
+          "ecl_lon_deg": 23.9726,
+          "ecl_lat_deg": 0.646,
+          "used_source": "jpl"
+        },
+        "Ceres": {
+          "ecl_lon_deg": 2.1619,
+          "ecl_lat_deg": -10.3648,
+          "used_source": "jpl"
+        },
+        "Pallas": {
+          "ecl_lon_deg": 317.7162,
+          "ecl_lat_deg": 21.9133,
+          "used_source": "jpl"
+        },
+        "Juno": {
+          "ecl_lon_deg": 248.5322,
+          "ecl_lat_deg": 12.743,
+          "used_source": "jpl"
+        },
+        "Vesta": {
+          "ecl_lon_deg": 259.383,
+          "ecl_lat_deg": 2.9548,
+          "used_source": "jpl"
+        },
+        "Psyche": {
+          "ecl_lon_deg": 50.5697,
+          "ecl_lat_deg": -3.0554,
+          "used_source": "jpl"
+        },
+        "Amor": {
+          "ecl_lon_deg": 265.6996,
+          "ecl_lat_deg": 11.8337,
+          "used_source": "jpl"
+        },
+        "Eros": {
+          "ecl_lon_deg": 1.1679,
+          "ecl_lat_deg": 9.1029,
+          "used_source": "jpl"
+        },
+        "Astraea": {
+          "ecl_lon_deg": 271.9442,
+          "ecl_lat_deg": 4.0804,
+          "used_source": "jpl"
+        },
+        "Sappho": {
+          "ecl_lon_deg": 46.4157,
+          "ecl_lat_deg": -1.1827,
+          "used_source": "jpl"
+        },
+        "Karma": {
+          "ecl_lon_deg": 176.0489,
+          "ecl_lat_deg": -3.0656,
+          "used_source": "jpl"
+        },
+        "Bacchus": {
+          "ecl_lon_deg": 256.9007,
+          "ecl_lat_deg": -6.5685,
+          "used_source": "jpl"
+        },
+        "Hygiea": {
+          "ecl_lon_deg": 73.1827,
+          "ecl_lat_deg": 1.9151,
+          "used_source": "jpl"
+        },
+        "Nessus": {
+          "ecl_lon_deg": 349.5788,
+          "ecl_lat_deg": -10.5552,
+          "used_source": "jpl"
+        },
+        "Eris": {
+          "ecl_lon_deg": 24.7728,
+          "ecl_lat_deg": -10.6256,
+          "used_source": "jpl"
+        },
+        "Sedna": {
+          "ecl_lon_deg": 60.7754,
+          "ecl_lat_deg": -11.856,
+          "used_source": "jpl"
+        },
+        "Haumea": {
+          "ecl_lon_deg": 212.1538,
+          "ecl_lat_deg": 28.2079,
+          "used_source": "jpl"
+        },
+        "Makemake": {
+          "ecl_lon_deg": 190.8004,
+          "ecl_lat_deg": 27.3079,
+          "used_source": "jpl"
+        },
+        "Varuna": {
+          "ecl_lon_deg": 129.2911,
+          "ecl_lat_deg": 9.3013,
+          "used_source": "jpl"
+        },
+        "Ixion": {
+          "ecl_lon_deg": 276.2509,
+          "ecl_lat_deg": -8.6409,
+          "used_source": "jpl"
+        },
+        "Typhon": {
+          "ecl_lon_deg": 237.9307,
+          "ecl_lat_deg": -2.2197,
+          "used_source": "jpl"
+        },
+        "Salacia": {
+          "ecl_lon_deg": 10.8534,
+          "ecl_lat_deg": 23.926,
+          "used_source": "jpl"
+        },
+        "2002 AW197": {
+          "ecl_lon_deg": 158.9254,
+          "ecl_lat_deg": -16.7031,
+          "used_source": "jpl"
+        },
+        "2003 VS2": {
+          "ecl_lon_deg": 92.1015,
+          "ecl_lat_deg": 7.6568,
+          "used_source": "jpl"
+        },
+        "Orcus": {
+          "ecl_lon_deg": 166.4441,
+          "ecl_lat_deg": -20.1468,
+          "used_source": "jpl"
+        },
+        "Quaoar": {
+          "ecl_lon_deg": 280.1891,
+          "ecl_lat_deg": 7.9896,
+          "used_source": "jpl"
+        },
+        "Vulcan": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Persephone": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Hades": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Proserpina": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Isis": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Aldebaran": {
+          "ecl_lon_deg": 69.78918794733352,
+          "ecl_lat_deg": -5.4673266340468905,
+          "used_source": "fixed"
+        },
+        "Algol": {
+          "ecl_lon_deg": 56.16758477731656,
+          "ecl_lat_deg": 22.42852941496665,
+          "used_source": "fixed"
+        },
+        "Altair": {
+          "ecl_lon_deg": 301.77641565273615,
+          "ecl_lat_deg": 29.30346277687919,
+          "used_source": "fixed"
+        },
+        "Antares": {
+          "ecl_lon_deg": 249.76229284318168,
+          "ecl_lat_deg": -4.569944164023126,
+          "used_source": "fixed"
+        },
+        "Arcturus": {
+          "ecl_lon_deg": 204.2336149172314,
+          "ecl_lat_deg": 30.736232842293024,
+          "used_source": "fixed"
+        },
+        "Betelgeuse": {
+          "ecl_lon_deg": 88.75459920922947,
+          "ecl_lat_deg": -16.027009001429224,
+          "used_source": "fixed"
+        },
+        "Canopus": {
+          "ecl_lon_deg": 104.96033272553422,
+          "ecl_lat_deg": -75.82389126532915,
+          "used_source": "fixed"
+        },
+        "Capella": {
+          "ecl_lon_deg": 81.85791960050767,
+          "ecl_lat_deg": 22.86426550047521,
+          "used_source": "fixed"
+        },
+        "Deneb": {
+          "ecl_lon_deg": 335.32922244479863,
+          "ecl_lat_deg": 59.90614907677107,
+          "used_source": "fixed"
+        },
+        "Fomalhaut": {
+          "ecl_lon_deg": 333.860303668846,
+          "ecl_lat_deg": -21.1356346947104,
+          "used_source": "fixed"
+        },
+        "Pollux": {
+          "ecl_lon_deg": 113.21564071097544,
+          "ecl_lat_deg": 6.684188041457463,
+          "used_source": "fixed"
+        },
+        "Procyon": {
+          "ecl_lon_deg": 115.78552970891167,
+          "ecl_lat_deg": -16.01960831424116,
+          "used_source": "fixed"
+        },
+        "Regulus": {
+          "ecl_lon_deg": 149.82913426785984,
+          "ecl_lat_deg": 0.46483841477959303,
+          "used_source": "fixed"
+        },
+        "Rigel": {
+          "ecl_lon_deg": 76.82958746174211,
+          "ecl_lat_deg": -31.122767997526676,
+          "used_source": "fixed"
+        },
+        "Sirius": {
+          "ecl_lon_deg": 104.0816644702237,
+          "ecl_lat_deg": -39.605248579008055,
+          "used_source": "fixed"
+        },
+        "Spica": {
+          "ecl_lon_deg": 203.84135789547489,
+          "ecl_lat_deg": -2.0544885383661207,
+          "used_source": "fixed"
+        },
+        "Vega": {
+          "ecl_lon_deg": 285.3163877897361,
+          "ecl_lat_deg": 61.73286460925995,
+          "used_source": "fixed"
+        },
+        "Zubenelgenubi": {
+          "ecl_lon_deg": 225.04262196584472,
+          "ecl_lat_deg": 0.32059904778136317,
+          "used_source": "fixed"
+        },
+        "Zubeneschamali": {
+          "ecl_lon_deg": 229.37101032978873,
+          "ecl_lat_deg": 8.495669918586202,
+          "used_source": "fixed"
+        },
+        "House_1": {
+          "ecl_lon_deg": 162.91754146986995,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_2": {
+          "ecl_lon_deg": 187.3348614713586,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_3": {
+          "ecl_lon_deg": 216.67752614179815,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_4": {
+          "ecl_lon_deg": 250.05047446912522,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_5": {
+          "ecl_lon_deg": 284.25253990205675,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_6": {
+          "ecl_lon_deg": 315.62310698351973,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_7": {
+          "ecl_lon_deg": 342.91754146986995,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_8": {
+          "ecl_lon_deg": 7.334861471358636,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_9": {
+          "ecl_lon_deg": 36.677526141798126,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_10": {
+          "ecl_lon_deg": 70.0504744691252,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_11": {
+          "ecl_lon_deg": 104.25253990205677,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_12": {
+          "ecl_lon_deg": 135.62310698351976,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "ASC": {
+          "ecl_lon_deg": 162.91754146986995,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses"
+        },
+        "MC": {
+          "ecl_lon_deg": 70.0504744691252,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses"
+        },
+        "Part_of_Fortune": {
+          "ecl_lon_deg": 343.0092923409466,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Spirit": {
+          "ecl_lon_deg": 342.8257905987932,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Karma": {
+          "ecl_lon_deg": 45.998316905408274,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Treachery": {
+          "ecl_lon_deg": 89.95412456446167,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Victory": {
+          "ecl_lon_deg": 270.04587543553833,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Deliverance": {
+          "ecl_lon_deg": 162.73403972771666,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Sun_h8": {
+          "ecl_lon_deg": 145.0132069686133,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sun_h9": {
+          "ecl_lon_deg": 298.13985783968997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Moon_h8": {
+          "ecl_lon_deg": 144.27919999999995,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Moon_h9": {
+          "ecl_lon_deg": 117.31410000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Mercury_h8": {
+          "ecl_lon_deg": 205.56799999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Mercury_h9": {
+          "ecl_lon_deg": 276.264,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Venus_h8": {
+          "ecl_lon_deg": 212.88639999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Venus_h9": {
+          "ecl_lon_deg": 284.4972,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Mars_h8": {
+          "ecl_lon_deg": 284.356,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Mars_h9": {
+          "ecl_lon_deg": 139.90049999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Jupiter_h8": {
+          "ecl_lon_deg": 66.60000000000002,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Jupiter_h9": {
+          "ecl_lon_deg": 164.92500000000007,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Saturn_h8": {
+          "ecl_lon_deg": 338.2815999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Saturn_h9": {
+          "ecl_lon_deg": 335.5667999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Uranus_h8": {
+          "ecl_lon_deg": 104.70800000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Uranus_h9": {
+          "ecl_lon_deg": 162.79650000000004,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Neptune_h8": {
+          "ecl_lon_deg": 1.7744000000000142,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Neptune_h9": {
+          "ecl_lon_deg": 1.9961999999999875,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pluto_h8": {
+          "ecl_lon_deg": 258.9960000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pluto_h9": {
+          "ecl_lon_deg": 201.3705,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Chiron_h8": {
+          "ecl_lon_deg": 191.7808,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Chiron_h9": {
+          "ecl_lon_deg": 215.75340000000006,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Ceres_h8": {
+          "ecl_lon_deg": 17.295200000000023,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Ceres_h9": {
+          "ecl_lon_deg": 19.457100000000025,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pallas_h8": {
+          "ecl_lon_deg": 21.72960000000012,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pallas_h9": {
+          "ecl_lon_deg": 339.44579999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Juno_h8": {
+          "ecl_lon_deg": 188.2575999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Juno_h9": {
+          "ecl_lon_deg": 76.78980000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vesta_h8": {
+          "ecl_lon_deg": 275.06399999999985,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vesta_h9": {
+          "ecl_lon_deg": 174.44699999999966,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Psyche_h8": {
+          "ecl_lon_deg": 44.55759999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Psyche_h9": {
+          "ecl_lon_deg": 95.12729999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Amor_h8": {
+          "ecl_lon_deg": 325.5967999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Amor_h9": {
+          "ecl_lon_deg": 231.29639999999972,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Eros_h8": {
+          "ecl_lon_deg": 9.343200000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Eros_h9": {
+          "ecl_lon_deg": 10.511099999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Astraea_h8": {
+          "ecl_lon_deg": 15.553600000000188,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Astraea_h9": {
+          "ecl_lon_deg": 287.4978000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sappho_h8": {
+          "ecl_lon_deg": 11.325600000000009,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sappho_h9": {
+          "ecl_lon_deg": 57.741300000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Karma_h8": {
+          "ecl_lon_deg": 328.3912,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Karma_h9": {
+          "ecl_lon_deg": 144.44010000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Bacchus_h8": {
+          "ecl_lon_deg": 255.20559999999978,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Bacchus_h9": {
+          "ecl_lon_deg": 152.10629999999992,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Hygiea_h8": {
+          "ecl_lon_deg": 225.46159999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Hygiea_h9": {
+          "ecl_lon_deg": 298.64429999999993,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Nessus_h8": {
+          "ecl_lon_deg": 276.6304,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Nessus_h9": {
+          "ecl_lon_deg": 266.20920000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Eris_h8": {
+          "ecl_lon_deg": 198.18240000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Eris_h9": {
+          "ecl_lon_deg": 222.9552,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sedna_h8": {
+          "ecl_lon_deg": 126.20319999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sedna_h9": {
+          "ecl_lon_deg": 186.97860000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Haumea_h8": {
+          "ecl_lon_deg": 257.2303999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Haumea_h9": {
+          "ecl_lon_deg": 109.38419999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Makemake_h8": {
+          "ecl_lon_deg": 86.40319999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Makemake_h9": {
+          "ecl_lon_deg": 277.20360000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Varuna_h8": {
+          "ecl_lon_deg": 314.3288,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Varuna_h9": {
+          "ecl_lon_deg": 83.61989999999992,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Ixion_h8": {
+          "ecl_lon_deg": 50.00720000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Ixion_h9": {
+          "ecl_lon_deg": 326.2581,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Typhon_h8": {
+          "ecl_lon_deg": 103.44560000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Typhon_h9": {
+          "ecl_lon_deg": 341.3762999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Salacia_h8": {
+          "ecl_lon_deg": 86.8272,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Salacia_h9": {
+          "ecl_lon_deg": 97.68060000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "2002 AW197_h8": {
+          "ecl_lon_deg": 191.40319999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "2002 AW197_h9": {
+          "ecl_lon_deg": 350.32860000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "2003 VS2_h8": {
+          "ecl_lon_deg": 16.812000000000012,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "2003 VS2_h9": {
+          "ecl_lon_deg": 108.9135,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Orcus_h8": {
+          "ecl_lon_deg": 251.55279999999993,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Orcus_h9": {
+          "ecl_lon_deg": 57.99689999999987,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Quaoar_h8": {
+          "ecl_lon_deg": 81.51279999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Quaoar_h9": {
+          "ecl_lon_deg": 1.7019000000000233,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vulcan_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vulcan_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Persephone_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Persephone_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Hades_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Hades_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Proserpina_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Proserpina_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Isis_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Isis_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Aldebaran_h8": {
+          "ecl_lon_deg": 198.31350357866813,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Aldebaran_h9": {
+          "ecl_lon_deg": 268.10269152600165,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Algol_h8": {
+          "ecl_lon_deg": 89.3406782185325,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Algol_h9": {
+          "ecl_lon_deg": 145.50826299584907,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Altair_h8": {
+          "ecl_lon_deg": 254.21132522188918,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Altair_h9": {
+          "ecl_lon_deg": 195.98774087462516,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Antares_h8": {
+          "ecl_lon_deg": 198.09834274545346,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Antares_h9": {
+          "ecl_lon_deg": 87.86063558863498,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Arcturus_h8": {
+          "ecl_lon_deg": 193.86891933785114,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Arcturus_h9": {
+          "ecl_lon_deg": 38.102534255082446,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Betelgeuse_h8": {
+          "ecl_lon_deg": 350.03679367383575,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Betelgeuse_h9": {
+          "ecl_lon_deg": 78.79139288306521,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Canopus_h8": {
+          "ecl_lon_deg": 119.68266180427372,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Canopus_h9": {
+          "ecl_lon_deg": 224.642994529808,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Capella_h8": {
+          "ecl_lon_deg": 294.86335680406137,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Capella_h9": {
+          "ecl_lon_deg": 16.72127640456904,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Deneb_h8": {
+          "ecl_lon_deg": 162.63377955838905,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Deneb_h9": {
+          "ecl_lon_deg": 137.96300200318774,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Fomalhaut_h8": {
+          "ecl_lon_deg": 150.88242935076778,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Fomalhaut_h9": {
+          "ecl_lon_deg": 124.74273301961375,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pollux_h8": {
+          "ecl_lon_deg": 185.72512568780348,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pollux_h9": {
+          "ecl_lon_deg": 298.9407663987789,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Procyon_h8": {
+          "ecl_lon_deg": 206.28423767129334,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Procyon_h9": {
+          "ecl_lon_deg": 322.0697673802051,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Regulus_h8": {
+          "ecl_lon_deg": 118.63307414287874,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Regulus_h9": {
+          "ecl_lon_deg": 268.46220841073864,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Rigel_h8": {
+          "ecl_lon_deg": 254.63669969393686,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Rigel_h9": {
+          "ecl_lon_deg": 331.46628715567897,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sirius_h8": {
+          "ecl_lon_deg": 112.6533157617896,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sirius_h9": {
+          "ecl_lon_deg": 216.7349802320133,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Spica_h8": {
+          "ecl_lon_deg": 190.73086316379909,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Spica_h9": {
+          "ecl_lon_deg": 34.57222105927394,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vega_h8": {
+          "ecl_lon_deg": 122.53110231788878,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vega_h9": {
+          "ecl_lon_deg": 47.84749010762471,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Zubenelgenubi_h8": {
+          "ecl_lon_deg": 0.34097572675773336,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Zubenelgenubi_h9": {
+          "ecl_lon_deg": 225.3835976926025,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Zubeneschamali_h8": {
+          "ecl_lon_deg": 34.96808263830985,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Zubeneschamali_h9": {
+          "ecl_lon_deg": 264.3390929680986,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_1_h8": {
+          "ecl_lon_deg": 223.34033175895956,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_1_h9": {
+          "ecl_lon_deg": 26.257873228829567,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_2_h8": {
+          "ecl_lon_deg": 58.67889177086886,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_2_h9": {
+          "ecl_lon_deg": 246.0137532422275,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_3_h8": {
+          "ecl_lon_deg": 293.42020913438523,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_3_h9": {
+          "ecl_lon_deg": 150.09773527618336,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_4_h8": {
+          "ecl_lon_deg": 200.40379575300176,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_4_h9": {
+          "ecl_lon_deg": 90.45427022212698,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_5_h8": {
+          "ecl_lon_deg": 114.02031921645403,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_5_h9": {
+          "ecl_lon_deg": 38.27285911851095,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_6_h8": {
+          "ecl_lon_deg": 4.984855868157865,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_6_h9": {
+          "ecl_lon_deg": 320.6079628516777,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_7_h8": {
+          "ecl_lon_deg": 223.34033175895956,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_7_h9": {
+          "ecl_lon_deg": 206.25787322882934,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_8_h8": {
+          "ecl_lon_deg": 58.678891770869086,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_8_h9": {
+          "ecl_lon_deg": 66.01375324222772,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_9_h8": {
+          "ecl_lon_deg": 293.420209134385,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_9_h9": {
+          "ecl_lon_deg": 330.09773527618313,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_10_h8": {
+          "ecl_lon_deg": 200.40379575300165,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_10_h9": {
+          "ecl_lon_deg": 270.45427022212687,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_11_h8": {
+          "ecl_lon_deg": 114.02031921645414,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_11_h9": {
+          "ecl_lon_deg": 218.27285911851095,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_12_h8": {
+          "ecl_lon_deg": 4.984855868158093,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_12_h9": {
+          "ecl_lon_deg": 140.60796285167794,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "ASC_h8": {
+          "ecl_lon_deg": 223.34033175895956,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "ASC_h9": {
+          "ecl_lon_deg": 26.257873228829567,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "MC_h8": {
+          "ecl_lon_deg": 200.40379575300165,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "MC_h9": {
+          "ecl_lon_deg": 270.45427022212687,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Fortune_h8": {
+          "ecl_lon_deg": 224.07433872757292,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Fortune_h9": {
+          "ecl_lon_deg": 207.08363106851948,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Spirit_h8": {
+          "ecl_lon_deg": 222.60632479034575,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Spirit_h9": {
+          "ecl_lon_deg": 205.43211538913874,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Karma_h8": {
+          "ecl_lon_deg": 7.986535243266189,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Karma_h9": {
+          "ecl_lon_deg": 53.98485214867446,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Treachery_h8": {
+          "ecl_lon_deg": 359.6329965156933,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Treachery_h9": {
+          "ecl_lon_deg": 89.58712108015493,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Victory_h8": {
+          "ecl_lon_deg": 0.36700348430667873,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Victory_h9": {
+          "ecl_lon_deg": 270.41287891984484,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Deliverance_h8": {
+          "ecl_lon_deg": 221.8723178217333,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Deliverance_h9": {
+          "ecl_lon_deg": 24.606357549449967,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        }
+      }
+    },
+    "Milena": {
+      "birth": {
+        "date": "1992-03-29",
+        "time": "14:04",
+        "place": "Carson City, NV, USA",
+        "lat": 39.1638,
+        "lon": -119.7674,
+        "tz": "America/Los_Angeles"
+      },
+      "natal": {
+        "Sun": {
+          "sign": "Aries",
+          "degree": 9.27,
+          "house": 9
+        },
+        "Moon": {
+          "sign": "Aquarius",
+          "degree": 20.51,
+          "house": 7
+        },
+        "Mercury": {
+          "sign": "Aries",
+          "degree": 3.23,
+          "house": 8,
+          "retrograde": true
+        },
+        "Venus": {
+          "sign": "Pisces",
+          "degree": 19.39,
+          "house": 8
+        },
+        "Mars": {
+          "sign": "Pisces",
+          "degree": 1.25,
+          "house": 7
+        },
+        "Jupiter": {
+          "sign": "Virgo",
+          "degree": 6.09,
+          "house": 1,
+          "retrograde": true
+        },
+        "Saturn": {
+          "sign": "Aquarius",
+          "degree": 15.44,
+          "house": 6
+        },
+        "Uranus": {
+          "sign": "Capricorn",
+          "degree": 17.47,
+          "house": 5
+        },
+        "Neptune": {
+          "sign": "Capricorn",
+          "degree": 18.49,
+          "house": 5
+        },
+        "Pluto": {
+          "sign": "Scorpio",
+          "degree": 22.37,
+          "house": 4,
+          "retrograde": true
+        },
+        "Node": {
+          "sign": "Capricorn",
+          "degree": 5.05,
+          "house": 5,
+          "retrograde": true
+        },
+        "Lilith": {
+          "sign": "Aquarius",
+          "degree": 7.34,
+          "house": 6
+        },
+        "Chiron": {
+          "sign": "Leo",
+          "degree": 3.19,
+          "house": 12,
+          "retrograde": true
+        },
+        "Fortune": {
+          "sign": "Cancer",
+          "degree": 0.28,
+          "house": 11
+        },
+        "Vertex": {
+          "sign": "Capricorn",
+          "degree": 6.19,
+          "house": 5
+        },
+        "ASC": {
+          "sign": "Leo",
+          "degree": 19.03
+        },
+        "MC": {
+          "sign": "Taurus",
+          "degree": 11.12
+        }
+      },
+      "objects": {
+        "Sun": {
+          "ecl_lon_deg": 153.12665087107666,
+          "ecl_lat_deg": -0.0013349970198333824,
+          "used_source": "jpl"
+        },
+        "Moon": {
+          "ecl_lon_deg": 333.0349,
+          "ecl_lat_deg": -0.004,
+          "used_source": "jpl"
+        },
+        "Mercury": {
+          "ecl_lon_deg": 70.696,
+          "ecl_lat_deg": 2.6799,
+          "used_source": "jpl"
+        },
+        "Venus": {
+          "ecl_lon_deg": 71.6108,
+          "ecl_lat_deg": -0.296,
+          "used_source": "jpl"
+        },
+        "Mars": {
+          "ecl_lon_deg": 215.5445,
+          "ecl_lat_deg": 0.4452,
+          "used_source": "jpl"
+        },
+        "Jupiter": {
+          "ecl_lon_deg": 98.325,
+          "ecl_lat_deg": -0.0499,
+          "used_source": "jpl"
+        },
+        "Saturn": {
+          "ecl_lon_deg": 357.2852,
+          "ecl_lat_deg": -2.2298,
+          "used_source": "jpl"
+        },
+        "Uranus": {
+          "ecl_lon_deg": 58.0885,
+          "ecl_lat_deg": -0.2121,
+          "used_source": "jpl"
+        },
+        "Neptune": {
+          "ecl_lon_deg": 0.2218,
+          "ecl_lat_deg": -1.3247,
+          "used_source": "jpl"
+        },
+        "Pluto": {
+          "ecl_lon_deg": 302.3745,
+          "ecl_lat_deg": -3.6885,
+          "used_source": "jpl"
+        },
+        "Chiron": {
+          "ecl_lon_deg": 23.9726,
+          "ecl_lat_deg": 0.646,
+          "used_source": "jpl"
+        },
+        "Ceres": {
+          "ecl_lon_deg": 2.1619,
+          "ecl_lat_deg": -10.3648,
+          "used_source": "jpl"
+        },
+        "Pallas": {
+          "ecl_lon_deg": 317.7162,
+          "ecl_lat_deg": 21.9133,
+          "used_source": "jpl"
+        },
+        "Juno": {
+          "ecl_lon_deg": 248.5322,
+          "ecl_lat_deg": 12.743,
+          "used_source": "jpl"
+        },
+        "Vesta": {
+          "ecl_lon_deg": 259.383,
+          "ecl_lat_deg": 2.9548,
+          "used_source": "jpl"
+        },
+        "Psyche": {
+          "ecl_lon_deg": 50.5697,
+          "ecl_lat_deg": -3.0554,
+          "used_source": "jpl"
+        },
+        "Amor": {
+          "ecl_lon_deg": 265.6996,
+          "ecl_lat_deg": 11.8337,
+          "used_source": "jpl"
+        },
+        "Eros": {
+          "ecl_lon_deg": 1.1679,
+          "ecl_lat_deg": 9.1029,
+          "used_source": "jpl"
+        },
+        "Astraea": {
+          "ecl_lon_deg": 271.9442,
+          "ecl_lat_deg": 4.0804,
+          "used_source": "jpl"
+        },
+        "Sappho": {
+          "ecl_lon_deg": 46.4157,
+          "ecl_lat_deg": -1.1827,
+          "used_source": "jpl"
+        },
+        "Karma": {
+          "ecl_lon_deg": 176.0489,
+          "ecl_lat_deg": -3.0656,
+          "used_source": "jpl"
+        },
+        "Bacchus": {
+          "ecl_lon_deg": 256.9007,
+          "ecl_lat_deg": -6.5685,
+          "used_source": "jpl"
+        },
+        "Hygiea": {
+          "ecl_lon_deg": 73.1827,
+          "ecl_lat_deg": 1.9151,
+          "used_source": "jpl"
+        },
+        "Nessus": {
+          "ecl_lon_deg": 349.5788,
+          "ecl_lat_deg": -10.5552,
+          "used_source": "jpl"
+        },
+        "Eris": {
+          "ecl_lon_deg": 24.7728,
+          "ecl_lat_deg": -10.6256,
+          "used_source": "jpl"
+        },
+        "Sedna": {
+          "ecl_lon_deg": 60.7754,
+          "ecl_lat_deg": -11.856,
+          "used_source": "jpl"
+        },
+        "Haumea": {
+          "ecl_lon_deg": 212.1538,
+          "ecl_lat_deg": 28.2079,
+          "used_source": "jpl"
+        },
+        "Makemake": {
+          "ecl_lon_deg": 190.8004,
+          "ecl_lat_deg": 27.3079,
+          "used_source": "jpl"
+        },
+        "Varuna": {
+          "ecl_lon_deg": 129.2911,
+          "ecl_lat_deg": 9.3013,
+          "used_source": "jpl"
+        },
+        "Ixion": {
+          "ecl_lon_deg": 276.2509,
+          "ecl_lat_deg": -8.6409,
+          "used_source": "jpl"
+        },
+        "Typhon": {
+          "ecl_lon_deg": 237.9307,
+          "ecl_lat_deg": -2.2197,
+          "used_source": "jpl"
+        },
+        "Salacia": {
+          "ecl_lon_deg": 10.8534,
+          "ecl_lat_deg": 23.926,
+          "used_source": "jpl"
+        },
+        "2002 AW197": {
+          "ecl_lon_deg": 158.9254,
+          "ecl_lat_deg": -16.7031,
+          "used_source": "jpl"
+        },
+        "2003 VS2": {
+          "ecl_lon_deg": 92.1015,
+          "ecl_lat_deg": 7.6568,
+          "used_source": "jpl"
+        },
+        "Orcus": {
+          "ecl_lon_deg": 166.4441,
+          "ecl_lat_deg": -20.1468,
+          "used_source": "jpl"
+        },
+        "Quaoar": {
+          "ecl_lon_deg": 280.1891,
+          "ecl_lat_deg": 7.9896,
+          "used_source": "jpl"
+        },
+        "Vulcan": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Persephone": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Hades": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Proserpina": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Isis": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Aldebaran": {
+          "ecl_lon_deg": 69.78918794733352,
+          "ecl_lat_deg": -5.4673266340468905,
+          "used_source": "fixed"
+        },
+        "Algol": {
+          "ecl_lon_deg": 56.16758477731656,
+          "ecl_lat_deg": 22.42852941496665,
+          "used_source": "fixed"
+        },
+        "Altair": {
+          "ecl_lon_deg": 301.77641565273615,
+          "ecl_lat_deg": 29.30346277687919,
+          "used_source": "fixed"
+        },
+        "Antares": {
+          "ecl_lon_deg": 249.76229284318168,
+          "ecl_lat_deg": -4.569944164023126,
+          "used_source": "fixed"
+        },
+        "Arcturus": {
+          "ecl_lon_deg": 204.2336149172314,
+          "ecl_lat_deg": 30.736232842293024,
+          "used_source": "fixed"
+        },
+        "Betelgeuse": {
+          "ecl_lon_deg": 88.75459920922947,
+          "ecl_lat_deg": -16.027009001429224,
+          "used_source": "fixed"
+        },
+        "Canopus": {
+          "ecl_lon_deg": 104.96033272553422,
+          "ecl_lat_deg": -75.82389126532915,
+          "used_source": "fixed"
+        },
+        "Capella": {
+          "ecl_lon_deg": 81.85791960050767,
+          "ecl_lat_deg": 22.86426550047521,
+          "used_source": "fixed"
+        },
+        "Deneb": {
+          "ecl_lon_deg": 335.32922244479863,
+          "ecl_lat_deg": 59.90614907677107,
+          "used_source": "fixed"
+        },
+        "Fomalhaut": {
+          "ecl_lon_deg": 333.860303668846,
+          "ecl_lat_deg": -21.1356346947104,
+          "used_source": "fixed"
+        },
+        "Pollux": {
+          "ecl_lon_deg": 113.21564071097544,
+          "ecl_lat_deg": 6.684188041457463,
+          "used_source": "fixed"
+        },
+        "Procyon": {
+          "ecl_lon_deg": 115.78552970891167,
+          "ecl_lat_deg": -16.01960831424116,
+          "used_source": "fixed"
+        },
+        "Regulus": {
+          "ecl_lon_deg": 149.82913426785984,
+          "ecl_lat_deg": 0.46483841477959303,
+          "used_source": "fixed"
+        },
+        "Rigel": {
+          "ecl_lon_deg": 76.82958746174211,
+          "ecl_lat_deg": -31.122767997526676,
+          "used_source": "fixed"
+        },
+        "Sirius": {
+          "ecl_lon_deg": 104.0816644702237,
+          "ecl_lat_deg": -39.605248579008055,
+          "used_source": "fixed"
+        },
+        "Spica": {
+          "ecl_lon_deg": 203.84135789547489,
+          "ecl_lat_deg": -2.0544885383661207,
+          "used_source": "fixed"
+        },
+        "Vega": {
+          "ecl_lon_deg": 285.3163877897361,
+          "ecl_lat_deg": 61.73286460925995,
+          "used_source": "fixed"
+        },
+        "Zubenelgenubi": {
+          "ecl_lon_deg": 225.04262196584472,
+          "ecl_lat_deg": 0.32059904778136317,
+          "used_source": "fixed"
+        },
+        "Zubeneschamali": {
+          "ecl_lon_deg": 229.37101032978873,
+          "ecl_lat_deg": 8.495669918586202,
+          "used_source": "fixed"
+        },
+        "House_1": {
+          "ecl_lon_deg": 126.16811598992504,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_2": {
+          "ecl_lon_deg": 147.21071613008655,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_3": {
+          "ecl_lon_deg": 172.70544804971615,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_4": {
+          "ecl_lon_deg": 204.31315600874416,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_5": {
+          "ecl_lon_deg": 240.50584659209318,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_6": {
+          "ecl_lon_deg": 275.7065337581608,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_7": {
+          "ecl_lon_deg": 306.168115989925,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_8": {
+          "ecl_lon_deg": 327.21071613008655,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_9": {
+          "ecl_lon_deg": 352.70544804971615,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_10": {
+          "ecl_lon_deg": 24.313156008744155,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_11": {
+          "ecl_lon_deg": 60.50584659209318,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_12": {
+          "ecl_lon_deg": 95.70653375816077,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "ASC": {
+          "ecl_lon_deg": 126.16811598992504,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses"
+        },
+        "MC": {
+          "ecl_lon_deg": 24.313156008744155,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses"
+        },
+        "Part_of_Fortune": {
+          "ecl_lon_deg": 306.07636511884834,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Spirit": {
+          "ecl_lon_deg": 306.2598668610017,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Karma": {
+          "ecl_lon_deg": 9.248891425463398,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Treachery": {
+          "ecl_lon_deg": 89.95412456446161,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Victory": {
+          "ecl_lon_deg": 270.0458754355383,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Deliverance": {
+          "ecl_lon_deg": 126.35161773207838,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Sun_h8": {
+          "ecl_lon_deg": 145.0132069686133,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sun_h9": {
+          "ecl_lon_deg": 298.13985783968997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Moon_h8": {
+          "ecl_lon_deg": 144.27919999999995,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Moon_h9": {
+          "ecl_lon_deg": 117.31410000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Mercury_h8": {
+          "ecl_lon_deg": 205.56799999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Mercury_h9": {
+          "ecl_lon_deg": 276.264,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Venus_h8": {
+          "ecl_lon_deg": 212.88639999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Venus_h9": {
+          "ecl_lon_deg": 284.4972,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Mars_h8": {
+          "ecl_lon_deg": 284.356,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Mars_h9": {
+          "ecl_lon_deg": 139.90049999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Jupiter_h8": {
+          "ecl_lon_deg": 66.60000000000002,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Jupiter_h9": {
+          "ecl_lon_deg": 164.92500000000007,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Saturn_h8": {
+          "ecl_lon_deg": 338.2815999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Saturn_h9": {
+          "ecl_lon_deg": 335.5667999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Uranus_h8": {
+          "ecl_lon_deg": 104.70800000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Uranus_h9": {
+          "ecl_lon_deg": 162.79650000000004,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Neptune_h8": {
+          "ecl_lon_deg": 1.7744000000000142,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Neptune_h9": {
+          "ecl_lon_deg": 1.9961999999999875,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pluto_h8": {
+          "ecl_lon_deg": 258.9960000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pluto_h9": {
+          "ecl_lon_deg": 201.3705,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Chiron_h8": {
+          "ecl_lon_deg": 191.7808,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Chiron_h9": {
+          "ecl_lon_deg": 215.75340000000006,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Ceres_h8": {
+          "ecl_lon_deg": 17.295200000000023,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Ceres_h9": {
+          "ecl_lon_deg": 19.457100000000025,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pallas_h8": {
+          "ecl_lon_deg": 21.72960000000012,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pallas_h9": {
+          "ecl_lon_deg": 339.44579999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Juno_h8": {
+          "ecl_lon_deg": 188.2575999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Juno_h9": {
+          "ecl_lon_deg": 76.78980000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vesta_h8": {
+          "ecl_lon_deg": 275.06399999999985,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vesta_h9": {
+          "ecl_lon_deg": 174.44699999999966,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Psyche_h8": {
+          "ecl_lon_deg": 44.55759999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Psyche_h9": {
+          "ecl_lon_deg": 95.12729999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Amor_h8": {
+          "ecl_lon_deg": 325.5967999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Amor_h9": {
+          "ecl_lon_deg": 231.29639999999972,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Eros_h8": {
+          "ecl_lon_deg": 9.343200000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Eros_h9": {
+          "ecl_lon_deg": 10.511099999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Astraea_h8": {
+          "ecl_lon_deg": 15.553600000000188,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Astraea_h9": {
+          "ecl_lon_deg": 287.4978000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sappho_h8": {
+          "ecl_lon_deg": 11.325600000000009,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sappho_h9": {
+          "ecl_lon_deg": 57.741300000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Karma_h8": {
+          "ecl_lon_deg": 328.3912,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Karma_h9": {
+          "ecl_lon_deg": 144.44010000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Bacchus_h8": {
+          "ecl_lon_deg": 255.20559999999978,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Bacchus_h9": {
+          "ecl_lon_deg": 152.10629999999992,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Hygiea_h8": {
+          "ecl_lon_deg": 225.46159999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Hygiea_h9": {
+          "ecl_lon_deg": 298.64429999999993,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Nessus_h8": {
+          "ecl_lon_deg": 276.6304,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Nessus_h9": {
+          "ecl_lon_deg": 266.20920000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Eris_h8": {
+          "ecl_lon_deg": 198.18240000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Eris_h9": {
+          "ecl_lon_deg": 222.9552,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sedna_h8": {
+          "ecl_lon_deg": 126.20319999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sedna_h9": {
+          "ecl_lon_deg": 186.97860000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Haumea_h8": {
+          "ecl_lon_deg": 257.2303999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Haumea_h9": {
+          "ecl_lon_deg": 109.38419999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Makemake_h8": {
+          "ecl_lon_deg": 86.40319999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Makemake_h9": {
+          "ecl_lon_deg": 277.20360000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Varuna_h8": {
+          "ecl_lon_deg": 314.3288,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Varuna_h9": {
+          "ecl_lon_deg": 83.61989999999992,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Ixion_h8": {
+          "ecl_lon_deg": 50.00720000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Ixion_h9": {
+          "ecl_lon_deg": 326.2581,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Typhon_h8": {
+          "ecl_lon_deg": 103.44560000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Typhon_h9": {
+          "ecl_lon_deg": 341.3762999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Salacia_h8": {
+          "ecl_lon_deg": 86.8272,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Salacia_h9": {
+          "ecl_lon_deg": 97.68060000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "2002 AW197_h8": {
+          "ecl_lon_deg": 191.40319999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "2002 AW197_h9": {
+          "ecl_lon_deg": 350.32860000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "2003 VS2_h8": {
+          "ecl_lon_deg": 16.812000000000012,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "2003 VS2_h9": {
+          "ecl_lon_deg": 108.9135,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Orcus_h8": {
+          "ecl_lon_deg": 251.55279999999993,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Orcus_h9": {
+          "ecl_lon_deg": 57.99689999999987,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Quaoar_h8": {
+          "ecl_lon_deg": 81.51279999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Quaoar_h9": {
+          "ecl_lon_deg": 1.7019000000000233,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vulcan_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vulcan_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Persephone_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Persephone_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Hades_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Hades_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Proserpina_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Proserpina_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Isis_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Isis_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Aldebaran_h8": {
+          "ecl_lon_deg": 198.31350357866813,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Aldebaran_h9": {
+          "ecl_lon_deg": 268.10269152600165,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Algol_h8": {
+          "ecl_lon_deg": 89.3406782185325,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Algol_h9": {
+          "ecl_lon_deg": 145.50826299584907,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Altair_h8": {
+          "ecl_lon_deg": 254.21132522188918,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Altair_h9": {
+          "ecl_lon_deg": 195.98774087462516,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Antares_h8": {
+          "ecl_lon_deg": 198.09834274545346,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Antares_h9": {
+          "ecl_lon_deg": 87.86063558863498,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Arcturus_h8": {
+          "ecl_lon_deg": 193.86891933785114,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Arcturus_h9": {
+          "ecl_lon_deg": 38.102534255082446,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Betelgeuse_h8": {
+          "ecl_lon_deg": 350.03679367383575,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Betelgeuse_h9": {
+          "ecl_lon_deg": 78.79139288306521,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Canopus_h8": {
+          "ecl_lon_deg": 119.68266180427372,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Canopus_h9": {
+          "ecl_lon_deg": 224.642994529808,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Capella_h8": {
+          "ecl_lon_deg": 294.86335680406137,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Capella_h9": {
+          "ecl_lon_deg": 16.72127640456904,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Deneb_h8": {
+          "ecl_lon_deg": 162.63377955838905,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Deneb_h9": {
+          "ecl_lon_deg": 137.96300200318774,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Fomalhaut_h8": {
+          "ecl_lon_deg": 150.88242935076778,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Fomalhaut_h9": {
+          "ecl_lon_deg": 124.74273301961375,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pollux_h8": {
+          "ecl_lon_deg": 185.72512568780348,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pollux_h9": {
+          "ecl_lon_deg": 298.9407663987789,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Procyon_h8": {
+          "ecl_lon_deg": 206.28423767129334,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Procyon_h9": {
+          "ecl_lon_deg": 322.0697673802051,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Regulus_h8": {
+          "ecl_lon_deg": 118.63307414287874,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Regulus_h9": {
+          "ecl_lon_deg": 268.46220841073864,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Rigel_h8": {
+          "ecl_lon_deg": 254.63669969393686,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Rigel_h9": {
+          "ecl_lon_deg": 331.46628715567897,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sirius_h8": {
+          "ecl_lon_deg": 112.6533157617896,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sirius_h9": {
+          "ecl_lon_deg": 216.7349802320133,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Spica_h8": {
+          "ecl_lon_deg": 190.73086316379909,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Spica_h9": {
+          "ecl_lon_deg": 34.57222105927394,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vega_h8": {
+          "ecl_lon_deg": 122.53110231788878,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vega_h9": {
+          "ecl_lon_deg": 47.84749010762471,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Zubenelgenubi_h8": {
+          "ecl_lon_deg": 0.34097572675773336,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Zubenelgenubi_h9": {
+          "ecl_lon_deg": 225.3835976926025,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Zubeneschamali_h8": {
+          "ecl_lon_deg": 34.96808263830985,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Zubeneschamali_h9": {
+          "ecl_lon_deg": 264.3390929680986,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_1_h8": {
+          "ecl_lon_deg": 289.34492791940033,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_1_h9": {
+          "ecl_lon_deg": 55.51304390932546,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_2_h8": {
+          "ecl_lon_deg": 97.68572904069242,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_2_h9": {
+          "ecl_lon_deg": 244.89644517077886,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_3_h8": {
+          "ecl_lon_deg": 301.6435843977292,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_3_h9": {
+          "ecl_lon_deg": 114.34903244744532,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_4_h8": {
+          "ecl_lon_deg": 194.50524806995327,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_4_h9": {
+          "ecl_lon_deg": 38.81840407869731,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_5_h8": {
+          "ecl_lon_deg": 124.04677273674542,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_5_h9": {
+          "ecl_lon_deg": 4.552619328838773,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_6_h8": {
+          "ecl_lon_deg": 45.6522700652863,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_6_h9": {
+          "ecl_lon_deg": 321.35880382344703,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_7_h8": {
+          "ecl_lon_deg": 289.3449279194001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_7_h9": {
+          "ecl_lon_deg": 235.513043909325,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_8_h8": {
+          "ecl_lon_deg": 97.68572904069242,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_8_h9": {
+          "ecl_lon_deg": 64.89644517077886,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_9_h8": {
+          "ecl_lon_deg": 301.6435843977292,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_9_h9": {
+          "ecl_lon_deg": 294.34903244744555,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_10_h8": {
+          "ecl_lon_deg": 194.50524806995327,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_10_h9": {
+          "ecl_lon_deg": 218.81840407869743,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_11_h8": {
+          "ecl_lon_deg": 124.04677273674542,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_11_h9": {
+          "ecl_lon_deg": 184.55261932883855,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_12_h8": {
+          "ecl_lon_deg": 45.65227006528619,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_12_h9": {
+          "ecl_lon_deg": 141.35880382344692,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "ASC_h8": {
+          "ecl_lon_deg": 289.34492791940033,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "ASC_h9": {
+          "ecl_lon_deg": 55.51304390932546,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "MC_h8": {
+          "ecl_lon_deg": 194.50524806995327,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "MC_h9": {
+          "ecl_lon_deg": 218.81840407869743,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Fortune_h8": {
+          "ecl_lon_deg": 288.61092095078675,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Fortune_h9": {
+          "ecl_lon_deg": 234.68728606963487,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Spirit_h8": {
+          "ecl_lon_deg": 290.07893488801346,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Spirit_h9": {
+          "ecl_lon_deg": 236.33880174901515,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Karma_h8": {
+          "ecl_lon_deg": 73.99113140370719,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Karma_h9": {
+          "ecl_lon_deg": 83.24002282917058,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Treachery_h8": {
+          "ecl_lon_deg": 359.63299651569287,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Treachery_h9": {
+          "ecl_lon_deg": 89.58712108015447,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Victory_h8": {
+          "ecl_lon_deg": 0.367003484306224,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Victory_h9": {
+          "ecl_lon_deg": 270.4128789198444,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Deliverance_h8": {
+          "ecl_lon_deg": 290.81294185662705,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Deliverance_h9": {
+          "ecl_lon_deg": 57.164559588705515,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        }
+      }
+    },
+    "Christine": {
+      "birth": {
+        "date": "1989-07-05",
+        "time": "15:01",
+        "place": "Islip, NY, USA",
+        "lat": 40.7262,
+        "lon": -73.2007,
+        "tz": "America/New_York"
+      },
+      "natal": {
+        "Sun": {
+          "sign": "Cancer",
+          "degree": 13.7,
+          "house": 9
+        },
+        "Moon": {
+          "sign": "Leo",
+          "degree": 15.3,
+          "house": 10
+        },
+        "Mercury": {
+          "sign": "Gemini",
+          "degree": 29.52,
+          "house": 8
+        },
+        "Venus": {
+          "sign": "Leo",
+          "degree": 7.88,
+          "house": 9
+        },
+        "Mars": {
+          "sign": "Leo",
+          "degree": 11.95,
+          "house": 9
+        },
+        "Jupiter": {
+          "sign": "Gemini",
+          "degree": 24.57,
+          "house": 8
+        },
+        "Saturn": {
+          "sign": "Capricorn",
+          "degree": 10.37,
+          "house": 3,
+          "retrograde": true
+        },
+        "Uranus": {
+          "sign": "Capricorn",
+          "degree": 2.9,
+          "house": 2,
+          "retrograde": true
+        },
+        "Neptune": {
+          "sign": "Capricorn",
+          "degree": 10.92,
+          "house": 3,
+          "retrograde": true
+        },
+        "Pluto": {
+          "sign": "Scorpio",
+          "degree": 12.43,
+          "house": 1,
+          "retrograde": true
+        },
+        "Node": {
+          "sign": "Aquarius",
+          "degree": 26.38,
+          "house": 4,
+          "retrograde": true
+        },
+        "Lilith": {
+          "sign": "Libra",
+          "degree": 27.48,
+          "house": 12,
+          "retrograde": true
+        },
+        "Chiron": {
+          "sign": "Cancer",
+          "degree": 9.28,
+          "house": 9
+        },
+        "Fortune": {
+          "sign": "Sagittarius",
+          "degree": 7.7,
+          "house": 2
+        },
+        "Vertex": {
+          "sign": "Gemini",
+          "degree": 16.05,
+          "house": 8
+        },
+        "ASC": {
+          "sign": "Scorpio",
+          "degree": 6.1
+        },
+        "MC": {
+          "sign": "Leo",
+          "degree": 13.32
+        }
+      },
+      "objects": {
+        "Sun": {
+          "ecl_lon_deg": 153.12665087107666,
+          "ecl_lat_deg": -0.0013349970198333824,
+          "used_source": "jpl"
+        },
+        "Moon": {
+          "ecl_lon_deg": 333.0349,
+          "ecl_lat_deg": -0.004,
+          "used_source": "jpl"
+        },
+        "Mercury": {
+          "ecl_lon_deg": 70.696,
+          "ecl_lat_deg": 2.6799,
+          "used_source": "jpl"
+        },
+        "Venus": {
+          "ecl_lon_deg": 71.6108,
+          "ecl_lat_deg": -0.296,
+          "used_source": "jpl"
+        },
+        "Mars": {
+          "ecl_lon_deg": 215.5445,
+          "ecl_lat_deg": 0.4452,
+          "used_source": "jpl"
+        },
+        "Jupiter": {
+          "ecl_lon_deg": 98.325,
+          "ecl_lat_deg": -0.0499,
+          "used_source": "jpl"
+        },
+        "Saturn": {
+          "ecl_lon_deg": 357.2852,
+          "ecl_lat_deg": -2.2298,
+          "used_source": "jpl"
+        },
+        "Uranus": {
+          "ecl_lon_deg": 58.0885,
+          "ecl_lat_deg": -0.2121,
+          "used_source": "jpl"
+        },
+        "Neptune": {
+          "ecl_lon_deg": 0.2218,
+          "ecl_lat_deg": -1.3247,
+          "used_source": "jpl"
+        },
+        "Pluto": {
+          "ecl_lon_deg": 302.3745,
+          "ecl_lat_deg": -3.6885,
+          "used_source": "jpl"
+        },
+        "Chiron": {
+          "ecl_lon_deg": 23.9726,
+          "ecl_lat_deg": 0.646,
+          "used_source": "jpl"
+        },
+        "Ceres": {
+          "ecl_lon_deg": 2.1619,
+          "ecl_lat_deg": -10.3648,
+          "used_source": "jpl"
+        },
+        "Pallas": {
+          "ecl_lon_deg": 317.7162,
+          "ecl_lat_deg": 21.9133,
+          "used_source": "jpl"
+        },
+        "Juno": {
+          "ecl_lon_deg": 248.5322,
+          "ecl_lat_deg": 12.743,
+          "used_source": "jpl"
+        },
+        "Vesta": {
+          "ecl_lon_deg": 259.383,
+          "ecl_lat_deg": 2.9548,
+          "used_source": "jpl"
+        },
+        "Psyche": {
+          "ecl_lon_deg": 50.5697,
+          "ecl_lat_deg": -3.0554,
+          "used_source": "jpl"
+        },
+        "Amor": {
+          "ecl_lon_deg": 265.6996,
+          "ecl_lat_deg": 11.8337,
+          "used_source": "jpl"
+        },
+        "Eros": {
+          "ecl_lon_deg": 1.1679,
+          "ecl_lat_deg": 9.1029,
+          "used_source": "jpl"
+        },
+        "Astraea": {
+          "ecl_lon_deg": 271.9442,
+          "ecl_lat_deg": 4.0804,
+          "used_source": "jpl"
+        },
+        "Sappho": {
+          "ecl_lon_deg": 46.4157,
+          "ecl_lat_deg": -1.1827,
+          "used_source": "jpl"
+        },
+        "Karma": {
+          "ecl_lon_deg": 176.0489,
+          "ecl_lat_deg": -3.0656,
+          "used_source": "jpl"
+        },
+        "Bacchus": {
+          "ecl_lon_deg": 256.9007,
+          "ecl_lat_deg": -6.5685,
+          "used_source": "jpl"
+        },
+        "Hygiea": {
+          "ecl_lon_deg": 73.1827,
+          "ecl_lat_deg": 1.9151,
+          "used_source": "jpl"
+        },
+        "Nessus": {
+          "ecl_lon_deg": 349.5788,
+          "ecl_lat_deg": -10.5552,
+          "used_source": "jpl"
+        },
+        "Eris": {
+          "ecl_lon_deg": 24.7728,
+          "ecl_lat_deg": -10.6256,
+          "used_source": "jpl"
+        },
+        "Sedna": {
+          "ecl_lon_deg": 60.7754,
+          "ecl_lat_deg": -11.856,
+          "used_source": "jpl"
+        },
+        "Haumea": {
+          "ecl_lon_deg": 212.1538,
+          "ecl_lat_deg": 28.2079,
+          "used_source": "jpl"
+        },
+        "Makemake": {
+          "ecl_lon_deg": 190.8004,
+          "ecl_lat_deg": 27.3079,
+          "used_source": "jpl"
+        },
+        "Varuna": {
+          "ecl_lon_deg": 129.2911,
+          "ecl_lat_deg": 9.3013,
+          "used_source": "jpl"
+        },
+        "Ixion": {
+          "ecl_lon_deg": 276.2509,
+          "ecl_lat_deg": -8.6409,
+          "used_source": "jpl"
+        },
+        "Typhon": {
+          "ecl_lon_deg": 237.9307,
+          "ecl_lat_deg": -2.2197,
+          "used_source": "jpl"
+        },
+        "Salacia": {
+          "ecl_lon_deg": 10.8534,
+          "ecl_lat_deg": 23.926,
+          "used_source": "jpl"
+        },
+        "2002 AW197": {
+          "ecl_lon_deg": 158.9254,
+          "ecl_lat_deg": -16.7031,
+          "used_source": "jpl"
+        },
+        "2003 VS2": {
+          "ecl_lon_deg": 92.1015,
+          "ecl_lat_deg": 7.6568,
+          "used_source": "jpl"
+        },
+        "Orcus": {
+          "ecl_lon_deg": 166.4441,
+          "ecl_lat_deg": -20.1468,
+          "used_source": "jpl"
+        },
+        "Quaoar": {
+          "ecl_lon_deg": 280.1891,
+          "ecl_lat_deg": 7.9896,
+          "used_source": "jpl"
+        },
+        "Vulcan": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Persephone": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Hades": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Proserpina": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Isis": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated-fallback"
+        },
+        "Aldebaran": {
+          "ecl_lon_deg": 69.78918794733352,
+          "ecl_lat_deg": -5.4673266340468905,
+          "used_source": "fixed"
+        },
+        "Algol": {
+          "ecl_lon_deg": 56.16758477731656,
+          "ecl_lat_deg": 22.42852941496665,
+          "used_source": "fixed"
+        },
+        "Altair": {
+          "ecl_lon_deg": 301.77641565273615,
+          "ecl_lat_deg": 29.30346277687919,
+          "used_source": "fixed"
+        },
+        "Antares": {
+          "ecl_lon_deg": 249.76229284318168,
+          "ecl_lat_deg": -4.569944164023126,
+          "used_source": "fixed"
+        },
+        "Arcturus": {
+          "ecl_lon_deg": 204.2336149172314,
+          "ecl_lat_deg": 30.736232842293024,
+          "used_source": "fixed"
+        },
+        "Betelgeuse": {
+          "ecl_lon_deg": 88.75459920922947,
+          "ecl_lat_deg": -16.027009001429224,
+          "used_source": "fixed"
+        },
+        "Canopus": {
+          "ecl_lon_deg": 104.96033272553422,
+          "ecl_lat_deg": -75.82389126532915,
+          "used_source": "fixed"
+        },
+        "Capella": {
+          "ecl_lon_deg": 81.85791960050767,
+          "ecl_lat_deg": 22.86426550047521,
+          "used_source": "fixed"
+        },
+        "Deneb": {
+          "ecl_lon_deg": 335.32922244479863,
+          "ecl_lat_deg": 59.90614907677107,
+          "used_source": "fixed"
+        },
+        "Fomalhaut": {
+          "ecl_lon_deg": 333.860303668846,
+          "ecl_lat_deg": -21.1356346947104,
+          "used_source": "fixed"
+        },
+        "Pollux": {
+          "ecl_lon_deg": 113.21564071097544,
+          "ecl_lat_deg": 6.684188041457463,
+          "used_source": "fixed"
+        },
+        "Procyon": {
+          "ecl_lon_deg": 115.78552970891167,
+          "ecl_lat_deg": -16.01960831424116,
+          "used_source": "fixed"
+        },
+        "Regulus": {
+          "ecl_lon_deg": 149.82913426785984,
+          "ecl_lat_deg": 0.46483841477959303,
+          "used_source": "fixed"
+        },
+        "Rigel": {
+          "ecl_lon_deg": 76.82958746174211,
+          "ecl_lat_deg": -31.122767997526676,
+          "used_source": "fixed"
+        },
+        "Sirius": {
+          "ecl_lon_deg": 104.0816644702237,
+          "ecl_lat_deg": -39.605248579008055,
+          "used_source": "fixed"
+        },
+        "Spica": {
+          "ecl_lon_deg": 203.84135789547489,
+          "ecl_lat_deg": -2.0544885383661207,
+          "used_source": "fixed"
+        },
+        "Vega": {
+          "ecl_lon_deg": 285.3163877897361,
+          "ecl_lat_deg": 61.73286460925995,
+          "used_source": "fixed"
+        },
+        "Zubenelgenubi": {
+          "ecl_lon_deg": 225.04262196584472,
+          "ecl_lat_deg": 0.32059904778136317,
+          "used_source": "fixed"
+        },
+        "Zubeneschamali": {
+          "ecl_lon_deg": 229.37101032978873,
+          "ecl_lat_deg": 8.495669918586202,
+          "used_source": "fixed"
+        },
+        "House_1": {
+          "ecl_lon_deg": 163.42347033261552,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_2": {
+          "ecl_lon_deg": 187.92163073174112,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_3": {
+          "ecl_lon_deg": 217.31371495282247,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_4": {
+          "ecl_lon_deg": 250.67449303207988,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_5": {
+          "ecl_lon_deg": 284.8203022543167,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_6": {
+          "ecl_lon_deg": 316.14907327081136,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_7": {
+          "ecl_lon_deg": 343.4234703326155,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_8": {
+          "ecl_lon_deg": 7.921630731741118,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_9": {
+          "ecl_lon_deg": 37.313714952822465,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_10": {
+          "ecl_lon_deg": 70.67449303207988,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_11": {
+          "ecl_lon_deg": 104.82030225431667,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "House_12": {
+          "ecl_lon_deg": 136.14907327081136,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses-P"
+        },
+        "ASC": {
+          "ecl_lon_deg": 163.42347033261552,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses"
+        },
+        "MC": {
+          "ecl_lon_deg": 70.67449303207988,
+          "ecl_lat_deg": 0.0,
+          "used_source": "houses"
+        },
+        "Part_of_Fortune": {
+          "ecl_lon_deg": 343.5152212036922,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Spirit": {
+          "ecl_lon_deg": 343.3317194615388,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Karma": {
+          "ecl_lon_deg": 46.50424576815385,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Treachery": {
+          "ecl_lon_deg": 89.95412456446167,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Victory": {
+          "ecl_lon_deg": 270.04587543553833,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Part_of_Deliverance": {
+          "ecl_lon_deg": 163.23996859046224,
+          "ecl_lat_deg": 0.0,
+          "used_source": "calculated"
+        },
+        "Sun_h8": {
+          "ecl_lon_deg": 145.0132069686133,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sun_h9": {
+          "ecl_lon_deg": 298.13985783968997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Moon_h8": {
+          "ecl_lon_deg": 144.27919999999995,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Moon_h9": {
+          "ecl_lon_deg": 117.31410000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Mercury_h8": {
+          "ecl_lon_deg": 205.56799999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Mercury_h9": {
+          "ecl_lon_deg": 276.264,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Venus_h8": {
+          "ecl_lon_deg": 212.88639999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Venus_h9": {
+          "ecl_lon_deg": 284.4972,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Mars_h8": {
+          "ecl_lon_deg": 284.356,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Mars_h9": {
+          "ecl_lon_deg": 139.90049999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Jupiter_h8": {
+          "ecl_lon_deg": 66.60000000000002,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Jupiter_h9": {
+          "ecl_lon_deg": 164.92500000000007,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Saturn_h8": {
+          "ecl_lon_deg": 338.2815999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Saturn_h9": {
+          "ecl_lon_deg": 335.5667999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Uranus_h8": {
+          "ecl_lon_deg": 104.70800000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Uranus_h9": {
+          "ecl_lon_deg": 162.79650000000004,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Neptune_h8": {
+          "ecl_lon_deg": 1.7744000000000142,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Neptune_h9": {
+          "ecl_lon_deg": 1.9961999999999875,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pluto_h8": {
+          "ecl_lon_deg": 258.9960000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pluto_h9": {
+          "ecl_lon_deg": 201.3705,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Chiron_h8": {
+          "ecl_lon_deg": 191.7808,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Chiron_h9": {
+          "ecl_lon_deg": 215.75340000000006,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Ceres_h8": {
+          "ecl_lon_deg": 17.295200000000023,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Ceres_h9": {
+          "ecl_lon_deg": 19.457100000000025,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pallas_h8": {
+          "ecl_lon_deg": 21.72960000000012,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pallas_h9": {
+          "ecl_lon_deg": 339.44579999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Juno_h8": {
+          "ecl_lon_deg": 188.2575999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Juno_h9": {
+          "ecl_lon_deg": 76.78980000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vesta_h8": {
+          "ecl_lon_deg": 275.06399999999985,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vesta_h9": {
+          "ecl_lon_deg": 174.44699999999966,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Psyche_h8": {
+          "ecl_lon_deg": 44.55759999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Psyche_h9": {
+          "ecl_lon_deg": 95.12729999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Amor_h8": {
+          "ecl_lon_deg": 325.5967999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Amor_h9": {
+          "ecl_lon_deg": 231.29639999999972,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Eros_h8": {
+          "ecl_lon_deg": 9.343200000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Eros_h9": {
+          "ecl_lon_deg": 10.511099999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Astraea_h8": {
+          "ecl_lon_deg": 15.553600000000188,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Astraea_h9": {
+          "ecl_lon_deg": 287.4978000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sappho_h8": {
+          "ecl_lon_deg": 11.325600000000009,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sappho_h9": {
+          "ecl_lon_deg": 57.741300000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Karma_h8": {
+          "ecl_lon_deg": 328.3912,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Karma_h9": {
+          "ecl_lon_deg": 144.44010000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Bacchus_h8": {
+          "ecl_lon_deg": 255.20559999999978,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Bacchus_h9": {
+          "ecl_lon_deg": 152.10629999999992,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Hygiea_h8": {
+          "ecl_lon_deg": 225.46159999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Hygiea_h9": {
+          "ecl_lon_deg": 298.64429999999993,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Nessus_h8": {
+          "ecl_lon_deg": 276.6304,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Nessus_h9": {
+          "ecl_lon_deg": 266.20920000000024,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Eris_h8": {
+          "ecl_lon_deg": 198.18240000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Eris_h9": {
+          "ecl_lon_deg": 222.9552,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sedna_h8": {
+          "ecl_lon_deg": 126.20319999999998,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sedna_h9": {
+          "ecl_lon_deg": 186.97860000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Haumea_h8": {
+          "ecl_lon_deg": 257.2303999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Haumea_h9": {
+          "ecl_lon_deg": 109.38419999999996,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Makemake_h8": {
+          "ecl_lon_deg": 86.40319999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Makemake_h9": {
+          "ecl_lon_deg": 277.20360000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Varuna_h8": {
+          "ecl_lon_deg": 314.3288,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Varuna_h9": {
+          "ecl_lon_deg": 83.61989999999992,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Ixion_h8": {
+          "ecl_lon_deg": 50.00720000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Ixion_h9": {
+          "ecl_lon_deg": 326.2581,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Typhon_h8": {
+          "ecl_lon_deg": 103.44560000000001,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Typhon_h9": {
+          "ecl_lon_deg": 341.3762999999999,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Salacia_h8": {
+          "ecl_lon_deg": 86.8272,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Salacia_h9": {
+          "ecl_lon_deg": 97.68060000000003,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "2002 AW197_h8": {
+          "ecl_lon_deg": 191.40319999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "2002 AW197_h9": {
+          "ecl_lon_deg": 350.32860000000005,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "2003 VS2_h8": {
+          "ecl_lon_deg": 16.812000000000012,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "2003 VS2_h9": {
+          "ecl_lon_deg": 108.9135,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Orcus_h8": {
+          "ecl_lon_deg": 251.55279999999993,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Orcus_h9": {
+          "ecl_lon_deg": 57.99689999999987,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Quaoar_h8": {
+          "ecl_lon_deg": 81.51279999999997,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Quaoar_h9": {
+          "ecl_lon_deg": 1.7019000000000233,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vulcan_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vulcan_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Persephone_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Persephone_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Hades_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Hades_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Proserpina_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Proserpina_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Isis_h8": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Isis_h9": {
+          "ecl_lon_deg": 0.0,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Aldebaran_h8": {
+          "ecl_lon_deg": 198.31350357866813,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Aldebaran_h9": {
+          "ecl_lon_deg": 268.10269152600165,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Algol_h8": {
+          "ecl_lon_deg": 89.3406782185325,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Algol_h9": {
+          "ecl_lon_deg": 145.50826299584907,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Altair_h8": {
+          "ecl_lon_deg": 254.21132522188918,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Altair_h9": {
+          "ecl_lon_deg": 195.98774087462516,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Antares_h8": {
+          "ecl_lon_deg": 198.09834274545346,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Antares_h9": {
+          "ecl_lon_deg": 87.86063558863498,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Arcturus_h8": {
+          "ecl_lon_deg": 193.86891933785114,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Arcturus_h9": {
+          "ecl_lon_deg": 38.102534255082446,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Betelgeuse_h8": {
+          "ecl_lon_deg": 350.03679367383575,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Betelgeuse_h9": {
+          "ecl_lon_deg": 78.79139288306521,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Canopus_h8": {
+          "ecl_lon_deg": 119.68266180427372,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Canopus_h9": {
+          "ecl_lon_deg": 224.642994529808,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Capella_h8": {
+          "ecl_lon_deg": 294.86335680406137,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Capella_h9": {
+          "ecl_lon_deg": 16.72127640456904,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Deneb_h8": {
+          "ecl_lon_deg": 162.63377955838905,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Deneb_h9": {
+          "ecl_lon_deg": 137.96300200318774,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Fomalhaut_h8": {
+          "ecl_lon_deg": 150.88242935076778,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Fomalhaut_h9": {
+          "ecl_lon_deg": 124.74273301961375,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Pollux_h8": {
+          "ecl_lon_deg": 185.72512568780348,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Pollux_h9": {
+          "ecl_lon_deg": 298.9407663987789,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Procyon_h8": {
+          "ecl_lon_deg": 206.28423767129334,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Procyon_h9": {
+          "ecl_lon_deg": 322.0697673802051,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Regulus_h8": {
+          "ecl_lon_deg": 118.63307414287874,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Regulus_h9": {
+          "ecl_lon_deg": 268.46220841073864,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Rigel_h8": {
+          "ecl_lon_deg": 254.63669969393686,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Rigel_h9": {
+          "ecl_lon_deg": 331.46628715567897,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Sirius_h8": {
+          "ecl_lon_deg": 112.6533157617896,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Sirius_h9": {
+          "ecl_lon_deg": 216.7349802320133,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Spica_h8": {
+          "ecl_lon_deg": 190.73086316379909,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Spica_h9": {
+          "ecl_lon_deg": 34.57222105927394,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Vega_h8": {
+          "ecl_lon_deg": 122.53110231788878,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Vega_h9": {
+          "ecl_lon_deg": 47.84749010762471,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Zubenelgenubi_h8": {
+          "ecl_lon_deg": 0.34097572675773336,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Zubenelgenubi_h9": {
+          "ecl_lon_deg": 225.3835976926025,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Zubeneschamali_h8": {
+          "ecl_lon_deg": 34.96808263830985,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Zubeneschamali_h9": {
+          "ecl_lon_deg": 264.3390929680986,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_1_h8": {
+          "ecl_lon_deg": 227.38776266092418,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_1_h9": {
+          "ecl_lon_deg": 30.81123299353976,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_2_h8": {
+          "ecl_lon_deg": 63.37304585392894,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_2_h9": {
+          "ecl_lon_deg": 251.29467658567,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_3_h8": {
+          "ecl_lon_deg": 298.5097196225797,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_3_h9": {
+          "ecl_lon_deg": 155.8234345754022,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_4_h8": {
+          "ecl_lon_deg": 205.39594425663904,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_4_h9": {
+          "ecl_lon_deg": 96.07043728871895,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_5_h8": {
+          "ecl_lon_deg": 118.5624180345335,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_5_h9": {
+          "ecl_lon_deg": 43.38272028885012,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_6_h8": {
+          "ecl_lon_deg": 9.192586166490855,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_6_h9": {
+          "ecl_lon_deg": 325.34165943730204,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_7_h8": {
+          "ecl_lon_deg": 227.38776266092418,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_7_h9": {
+          "ecl_lon_deg": 210.81123299353976,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_8_h8": {
+          "ecl_lon_deg": 63.37304585392894,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_8_h9": {
+          "ecl_lon_deg": 71.29467658567006,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_9_h8": {
+          "ecl_lon_deg": 298.5097196225797,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_9_h9": {
+          "ecl_lon_deg": 335.8234345754022,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_10_h8": {
+          "ecl_lon_deg": 205.39594425663904,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_10_h9": {
+          "ecl_lon_deg": 276.07043728871895,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_11_h8": {
+          "ecl_lon_deg": 118.56241803453338,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_11_h9": {
+          "ecl_lon_deg": 223.38272028885,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "House_12_h8": {
+          "ecl_lon_deg": 9.192586166490855,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "House_12_h9": {
+          "ecl_lon_deg": 145.34165943730227,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "ASC_h8": {
+          "ecl_lon_deg": 227.38776266092418,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "ASC_h9": {
+          "ecl_lon_deg": 30.81123299353976,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "MC_h8": {
+          "ecl_lon_deg": 205.39594425663904,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "MC_h9": {
+          "ecl_lon_deg": 276.07043728871895,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Fortune_h8": {
+          "ecl_lon_deg": 228.12176962953754,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Fortune_h9": {
+          "ecl_lon_deg": 211.6369908332299,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Spirit_h8": {
+          "ecl_lon_deg": 226.65375569231037,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Spirit_h9": {
+          "ecl_lon_deg": 209.98547515384917,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Karma_h8": {
+          "ecl_lon_deg": 12.033966145230806,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Karma_h9": {
+          "ecl_lon_deg": 58.53821191338466,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Treachery_h8": {
+          "ecl_lon_deg": 359.6329965156933,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Treachery_h9": {
+          "ecl_lon_deg": 89.58712108015493,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Victory_h8": {
+          "ecl_lon_deg": 0.36700348430667873,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Victory_h9": {
+          "ecl_lon_deg": 270.41287891984484,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        },
+        "Part_of_Deliverance_h8": {
+          "ecl_lon_deg": 225.91974872369792,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic8"
+        },
+        "Part_of_Deliverance_h9": {
+          "ecl_lon_deg": 29.15971731416016,
+          "ecl_lat_deg": 0.0,
+          "used_source": "harmonic9"
+        }
+      }
+    }
+  }
+}
