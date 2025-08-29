@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 import os
-import sys
 import json
 import datetime
 import pytz
-import numpy as np
 from astroquery.jplhorizons import Horizons
 
 # --- Dual import: Linux (swisseph) vs Windows (pyswisseph) ---
@@ -16,7 +14,6 @@ except ImportError:
 # Configure Swiss Ephemeris path
 EPHE_PATH = os.path.join(os.getcwd(), "ephe")
 swe.set_ephe_path(EPHE_PATH)
-
 if not os.path.exists(EPHE_PATH):
     raise RuntimeError(f"❌ Swiss ephemeris path not found: {EPHE_PATH}")
 
@@ -97,7 +94,6 @@ def get_positions(dt):
     result = {}
     for body in JPL_IDS.keys():
         coords = get_jpl_ephemeris(body, dt)
-
         if coords:  # JPL success
             result[body] = (coords[0], coords[1], "jpl")
         else:  # fallback to Swiss
@@ -109,14 +105,15 @@ def get_positions(dt):
     return result
 
 def main():
-    now = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
-    six_months = now + datetime.timedelta(days=180)
+    # Fixed 6-month window
+    start = datetime.datetime(2025, 8, 29, tzinfo=pytz.UTC)
+    end = datetime.datetime(2026, 2, 28, 23, 59, tzinfo=pytz.UTC)
     step_days = 1  # daily sampling
 
     data = {
         "meta": {
-            "generated_at_utc": now.isoformat(),
-            "range_utc": [now.isoformat(), six_months.isoformat()],
+            "generated_at_utc": datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).isoformat(),
+            "range_utc": [start.isoformat(), end.isoformat()],
             "source_order": ["jpl", "swiss", "fixed"]
         },
         "transits": {}
@@ -124,8 +121,8 @@ def main():
 
     stars = get_fixed_stars()
 
-    dt = now
-    while dt <= six_months:
+    dt = start
+    while dt <= end:
         day_key = dt.strftime("%Y-%m-%d")
         data["transits"][day_key] = {}
         positions = get_positions(dt)
