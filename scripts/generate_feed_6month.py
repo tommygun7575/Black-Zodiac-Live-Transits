@@ -61,26 +61,23 @@ def get_fixed_stars():
     return stars
 
 def swe_calc(body, dt):
-    jd = swe.julday(dt.year, dt.month, dt.day,
-                    dt.hour + dt.minute / 60.0 + dt.second / 3600.0)
+    jd = swe.julday(
+        dt.year, dt.month, dt.day,
+        dt.hour + dt.minute / 60.0 + dt.second / 3600.0
+    )
     result = swe.calc_ut(jd, SWISS_IDS[body])
 
-    # Normalize return format
-    if isinstance(result, tuple):
-        # Case 1: (lon, lat)
-        if len(result) == 2 and all(isinstance(x, (int, float)) for x in result):
-            lon, lat = result
-            return lon % 360.0, lat
-        # Case 2: (lon, lat, dist)
-        if len(result) == 3:
-            lon, lat, dist = result
-            return lon % 360.0, lat
-        # Case 3: ((lon, lat, dist), retflag)
-        if len(result) == 2 and isinstance(result[0], (list, tuple)):
-            lon, lat, dist = result[0]
-            return lon % 360.0, lat
+    # Linux swisseph: ((lon, lat, dist, speed...), retflag)
+    if isinstance(result, tuple) and len(result) == 2 and isinstance(result[0], (list, tuple)):
+        lon, lat, dist, *_ = result[0]
+        return lon % 360.0, lat
 
-    raise RuntimeError(f"Unexpected Swiss return format: {result}")
+    # Windows pyswisseph: (lon, lat, dist, speed...)
+    if isinstance(result, (list, tuple)) and len(result) >= 3:
+        lon, lat, dist, *_ = result
+        return lon % 360.0, lat
+
+    raise RuntimeError(f"❌ Unexpected Swiss return format: {result}")
 
 def get_jpl_ephemeris(body, dt):
     try:
@@ -146,7 +143,11 @@ def main():
             }
         dt += datetime.timedelta(days=step_days)
 
-    outpath = os.path.join("docs", "feed_6month.json")
+    # Filename: match daily style but mark as 6month
+    pacific = datetime.datetime.now(pytz.timezone("America/Los_Angeles"))
+    filename = f"feed_overlay_6month_{pacific.strftime('%b-%d-%Y_%I-%M%p')}_Pacific.json"
+    outpath = os.path.join("docs", filename)
+
     os.makedirs("docs", exist_ok=True)
     with open(outpath, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
