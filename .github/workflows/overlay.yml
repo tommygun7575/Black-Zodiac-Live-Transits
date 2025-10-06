@@ -2,7 +2,7 @@ name: build-overlay
 
 on:
   schedule:
-    - cron: '0 11 * * *'   # daily at 04:00 Pacific (11:00 UTC)
+    - cron: '0 11 * * *'  # daily at 04:00 Pacific (11:00 UTC)
   workflow_dispatch: {}
 
 jobs:
@@ -23,25 +23,23 @@ jobs:
 
       - name: Prepare Swiss Ephemeris files
         run: |
-          mkdir -p ./ephe
-          cp -r ./data/ephe/* ./ephe/ || true
-          echo "EPHE_PATH=$(pwd)/ephe" >> $GITHUB_ENV
+          mkdir -p ephe
+          curl -L -o ephe/seas_18.se1 https://www.astro.com/ftp/swisseph/ephe/seas_18.se1
+          curl -L -o ephe/semo_18.se1 https://www.astro.com/ftp/swisseph/ephe/semo_18.se1
+          curl -L -o ephe/sepl_18.se1 https://www.astro.com/ftp/swisseph/ephe/sepl_18.se1
+          curl -L -o ephe/seas_18.se2 https://www.astro.com/ftp/swisseph/ephe/seas_18.se2
 
-      - name: Build full daily overlay (Tommy + Milena)
-        env:
-          EPHE_PATH: ${{ env.EPHE_PATH }}
+      - name: Clean old overlays
+        run: rm -f docs/feed_overlay_*.json
+
+      - name: Build overlay
         run: |
-          python build_overlay.py \
-            --include-natal \
-            --include-transits \
-            --people Tommy Milena \
-            --include-sections "arabic_parts,fixed_stars,aether_planets,minor_bodies,deep_tnos,harmonics,aspects,houses" \
-            --output "feed_overlay_$(date +'%b-%d-%Y_%I-%M%p_Pacific').json"
+          PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
 
-      - name: Commit and push overlay
+      - name: Commit results
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add feed_overlay_*.json
-          git commit -m "ci(overlay): rebuild full overlay for Tommy & Milena"
+          git add docs/feed_overlay_*.json
+          git commit -m "Update overlay feed" || echo "No changes"
           git push
