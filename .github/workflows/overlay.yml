@@ -36,10 +36,16 @@ jobs:
         run: |
           PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
 
+      - name: Copy latest overlay to feed_now.json
+        run: |
+          # Copy the newly generated daily overlay to feed_now.json
+          latest_file=$(ls -t docs/feed_overlay_*.json | head -n 1)
+          cp "$latest_file" docs/feed_now.json
+
       - name: Commit results
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add docs/feed_overlay_*.json
-          git commit -m "Update overlay feed" || echo "No changes"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/feed_overlay_*.json docs/feed_now.json
+          git commit -m "ci(overlay): refresh daily feed overlay and feed_now.json" || echo "No changes to commit"
           git push
