@@ -8,6 +8,7 @@ on:
 jobs:
   overlay:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -35,6 +36,34 @@ jobs:
       - name: Build overlay
         run: |
           PYTHONPATH=$(pwd) python scripts/generate_feed_overlay.py
+
+      - name: Format and timestamp overlay (safe post-process)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+          for f in docs/feed_overlay_*.json; do
+            jq --sort-keys \
+              '. + {
+                 charts_meta: (.charts | keys),
+                 meta: (.meta + {
+                   generated_pacific: (now | strftime("%Y-%m-%dT%H:%M:%S %z"))
+                 })
+               }' "$f" > tmp.json
+            mv tmp.json "$f"
+          done
+
+      - name: Validate JSON structure
+        run: |
+          python - <<'PYCODE'
+          import json, glob, sys
+          for f in glob.glob("docs/feed_overlay_*.json"):
+              try:
+                  json.load(open(f))
+              except Exception as e:
+                  print(f"❌ Invalid JSON in {f}: {e}")
+                  sys.exit(1)
+          print("✅ All overlays valid JSON")
+          PYCODE
 
       - name: Commit results
         run: |
