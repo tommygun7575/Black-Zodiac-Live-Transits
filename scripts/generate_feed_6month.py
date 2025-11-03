@@ -11,13 +11,13 @@ try:
 except ImportError:
     import pyswisseph as swe   # Windows local
 
-# Configure Swiss Ephemeris path
+# --- Configure Swiss Ephemeris path ---
 EPHE_PATH = os.path.join(os.getcwd(), "ephe")
 swe.set_ephe_path(EPHE_PATH)
 if not os.path.exists(EPHE_PATH):
     raise RuntimeError(f"❌ Swiss ephemeris path not found: {EPHE_PATH}")
 
-# Bodies for Horizons + Swiss fallback
+# --- Planet and body IDs ---
 JPL_IDS = {
     "Sun": 10, "Moon": 301, "Mercury": 199, "Venus": 299,
     "Mars": 499, "Jupiter": 599, "Saturn": 699,
@@ -36,6 +36,10 @@ SWISS_IDS = {
 
 FIXED_STAR_FILE = "sefstars.txt"
 
+
+# ------------------------------------------------------------
+#  Fixed star loader
+# ------------------------------------------------------------
 def get_fixed_stars():
     stars = {}
     if not os.path.exists(FIXED_STAR_FILE):
@@ -57,6 +61,10 @@ def get_fixed_stars():
                 continue
     return stars
 
+
+# ------------------------------------------------------------
+#  Swiss ephemeris calculator
+# ------------------------------------------------------------
 def swe_calc(body, dt):
     jd = swe.julday(
         dt.year, dt.month, dt.day,
@@ -76,6 +84,10 @@ def swe_calc(body, dt):
 
     raise RuntimeError(f"❌ Unexpected Swiss return format: {result}")
 
+
+# ------------------------------------------------------------
+#  JPL Horizons fetch
+# ------------------------------------------------------------
 def get_jpl_ephemeris(body, dt):
     try:
         obj = Horizons(id=JPL_IDS[body], location="500@399",
@@ -90,6 +102,10 @@ def get_jpl_ephemeris(body, dt):
     except Exception:
         return None
 
+
+# ------------------------------------------------------------
+#  Position getter for each body
+# ------------------------------------------------------------
 def get_positions(dt):
     result = {}
     for body in JPL_IDS.keys():
@@ -104,16 +120,25 @@ def get_positions(dt):
                 raise RuntimeError(f"❌ Swiss failed for {body} on {dt}: {e}")
     return result
 
+
+# ------------------------------------------------------------
+#  Main generator
+# ------------------------------------------------------------
 def main():
-    # Fixed 6-month window
-    start = datetime.datetime(2025, 8, 29, tzinfo=pytz.UTC)
-    end = datetime.datetime(2026, 2, 28, 23, 59, tzinfo=pytz.UTC)
+    # Dynamic 6-month window starting from "now"
+    now = datetime.datetime.now(pytz.UTC)
+    start = now
+    end = now + datetime.timedelta(days=182)  # ≈ 6 months
     step_days = 1  # daily sampling
 
+    # Meta header
     data = {
         "meta": {
             "generated_at_utc": datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).isoformat(),
+            "generated_at_pacific": datetime.datetime.now(pytz.timezone("America/Los_Angeles")).isoformat(),
+            "type": "6-month overlay",
             "range_utc": [start.isoformat(), end.isoformat()],
+            "range": f"{start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}",
             "source_order": ["jpl", "swiss", "fixed"]
         },
         "transits": {}
@@ -121,26 +146,30 @@ def main():
 
     stars = get_fixed_stars()
 
+    # Build daily data
     dt = start
     while dt <= end:
         day_key = dt.strftime("%Y-%m-%d")
         data["transits"][day_key] = {}
         positions = get_positions(dt)
+
         for body, (lon, lat, src) in positions.items():
             data["transits"][day_key][body] = {
                 "ecl_lon_deg": lon,
                 "ecl_lat_deg": lat,
                 "source": src
             }
+
         for star, (lon, lat, src) in stars.items():
             data["transits"][day_key][star] = {
                 "ecl_lon_deg": lon,
                 "ecl_lat_deg": lat,
                 "source": src
             }
+
         dt += datetime.timedelta(days=step_days)
 
-    # Filename: match daily style but mark as 6month
+    # Filename & output path
     pacific = datetime.datetime.now(pytz.timezone("America/Los_Angeles"))
     filename = f"feed_overlay_6month_{pacific.strftime('%b-%d-%Y_%I-%M%p')}_Pacific.json"
     outpath = os.path.join("docs", filename)
@@ -151,5 +180,7 @@ def main():
 
     print(f"✅ 6-month feed written to {outpath}")
 
+
+# ------------------------------------------------------------
 if __name__ == "__main__":
     main()
