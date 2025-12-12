@@ -38,7 +38,6 @@ jobs:
 
       - name: Copy latest overlay to feed_now.json
         run: |
-          # Copy the newly generated daily overlay to feed_now.json
           latest_file=$(ls -t docs/feed_overlay_*.json | head -n 1)
           cp "$latest_file" docs/feed_now.json
 
