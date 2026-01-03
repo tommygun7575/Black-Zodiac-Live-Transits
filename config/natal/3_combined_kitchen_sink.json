@@ -8,6 +8,7 @@
       "Includes planets, houses, aspects, harmonics, arabic parts, fixed stars (known), placeholders for TNOs/asteroids/aether planets until populated by GitHub pipeline."
     ]
   },
+
   "Tommy": {
     "birth": {
       "date": "1975-09-12",
@@ -45,13 +46,11 @@
     "fixed_star_contacts": [
       {"star": "Antares", "body": "Neptune", "orb": 0.62, "aspect": "conjunction"}
     ],
-    "harmonics": {
-      "h8": "filled",
-      "h9": "filled"
-    },
+    "harmonics": {"h8": "filled", "h9": "filled"},
     "midpoints": "filled",
     "declinations": "filled"
   },
+
   "Milena": {
     "birth": {
       "date": "1992-03-29",
@@ -86,51 +85,49 @@
     "midpoints": "filled",
     "declinations": "filled"
   },
- "Trinity": {
-  "birth": {
-    "date": "2002-03-28",
-    "time": "07:17",
-    "place": "Carson City, NV, USA",
-    "lat": 39.1638,
-    "lon": -119.7674,
-    "tz": "America/Los_Angeles"
-  },
-  "planets": {
-    "Sun": {"sign": "Aries", "degree": 7.19, "house": 12},
-    "Moon": {"sign": "Virgo", "degree": 13.04, "house": 6},
-    "Mercury": {"sign": "Pisces", "degree": 25.89, "house": 11, "retrograde": true},
-    "Venus": {"sign": "Aquarius", "degree": 20.04, "house": 10},
-    "Mars": {"sign": "Cancer", "degree": 3.30, "house": 2},
-    "Jupiter": {"sign": "Cancer", "degree": 10.29, "house": 2, "retrograde": true},
-    "Saturn": {"sign": "Gemini", "degree": 25.48, "house": 1},
-    "Uranus": {"sign": "Aquarius", "degree": 22.42, "house": 10},
-    "Neptune": {"sign": "Aquarius", "degree": 9.35, "house": 10},
-    "Pluto": {"sign": "Sagittarius", "degree": 16.55, "house": 7, "retrograde": true},
-    "Node": {"sign": "Gemini", "degree": 27.53, "house": 1, "retrograde": true},
-    "Lilith": {"sign": "Taurus", "degree": 11.22, "house": 12},
-    "Chiron": {"sign": "Capricorn", "degree": 14.15, "house": 8, "retrograde": true},
-    "Fortune": {"sign": "Leo", "degree": 2.12, "house": 4},
-    "Vertex": {"sign": "Taurus", "degree": 0.40, "house": 12},
-    "ASC": {"sign": "Gemini", "degree": 27.53},
-    "MC": {"sign": "Aquarius", "degree": 8.18}
-  },
-  "arabic_parts": {
-    "Fortune": 122.12,
-    "Spirit": 157.32,
-    "Karma": 225.01,
-    "Victory": 289.22,
-    "Treachery": 264.47,
-    "Deliverance": 87.59
-  },
-  "fixed_star_contacts": [
-    {"star": "Regulus", "body": "ASC", "orb": 2.03, "aspect": "conjunction"},
-    {"star": "Spica", "body": "Venus", "orb": 3.48, "aspect": "trine"}
-    // (Add actual aspects if your overlay populates these—else leave array empty)
-  ],
-  "harmonics": {
-    "h8": "filled",
-    "h9": "filled"
-  },
-  "midpoints": "filled",
-  "declinations": "filled"
+
+  "Trinity": {
+    "birth": {
+      "date": "2002-03-28",
+      "time": "07:17",
+      "place": "Carson City, NV, USA",
+      "lat": 39.1638,
+      "lon": -119.7674,
+      "tz": "America/Los_Angeles"
+    },
+    "planets": {
+      "Sun": {"sign": "Aries", "degree": 7.19, "house": 12},
+      "Moon": {"sign": "Virgo", "degree": 13.04, "house": 6},
+      "Mercury": {"sign": "Pisces", "degree": 25.89, "house": 11, "retrograde": true},
+      "Venus": {"sign": "Aquarius", "degree": 20.04, "house": 10},
+      "Mars": {"sign": "Cancer", "degree": 3.30, "house": 2},
+      "Jupiter": {"sign": "Cancer", "degree": 10.29, "house": 2, "retrograde": true},
+      "Saturn": {"sign": "Gemini", "degree": 25.48, "house": 1},
+      "Uranus": {"sign": "Aquarius", "degree": 22.42, "house": 10},
+      "Neptune": {"sign": "Aquarius", "degree": 9.35, "house": 10},
+      "Pluto": {"sign": "Sagittarius", "degree": 16.55, "house": 7, "retrograde": true},
+      "Node": {"sign": "Gemini", "degree": 27.53, "house": 1, "retrograde": true},
+      "Lilith": {"sign": "Taurus", "degree": 11.22, "house": 12},
+      "Chiron": {"sign": "Capricorn", "degree": 14.15, "house": 8, "retrograde": true},
+      "Fortune": {"sign": "Leo", "degree": 2.12, "house": 4},
+      "Vertex": {"sign": "Taurus", "degree": 0.40, "house": 12},
+      "ASC": {"sign": "Gemini", "degree": 27.53},
+      "MC": {"sign": "Aquarius", "degree": 8.18}
+    },
+    "arabic_parts": {
+      "Fortune": 122.12,
+      "Spirit": 157.32,
+      "Karma": 225.01,
+      "Victory": 289.22,
+      "Treachery": 264.47,
+      "Deliverance": 87.59
+    },
+    "fixed_star_contacts": [
+      {"star": "Regulus", "body": "ASC", "orb": 2.03, "aspect": "conjunction"},
+      {"star": "Spica", "body": "Venus", "orb": 3.48, "aspect": "trine"}
+    ],
+    "harmonics": {"h8": "filled", "h9": "filled"},
+    "midpoints": "filled",
+    "declinations": "filled"
+  }
 }
