@@ -55,6 +55,23 @@ MIRIADE_BODIES = [
     "Karma", "Destinn", "Aura", "Merlin",
 ]
 
+ASTEROID_MIRIADE_IDS = {
+    "Ceres": "1",
+    "Pallas": "2",
+    "Juno": "3",
+    "Vesta": "4",
+    "Hygiea": "10",
+    "Eros": "433",
+    "Psyche": "16",
+    "Sappho": "80",
+    "Hekate": "100",
+    "Nemesis": "128",
+    "Karma": "3811",
+    "Destinn": "6583",
+    "Aura": "1488",
+    "Merlin": "2598",
+}
+
 HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
 
 
@@ -242,52 +259,59 @@ def _miriade_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, 
         "Huya": "38628",
         "Salacia": "120347",
     }
-    miriade_name = miriade_designations.get(body["name"], body["name"])
+    body_name = body["name"]
+    if body_name in ASTEROID_MIRIADE_IDS:
+        query_id = ASTEROID_MIRIADE_IDS[body_name]
+    else:
+        query_id = miriade_designations.get(body_name, body_name)
 
-    body_with_miriade_name = dict(body)
-    body_with_miriade_name["miriade_name"] = miriade_name
-
-    for identifier in _miriade_identifiers(body_with_miriade_name):
-        params = {
-            "name": identifier,
-            "epoch": _utc_iso(dt),
-            "observer": "500",
-            "eph": "1",
-            "-theory": "DE431",
-            "-teph": "1",
-            "-tcoor": "1",
-            "-rplane": "2",
-            "-nbd": "1",
-            "-mime": "json",
-        }
-        response = requests.get(MIRIADE_BASE, params=params, timeout=20)
+    params = {
+        "name": query_id,
+        "epoch": _utc_iso(dt),
+        "observer": "500",
+        "eph": "1",
+        "-theory": "DE431",
+        "-teph": "1",
+        "-tcoor": "1",
+        "-rplane": "2",
+        "-nbd": "1",
+        "-mime": "json",
+    }
+    response = requests.get(MIRIADE_BASE, params=params, timeout=20)
+    try:
         response.raise_for_status()
-        data = response.json().get("result", {})
-        if isinstance(data, str):
-            data = json.loads(data)
-        rows = data.get("data", [])
-        if not rows:
-            continue
-        row = {k.lower(): v for k, v in rows[0].items()}
+    except requests.HTTPError:
+        if response.status_code == 400:
+            print(f"[WARN] miriade failed for {body_name}")
+            return None
+        raise
 
-        lon = row.get("elon") or row.get("ecllon")
-        lat = row.get("elat") or row.get("ecllat")
-        if lon is None or lat is None:
-            ra, dec = row.get("ra"), row.get("dec")
-            if ra is None or dec is None:
-                continue
-            lon, lat = ra_dec_to_ecl(float(ra), float(dec), _utc_iso(dt))
+    data = response.json().get("result", {})
+    if isinstance(data, str):
+        data = json.loads(data)
+    rows = data.get("data", [])
+    if not rows:
+        return None
+    row = {k.lower(): v for k, v in rows[0].items()}
 
-        distance = float(row.get("delta") or row.get("dist") or 0.0)
-        velocity = float(row.get("deldot") or row.get("vel") or 0.0)
-        timestamp = row.get("epoch") or row.get("date") or row.get("datetime") or _utc_iso(dt)
-        return {
-            "longitude": float(lon) % 360.0,
-            "latitude": float(lat),
-            "distance": distance,
-            "velocity": velocity,
-            "timestamp": str(timestamp),
-        }
+    lon = row.get("elon") or row.get("ecllon")
+    lat = row.get("elat") or row.get("ecllat")
+    if lon is None or lat is None:
+        ra, dec = row.get("ra"), row.get("dec")
+        if ra is None or dec is None:
+            return None
+        lon, lat = ra_dec_to_ecl(float(ra), float(dec), _utc_iso(dt))
+
+    distance = float(row.get("delta") or row.get("dist") or 0.0)
+    velocity = float(row.get("deldot") or row.get("vel") or 0.0)
+    timestamp = row.get("epoch") or row.get("date") or row.get("datetime") or _utc_iso(dt)
+    return {
+        "longitude": float(lon) % 360.0,
+        "latitude": float(lat),
+        "distance": distance,
+        "velocity": velocity,
+        "timestamp": str(timestamp),
+    }
 
     return None
 
