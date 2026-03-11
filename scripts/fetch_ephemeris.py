@@ -306,17 +306,15 @@ def _swiss_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, fl
 
 def _normalize_provider_priority(body: Dict[str, Any], category: str) -> List[str]:
     if body["name"].lower() == "sun":
-        return ["horizons", "swiss"]
+        return ["swiss"]
 
-    if category in PRIMARY_HORIZONS_CATEGORIES:
-        return ["horizons", "swiss"]
-    if category in SECONDARY_MIRIADE_CATEGORIES:
-        return ["horizons", "swiss", "miriade"]
+    if category in PRIMARY_HORIZONS_CATEGORIES or category in SECONDARY_MIRIADE_CATEGORIES:
+        return ["horizons", "miriade", "swiss"]
     if category == "fixed_stars":
         return ["fixed_star_catalog"]
     if category == "aether_points":
         return ["calculated"]
-    return ["horizons", "swiss"]
+    return ["horizons", "miriade", "swiss"]
 
 
 def _compute_single(provider: str, body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
@@ -331,7 +329,7 @@ def _compute_single(provider: str, body: Dict[str, Any], dt: datetime) -> Dict[s
 
     try:
         data = loader(body, dt)
-        if data:
+        if data and _is_valid_number(data.get("longitude")) and _is_valid_number(data.get("latitude")):
             return {
                 name: {
                     **data,

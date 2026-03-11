@@ -3,34 +3,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from scripts.calculate_aspects import arabic_parts, fixed_star_conjunctions, harmonic_aspects
+from scripts.calculate_aspects import fixed_star_conjunctions, harmonic_aspects
 from scripts.fetch_ephemeris import fetch_all_positions, load_catalog
-from scripts.overlay_engine import build_natal_positions, generate_overlays
-from scripts.validate_output_schema import validate_payload
-
-import math
 
 ROOT = Path(__file__).resolve().parents[1]
-NATAL_PATH = ROOT / "config" / "natal_profiles.json"
-OUTPUT_DIR = ROOT / "output" / "daily_overlays"
-DOCS_OUTPUT_DIR = ROOT / "docs" / "overlays"
-LIVE_CONFIG_PATH = ROOT / "config" / "live_config.json"
-
-
-def load_natal_profiles() -> dict:
-    with NATAL_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-
-
-def load_live_config() -> dict:
-    with LIVE_CONFIG_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
+OUTPUT_DIR = ROOT / "daily_transits"
 
 
 def _sanitize_nans(value):
@@ -42,16 +24,13 @@ def _sanitize_nans(value):
         return None
     return value
 
+
 def utc_midnight_for_day(day: str | None = None) -> datetime:
     if day:
         parsed = datetime.strptime(day, "%Y-%m-%d")
         return parsed.replace(tzinfo=timezone.utc)
     now = datetime.now(timezone.utc)
     return datetime(now.year, now.month, now.day, tzinfo=timezone.utc)
-
-
-def to_pacific_string(dt_utc: datetime) -> str:
-    return dt_utc.astimezone(ZoneInfo("America/Los_Angeles")).isoformat()
 
 
 def _write_json(path: Path, payload: dict) -> None:
@@ -61,7 +40,7 @@ def _write_json(path: Path, payload: dict) -> None:
 
 
 def main() -> Path:
-    parser = argparse.ArgumentParser(description="Generate deterministic daily transit overlays")
+    parser = argparse.ArgumentParser(description="Generate daily transit snapshot")
     parser.add_argument("--date", help="UTC day in YYYY-MM-DD; defaults to current UTC day")
     args = parser.parse_args()
 
@@ -69,52 +48,27 @@ def main() -> Path:
     catalog = load_catalog()
     transit_positions = fetch_all_positions(transit_dt_utc, catalog=catalog)
 
-    harmonics = harmonic_aspects(transit_positions)
-    live_config = load_live_config()
-    chart = (live_config.get("natal_charts") or [{}])[0]
-    lat = float(chart.get("lat", 0.0))
-    lon = float(chart.get("lon", 0.0))
-
-    parts = arabic_parts(
-        transit_positions,
-        transit_dt_utc.isoformat().replace("+00:00", "Z"),
-        lat,
-        lon,
-    )
-    star_conjunctions = fixed_star_conjunctions(transit_positions)
-
-    natal_profiles = load_natal_profiles()
-    natal_positions = build_natal_positions(natal_profiles)
-    overlays = generate_overlays(transit_positions, natal_positions)
-
-    pacific_timestamp = to_pacific_string(transit_dt_utc)
-    date_tag = transit_dt_utc.astimezone(ZoneInfo("America/Los_Angeles")).strftime("%Y_%m_%d")
-
     output = {
         "generated_at_utc": transit_dt_utc.isoformat().replace("+00:00", "Z"),
-        "generated_at_pacific": pacific_timestamp,
+        "generated_at_pacific": transit_dt_utc.astimezone(ZoneInfo("America/Los_Angeles")).isoformat(),
         "transit_positions": transit_positions,
-        "calculated_harmonics": harmonics,
-        "arabic_parts": parts,
-        "fixed_star_conjunctions": star_conjunctions,
-        "natal_overlays": overlays,
+        "calculated_harmonics": harmonic_aspects(transit_positions),
+        "aether_points": {
+            name: data for name, data in transit_positions.items() if data.get("category") == "aether_points"
+        },
+        "fixed_star_positions": {
+            name: data for name, data in transit_positions.items() if data.get("category") == "fixed_stars"
+        },
+        "fixed_star_conjunctions": fixed_star_conjunctions(transit_positions),
     }
 
     output = _sanitize_nans(output)
 
-    validate_payload(output)
-
-    output_path = OUTPUT_DIR / f"daily_overlay_{date_tag}.json"
+    date_tag = transit_dt_utc.astimezone(ZoneInfo("America/Los_Angeles")).strftime("%Y_%m_%d")
+    output_path = OUTPUT_DIR / f"feed_overlay_{date_tag}.json"
     _write_json(output_path, output)
 
-    docs_pacific_dt = datetime.now(timezone.utc).astimezone(ZoneInfo("America/Los_Angeles"))
-    timestamp_tag = docs_pacific_dt.strftime("%Y_%m_%d_%H%M")
-    tz_abbrev = docs_pacific_dt.strftime("%Z")
-    docs_output_path = DOCS_OUTPUT_DIR / f"daily_overlay_{timestamp_tag}_{tz_abbrev}.json"
-    _write_json(docs_output_path, output)
-
     print(f"[OK] Generated {output_path}")
-    print(f"[OK] Published {docs_output_path}")
     return output_path
 
 
