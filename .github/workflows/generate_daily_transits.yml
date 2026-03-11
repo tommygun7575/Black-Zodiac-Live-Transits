@@ -30,6 +30,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: install Swiss ephemeris data
+        run: |
+          mkdir -p ephemeris
+          curl -fsSL https://ftp.astro.com/pub/swisseph/ephe/sepl_18.se1 -o ephemeris/sepl_18.se1
+          curl -fsSL https://ftp.astro.com/pub/swisseph/ephe/semo_18.se1 -o ephemeris/semo_18.se1
+          curl -fsSL https://ftp.astro.com/pub/swisseph/ephe/seas_18.se1 -o ephemeris/seas_18.se1
+
+      - name: configure Swiss ephemeris path
+        run: |
+          python - <<'PY'
+          import swisseph as swe
+          swe.set_ephe_path("./ephemeris")
+          print("Swiss ephemeris path set to ./ephemeris")
+          PY
+
       - name: run deterministic transit pipeline
         run: |
           PYTHONPATH=$(pwd) python scripts/generate_transits.py
