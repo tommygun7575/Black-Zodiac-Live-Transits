@@ -42,14 +42,19 @@ SWISS_CODES = {
 }
 
 MIRIADE_BASE = "https://ssp.imcce.fr/webservices/miriade/api/ephemcc.php"
-PRIMARY_HORIZONS_CATEGORIES = {"core_bodies", "dwarf_planets", "major_asteroids"}
-SECONDARY_MIRIADE_CATEGORIES = {"expanded_asteroids", "centaurs", "trans_neptunian_objects"}
-HORIZONS_BATCH_GROUPS = {
-    "batch_1": {"core_bodies"},
-    "batch_2": {"dwarf_planets"},
-    "batch_3": {"major_asteroids"},
-    "batch_4": SECONDARY_MIRIADE_CATEGORIES,
-}
+HORIZONS_BODIES = [
+    "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn",
+    "Uranus", "Neptune", "Pluto",
+    "Ceres", "Eris", "Haumea", "Makemake",
+    "Orcus", "Quaoar", "Sedna", "Gonggong",
+    "Ixion", "Varuna", "Huya", "Salacia",
+]
+MIRIADE_BODIES = [
+    "Pallas", "Juno", "Vesta", "Hygiea", "Astraea",
+    "Eros", "Psyche", "Sappho", "Hekate", "Nemesis",
+    "Karma", "Destinn", "Aura", "Merlin",
+]
+
 HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
 
 
@@ -305,11 +310,13 @@ def _swiss_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, fl
 
 
 def _normalize_provider_priority(body: Dict[str, Any], category: str) -> List[str]:
-    if body["name"].lower() == "sun":
+    name = body["name"]
+    if name == "Sun":
         return ["swiss"]
-
-    if category in PRIMARY_HORIZONS_CATEGORIES or category in SECONDARY_MIRIADE_CATEGORIES:
+    if name in HORIZONS_BODIES:
         return ["horizons", "miriade", "swiss"]
+    if name in MIRIADE_BODIES:
+        return ["miriade", "horizons", "swiss"]
     if category == "fixed_stars":
         return ["fixed_star_catalog"]
     if category == "aether_points":
@@ -438,9 +445,6 @@ def _resolve_body(body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
         result = _compute_single(provider, body, dt)[name]
         lon = result.get("longitude")
         lat = result.get("latitude")
-        if name.lower() == "sun" and provider == "horizons" and not _is_valid_number(lon):
-            errors.extend(result.get("errors", ["horizons: invalid longitude"]))
-            continue
         if (
             result.get("source") != "unresolved"
             and _is_valid_number(lon)
@@ -489,19 +493,7 @@ def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) 
             all_bodies.append(enriched)
 
     positions: Dict[str, Dict[str, Any]] = {}
-
-    horizons_prefetch: Dict[str, Dict[str, float]] = {}
-    for categories in HORIZONS_BATCH_GROUPS.values():
-        batch_bodies = [b for b in all_bodies if b.get("_catalog_category") in categories]
-        if not batch_bodies:
-            continue
-        try:
-            horizons_prefetch.update(_horizons_batch_positions(batch_bodies, dt))
-        except Exception:
-            continue
-
     for body in all_bodies:
-        body["_horizons_prefetch"] = horizons_prefetch
         resolved = _resolve_body(body, dt)
         for name, candidate in resolved.items():
             existing = positions.get(name)
