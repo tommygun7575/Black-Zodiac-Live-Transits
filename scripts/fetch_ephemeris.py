@@ -139,7 +139,27 @@ def _horizons_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str,
 
 
 def _miriade_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, float]]:
-    for identifier in _miriade_identifiers(body):
+    miriade_designations = {
+        "Chiron": "2060",
+        "Pholus": "5145",
+        "Nessus": "7066",
+        "Chariklo": "10199",
+        "Hylonome": "10370",
+        "Asbolus": "8405",
+        "Orcus": "90482",
+        "Sedna": "90377",
+        "Quaoar": "50000",
+        "Ixion": "28978",
+        "Varuna": "20000",
+        "Huya": "38628",
+        "Salacia": "120347",
+    }
+    miriade_name = miriade_designations.get(body["name"], body["name"])
+
+    body_with_miriade_name = dict(body)
+    body_with_miriade_name["miriade_name"] = miriade_name
+
+    for identifier in _miriade_identifiers(body_with_miriade_name):
         params = {
             "-name": identifier,
             "-ep": _utc_iso(dt),
@@ -327,7 +347,11 @@ def _resolve_body(body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
 
     for provider in body.get("_provider_chain", ["horizons", "miriade", "swiss"]):
         result = _compute_single(provider, body, dt)[name]
-        if result.get("source") != "unresolved" and result.get("longitude") is not None:
+        if (
+            result.get("source") != "unresolved"
+            and result.get("longitude") is not None
+            and result.get("latitude") is not None
+        ):
             if errors:
                 result["errors"] = errors
             return {name: result}
