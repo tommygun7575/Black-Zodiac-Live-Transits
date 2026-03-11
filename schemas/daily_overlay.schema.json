@@ -32,7 +32,7 @@
     "calculated_harmonics": {"type": "array"},
     "arabic_parts": {
       "type": "object",
-      "additionalProperties": {"type": "number"}
+      "additionalProperties": {"type": ["number", "null"]}
     },
     "fixed_star_conjunctions": {"type": "array"},
     "natal_overlays": {

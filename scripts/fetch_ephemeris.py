@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
@@ -15,6 +16,7 @@ from scripts.utils.coords import ra_dec_to_ecl
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "config" / "celestial_catalog.json"
 FIXED_STARS_PATH = ROOT / "data" / "fixed_stars.json"
+ALT_FIXED_STARS_PATH = ROOT / "data" / "fixed_star_catalog.json"
 
 EPHEMERIS_PATH = ROOT / "ephemeris"
 if not EPHEMERIS_PATH.exists():
@@ -42,6 +44,17 @@ SWISS_CODES = {
 MIRIADE_BASE = "https://ssp.imcce.fr/webservices/miriade/api/ephemcc.php"
 PRIMARY_HORIZONS_CATEGORIES = {"core_bodies", "dwarf_planets", "major_asteroids"}
 SECONDARY_MIRIADE_CATEGORIES = {"expanded_asteroids", "centaurs", "trans_neptunian_objects"}
+HORIZONS_BATCH_GROUPS = {
+    "batch_1": {"core_bodies"},
+    "batch_2": {"dwarf_planets"},
+    "batch_3": {"major_asteroids"},
+    "batch_4": SECONDARY_MIRIADE_CATEGORIES,
+}
+HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
+
+
+def _is_valid_number(value: Any) -> bool:
+    return isinstance(value, (int, float)) and math.isfinite(float(value))
 
 
 def _normalize_minor_body_id(value: Any) -> Optional[str]:
@@ -105,6 +118,10 @@ def _to_jd(dt: datetime) -> float:
 
 
 def _horizons_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, float]]:
+    prefetched = body.get("_horizons_prefetch")
+    if isinstance(prefetched, dict) and body["name"] in prefetched:
+        return prefetched[body["name"]]
+
     body_id = body.get("horizons_id") or body["name"]
     id_type = body.get("horizons_id_type")
     kwargs: Dict[str, Any] = {
@@ -130,12 +147,78 @@ def _horizons_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str,
     if (lon is None or lat is None) and {"RA", "DEC"}.issubset(eph.colnames):
         lon, lat = ra_dec_to_ecl(float(eph["RA"][0]), float(eph["DEC"][0]), _utc_iso(dt))
 
-    if lon is None or lat is None:
+    if not _is_valid_number(lon) or not _is_valid_number(lat):
         return None
 
     distance = float(eph["delta"][0]) if "delta" in eph.colnames else 0.0
     velocity = float(eph["vel_obs"][0]) if "vel_obs" in eph.colnames else 0.0
     return {"longitude": lon % 360.0, "latitude": lat, "distance": distance, "velocity": velocity}
+
+
+def _parse_horizons_vector_batch(text: str, name_by_command: Dict[str, str]) -> Dict[str, Dict[str, float]]:
+    parsed: Dict[str, Dict[str, float]] = {}
+    current_name: Optional[str] = None
+    in_block = False
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("Target body name:"):
+            current_name = None
+            for command, body_name in name_by_command.items():
+                if f"({command})" in line:
+                    current_name = body_name
+                    break
+            continue
+        if line == "$$SOE":
+            in_block = True
+            continue
+        if line == "$$EOE":
+            in_block = False
+            continue
+        if not in_block or current_name is None:
+            continue
+        if line.startswith("X ="):
+            tokens = line.replace("=", " ").split()
+            try:
+                x = float(tokens[tokens.index("X") + 1])
+                y = float(tokens[tokens.index("Y") + 1])
+                z = float(tokens[tokens.index("Z") + 1])
+                lon = math.degrees(math.atan2(y, x)) % 360.0
+                lat = math.degrees(math.atan2(z, math.sqrt(x * x + y * y)))
+                parsed[current_name] = {
+                    "longitude": lon,
+                    "latitude": lat,
+                    "distance": math.sqrt(x * x + y * y + z * z),
+                    "velocity": 0.0,
+                }
+            except (ValueError, IndexError):
+                continue
+    return parsed
+
+
+def _horizons_batch_positions(bodies: List[Dict[str, Any]], dt: datetime) -> Dict[str, Dict[str, float]]:
+    if not bodies:
+        return {}
+    command_by_name: Dict[str, str] = {}
+    name_by_command: Dict[str, str] = {}
+    for body in bodies:
+        command = str(body.get("horizons_id") or body["name"]).rstrip(";")
+        command_by_name[body["name"]] = command
+        name_by_command[command] = body["name"]
+
+    command_list = ",".join(command_by_name.values())
+    params = {
+        "format": "text",
+        "COMMAND": f"'{command_list}'",
+        "CENTER": "'500@0'",
+        "TABLE_TYPE": "'VECTOR'",
+        "REF_PLANE": "'ECLIPTIC'",
+        "START_TIME": f"'{_utc_iso(dt)}'",
+        "STOP_TIME": f"'{_utc_iso(dt)}'",
+        "STEP_SIZE": "'1d'",
+    }
+    response = requests.get(HORIZONS_API, params=params, timeout=30)
+    response.raise_for_status()
+    return _parse_horizons_vector_batch(response.text, name_by_command)
 
 
 def _miriade_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, float]]:
@@ -161,9 +244,10 @@ def _miriade_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, 
 
     for identifier in _miriade_identifiers(body_with_miriade_name):
         params = {
-            "-name": identifier,
-            "-ep": _utc_iso(dt),
-            "-observer": "500",
+            "name": identifier,
+            "epoch": _utc_iso(dt),
+            "observer": "500",
+            "eph": "1",
             "-theory": "DE431",
             "-teph": "1",
             "-tcoor": "1",
@@ -224,13 +308,15 @@ def _normalize_provider_priority(body: Dict[str, Any], category: str) -> List[st
     if body["name"].lower() == "sun":
         return ["horizons", "swiss"]
 
-    if category in PRIMARY_HORIZONS_CATEGORIES or category in SECONDARY_MIRIADE_CATEGORIES:
-        return ["horizons", "miriade", "swiss"]
+    if category in PRIMARY_HORIZONS_CATEGORIES:
+        return ["horizons", "swiss"]
+    if category in SECONDARY_MIRIADE_CATEGORIES:
+        return ["horizons", "swiss", "miriade"]
     if category == "fixed_stars":
         return ["fixed_star_catalog"]
     if category == "aether_points":
         return ["calculated"]
-    return ["horizons", "miriade", "swiss"]
+    return ["horizons", "swiss"]
 
 
 def _compute_single(provider: str, body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
@@ -317,8 +403,13 @@ def _compute_aether_points(
     saturn = lon("Saturn")
     venus = lon("Venus")
 
+    def midpoint(a: Optional[float], b: Optional[float]) -> Optional[float]:
+        if not _is_valid_number(a) or not _is_valid_number(b):
+            return None
+        return (float(a) + float(b)) % 360.0
+
     formulas = {
-        "Aetheric_SunMoon_Midpoint": None if sun is None or moon is None else ((sun + moon) / 2.0) % 360.0,
+        "Aetheric_SunMoon_Midpoint": midpoint(sun, moon),
         "Aetheric_Jovian_Arc": None if jupiter is None or saturn is None else ((jupiter - saturn) + 360.0) % 360.0,
         "Aetheric_Elemental_Balance": None if mars is None or venus is None or moon is None else ((mars + venus + moon) / 3.0) % 360.0,
     }
@@ -347,10 +438,15 @@ def _resolve_body(body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
 
     for provider in body.get("_provider_chain", ["horizons", "miriade", "swiss"]):
         result = _compute_single(provider, body, dt)[name]
+        lon = result.get("longitude")
+        lat = result.get("latitude")
+        if name.lower() == "sun" and provider == "horizons" and not _is_valid_number(lon):
+            errors.extend(result.get("errors", ["horizons: invalid longitude"]))
+            continue
         if (
             result.get("source") != "unresolved"
-            and result.get("longitude") is not None
-            and result.get("latitude") is not None
+            and _is_valid_number(lon)
+            and _is_valid_number(lat)
         ):
             if errors:
                 result["errors"] = errors
@@ -395,7 +491,19 @@ def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) 
             all_bodies.append(enriched)
 
     positions: Dict[str, Dict[str, Any]] = {}
+
+    horizons_prefetch: Dict[str, Dict[str, float]] = {}
+    for categories in HORIZONS_BATCH_GROUPS.values():
+        batch_bodies = [b for b in all_bodies if b.get("_catalog_category") in categories]
+        if not batch_bodies:
+            continue
+        try:
+            horizons_prefetch.update(_horizons_batch_positions(batch_bodies, dt))
+        except Exception:
+            continue
+
     for body in all_bodies:
+        body["_horizons_prefetch"] = horizons_prefetch
         resolved = _resolve_body(body, dt)
         for name, candidate in resolved.items():
             existing = positions.get(name)
@@ -408,8 +516,9 @@ def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) 
             if candidate_ok and not existing_ok:
                 positions[name] = candidate
 
-    if FIXED_STARS_PATH.exists() and fixed_star_names:
-        with FIXED_STARS_PATH.open("r", encoding="utf-8") as f:
+    stars_path = ALT_FIXED_STARS_PATH if ALT_FIXED_STARS_PATH.exists() else FIXED_STARS_PATH
+    if stars_path.exists() and fixed_star_names:
+        with stars_path.open("r", encoding="utf-8") as f:
             stars = json.load(f).get("stars", [])
         for star in stars:
             if star["id"] not in fixed_star_names:
