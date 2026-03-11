@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import json
-import os
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import requests
 import swisseph as swe
@@ -37,6 +37,8 @@ SWISS_CODES = {
 }
 
 MIRIADE_BASE = "https://ssp.imcce.fr/webservices/miriade/api/ephemcc.php"
+PRIMARY_HORIZONS_CATEGORIES = {"sun_moon", "planets", "dwarf_planets", "major_asteroids"}
+SECONDARY_MIRIADE_CATEGORIES = {"centaurs", "trans_neptunian_objects", "minor_bodies"}
 
 
 def load_catalog(path: Path = CATALOG_PATH) -> Dict[str, Any]:
@@ -145,42 +147,137 @@ def _swiss_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, fl
     }
 
 
-def fetch_body_position(body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
-    attempts = [
-        ("horizons", _horizons_position),
-        ("miriade", _miriade_position),
-        ("swiss", _swiss_position),
-    ]
-    errors: List[str] = []
-    for source, loader in attempts:
+def _normalize_provider_priority(body: Dict[str, Any], category: str) -> List[str]:
+    declared = [p.lower() for p in body.get("provider_priority", [])]
+    if declared:
+        if "swiss" not in declared:
+            declared.append("swiss")
+        else:
+            declared = [p for p in declared if p != "swiss"] + ["swiss"]
+        return declared
+
+    if category in PRIMARY_HORIZONS_CATEGORIES:
+        return ["horizons", "miriade", "swiss"]
+    if category in SECONDARY_MIRIADE_CATEGORIES:
+        return ["miriade", "horizons", "swiss"]
+    return ["horizons", "miriade", "swiss"]
+
+
+def _fetch_group(
+    provider: str,
+    bodies: List[Dict[str, Any]],
+    dt: datetime,
+) -> Dict[str, Dict[str, Any]]:
+    loader_map: Dict[str, Callable[[Dict[str, Any], datetime], Optional[Dict[str, float]]]] = {
+        "horizons": _horizons_position,
+        "miriade": _miriade_position,
+        "swiss": _swiss_position,
+    }
+    loader = loader_map[provider]
+    results: Dict[str, Dict[str, Any]] = {}
+
+    for body in bodies:
+        name = body["name"]
+        category = body.get("category") or body.get("_catalog_category", "unknown")
         try:
             data = loader(body, dt)
             if data:
-                return {**data, "source": source, "timestamp": _utc_iso(dt)}
-            errors.append(f"{source}: unresolved")
-        except Exception as exc:  # network and object-resolution failures are expected fallbacks
-            errors.append(f"{source}: {exc}")
-
-    return {
-        "longitude": None,
-        "latitude": None,
-        "distance": None,
-        "velocity": None,
-        "timestamp": _utc_iso(dt),
-        "source": "unresolved",
-        "errors": errors,
-    }
+                results[name] = {**data, "source": provider, "category": category, "timestamp": _utc_iso(dt)}
+            else:
+                results[name] = {
+                    "longitude": None,
+                    "latitude": None,
+                    "distance": None,
+                    "velocity": None,
+                    "source": "unresolved",
+                    "category": category,
+                    "timestamp": _utc_iso(dt),
+                    "errors": [f"{provider}: unresolved"],
+                }
+        except Exception as exc:
+            results[name] = {
+                "longitude": None,
+                "latitude": None,
+                "distance": None,
+                "velocity": None,
+                "source": "unresolved",
+                "category": category,
+                "timestamp": _utc_iso(dt),
+                "errors": [f"{provider}: {exc}"],
+            }
+    return results
 
 
 def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     catalog_data = catalog or load_catalog()
-    positions: Dict[str, Dict[str, Any]] = {}
-    for category, objects in catalog_data["categories"].items():
+    categories = catalog_data.get("categories", {})
+
+    all_bodies: List[Dict[str, Any]] = []
+    for category, objects in categories.items():
+        if category == "fixed_stars":
+            continue
         for body in objects:
-            body_name = body["name"]
-            result = fetch_body_position(body, dt)
-            result["category"] = category
-            positions[body_name] = result
+            enriched = dict(body)
+            enriched.setdefault("category", category)
+            enriched["_catalog_category"] = category
+            enriched["_provider_chain"] = _normalize_provider_priority(enriched, category)
+            all_bodies.append(enriched)
+
+    grouped: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    for body in all_bodies:
+        grouped[body["_provider_chain"][0]].append(body)
+
+    positions: Dict[str, Dict[str, Any]] = {}
+    unresolved = []
+
+    for provider in ("horizons", "miriade"):
+        batch = grouped.get(provider, [])
+        if not batch:
+            continue
+        batch_results = _fetch_group(provider, batch, dt)
+        for body in batch:
+            name = body["name"]
+            result = batch_results[name]
+            if result["source"] != "unresolved":
+                positions[name] = result
+                continue
+            next_providers = [p for p in body["_provider_chain"] if p != provider]
+            body["_provider_chain"] = next_providers
+            unresolved.append(body)
+
+    fallback_horizons: List[Dict[str, Any]] = []
+    fallback_miriade: List[Dict[str, Any]] = []
+    fallback_swiss: List[Dict[str, Any]] = []
+
+    for body in unresolved:
+        chain = body.get("_provider_chain", [])
+        if not chain:
+            fallback_swiss.append(body)
+            continue
+        next_provider = chain[0]
+        if next_provider == "horizons":
+            fallback_horizons.append(body)
+        elif next_provider == "miriade":
+            fallback_miriade.append(body)
+        else:
+            fallback_swiss.append(body)
+
+    for provider, batch in (("horizons", fallback_horizons), ("miriade", fallback_miriade)):
+        if not batch:
+            continue
+        retry_results = _fetch_group(provider, batch, dt)
+        for body in batch:
+            name = body["name"]
+            result = retry_results[name]
+            if result["source"] != "unresolved":
+                positions[name] = result
+            else:
+                fallback_swiss.append(body)
+
+    if fallback_swiss:
+        swiss_results = _fetch_group("swiss", fallback_swiss, dt)
+        for body in fallback_swiss:
+            positions[body["name"]] = swiss_results[body["name"]]
 
     if FIXED_STARS_PATH.exists():
         with FIXED_STARS_PATH.open("r", encoding="utf-8") as f:

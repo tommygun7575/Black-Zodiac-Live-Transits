@@ -1,0 +1,9 @@
+# Generated daily overlay artifacts
+output/daily_overlays/*.json
+
+# Legacy/generated feed artifacts
+docs/*.json
+
+# Temporary conversion outputs
+data/fallback_*.json
+*_asteroids_tnos_flat.json
