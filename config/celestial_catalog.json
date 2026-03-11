@@ -1,76 +1,580 @@
 {
   "categories": {
     "core_bodies": [
-      {"name": "Sun", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "10", "horizons_id_type": "majorbody", "miriade_name": "p:Sun", "swiss_code": 0},
-      {"name": "Moon", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "301", "horizons_id_type": "majorbody", "miriade_name": "s:Moon", "swiss_code": 1},
-      {"name": "Mercury", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "199", "horizons_id_type": "majorbody", "miriade_name": "p:Mercury", "swiss_code": 2},
-      {"name": "Venus", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "299", "horizons_id_type": "majorbody", "miriade_name": "p:Venus", "swiss_code": 3},
-      {"name": "Mars", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "499", "horizons_id_type": "majorbody", "miriade_name": "p:Mars", "swiss_code": 4},
-      {"name": "Jupiter", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "599", "horizons_id_type": "majorbody", "miriade_name": "p:Jupiter", "swiss_code": 5},
-      {"name": "Saturn", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "699", "horizons_id_type": "majorbody", "miriade_name": "p:Saturn", "swiss_code": 6},
-      {"name": "Uranus", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "799", "horizons_id_type": "majorbody", "miriade_name": "p:Uranus", "swiss_code": 7},
-      {"name": "Neptune", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "899", "horizons_id_type": "majorbody", "miriade_name": "p:Neptune", "swiss_code": 8},
-      {"name": "Pluto", "category": "core_bodies", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "999", "horizons_id_type": "majorbody", "miriade_name": "dp:Pluto", "swiss_code": 9}
+      {
+        "name": "Sun",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "10",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Sun",
+        "swiss_code": 0
+      },
+      {
+        "name": "Moon",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "301",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "s:Moon",
+        "swiss_code": 1
+      },
+      {
+        "name": "Mercury",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "199",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Mercury",
+        "swiss_code": 2
+      },
+      {
+        "name": "Venus",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "299",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Venus",
+        "swiss_code": 3
+      },
+      {
+        "name": "Mars",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "499",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Mars",
+        "swiss_code": 4
+      },
+      {
+        "name": "Jupiter",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "599",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Jupiter",
+        "swiss_code": 5
+      },
+      {
+        "name": "Saturn",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "699",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Saturn",
+        "swiss_code": 6
+      },
+      {
+        "name": "Uranus",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "799",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Uranus",
+        "swiss_code": 7
+      },
+      {
+        "name": "Neptune",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "899",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "p:Neptune",
+        "swiss_code": 8
+      },
+      {
+        "name": "Pluto",
+        "category": "core_bodies",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "999",
+        "horizons_id_type": "majorbody",
+        "miriade_name": "dp:Pluto",
+        "swiss_code": 9
+      }
     ],
     "dwarf_planets": [
-      {"name": "Ceres", "category": "dwarf_planets", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "1;", "miriade_name": "a:Ceres", "swiss_code": 17},
-      {"name": "Eris", "category": "dwarf_planets", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "136199", "miriade_name": "a:Eris"},
-      {"name": "Haumea", "category": "dwarf_planets", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "136108", "miriade_name": "a:Haumea"},
-      {"name": "Makemake", "category": "dwarf_planets", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "136472", "miriade_name": "a:Makemake"},
-      {"name": "Pluto", "category": "dwarf_planets", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "999", "horizons_id_type": "majorbody", "miriade_name": "dp:Pluto", "swiss_code": 9}
+      {
+        "name": "Ceres",
+        "category": "dwarf_planets",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "1;",
+        "miriade_name": "a:Ceres",
+        "swiss_code": 17
+      },
+      {
+        "name": "Eris",
+        "category": "dwarf_planets",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "136199",
+        "miriade_name": "a:Eris"
+      },
+      {
+        "name": "Haumea",
+        "category": "dwarf_planets",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "136108",
+        "miriade_name": "a:Haumea"
+      },
+      {
+        "name": "Makemake",
+        "category": "dwarf_planets",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "136472",
+        "miriade_name": "a:Makemake"
+      }
     ],
     "major_asteroids": [
-      {"name": "Ceres", "category": "major_asteroids", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "1;", "miriade_name": "a:Ceres", "swiss_code": 17},
-      {"name": "Pallas", "category": "major_asteroids", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "2;", "miriade_name": "a:Pallas", "swiss_code": 18},
-      {"name": "Juno", "category": "major_asteroids", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "3;", "miriade_name": "a:Juno", "swiss_code": 19},
-      {"name": "Vesta", "category": "major_asteroids", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "4;", "miriade_name": "a:Vesta", "swiss_code": 20},
-      {"name": "Hygiea", "category": "major_asteroids", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "10;", "miriade_name": "a:Hygiea"},
-      {"name": "Astraea", "category": "major_asteroids", "provider_priority": ["horizons", "miriade", "swiss"], "horizons_id": "5;", "miriade_name": "a:Astraea"}
+      {
+        "name": "Pallas",
+        "category": "major_asteroids",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "2;",
+        "miriade_name": "a:Pallas",
+        "swiss_code": 18
+      },
+      {
+        "name": "Juno",
+        "category": "major_asteroids",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "3;",
+        "miriade_name": "a:Juno",
+        "swiss_code": 19
+      },
+      {
+        "name": "Vesta",
+        "category": "major_asteroids",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "4;",
+        "miriade_name": "a:Vesta",
+        "swiss_code": 20
+      },
+      {
+        "name": "Hygiea",
+        "category": "major_asteroids",
+        "provider_priority": [
+          "horizons",
+          "miriade",
+          "swiss"
+        ],
+        "horizons_id": "10;",
+        "miriade_name": "a:Hygiea"
+      }
     ],
     "expanded_asteroids": [
-      {"name": "Eros", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "433;", "miriade_name": "a:Eros"},
-      {"name": "Psyche", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "16;", "miriade_name": "a:Psyche"},
-      {"name": "Sappho", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "80;", "miriade_name": "a:Sappho"},
-      {"name": "Hekate", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "100;", "miriade_name": "a:Hekate"},
-      {"name": "Nemesis", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "128;", "miriade_name": "a:Nemesis"},
-      {"name": "Karma", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "3811;", "miriade_name": "a:Karma"},
-      {"name": "Destinn", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "6583;", "miriade_name": "a:Destinn"},
-      {"name": "Aura", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "1488;", "miriade_name": "a:Aura"},
-      {"name": "Merlin", "category": "expanded_asteroids", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "2598;", "miriade_name": "a:Merlin"}
+      {
+        "name": "Eros",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "433;",
+        "miriade_name": "a:Eros"
+      },
+      {
+        "name": "Psyche",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "16;",
+        "miriade_name": "a:Psyche"
+      },
+      {
+        "name": "Sappho",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "80;",
+        "miriade_name": "a:Sappho"
+      },
+      {
+        "name": "Hekate",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "100;",
+        "miriade_name": "a:Hekate"
+      },
+      {
+        "name": "Nemesis",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "128;",
+        "miriade_name": "a:Nemesis"
+      },
+      {
+        "name": "Karma",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "3811;",
+        "miriade_name": "a:Karma"
+      },
+      {
+        "name": "Destinn",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "6583;",
+        "miriade_name": "a:Destinn"
+      },
+      {
+        "name": "Aura",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "1488;",
+        "miriade_name": "a:Aura"
+      },
+      {
+        "name": "Merlin",
+        "category": "expanded_asteroids",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "2598;",
+        "miriade_name": "a:Merlin"
+      }
     ],
     "centaurs": [
-      {"name": "Chiron", "category": "centaurs", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "2060", "miriade_name": "a:Chiron", "swiss_code": 15},
-      {"name": "Pholus", "category": "centaurs", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "5145", "miriade_name": "a:Pholus"},
-      {"name": "Nessus", "category": "centaurs", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "7066", "miriade_name": "a:Nessus"},
-      {"name": "Chariklo", "category": "centaurs", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "10199", "miriade_name": "a:Chariklo"},
-      {"name": "Hylonome", "category": "centaurs", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "10370", "miriade_name": "a:Hylonome"},
-      {"name": "Asbolus", "category": "centaurs", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "8405", "miriade_name": "a:Asbolus"}
+      {
+        "name": "Chiron",
+        "category": "centaurs",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "2060",
+        "miriade_name": "a:Chiron",
+        "swiss_code": 15
+      },
+      {
+        "name": "Pholus",
+        "category": "centaurs",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "5145",
+        "miriade_name": "a:Pholus"
+      },
+      {
+        "name": "Nessus",
+        "category": "centaurs",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "7066",
+        "miriade_name": "a:Nessus"
+      },
+      {
+        "name": "Chariklo",
+        "category": "centaurs",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "10199",
+        "miriade_name": "a:Chariklo"
+      },
+      {
+        "name": "Hylonome",
+        "category": "centaurs",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "10370",
+        "miriade_name": "a:Hylonome"
+      },
+      {
+        "name": "Asbolus",
+        "category": "centaurs",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "8405",
+        "miriade_name": "a:Asbolus"
+      }
     ],
     "trans_neptunian_objects": [
-      {"name": "Orcus", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "90482", "miriade_name": "a:Orcus"},
-      {"name": "Quaoar", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "50000", "miriade_name": "a:Quaoar"},
-      {"name": "Sedna", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "90377", "miriade_name": "a:Sedna"},
-      {"name": "Gonggong", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "225088", "miriade_name": "a:Gonggong"},
-      {"name": "Ixion", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "28978", "miriade_name": "a:Ixion"},
-      {"name": "Varuna", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "20000", "miriade_name": "a:Varuna"},
-      {"name": "Huya", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "38628", "miriade_name": "a:Huya"},
-      {"name": "Salacia", "category": "trans_neptunian_objects", "provider_priority": ["miriade", "horizons", "swiss"], "horizons_id": "120347", "miriade_name": "a:Salacia"}
+      {
+        "name": "Orcus",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "90482",
+        "miriade_name": "a:Orcus"
+      },
+      {
+        "name": "Quaoar",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "50000",
+        "miriade_name": "a:Quaoar"
+      },
+      {
+        "name": "Sedna",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "90377",
+        "miriade_name": "a:Sedna"
+      },
+      {
+        "name": "Gonggong",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "225088",
+        "miriade_name": "a:Gonggong"
+      },
+      {
+        "name": "Ixion",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "28978",
+        "miriade_name": "a:Ixion"
+      },
+      {
+        "name": "Varuna",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "20000",
+        "miriade_name": "a:Varuna"
+      },
+      {
+        "name": "Huya",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "38628",
+        "miriade_name": "a:Huya"
+      },
+      {
+        "name": "Salacia",
+        "category": "trans_neptunian_objects",
+        "provider_priority": [
+          "miriade",
+          "horizons",
+          "swiss"
+        ],
+        "horizons_id": "120347",
+        "miriade_name": "a:Salacia"
+      }
     ],
     "fixed_stars": [
-      {"name": "Regulus", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Spica", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Aldebaran", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Antares", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Fomalhaut", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Sirius", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Arcturus", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Betelgeuse", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]},
-      {"name": "Capella", "category": "fixed_stars", "provider_priority": ["fixed_star_catalog"]}
+      {
+        "name": "Regulus",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Spica",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Aldebaran",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Antares",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Fomalhaut",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Sirius",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Arcturus",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Betelgeuse",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Capella",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      }
     ],
     "aether_points": [
-      {"name": "Aetheric_SunMoon_Midpoint", "category": "aether_points", "provider_priority": ["calculated"]},
-      {"name": "Aetheric_Jovian_Arc", "category": "aether_points", "provider_priority": ["calculated"]},
-      {"name": "Aetheric_Elemental_Balance", "category": "aether_points", "provider_priority": ["calculated"]}
+      {
+        "name": "Aetheric_SunMoon_Midpoint",
+        "category": "aether_points",
+        "provider_priority": [
+          "calculated"
+        ]
+      },
+      {
+        "name": "Aetheric_Jovian_Arc",
+        "category": "aether_points",
+        "provider_priority": [
+          "calculated"
+        ]
+      },
+      {
+        "name": "Aetheric_Elemental_Balance",
+        "category": "aether_points",
+        "provider_priority": [
+          "calculated"
+        ]
+      }
     ]
   }
 }

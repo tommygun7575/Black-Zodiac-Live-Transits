@@ -1,0 +1,669 @@
+{
+  "person": "Trinity",
+  "birth_timestamp_utc": "2002-03-28T15:17:00Z",
+  "positions": {
+    "Sun": {
+      "longitude": 7.763484000710849,
+      "latitude": 0.00016608496511372363,
+      "distance": 0.9981927008294305,
+      "velocity": 0.9885585062188107,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z"
+    },
+    "Moon": {
+      "longitude": 185.8928971295882,
+      "latitude": 4.847843461713262,
+      "distance": 0.0023871320662987106,
+      "velocity": 15.330341531604539,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22301%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Moon&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Mercury": {
+      "longitude": 358.1629651728165,
+      "latitude": -1.9828034791419527,
+      "distance": 1.3360723125955012,
+      "velocity": 1.8688166464697469,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Mercury&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Venus": {
+      "longitude": 25.507848858071178,
+      "latitude": -0.6765697927169173,
+      "distance": 1.6059248306734903,
+      "velocity": 1.234876174855165,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22299%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Venus&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Mars": {
+      "longitude": 48.931285484272586,
+      "latitude": 0.556270488351132,
+      "distance": 2.134375057227873,
+      "velocity": 0.692464746264163,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22499%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Mars&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Jupiter": {
+      "longitude": 96.785384265611,
+      "latitude": 0.16874110856455618,
+      "distance": 5.123391509065795,
+      "velocity": 0.08349596888628956,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22599%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Jupiter&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Saturn": {
+      "longitude": 70.13966509635812,
+      "latitude": -1.4598047868546289,
+      "distance": 9.47328548822969,
+      "velocity": 0.0819928922816826,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22699%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Saturn&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Uranus": {
+      "longitude": 327.1471928021028,
+      "latitude": -0.7052642924466052,
+      "distance": 20.7416620385771,
+      "velocity": 0.04706109320276402,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22799%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Uranus&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Neptune": {
+      "longitude": 310.41753093879584,
+      "latitude": 0.09065972197851795,
+      "distance": 30.61991929193483,
+      "velocity": 0.023763683042289332,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22899%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Neptune&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Pluto": {
+      "longitude": 257.61086510925196,
+      "latitude": 10.028064100179378,
+      "distance": 30.13807248877854,
+      "velocity": -0.004467516363769166,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22999%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Pluto&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Ceres": {
+      "longitude": 343.24844320721184,
+      "latitude": -7.895320915156507,
+      "distance": 3.853337245175212,
+      "velocity": 0.37905845937383836,
+      "source": "swiss",
+      "category": "dwarf_planets",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%221%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Ceres&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Eris": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "dwarf_planets",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Eris&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Haumea": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "dwarf_planets",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136108%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Haumea&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Makemake": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "dwarf_planets",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136472%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Makemake&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Pallas": {
+      "longitude": 315.9345465813083,
+      "latitude": 25.2448019262821,
+      "distance": 3.856424833435366,
+      "velocity": 0.29309891381890346,
+      "source": "swiss",
+      "category": "major_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Pallas&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Juno": {
+      "longitude": 135.2582064718116,
+      "latitude": -5.328143647043211,
+      "distance": 1.8126403949770906,
+      "velocity": 0.0034312626256132297,
+      "source": "swiss",
+      "category": "major_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%223%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Juno&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Vesta": {
+      "longitude": 72.3794195714874,
+      "latitude": -1.2344086837775032,
+      "distance": 2.822295136342191,
+      "velocity": 0.33659348153966495,
+      "source": "swiss",
+      "category": "major_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%224%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Vesta&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Hygiea": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "major_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Hygiea&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Eros": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22433%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Eros&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Psyche": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2216%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Psyche&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Sappho": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2280%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Sappho&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Hekate": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22100%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Hekate&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Nemesis": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22128%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Nemesis&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Karma": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%223811%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Karma&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Destinn": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%226583%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Destinn&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Aura": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%221488%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Aura&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Merlin": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222598%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Merlin&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Chiron": {
+      "longitude": 278.8653259300262,
+      "latitude": 6.275416876787005,
+      "distance": 11.279531321791746,
+      "velocity": 0.02877581592534288,
+      "source": "swiss",
+      "category": "centaurs",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222060%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=2060&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+      ]
+    },
+    "Pholus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%225145%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=5145&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Nessus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%227066%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=7066&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Chariklo": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=10199&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Hylonome": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210370%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=10370&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Asbolus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%228405%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=8405&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Orcus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2290482%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=90482&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Quaoar": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2250000%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=50000&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Sedna": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2290377%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=90377&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Gonggong": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22225088%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Gonggong&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Ixion": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2228978%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=28978&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Varuna": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2220000%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=20000&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Huya": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2238628%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=38628&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Salacia": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2002-03-28T15:17:00Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22120347%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2452362.136805556&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=120347&epoch=2002-03-28T15%3A17%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+        "swiss: unresolved"
+      ]
+    },
+    "Aldebaran": {
+      "longitude": 69.78918794733352,
+      "latitude": -5.4673266340468905,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Antares": {
+      "longitude": 249.76229284318168,
+      "latitude": -4.569944164023126,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Arcturus": {
+      "longitude": 204.2336149172314,
+      "latitude": 30.736232842293024,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Betelgeuse": {
+      "longitude": 88.75459920922947,
+      "latitude": -16.027009001429224,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Capella": {
+      "longitude": 81.85791960050767,
+      "latitude": 22.86426550047521,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Fomalhaut": {
+      "longitude": 333.860303668846,
+      "latitude": -21.1356346947104,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Regulus": {
+      "longitude": 149.82913426785984,
+      "latitude": 0.46483841477959303,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Sirius": {
+      "longitude": 104.0816644702237,
+      "latitude": -39.605248579008055,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Spica": {
+      "longitude": 203.84135789547489,
+      "latitude": -2.0544885383661207,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Aetheric_SunMoon_Midpoint": {
+      "longitude": 193.65638113029905,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Jovian_Arc": {
+      "longitude": 26.645719169252857,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Elemental_Balance": {
+      "longitude": 86.77734382397732,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2002-03-28T15:17:00Z",
+      "source": "calculated",
+      "category": "aether_points"
+    }
+  }
+}

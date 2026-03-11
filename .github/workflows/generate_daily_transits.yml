@@ -2,68 +2,32 @@ name: generate-daily-transits
 
 on:
   schedule:
-    - cron: "0 10 * * *"
-    - cron: "0 11 * * *"
+    - cron: '0 10 * * *'
   workflow_dispatch: {}
 
 jobs:
-  generate:
+  run-transit-generator:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: enforce 03:00 Pacific window
-        run: |
-          if [ "$(TZ=America/Los_Angeles date +%H)" != "03" ]; then
-            echo "Skipping run outside 03:00 Pacific"
-            exit 0
-          fi
-
-      - name: install Python dependencies
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
-      - name: install dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: install Swiss ephemeris data
-        run: |
-          mkdir -p ephemeris
-          curl -L https://raw.githubusercontent.com/chapagain/php-swiss-ephemeris/master/sweph/sepl_18.se1 -o ephemeris/sepl_18.se1
-          curl -L https://raw.githubusercontent.com/chapagain/php-swiss-ephemeris/master/sweph/semo_18.se1 -o ephemeris/semo_18.se1
-          curl -L https://raw.githubusercontent.com/chapagain/php-swiss-ephemeris/master/sweph/seas_18.se1 -o ephemeris/seas_18.se1
+      - name: Run generator
+        run: python generate_transits.py
 
-      - name: configure Swiss ephemeris path
-        run: |
-          python - <<'PY'
-          import swisseph as swe
-          swe.set_ephe_path("./ephemeris")
-          print("Swiss ephemeris path set to ./ephemeris")
-          PY
-
-      - name: run deterministic transit pipeline
-        run: |
-          PYTHONPATH=$(pwd) python scripts/generate_transits.py
-
-      - name: validate latest docs overlay schema
-        run: |
-          latest=$(ls -t docs/overlays/daily_overlay_*.json | head -n 1)
-          PYTHONPATH=$(pwd) python scripts/validate_output_schema.py "$latest"
-
-      - name: publish generated overlay file
-        uses: actions/upload-artifact@v4
-        with:
-          name: daily-overlay
-          path: docs/overlays/daily_overlay_*.json
-
-      - name: commit generated overlay
+      - name: Commit dataset
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/overlays/daily_overlay_*.json
-          git commit -m "Generate daily transit overlay" || echo "No changes"
+          git add daily_transits/feed_overlay_*.json
+          git commit -m "Generate daily transit snapshot" || echo "No changes"
           git push
