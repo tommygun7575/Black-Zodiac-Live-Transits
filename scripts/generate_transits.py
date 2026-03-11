@@ -76,8 +76,10 @@ def main() -> Path:
     output_path = OUTPUT_DIR / f"daily_overlay_{date_tag}.json"
     _write_json(output_path, output)
 
-    timestamp_tag = datetime.now(timezone.utc).strftime("%Y_%m_%d_%H%M")
-    docs_output_path = DOCS_OUTPUT_DIR / f"daily_overlay_{timestamp_tag}.json"
+    docs_pacific_dt = datetime.now(timezone.utc).astimezone(ZoneInfo("America/Los_Angeles"))
+    timestamp_tag = docs_pacific_dt.strftime("%Y_%m_%d_%H%M")
+    tz_abbrev = docs_pacific_dt.strftime("%Z")
+    docs_output_path = DOCS_OUTPUT_DIR / f"daily_overlay_{timestamp_tag}_{tz_abbrev}.json"
     _write_json(docs_output_path, output)
 
     print(f"[OK] Generated {output_path}")
