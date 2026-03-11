@@ -12,16 +12,35 @@ from scripts.fetch_ephemeris import fetch_all_positions, load_catalog
 from scripts.overlay_engine import build_natal_positions, generate_overlays
 from scripts.validate_output_schema import validate_payload
 
+import math
+
 ROOT = Path(__file__).resolve().parents[1]
 NATAL_PATH = ROOT / "config" / "natal_profiles.json"
 OUTPUT_DIR = ROOT / "output" / "daily_overlays"
 DOCS_OUTPUT_DIR = ROOT / "docs" / "overlays"
+LIVE_CONFIG_PATH = ROOT / "config" / "live_config.json"
 
 
 def load_natal_profiles() -> dict:
     with NATAL_PATH.open("r", encoding="utf-8") as f:
         return json.load(f)
 
+
+
+
+def load_live_config() -> dict:
+    with LIVE_CONFIG_PATH.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _sanitize_nans(value):
+    if isinstance(value, dict):
+        return {k: _sanitize_nans(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_sanitize_nans(v) for v in value]
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    return value
 
 def utc_midnight_for_day(day: str | None = None) -> datetime:
     if day:
@@ -51,7 +70,17 @@ def main() -> Path:
     transit_positions = fetch_all_positions(transit_dt_utc, catalog=catalog)
 
     harmonics = harmonic_aspects(transit_positions)
-    parts = arabic_parts(transit_positions)
+    live_config = load_live_config()
+    chart = (live_config.get("natal_charts") or [{}])[0]
+    lat = float(chart.get("lat", 0.0))
+    lon = float(chart.get("lon", 0.0))
+
+    parts = arabic_parts(
+        transit_positions,
+        transit_dt_utc.isoformat().replace("+00:00", "Z"),
+        lat,
+        lon,
+    )
     star_conjunctions = fixed_star_conjunctions(transit_positions)
 
     natal_profiles = load_natal_profiles()
@@ -70,6 +99,8 @@ def main() -> Path:
         "fixed_star_conjunctions": star_conjunctions,
         "natal_overlays": overlays,
     }
+
+    output = _sanitize_nans(output)
 
     validate_payload(output)
 
