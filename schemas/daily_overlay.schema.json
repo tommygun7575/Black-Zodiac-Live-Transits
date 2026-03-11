@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Daily Overlay",
+  "type": "object",
+  "required": [
+    "generated_at_utc",
+    "generated_at_pacific",
+    "transit_positions",
+    "calculated_harmonics",
+    "arabic_parts",
+    "natal_overlays"
+  ],
+  "properties": {
+    "generated_at_utc": {"type": "string"},
+    "generated_at_pacific": {"type": "string"},
+    "transit_positions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["longitude", "latitude", "distance", "velocity", "timestamp", "source"],
+        "properties": {
+          "longitude": {"type": ["number", "null"]},
+          "latitude": {"type": ["number", "null"]},
+          "distance": {"type": ["number", "null"]},
+          "velocity": {"type": ["number", "null"]},
+          "timestamp": {"type": "string"},
+          "source": {"type": "string"},
+          "category": {"type": "string"}
+        }
+      }
+    },
+    "calculated_harmonics": {"type": "array"},
+    "arabic_parts": {
+      "type": "object",
+      "additionalProperties": {"type": "number"}
+    },
+    "fixed_star_conjunctions": {"type": "array"},
+    "natal_overlays": {
+      "type": "object",
+      "additionalProperties": {"type": "array"}
+    }
+  }
+}
