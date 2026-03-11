@@ -10,10 +10,12 @@ from zoneinfo import ZoneInfo
 from scripts.calculate_aspects import arabic_parts, fixed_star_conjunctions, harmonic_aspects
 from scripts.fetch_ephemeris import fetch_all_positions, load_catalog
 from scripts.overlay_engine import build_natal_positions, generate_overlays
+from scripts.validate_output_schema import validate_payload
 
 ROOT = Path(__file__).resolve().parents[1]
 NATAL_PATH = ROOT / "config" / "natal_profiles.json"
 OUTPUT_DIR = ROOT / "output" / "daily_overlays"
+DOCS_OUTPUT_DIR = ROOT / "docs" / "overlays"
 
 
 def load_natal_profiles() -> dict:
@@ -31,6 +33,12 @@ def utc_midnight_for_day(day: str | None = None) -> datetime:
 
 def to_pacific_string(dt_utc: datetime) -> str:
     return dt_utc.astimezone(ZoneInfo("America/Los_Angeles")).isoformat()
+
+
+def _write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2)
 
 
 def main() -> Path:
@@ -63,12 +71,17 @@ def main() -> Path:
         "natal_overlays": overlays,
     }
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    validate_payload(output)
+
     output_path = OUTPUT_DIR / f"daily_overlay_{date_tag}.json"
-    with output_path.open("w", encoding="utf-8") as f:
-        json.dump(output, f, indent=2)
+    _write_json(output_path, output)
+
+    timestamp_tag = datetime.now(timezone.utc).strftime("%Y_%m_%d_%H%M")
+    docs_output_path = DOCS_OUTPUT_DIR / f"daily_overlay_{timestamp_tag}.json"
+    _write_json(docs_output_path, output)
 
     print(f"[OK] Generated {output_path}")
+    print(f"[OK] Published {docs_output_path}")
     return output_path
 
 

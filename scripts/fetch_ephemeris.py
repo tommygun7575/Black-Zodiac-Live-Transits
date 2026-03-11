@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -37,8 +37,8 @@ SWISS_CODES = {
 }
 
 MIRIADE_BASE = "https://ssp.imcce.fr/webservices/miriade/api/ephemcc.php"
-PRIMARY_HORIZONS_CATEGORIES = {"sun_moon", "planets", "dwarf_planets", "major_asteroids"}
-SECONDARY_MIRIADE_CATEGORIES = {"centaurs", "trans_neptunian_objects", "minor_bodies"}
+PRIMARY_HORIZONS_CATEGORIES = {"core_bodies", "dwarf_planets", "major_asteroids"}
+SECONDARY_MIRIADE_CATEGORIES = {"expanded_asteroids", "centaurs", "trans_neptunian_objects"}
 
 
 def load_catalog(path: Path = CATALOG_PATH) -> Dict[str, Any]:
@@ -150,52 +150,50 @@ def _swiss_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, fl
 def _normalize_provider_priority(body: Dict[str, Any], category: str) -> List[str]:
     declared = [p.lower() for p in body.get("provider_priority", [])]
     if declared:
-        if "swiss" not in declared:
-            declared.append("swiss")
-        else:
-            declared = [p for p in declared if p != "swiss"] + ["swiss"]
         return declared
 
     if category in PRIMARY_HORIZONS_CATEGORIES:
         return ["horizons", "miriade", "swiss"]
     if category in SECONDARY_MIRIADE_CATEGORIES:
         return ["miriade", "horizons", "swiss"]
+    if category == "fixed_stars":
+        return ["fixed_star_catalog"]
+    if category == "aether_points":
+        return ["calculated"]
     return ["horizons", "miriade", "swiss"]
 
 
-def _fetch_group(
-    provider: str,
-    bodies: List[Dict[str, Any]],
-    dt: datetime,
-) -> Dict[str, Dict[str, Any]]:
+def _compute_single(provider: str, body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
     loader_map: Dict[str, Callable[[Dict[str, Any], datetime], Optional[Dict[str, float]]]] = {
         "horizons": _horizons_position,
         "miriade": _miriade_position,
         "swiss": _swiss_position,
     }
     loader = loader_map[provider]
-    results: Dict[str, Dict[str, Any]] = {}
+    name = body["name"]
+    category = body.get("category") or body.get("_catalog_category", "unknown")
 
-    for body in bodies:
-        name = body["name"]
-        category = body.get("category") or body.get("_catalog_category", "unknown")
-        try:
-            data = loader(body, dt)
-            if data:
-                results[name] = {**data, "source": provider, "category": category, "timestamp": _utc_iso(dt)}
-            else:
-                results[name] = {
-                    "longitude": None,
-                    "latitude": None,
-                    "distance": None,
-                    "velocity": None,
-                    "source": "unresolved",
-                    "category": category,
-                    "timestamp": _utc_iso(dt),
-                    "errors": [f"{provider}: unresolved"],
-                }
-        except Exception as exc:
-            results[name] = {
+    try:
+        data = loader(body, dt)
+        if data:
+            return {
+                name: {**data, "source": provider, "category": category, "timestamp": _utc_iso(dt)}
+            }
+        return {
+            name: {
+                "longitude": None,
+                "latitude": None,
+                "distance": None,
+                "velocity": None,
+                "source": "unresolved",
+                "category": category,
+                "timestamp": _utc_iso(dt),
+                "errors": [f"{provider}: unresolved"],
+            }
+        }
+    except Exception as exc:
+        return {
+            name: {
                 "longitude": None,
                 "latitude": None,
                 "distance": None,
@@ -205,7 +203,66 @@ def _fetch_group(
                 "timestamp": _utc_iso(dt),
                 "errors": [f"{provider}: {exc}"],
             }
+        }
+
+
+def _fetch_group(
+    provider: str,
+    bodies: List[Dict[str, Any]],
+    dt: datetime,
+) -> Dict[str, Dict[str, Any]]:
+    if not bodies:
+        return {}
+
+    results: Dict[str, Dict[str, Any]] = {}
+    max_workers = min(8, len(bodies))
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(_compute_single, provider, body, dt) for body in bodies]
+        for future in as_completed(futures):
+            results.update(future.result())
     return results
+
+
+def _compute_aether_points(
+    positions: Dict[str, Dict[str, Any]],
+    aether_bodies: List[Dict[str, Any]],
+    dt: datetime,
+) -> Dict[str, Dict[str, Any]]:
+    def lon(name: str) -> Optional[float]:
+        entry = positions.get(name)
+        if not entry:
+            return None
+        value = entry.get("longitude")
+        return float(value) if value is not None else None
+
+    sun = lon("Sun")
+    moon = lon("Moon")
+    mars = lon("Mars")
+    jupiter = lon("Jupiter")
+    saturn = lon("Saturn")
+    venus = lon("Venus")
+
+    formulas = {
+        "Aetheric_SunMoon_Midpoint": None if sun is None or moon is None else ((sun + moon) / 2.0) % 360.0,
+        "Aetheric_Jovian_Arc": None if jupiter is None or saturn is None else ((jupiter - saturn) + 360.0) % 360.0,
+        "Aetheric_Elemental_Balance": None if mars is None or venus is None or moon is None else ((mars + venus + moon) / 3.0) % 360.0,
+    }
+
+    computed: Dict[str, Dict[str, Any]] = {}
+    for body in aether_bodies:
+        name = body["name"]
+        category = body.get("category", "aether_points")
+        value = formulas.get(name)
+        computed[name] = {
+            "longitude": value,
+            "latitude": 0.0 if value is not None else None,
+            "distance": 0.0 if value is not None else None,
+            "velocity": 0.0,
+            "timestamp": _utc_iso(dt),
+            "source": "calculated",
+            "category": category,
+        }
+    return computed
 
 
 def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -213,76 +270,78 @@ def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) 
     categories = catalog_data.get("categories", {})
 
     all_bodies: List[Dict[str, Any]] = []
+    fixed_star_names: set[str] = set()
+    aether_bodies: List[Dict[str, Any]] = []
+
     for category, objects in categories.items():
-        if category == "fixed_stars":
-            continue
         for body in objects:
             enriched = dict(body)
             enriched.setdefault("category", category)
             enriched["_catalog_category"] = category
             enriched["_provider_chain"] = _normalize_provider_priority(enriched, category)
+
+            if category == "fixed_stars":
+                fixed_star_names.add(enriched["name"])
+                continue
+            if category == "aether_points":
+                aether_bodies.append(enriched)
+                continue
             all_bodies.append(enriched)
 
-    grouped: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
-    for body in all_bodies:
-        grouped[body["_provider_chain"][0]].append(body)
+    horizons_bodies = [b for b in all_bodies if b["_catalog_category"] in PRIMARY_HORIZONS_CATEGORIES]
+    miriade_bodies = [b for b in all_bodies if b["_catalog_category"] in SECONDARY_MIRIADE_CATEGORIES]
 
     positions: Dict[str, Dict[str, Any]] = {}
-    unresolved = []
+    unresolved_horizons = [b for b in horizons_bodies if b["name"] not in positions]
+    unresolved_miriade = [b for b in miriade_bodies if b["name"] not in positions]
 
-    for provider in ("horizons", "miriade"):
-        batch = grouped.get(provider, [])
-        if not batch:
-            continue
-        batch_results = _fetch_group(provider, batch, dt)
-        for body in batch:
-            name = body["name"]
-            result = batch_results[name]
-            if result["source"] != "unresolved":
-                positions[name] = result
-                continue
-            next_providers = [p for p in body["_provider_chain"] if p != provider]
-            body["_provider_chain"] = next_providers
-            unresolved.append(body)
+    horizons_results = _fetch_group("horizons", unresolved_horizons, dt)
+    for body in unresolved_horizons:
+        result = horizons_results.get(body["name"])
+        if result and result["source"] != "unresolved":
+            positions[body["name"]] = result
 
-    fallback_horizons: List[Dict[str, Any]] = []
-    fallback_miriade: List[Dict[str, Any]] = []
-    fallback_swiss: List[Dict[str, Any]] = []
+    miriade_results = _fetch_group("miriade", unresolved_miriade, dt)
+    for body in unresolved_miriade:
+        result = miriade_results.get(body["name"])
+        if result and result["source"] != "unresolved":
+            positions[body["name"]] = result
 
-    for body in unresolved:
-        chain = body.get("_provider_chain", [])
-        if not chain:
-            fallback_swiss.append(body)
-            continue
-        next_provider = chain[0]
-        if next_provider == "horizons":
-            fallback_horizons.append(body)
-        elif next_provider == "miriade":
-            fallback_miriade.append(body)
-        else:
-            fallback_swiss.append(body)
+    # Cross-provider second pass for unresolved objects.
+    second_pass_horizons = [b for b in miriade_bodies if b["name"] not in positions]
+    second_pass_miriade = [b for b in horizons_bodies if b["name"] not in positions]
 
-    for provider, batch in (("horizons", fallback_horizons), ("miriade", fallback_miriade)):
-        if not batch:
-            continue
-        retry_results = _fetch_group(provider, batch, dt)
-        for body in batch:
-            name = body["name"]
-            result = retry_results[name]
-            if result["source"] != "unresolved":
-                positions[name] = result
-            else:
-                fallback_swiss.append(body)
+    retry_horizons = _fetch_group("horizons", second_pass_horizons, dt)
+    for body in second_pass_horizons:
+        result = retry_horizons.get(body["name"])
+        if result and result["source"] != "unresolved":
+            positions[body["name"]] = result
 
-    if fallback_swiss:
-        swiss_results = _fetch_group("swiss", fallback_swiss, dt)
-        for body in fallback_swiss:
-            positions[body["name"]] = swiss_results[body["name"]]
+    retry_miriade = _fetch_group("miriade", second_pass_miriade, dt)
+    for body in second_pass_miriade:
+        result = retry_miriade.get(body["name"])
+        if result and result["source"] != "unresolved":
+            positions[body["name"]] = result
 
-    if FIXED_STARS_PATH.exists():
+    swiss_fallback = [b for b in all_bodies if b["name"] not in positions]
+    swiss_results = _fetch_group("swiss", swiss_fallback, dt)
+    for body in swiss_fallback:
+        positions[body["name"]] = swiss_results.get(body["name"], {
+            "longitude": None,
+            "latitude": None,
+            "distance": None,
+            "velocity": None,
+            "source": "unresolved",
+            "category": body.get("category", "unknown"),
+            "timestamp": _utc_iso(dt),
+        })
+
+    if FIXED_STARS_PATH.exists() and fixed_star_names:
         with FIXED_STARS_PATH.open("r", encoding="utf-8") as f:
             stars = json.load(f).get("stars", [])
         for star in stars:
+            if star["id"] not in fixed_star_names:
+                continue
             lon, lat = ra_dec_to_ecl(star["ra_deg"], star["dec_deg"], _utc_iso(dt))
             positions[star["id"]] = {
                 "longitude": lon,
@@ -291,8 +350,10 @@ def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) 
                 "velocity": 0.0,
                 "timestamp": _utc_iso(dt),
                 "source": "fixed_star_catalog",
-                "category": "fixed stars",
+                "category": "fixed_stars",
             }
+
+    positions.update(_compute_aether_points(positions, aether_bodies, dt))
     return positions
 
 

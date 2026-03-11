@@ -42,18 +42,26 @@ def _validate_top_level(payload: Dict[str, Any], schema: Dict[str, Any]) -> None
             raise ValueError(f"Type mismatch for {key}: expected {allowed}")
 
 
+def validate_payload(payload: Dict[str, Any], schema_path: Path = SCHEMA_PATH) -> None:
+    with schema_path.open("r", encoding="utf-8") as f:
+        schema = json.load(f)
+    _validate_top_level(payload, schema)
+
+
+def validate_file(json_file: Path, schema_path: Path = SCHEMA_PATH) -> None:
+    with json_file.open("r", encoding="utf-8") as f:
+        payload = json.load(f)
+    validate_payload(payload, schema_path=schema_path)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Validate overlay output against JSON schema")
     parser.add_argument("json_file", help="Path to generated overlay file")
     args = parser.parse_args()
 
-    with SCHEMA_PATH.open("r", encoding="utf-8") as f:
-        schema = json.load(f)
-    with Path(args.json_file).open("r", encoding="utf-8") as f:
-        payload = json.load(f)
-
-    _validate_top_level(payload, schema)
-    print(f"[OK] Schema validation passed for {args.json_file}")
+    json_path = Path(args.json_file)
+    validate_file(json_path)
+    print(f"[OK] Schema validation passed for {json_path}")
 
 
 if __name__ == "__main__":
