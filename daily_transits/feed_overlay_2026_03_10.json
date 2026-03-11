@@ -12,550 +12,364 @@
       "timestamp": "2026-03-11T00:00:00Z"
     },
     "Moon": {
-      "longitude": 256.04369415369564,
-      "latitude": -5.23076630701329,
-      "distance": 0.002702072254050748,
-      "velocity": 11.87998401409364,
-      "source": "swiss",
+      "longitude": 170.2107,
+      "latitude": -0.0143,
+      "distance": 0.0027020722715,
+      "velocity": 0.9661963,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22301%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Moon&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Mercury": {
-      "longitude": 343.3660062482661,
-      "latitude": 3.2299337773099652,
-      "distance": 0.6183811077232089,
-      "velocity": -0.9322978333943531,
-      "source": "swiss",
+      "longitude": 181.3207,
+      "latitude": 5.132,
+      "distance": 0.61838111286519,
+      "velocity": 17.7407902,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Mercury&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Venus": {
-      "longitude": 5.659203877366356,
-      "latitude": -1.1555845508972373,
-      "distance": 1.633761786359678,
-      "velocity": 1.242431157734588,
-      "source": "swiss",
+      "longitude": 26.4422,
+      "latitude": -2.6078,
+      "distance": 1.63376177903198,
+      "velocity": 61.49897,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22299%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Venus&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Mars": {
-      "longitude": 336.62215952957337,
-      "latitude": -1.0909817154462194,
-      "distance": 2.3268336472235287,
-      "velocity": 0.7876427746925736,
-      "source": "swiss",
+      "longitude": 326.3931,
+      "latitude": -1.8341,
+      "distance": 2.32683364227965,
+      "velocity": 55.4275661,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22499%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Mars&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Jupiter": {
-      "longitude": 105.08731763834929,
-      "latitude": 0.3545063254051382,
-      "distance": 4.743983941819551,
-      "velocity": -0.0004762201546999995,
-      "source": "swiss",
+      "longitude": 114.643,
+      "latitude": 0.3182,
+      "distance": 4.7439835753886,
+      "velocity": 25.4291061,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22599%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Jupiter&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Saturn": {
-      "longitude": 2.9357543279334277,
-      "latitude": -2.124796482108594,
-      "distance": 10.463749696237278,
-      "velocity": 0.12290394356633344,
-      "source": "swiss",
+      "longitude": 3.8734,
+      "latitude": -2.3416,
+      "distance": 10.4637498964999,
+      "velocity": 39.3181991,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22699%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Saturn&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Uranus": {
-      "longitude": 57.987957414945974,
-      "latitude": -0.1766034142816449,
-      "distance": 19.835318411676532,
-      "velocity": 0.029478969552587653,
-      "source": "swiss",
+      "longitude": 60.3241,
+      "latitude": -0.1829,
+      "distance": 19.8353131468992,
+      "velocity": 32.5048403,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22799%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Uranus&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Neptune": {
-      "longitude": 1.4109670829056744,
-      "latitude": -1.3058363028811024,
-      "distance": 30.85723775904985,
-      "velocity": 0.03737245648650864,
-      "source": "swiss",
+      "longitude": 1.412,
+      "latitude": -1.3488,
+      "distance": 30.8572426941602,
+      "velocity": 35.3390178,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22899%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Neptune&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Pluto": {
-      "longitude": 304.78951339481404,
-      "latitude": -3.886460327854598,
-      "distance": 36.15471866727192,
-      "velocity": 0.024123903401304086,
-      "source": "swiss",
+      "longitude": 303.276,
+      "latitude": -3.9593,
+      "distance": 36.1547155252625,
+      "velocity": 32.9153499,
+      "source": "horizons",
       "category": "core_bodies",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22999%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Pluto&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Ceres": {
-      "longitude": 28.41286200809624,
-      "latitude": -5.434180949284574,
-      "distance": 3.5495704161911834,
-      "velocity": 0.3739598604883188,
-      "source": "swiss",
+      "longitude": 40.5808,
+      "latitude": -6.8045,
+      "distance": 3.5495708543958,
+      "velocity": 42.4283476,
+      "source": "horizons",
       "category": "dwarf_planets",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%221%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Ceres&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Eris": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 24.8902,
+      "latitude": -10.5186,
+      "distance": 96.3117562038746,
+      "velocity": 31.3452907,
+      "source": "horizons",
       "category": "dwarf_planets",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Eris&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Haumea": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 212.723,
+      "latitude": 28.2053,
+      "distance": 49.170337558875,
+      "velocity": 27.6187246,
+      "source": "horizons",
       "category": "dwarf_planets",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136108%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Haumea&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Makemake": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 191.314,
+      "latitude": 27.2243,
+      "distance": 51.9035695408829,
+      "velocity": 26.4336886,
+      "source": "horizons",
       "category": "dwarf_planets",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136472%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Makemake&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Pallas": {
-      "longitude": 344.8482638922037,
-      "latitude": 5.359920144241299,
-      "distance": 4.198414672455017,
-      "velocity": 0.3350020443812958,
-      "source": "swiss",
+      "longitude": 342.7566,
+      "latitude": 7.0033,
+      "distance": 4.19841396901065,
+      "velocity": 43.3406125,
+      "source": "horizons",
       "category": "major_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Pallas&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Juno": {
-      "longitude": 294.6002180926449,
-      "latitude": 10.782492726237713,
-      "distance": 3.536119411956516,
-      "velocity": 0.31033876558961243,
-      "source": "swiss",
+      "longitude": 278.4969,
+      "latitude": 12.3235,
+      "distance": 3.5361185165994,
+      "velocity": 39.9890384,
+      "source": "horizons",
       "category": "major_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%223%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Juno&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Vesta": {
-      "longitude": 330.05487800078726,
-      "latitude": -3.093547392572124,
-      "distance": 3.1616825253715426,
-      "velocity": 0.5020392308616554,
-      "source": "swiss",
+      "longitude": 320.8661,
+      "latitude": -4.3299,
+      "distance": 3.16168140309256,
+      "velocity": 48.2496734,
+      "source": "horizons",
       "category": "major_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%224%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Vesta&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Hygiea": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 102.3083,
+      "latitude": 0.0546,
+      "distance": 3.12319288804308,
+      "velocity": 26.5498779,
+      "source": "horizons",
       "category": "major_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Hygiea&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Eros": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 142.3341,
+      "latitude": -3.3946,
+      "distance": 0.53638960338925,
+      "velocity": 16.4289855,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22433%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Eros&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Psyche": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 96.7536,
+      "latitude": -2.4826,
+      "distance": 2.67586006456873,
+      "velocity": 32.2096107,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2216%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Psyche&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Sappho": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 108.9806,
+      "latitude": -8.1768,
+      "distance": 2.08877037811908,
+      "velocity": 29.8554841,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2280%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Sappho&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Hekate": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 287.0925,
+      "latitude": 2.2144,
+      "distance": 3.17978466250511,
+      "velocity": 43.644109,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22100%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Hekate&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Nemesis": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 261.1615,
+      "latitude": -0.5467,
+      "distance": 3.06064399384931,
+      "velocity": 36.7676596,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22128%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Nemesis&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Karma": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 213.9562,
+      "latitude": -8.3962,
+      "distance": 2.30405693411818,
+      "velocity": 21.5081032,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%223811%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Karma&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Destinn": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 15.0515,
+      "latitude": 5.9513,
+      "distance": 3.45347764111765,
+      "velocity": 47.4202816,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%226583%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Destinn&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Aura": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 281.0713,
+      "latitude": -10.1103,
+      "distance": 3.84767770371712,
+      "velocity": 38.0640655,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%221488%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Aura&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Merlin": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 274.804,
+      "latitude": 7.5858,
+      "distance": 3.55887772693257,
+      "velocity": 39.1878442,
+      "source": "horizons",
       "category": "expanded_asteroids",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222598%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Merlin&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Chiron": {
-      "longitude": 24.53729862989078,
-      "latitude": 0.3953484620247075,
-      "distance": 19.185813548518528,
-      "velocity": 0.05180401033559197,
-      "source": "swiss",
+      "longitude": 25.9121,
+      "latitude": 0.4111,
+      "distance": 19.1858180559377,
+      "velocity": 34.0659832,
+      "source": "horizons",
       "category": "centaurs",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222060%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=2060&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Pholus": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 280.6716,
+      "latitude": 8.3753,
+      "distance": 30.8800532582365,
+      "velocity": 30.1277384,
+      "source": "horizons",
       "category": "centaurs",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%225145%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=5145&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Nessus": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 350.3877,
+      "latitude": -10.3907,
+      "distance": 32.8729066134163,
+      "velocity": 33.9599864,
+      "source": "horizons",
       "category": "centaurs",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%227066%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=7066&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Chariklo": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 321.9737,
+      "latitude": 9.0243,
+      "distance": 18.5241040906392,
+      "velocity": 35.4814405,
+      "source": "horizons",
       "category": "centaurs",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=10199&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Hylonome": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 300.4308,
+      "latitude": 3.5069,
+      "distance": 27.0134058311206,
+      "velocity": 32.9479864,
+      "source": "horizons",
       "category": "centaurs",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210370%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=10370&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Asbolus": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 94.1322,
+      "latitude": 17.6085,
+      "distance": 25.8363356776878,
+      "velocity": 31.2044517,
+      "source": "horizons",
       "category": "centaurs",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%228405%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=8405&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Orcus": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 166.9905,
+      "latitude": -20.1833,
+      "distance": 47.0629730341139,
+      "velocity": 26.1933823,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2290482%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=90482&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Quaoar": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 280.8956,
+      "latitude": 7.9869,
+      "distance": 42.9805329109014,
+      "velocity": 32.0983776,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2250000%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=50000&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Sedna": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 61.117,
+      "latitude": -11.8482,
+      "distance": 83.3019081666749,
+      "velocity": 30.51627,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2290377%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=90377&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Gonggong": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 335.4787,
+      "latitude": -0.8135,
+      "distance": 90.7052674738146,
+      "velocity": 31.7548077,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22225088%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=Gonggong&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Ixion": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 277.0543,
+      "latitude": -8.8939,
+      "distance": 37.832482505395,
+      "velocity": 32.9954481,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2228978%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=28978&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Varuna": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 129.9289,
+      "latitude": 9.4629,
+      "distance": 43.5014095368386,
+      "velocity": 26.8442108,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2220000%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=20000&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Huya": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 266.484,
+      "latitude": 15.3616,
+      "distance": 29.4469908557894,
+      "velocity": 30.6990551,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2238628%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=38628&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Salacia": {
-      "longitude": null,
-      "latitude": null,
-      "distance": null,
-      "velocity": null,
-      "source": "unresolved",
+      "longitude": 11.5192,
+      "latitude": 23.922,
+      "distance": 46.1895555977036,
+      "velocity": 34.0399606,
+      "source": "horizons",
       "category": "trans_neptunian_objects",
-      "timestamp": "2026-03-11T00:00:00Z",
-      "errors": [
-        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22120347%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461110.5&SKIP_DAYLT=NO (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "miriade: HTTPSConnectionPool(host='ssp.imcce.fr', port=443): Max retries exceeded with url: /webservices/miriade/api/ephemcc.php?name=120347&epoch=2026-03-11T00%3A00%3A00Z&observer=500&eph=1&-theory=DE431&-teph=1&-tcoor=1&-rplane=2&-nbd=1&-mime=json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
-        "swiss: unresolved"
-      ]
+      "timestamp": "2026-03-11T00:00:00Z"
     },
     "Aldebaran": {
       "longitude": 69.78918794733352,
@@ -639,7 +453,7 @@
       "category": "fixed_stars"
     },
     "Aetheric_SunMoon_Midpoint": {
-      "longitude": 246.46165064423383,
+      "longitude": 160.62865649053822,
       "latitude": 0.0,
       "distance": 0.0,
       "velocity": 0.0,
@@ -648,7 +462,7 @@
       "category": "aether_points"
     },
     "Aetheric_Jovian_Arc": {
-      "longitude": 102.1515633104159,
+      "longitude": 110.76959999999997,
       "latitude": 0.0,
       "distance": 0.0,
       "velocity": 0.0,
@@ -657,7 +471,7 @@
       "category": "aether_points"
     },
     "Aetheric_Elemental_Balance": {
-      "longitude": 199.4416858535451,
+      "longitude": 174.34866666666667,
       "latitude": 0.0,
       "distance": 0.0,
       "velocity": 0.0,
@@ -669,176 +483,1008 @@
   "calculated_harmonics": [
     {
       "body_a": "Sun",
-      "body_b": "Pluto",
-      "harmonic": 8,
-      "exact_angle": 45.0,
-      "separation": 45.62844309572415,
-      "orb": 0.6284430957241511
+      "body_b": "Moon",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.79274350946181,
+      "orb": 0.2072564905381853
     },
     {
-      "body_a": "Moon",
-      "body_b": "Pallas",
+      "body_a": "Sun",
+      "body_b": "Juno",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.9210564905382,
+      "orb": 0.07894350946179429
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Vesta",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.55185649053817,
+      "orb": 0.4481435094618291
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Sappho",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.5626435094618,
+      "orb": 1.4373564905382068
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Nemesis",
       "harmonic": 4,
       "exact_angle": 90.0,
-      "separation": 88.80456973850806,
-      "orb": 1.1954302614919357
+      "separation": 89.2564564905382,
+      "orb": 0.7435435094618015
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Sedna",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.69904350946183,
+      "orb": 1.3009564905381694
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Ixion",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.36365649053818,
+      "orb": 1.363656490538176
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.35164350946178,
+      "orb": 0.35164350946178047
     },
     {
       "body_a": "Moon",
-      "body_b": "Juno",
-      "harmonic": 9,
-      "exact_angle": 40.0,
-      "separation": 38.55652393894928,
-      "orb": 1.443476061050717
+      "body_b": "Psyche",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.4571,
+      "orb": 1.457099999999997
     },
     {
-      "body_a": "Mercury",
-      "body_b": "Pluto",
-      "harmonic": 9,
-      "exact_angle": 40.0,
-      "separation": 38.576492853452066,
-      "orb": 1.4235071465479336
+      "body_a": "Moon",
+      "body_b": "Sappho",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 61.23010000000001,
+      "orb": 1.2301000000000073
     },
     {
-      "body_a": "Mercury",
-      "body_b": "Ceres",
+      "body_a": "Moon",
+      "body_b": "Nemesis",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.95079999999996,
+      "orb": 0.9507999999999583
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Karma",
       "harmonic": 8,
       "exact_angle": 45.0,
-      "separation": 45.04685575983012,
-      "orb": 0.046855759830123134
+      "separation": 43.74549999999999,
+      "orb": 1.2545000000000073
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Nessus",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.823,
+      "orb": 0.1769999999999925
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Varuna",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.281800000000004,
+      "orb": 0.28180000000000405
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.441100000000034,
+      "orb": 0.5588999999999658
     },
     {
       "body_a": "Mercury",
-      "body_b": "Chiron",
+      "body_b": "Uranus",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.99659999999999,
+      "orb": 0.9965999999999866
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Neptune",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.90869999999998,
+      "orb": 0.09130000000001814
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Haumea",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 31.402300000000025,
+      "orb": 1.4023000000000252
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Eros",
       "harmonic": 9,
       "exact_angle": 40.0,
-      "separation": 41.17129238162465,
-      "orb": 1.171292381624653
+      "separation": 38.98659999999998,
+      "orb": 1.0134000000000185
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Sappho",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.34009999999999,
+      "orb": 0.3400999999999925
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Hylonome",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.11009999999999,
+      "orb": 0.8899000000000115
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Sedna",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.2037,
+      "orb": 0.20369999999999777
     },
     {
       "body_a": "Mercury",
       "body_b": "Aetheric_Jovian_Arc",
-      "harmonic": 3,
-      "exact_angle": 120.0,
-      "separation": 118.78555706214979,
-      "orb": 1.2144429378502082
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.55110000000002,
+      "orb": 1.4488999999999805
     },
     {
       "body_a": "Venus",
       "body_b": "Mars",
-      "harmonic": 12,
-      "exact_angle": 30.0,
-      "separation": 29.03704434779297,
-      "orb": 0.9629556522070288
-    },
-    {
-      "body_a": "Venus",
-      "body_b": "Pluto",
       "harmonic": 6,
       "exact_angle": 60.0,
-      "separation": 60.8696904825523,
-      "orb": 0.8696904825523006
+      "separation": 60.04910000000001,
+      "orb": 0.049100000000009913
     },
     {
       "body_a": "Venus",
-      "body_b": "Juno",
-      "harmonic": 5,
-      "exact_angle": 72.0,
-      "separation": 71.05898578472141,
-      "orb": 0.9410142152785852
+      "body_b": "Pallas",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 43.68560000000002,
+      "orb": 1.3143999999999778
     },
     {
       "body_a": "Venus",
-      "body_b": "Aetheric_SunMoon_Midpoint",
+      "body_b": "Huya",
       "harmonic": 3,
       "exact_angle": 120.0,
-      "separation": 119.19755323313254,
-      "orb": 0.8024467668674617
+      "separation": 119.95820000000003,
+      "orb": 0.04179999999996653
     },
     {
       "body_a": "Mars",
-      "body_b": "Aetheric_SunMoon_Midpoint",
-      "harmonic": 4,
-      "exact_angle": 90.0,
-      "separation": 90.16050888533954,
-      "orb": 0.16050888533953866
+      "body_b": "Hekate",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.30060000000003,
+      "orb": 0.6993999999999687
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Aura",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.321799999999996,
+      "orb": 0.3217999999999961
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Chiron",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.519000000000005,
+      "orb": 0.48099999999999454
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Pholus",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.72149999999999,
+      "orb": 0.7214999999999918
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Quaoar",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.4975,
+      "orb": 0.4975000000000023
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Huya",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.909100000000024,
+      "orb": 0.09089999999997644
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Salacia",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.12610000000001,
+      "orb": 0.1261000000000081
     },
     {
       "body_a": "Jupiter",
-      "body_b": "Pallas",
-      "harmonic": 3,
-      "exact_angle": 120.0,
-      "separation": 120.2390537461456,
-      "orb": 0.2390537461456006
+      "body_b": "Eris",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.75280000000001,
+      "orb": 0.24719999999999231
     },
     {
-      "body_a": "Uranus",
-      "body_b": "Ceres",
-      "harmonic": 12,
-      "exact_angle": 30.0,
-      "separation": 29.575095406849734,
-      "orb": 0.4249045931502664
+      "body_a": "Jupiter",
+      "body_b": "Chiron",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 88.7309,
+      "orb": 1.2690999999999946
     },
     {
-      "body_a": "Uranus",
-      "body_b": "Pallas",
-      "harmonic": 5,
-      "exact_angle": 72.0,
-      "separation": 73.13969352274228,
-      "orb": 1.1396935227422773
-    },
-    {
-      "body_a": "Uranus",
-      "body_b": "Aetheric_Jovian_Arc",
+      "body_a": "Jupiter",
+      "body_b": "Aetheric_SunMoon_Midpoint",
       "harmonic": 8,
       "exact_angle": 45.0,
-      "separation": 44.163605895469914,
-      "orb": 0.8363941045300862
+      "separation": 45.98565649053819,
+      "orb": 0.9856564905381902
+    },
+    {
+      "body_a": "Jupiter",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.70566666666667,
+      "orb": 0.2943333333333271
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Pluto",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.59739999999999,
+      "orb": 0.5973999999999933
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Merlin",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.06940000000003,
+      "orb": 0.9305999999999699
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Asbolus",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.25880000000001,
+      "orb": 0.2588000000000079
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Neptune",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 58.9121,
+      "orb": 1.0878999999999976
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Destinn",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.2726,
+      "orb": 0.27259999999999707
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Hylonome",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.89330000000001,
+      "orb": 0.10669999999998936
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Ceres",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.16880000000003,
+      "orb": 0.8311999999999671
     },
     {
       "body_a": "Neptune",
       "body_b": "Vesta",
-      "harmonic": 12,
-      "exact_angle": 30.0,
-      "separation": 31.356089082118444,
-      "orb": 1.3560890821184444
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.54589999999996,
+      "orb": 0.5458999999999605
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Chariklo",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.43829999999997,
+      "orb": 0.5617000000000303
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Hylonome",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.9812,
+      "orb": 0.9812000000000012
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Sedna",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.704999999999984,
+      "orb": 0.2950000000000159
+    },
+    {
+      "body_a": "Pluto",
+      "body_b": "Haumea",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.553,
+      "orb": 0.5529999999999973
     },
     {
       "body_a": "Pluto",
       "body_b": "Pallas",
       "harmonic": 9,
       "exact_angle": 40.0,
-      "separation": 40.05875049738967,
-      "orb": 0.05875049738966709
+      "separation": 39.48059999999998,
+      "orb": 0.5194000000000187
+    },
+    {
+      "body_a": "Pluto",
+      "body_b": "Karma",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.31980000000001,
+      "orb": 0.680199999999985
+    },
+    {
+      "body_a": "Pluto",
+      "body_b": "Destinn",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.77549999999997,
+      "orb": 0.22450000000003456
     },
     {
       "body_a": "Ceres",
-      "body_b": "Pallas",
+      "body_b": "Aura",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.5095,
+      "orb": 0.49049999999999727
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Pholus",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.9092,
+      "orb": 0.09080000000000155
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Quaoar",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.68520000000001,
+      "orb": 0.3147999999999911
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Varuna",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.34809999999999,
+      "orb": 0.6519000000000119
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Salacia",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.061600000000006,
+      "orb": 0.9383999999999943
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.04785649053821,
+      "orb": 0.04785649053820862
+    },
+    {
+      "body_a": "Eris",
+      "body_b": "Psyche",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.86340000000001,
+      "orb": 0.13659999999998718
+    },
+    {
+      "body_a": "Haumea",
+      "body_b": "Asbolus",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.59080000000002,
+      "orb": 1.4091999999999842
+    },
+    {
+      "body_a": "Haumea",
+      "body_b": "Orcus",
       "harmonic": 8,
       "exact_angle": 45.0,
-      "separation": 43.56459811589252,
-      "orb": 1.4354018841074776
+      "separation": 45.732500000000016,
+      "orb": 0.7325000000000159
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Hygiea",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.00569999999999,
+      "orb": 0.9943000000000097
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Aura",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.75729999999999,
+      "orb": 0.24270000000001346
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Pholus",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.35760000000005,
+      "orb": 0.6423999999999523
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Quaoar",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.58159999999998,
+      "orb": 0.41840000000001965
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Varuna",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 61.385099999999994,
+      "orb": 1.3850999999999942
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Salacia",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.79479999999998,
+      "orb": 0.20520000000001914
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.685343509461774,
+      "orb": 0.6853435094617737
     },
     {
       "body_a": "Pallas",
-      "body_b": "Chiron",
-      "harmonic": 9,
-      "exact_angle": 40.0,
-      "separation": 39.68903473768705,
-      "orb": 0.31096526231294774
+      "body_b": "Hygiea",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.55170000000001,
+      "orb": 0.44829999999998904
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Salacia",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 28.76260000000002,
+      "orb": 1.2373999999999796
     },
     {
       "body_a": "Juno",
-      "body_b": "Chiron",
+      "body_b": "Nessus",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.89080000000001,
+      "orb": 0.10919999999998709
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Eros",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 178.532,
+      "orb": 1.4679999999999893
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Nemesis",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.70460000000003,
+      "orb": 0.29539999999997235
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Aura",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.79480000000001,
+      "orb": 0.20519999999999072
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Merlin",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 46.062100000000044,
+      "orb": 1.0621000000000436
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Pholus",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.194500000000005,
+      "orb": 0.194500000000005
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Nessus",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.521599999999978,
+      "orb": 0.4784000000000219
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Quaoar",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.970500000000015,
+      "orb": 0.02949999999998454
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Ixion",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 43.811800000000005,
+      "orb": 1.1881999999999948
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Eros",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.025800000000004,
+      "orb": 0.02580000000000382
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Aura",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 178.763,
+      "orb": 1.2369999999999948
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Quaoar",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 178.5873,
+      "orb": 1.412700000000001
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Sedna",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 41.191300000000005,
+      "orb": 1.1913000000000054
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Salacia",
       "harmonic": 4,
       "exact_angle": 90.0,
-      "separation": 89.93708053724583,
-      "orb": 0.06291946275416649
+      "separation": 90.7891,
+      "orb": 0.7891000000000048
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.04036666666667,
+      "orb": 0.04036666666667088
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Psyche",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.5805,
+      "orb": 0.5805000000000007
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Nemesis",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.82739999999998,
+      "orb": 1.172600000000017
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Karma",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.62209999999999,
+      "orb": 0.377900000000011
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Chariklo",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.6396,
+      "orb": 0.3603999999999985
+    },
+    {
+      "body_a": "Psyche",
+      "body_b": "Chiron",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.84150000000001,
+      "orb": 1.1584999999999894
+    },
+    {
+      "body_a": "Psyche",
+      "body_b": "Gonggong",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 121.2749,
+      "orb": 1.2749000000000024
+    },
+    {
+      "body_a": "Psyche",
+      "body_b": "Ixion",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.6993,
+      "orb": 0.3007000000000062
+    },
+    {
+      "body_a": "Sappho",
+      "body_b": "Nessus",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.59289999999999,
+      "orb": 1.407100000000014
+    },
+    {
+      "body_a": "Hekate",
+      "body_b": "Karma",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.13629999999998,
+      "orb": 1.1362999999999772
+    },
+    {
+      "body_a": "Hekate",
+      "body_b": "Orcus",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.10199999999998,
+      "orb": 0.10199999999997544
+    },
+    {
+      "body_a": "Nemesis",
+      "body_b": "Nessus",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.2262,
+      "orb": 0.7737999999999943
+    },
+    {
+      "body_a": "Nemesis",
+      "body_b": "Chariklo",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.81220000000002,
+      "orb": 0.8122000000000185
+    },
+    {
+      "body_a": "Nemesis",
+      "body_b": "Hylonome",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.26929999999999,
+      "orb": 0.730700000000013
+    },
+    {
+      "body_a": "Karma",
+      "body_b": "Merlin",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.84780000000001,
+      "orb": 0.8478000000000065
+    },
+    {
+      "body_a": "Karma",
+      "body_b": "Asbolus",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.824,
+      "orb": 0.17600000000000193
+    },
+    {
+      "body_a": "Karma",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.60753333333332,
+      "orb": 0.39246666666667807
+    },
+    {
+      "body_a": "Destinn",
+      "body_b": "Sedna",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 46.065499999999986,
+      "orb": 1.065499999999986
+    },
+    {
+      "body_a": "Destinn",
+      "body_b": "Gonggong",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.57279999999997,
+      "orb": 0.42720000000002756
+    },
+    {
+      "body_a": "Aura",
+      "body_b": "Chariklo",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.9024,
+      "orb": 0.9024000000000001
+    },
+    {
+      "body_a": "Aura",
+      "body_b": "Salacia",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.4479,
+      "orb": 0.4479000000000042
+    },
+    {
+      "body_a": "Aura",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.44264350946179,
+      "orb": 0.44264350946178865
+    },
+    {
+      "body_a": "Merlin",
+      "body_b": "Asbolus",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.32820000000004,
+      "orb": 0.671799999999962
+    },
+    {
+      "body_a": "Merlin",
+      "body_b": "Gonggong",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.67470000000003,
+      "orb": 0.6747000000000298
+    },
+    {
+      "body_a": "Chiron",
+      "body_b": "Huya",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.42810000000003,
+      "orb": 0.571899999999971
+    },
+    {
+      "body_a": "Pholus",
+      "body_b": "Chariklo",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 41.302099999999996,
+      "orb": 1.3020999999999958
+    },
+    {
+      "body_a": "Pholus",
+      "body_b": "Salacia",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.8476,
+      "orb": 0.8475999999999999
+    },
+    {
+      "body_a": "Pholus",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.0429435094618,
+      "orb": 0.04294350946179293
+    },
+    {
+      "body_a": "Nessus",
+      "body_b": "Sedna",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.72930000000002,
+      "orb": 1.2706999999999766
+    },
+    {
+      "body_a": "Nessus",
+      "body_b": "Ixion",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.33339999999998,
+      "orb": 1.3333999999999833
+    },
+    {
+      "body_a": "Nessus",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.38189999999997,
+      "orb": 0.38189999999997326
+    },
+    {
+      "body_a": "Chariklo",
+      "body_b": "Quaoar",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 41.078100000000006,
+      "orb": 1.0781000000000063
+    },
+    {
+      "body_a": "Chariklo",
+      "body_b": "Ixion",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 44.919399999999996,
+      "orb": 0.080600000000004
+    },
+    {
+      "body_a": "Hylonome",
+      "body_b": "Sedna",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.68620000000001,
+      "orb": 0.6862000000000137
+    },
+    {
+      "body_a": "Hylonome",
+      "body_b": "Salacia",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.08840000000004,
+      "orb": 0.9115999999999644
+    },
+    {
+      "body_a": "Asbolus",
+      "body_b": "Orcus",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.85829999999999,
+      "orb": 0.8582999999999856
+    },
+    {
+      "body_a": "Asbolus",
+      "body_b": "Gonggong",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.65350000000001,
+      "orb": 1.3464999999999918
+    },
+    {
+      "body_a": "Quaoar",
+      "body_b": "Salacia",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.62360000000001,
+      "orb": 0.6236000000000104
+    },
+    {
+      "body_a": "Quaoar",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.26694350946178,
+      "orb": 0.26694350946178247
+    },
+    {
+      "body_a": "Varuna",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.69975649053822,
+      "orb": 0.6997564905382205
+    },
+    {
+      "body_a": "Varuna",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 44.419766666666646,
+      "orb": 0.5802333333333536
     }
   ],
   "aether_points": {
     "Aetheric_SunMoon_Midpoint": {
-      "longitude": 246.46165064423383,
+      "longitude": 160.62865649053822,
       "latitude": 0.0,
       "distance": 0.0,
       "velocity": 0.0,
@@ -847,7 +1493,7 @@
       "category": "aether_points"
     },
     "Aetheric_Jovian_Arc": {
-      "longitude": 102.1515633104159,
+      "longitude": 110.76959999999997,
       "latitude": 0.0,
       "distance": 0.0,
       "velocity": 0.0,
@@ -856,7 +1502,7 @@
       "category": "aether_points"
     },
     "Aetheric_Elemental_Balance": {
-      "longitude": 199.4416858535451,
+      "longitude": 174.34866666666667,
       "latitude": 0.0,
       "distance": 0.0,
       "velocity": 0.0,
