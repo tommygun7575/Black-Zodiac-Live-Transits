@@ -30,25 +30,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: run the transit generator
+      - name: run deterministic transit pipeline
         run: |
           PYTHONPATH=$(pwd) python scripts/generate_transits.py
 
-      - name: validate JSON schema
+      - name: validate latest docs overlay schema
         run: |
-          latest=$(ls -t output/daily_overlays/daily_overlay_*.json | head -n 1)
+          latest=$(ls -t docs/overlays/daily_overlay_*.json | head -n 1)
           PYTHONPATH=$(pwd) python scripts/validate_output_schema.py "$latest"
 
       - name: publish generated overlay file
         uses: actions/upload-artifact@v4
         with:
           name: daily-overlay
-          path: output/daily_overlays/daily_overlay_*.json
+          path: docs/overlays/daily_overlay_*.json
 
       - name: commit generated overlay
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add output/daily_overlays/daily_overlay_*.json
+          git add docs/overlays/daily_overlay_*.json
           git commit -m "Generate daily transit overlay" || echo "No changes"
           git push
