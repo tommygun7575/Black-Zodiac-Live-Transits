@@ -12,7 +12,7 @@ from scripts.calculate_aspects import fixed_star_conjunctions, harmonic_aspects
 from scripts.fetch_ephemeris import fetch_all_positions, load_catalog
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_DIR = ROOT / "daily_transits"
+OUTPUT_DIR = ROOT / "docs"
 
 
 def _sanitize_nans(value):
@@ -44,13 +44,14 @@ def main() -> Path:
     parser.add_argument("--date", help="UTC day in YYYY-MM-DD; defaults to current UTC day")
     args = parser.parse_args()
 
-    transit_dt_utc = utc_midnight_for_day(args.date)
+    transit_dt_utc = utc_midnight_for_day(args.date) if args.date else datetime.utcnow().replace(tzinfo=timezone.utc)
+    pacific_now = transit_dt_utc.astimezone(ZoneInfo("America/Los_Angeles"))
     catalog = load_catalog()
     transit_positions = fetch_all_positions(transit_dt_utc, catalog=catalog)
 
     output = {
-        "generated_at_utc": transit_dt_utc.isoformat().replace("+00:00", "Z"),
-        "generated_at_pacific": transit_dt_utc.astimezone(ZoneInfo("America/Los_Angeles")).isoformat(),
+        "generated_at_utc": transit_dt_utc.isoformat(),
+        "generated_at_pacific": pacific_now.isoformat(),
         "transit_positions": transit_positions,
         "calculated_harmonics": harmonic_aspects(transit_positions),
         "aether_points": {
@@ -64,7 +65,7 @@ def main() -> Path:
 
     output = _sanitize_nans(output)
 
-    date_tag = transit_dt_utc.astimezone(ZoneInfo("America/Los_Angeles")).strftime("%Y_%m_%d")
+    date_tag = pacific_now.strftime("%Y_%m_%d")
     output_path = OUTPUT_DIR / f"feed_overlay_{date_tag}.json"
     _write_json(output_path, output)
 
