@@ -1,0 +1,1016 @@
+{
+  "generated_at_utc": "2026-06-03T11:33:25.776835+00:00",
+  "generated_at_pacific": "2026-06-03T04:33:25.776835-07:00",
+  "transit_positions": {
+    "Sun": {
+      "longitude": 72.91561622462697,
+      "latitude": -0.00011707971226787183,
+      "distance": 1.014261966281886,
+      "velocity": 0.957683259727748,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z"
+    },
+    "Moon": {
+      "longitude": 286.949639870372,
+      "latitude": -3.6235834835240186,
+      "distance": 0.002703443071259714,
+      "velocity": 11.91079074661934,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22301%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf53810>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Mercury": {
+      "longitude": 93.27218910616321,
+      "latitude": 2.1577660811856854,
+      "distance": 1.0539552333947875,
+      "velocity": 1.601664458617143,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf6d510>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Venus": {
+      "longitude": 108.3221219633744,
+      "latitude": 1.9644366399353927,
+      "distance": 1.2397902316123417,
+      "velocity": 1.1779399934356019,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22299%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf6e550>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Mars": {
+      "longitude": 41.59612214582967,
+      "latitude": -0.6014912053202776,
+      "distance": 2.1784546337939252,
+      "velocity": 0.738896530378274,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22499%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf74a50>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Jupiter": {
+      "longitude": 114.53951929698829,
+      "latitude": 0.4139184455839423,
+      "distance": 5.981575615070812,
+      "velocity": 0.1915913216287413,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22599%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf75890>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Saturn": {
+      "longitude": 12.4505022475423,
+      "latitude": -2.2697826202729234,
+      "distance": 9.929572351059905,
+      "velocity": 0.08152316481401463,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22699%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf84f10>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Uranus": {
+      "longitude": 62.20743703401125,
+      "latitude": -0.15898651927858506,
+      "distance": 20.458516788980937,
+      "velocity": 0.05767107398592672,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22799%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf76ad0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Neptune": {
+      "longitude": 4.106785084300629,
+      "latitude": -1.3426174785906722,
+      "distance": 30.23245599783428,
+      "velocity": 0.018017680820751798,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22899%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40d018610>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Pluto": {
+      "longitude": 305.3356048140127,
+      "latitude": -4.150465798862615,
+      "distance": 34.90108629400393,
+      "velocity": -0.012065481984390562,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22999%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf86c90>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Ceres": {
+      "longitude": 62.25145734967314,
+      "latitude": -2.9814423397864025,
+      "distance": 3.7592210078184425,
+      "velocity": 0.4099096476289708,
+      "source": "swiss",
+      "category": "dwarf_planets",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%221%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf85750>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Eris": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "dwarf_planets",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf84250>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Haumea": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "dwarf_planets",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136108%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf6ff90>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Makemake": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "dwarf_planets",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22136472%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf75690>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Pallas": {
+      "longitude": 11.216077237392307,
+      "latitude": -0.6747731689096428,
+      "distance": 3.42311154668723,
+      "velocity": 0.26532630429017184,
+      "source": "swiss",
+      "category": "major_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf901d0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))"
+      ]
+    },
+    "Juno": {
+      "longitude": 310.9835443325142,
+      "latitude": 14.080790528635532,
+      "distance": 2.27497034347475,
+      "velocity": 0.01448004186714512,
+      "source": "swiss",
+      "category": "major_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%223%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf52d10>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))"
+      ]
+    },
+    "Vesta": {
+      "longitude": 8.499059850647889,
+      "latitude": -5.667652579003468,
+      "distance": 2.5914927728208386,
+      "velocity": 0.38680852722099374,
+      "source": "swiss",
+      "category": "major_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%224%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf77ed0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))"
+      ]
+    },
+    "Hygiea": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "major_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf87510>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Eros": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22433%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf92710>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Psyche": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2216%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf90d90>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Sappho": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2280%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf741d0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Hekate": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22100%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf85550>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Nemesis": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22128%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf88c90>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Karma": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%223811%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf6db10>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Destinn": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%226583%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf90e50>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Aura": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%221488%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf89d10>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Merlin": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "miriade: unresolved",
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222598%3B%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf8a2d0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "swiss: unresolved"
+      ]
+    },
+    "Chiron": {
+      "longitude": 29.307566416271502,
+      "latitude": 0.2991091659444355,
+      "distance": 19.04388734443809,
+      "velocity": 0.047026608781010636,
+      "source": "swiss",
+      "category": "centaurs",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%222060%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf88910>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved"
+      ]
+    },
+    "Pholus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%225145%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf53d10>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Nessus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%227066%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf77890>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Chariklo": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210199%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf870d0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Hylonome": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2210370%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf9ab10>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Asbolus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "centaurs",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%228405%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf858d0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Orcus": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2290482%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf9be90>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Quaoar": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2250000%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf93750>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Sedna": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2290377%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf89010>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Gonggong": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22225088%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf77310>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Ixion": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2228978%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf98150>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Varuna": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2220000%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf84450>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Huya": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%2238628%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf49950>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Salacia": {
+      "longitude": null,
+      "latitude": null,
+      "distance": null,
+      "velocity": null,
+      "source": "unresolved",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-06-03T11:33:25Z",
+      "errors": [
+        "horizons: HTTPSConnectionPool(host='ssd.jpl.nasa.gov', port=443): Max retries exceeded with url: /api/horizons.api?format=text&EPHEM_TYPE=OBSERVER&QUANTITIES=%271%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%2C28%2C29%2C30%2C31%2C32%2C33%2C34%2C35%2C36%2C37%2C38%2C39%2C40%2C41%2C42%2C43%27&COMMAND=%22120347%22&SOLAR_ELONG=%220%2C180%22&LHA_CUTOFF=0&CSV_FORMAT=YES&CAL_FORMAT=BOTH&ANG_FORMAT=DEG&APPARENT=AIRLESS&REF_SYSTEM=ICRF&EXTRA_PREC=NO&CENTER=%27500%40399%27&TLIST=2461194.981539352&SKIP_DAYLT=NO (Caused by ConnectTimeoutError(<HTTPSConnection(host='ssd.jpl.nasa.gov', port=443) at 0x7ff40cf935d0>, 'Connection to ssd.jpl.nasa.gov timed out. (connect timeout=30)'))",
+        "miriade: unresolved",
+        "swiss: unresolved"
+      ]
+    },
+    "Aldebaran": {
+      "longitude": 69.78918794733352,
+      "latitude": -5.4673266340468905,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Antares": {
+      "longitude": 249.76229284318168,
+      "latitude": -4.569944164023126,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Arcturus": {
+      "longitude": 204.2336149172314,
+      "latitude": 30.736232842293024,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Betelgeuse": {
+      "longitude": 88.75459920922947,
+      "latitude": -16.027009001429224,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Capella": {
+      "longitude": 81.85791960050767,
+      "latitude": 22.86426550047521,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Fomalhaut": {
+      "longitude": 333.860303668846,
+      "latitude": -21.1356346947104,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Regulus": {
+      "longitude": 149.82913426785984,
+      "latitude": 0.46483841477959303,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Sirius": {
+      "longitude": 104.0816644702237,
+      "latitude": -39.605248579008055,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Spica": {
+      "longitude": 203.84135789547489,
+      "latitude": -2.0544885383661207,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Aetheric_SunMoon_Midpoint": {
+      "longitude": 359.8652560949989,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Jovian_Arc": {
+      "longitude": 102.089017049446,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Elemental_Balance": {
+      "longitude": 145.62262799319203,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "calculated",
+      "category": "aether_points"
+    }
+  },
+  "calculated_harmonics": [
+    {
+      "body_a": "Sun",
+      "body_b": "Mars",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 31.319494078797305,
+      "orb": 1.3194940787973053
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Saturn",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.46511397708467,
+      "orb": 0.4651139770846697
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Chiron",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 43.608049808355474,
+      "orb": 1.3919501916445256
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.05036012962807,
+      "orb": 1.050360129628075
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.173400824819055,
+      "orb": 0.8265991751809452
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.70701176856505,
+      "orb": 0.707011768565053
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Venus",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 178.62751790699758,
+      "orb": 1.372482093002418
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.91561622462694,
+      "orb": 0.9156162246269446
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Uranus",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 31.06475207215196,
+      "orb": 1.0647520721519612
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Neptune",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.16540402186259,
+      "orb": 0.8345959781374148
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Ceres",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 31.020731756490072,
+      "orb": 1.020731756490072
+    },
+    {
+      "body_a": "Venus",
+      "body_b": "Uranus",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 46.11468492936315,
+      "orb": 1.1146849293631504
+    },
+    {
+      "body_a": "Venus",
+      "body_b": "Ceres",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 46.07066461370126,
+      "orb": 1.0706646137012612
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Jupiter",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.94339715115859,
+      "orb": 0.9433971511585924
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Saturn",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.145619898287368,
+      "orb": 0.854380101712632
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Pallas",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.380044908437362,
+      "orb": 0.3800449084373625
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Juno",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.61257781331545,
+      "orb": 0.612577813315454
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.49289490361633,
+      "orb": 0.4928949036163317
+    },
+    {
+      "body_a": "Jupiter",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 31.083108696203738,
+      "orb": 1.0831086962037375
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Juno",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 61.466957915028104,
+      "orb": 1.4669579150281038
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.63851480190368,
+      "orb": 0.36148519809631807
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.881580015434736,
+      "orb": 0.11841998456526426
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Pluto",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 58.771180270287914,
+      "orb": 1.228819729712086
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.83755969977284,
+      "orb": 0.1624403002271606
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Juno",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.2325329048781,
+      "orb": 0.23253290487809863
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.87293981205369,
+      "orb": 0.8729398120536871
+    },
+    {
+      "body_a": "Chiron",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.4423103212726,
+      "orb": 0.5576896787273995
+    },
+    {
+      "body_a": "Chiron",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.78145063317447,
+      "orb": 0.7814506331744724
+    },
+    {
+      "body_a": "Aetheric_Jovian_Arc",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 43.533610943746,
+      "orb": 1.4663890562540018
+    }
+  ],
+  "aether_points": {
+    "Aetheric_SunMoon_Midpoint": {
+      "longitude": 359.8652560949989,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Jovian_Arc": {
+      "longitude": 102.089017049446,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Elemental_Balance": {
+      "longitude": 145.62262799319203,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "calculated",
+      "category": "aether_points"
+    }
+  },
+  "fixed_star_positions": {
+    "Aldebaran": {
+      "longitude": 69.78918794733352,
+      "latitude": -5.4673266340468905,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Antares": {
+      "longitude": 249.76229284318168,
+      "latitude": -4.569944164023126,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Arcturus": {
+      "longitude": 204.2336149172314,
+      "latitude": 30.736232842293024,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Betelgeuse": {
+      "longitude": 88.75459920922947,
+      "latitude": -16.027009001429224,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Capella": {
+      "longitude": 81.85791960050767,
+      "latitude": 22.86426550047521,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Fomalhaut": {
+      "longitude": 333.860303668846,
+      "latitude": -21.1356346947104,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Regulus": {
+      "longitude": 149.82913426785984,
+      "latitude": 0.46483841477959303,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Sirius": {
+      "longitude": 104.0816644702237,
+      "latitude": -39.605248579008055,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Spica": {
+      "longitude": 203.84135789547489,
+      "latitude": -2.0544885383661207,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-06-03T11:33:25Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    }
+  },
+  "fixed_star_conjunctions": []
+}
