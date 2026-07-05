@@ -1,0 +1,1515 @@
+{
+  "generated_at_utc": "2026-07-05T10:41:30.535559+00:00",
+  "generated_at_pacific": "2026-07-05T03:41:30.535559-07:00",
+  "transit_positions": {
+    "Sun": {
+      "longitude": 103.44052213885324,
+      "latitude": 6.342595693016919e-05,
+      "distance": 1.0166404236665894,
+      "velocity": 0.9533181369402315,
+      "source": "swiss",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Moon": {
+      "longitude": 283.2022,
+      "latitude": 0.0064,
+      "distance": 0.00260727339267,
+      "velocity": 1.0057927,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Mercury": {
+      "longitude": 268.4619,
+      "latitude": -4.5302,
+      "distance": 0.5816751643973,
+      "velocity": 12.22991,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Venus": {
+      "longitude": 214.5332,
+      "latitude": 2.276,
+      "distance": 1.00929603494572,
+      "velocity": 36.763003,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Mars": {
+      "longitude": 38.266,
+      "latitude": -0.3594,
+      "distance": 2.09293418332234,
+      "velocity": 45.0099241,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Jupiter": {
+      "longitude": 124.1049,
+      "latitude": 0.5217,
+      "distance": 6.23725874570919,
+      "velocity": 41.7031258,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Saturn": {
+      "longitude": 7.8166,
+      "latitude": -2.3938,
+      "distance": 9.42291357229196,
+      "velocity": 30.5233499,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Uranus": {
+      "longitude": 61.652,
+      "latitude": -0.1655,
+      "distance": 20.2306102436149,
+      "velocity": 34.7828584,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Neptune": {
+      "longitude": 2.1172,
+      "latitude": -1.3628,
+      "distance": 29.7037767818181,
+      "velocity": 28.8003486,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Pluto": {
+      "longitude": 303.8071,
+      "latitude": -4.1183,
+      "distance": 34.6029959315539,
+      "velocity": 24.382823,
+      "source": "horizons",
+      "category": "core_bodies",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Ceres": {
+      "longitude": 64.7684,
+      "latitude": -2.8563,
+      "distance": 3.59692772160462,
+      "velocity": 45.2084948,
+      "source": "horizons",
+      "category": "dwarf_planets",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Eris": {
+      "longitude": 24.9597,
+      "latitude": -10.4551,
+      "distance": 95.690823343435,
+      "velocity": 29.857349,
+      "source": "horizons",
+      "category": "dwarf_planets",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Haumea": {
+      "longitude": 213.0611,
+      "latitude": 28.2026,
+      "distance": 49.4808511307365,
+      "velocity": 27.831037,
+      "source": "horizons",
+      "category": "dwarf_planets",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Makemake": {
+      "longitude": 191.618,
+      "latitude": 27.1739,
+      "distance": 52.76270089663,
+      "velocity": 30.0108935,
+      "source": "horizons",
+      "category": "dwarf_planets",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Pallas": {
+      "longitude": 358.4854,
+      "latitude": -3.8983,
+      "distance": 2.92717013688906,
+      "velocity": 34.1517377,
+      "source": "horizons",
+      "category": "major_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Juno": {
+      "longitude": 299.1963,
+      "latitude": 10.1067,
+      "distance": 1.919720247907,
+      "velocity": 17.0166022,
+      "source": "horizons",
+      "category": "major_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Vesta": {
+      "longitude": 353.7065,
+      "latitude": -6.7174,
+      "distance": 2.25425732129131,
+      "velocity": 27.6965251,
+      "source": "horizons",
+      "category": "major_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Hygiea": {
+      "longitude": 120.7296,
+      "latitude": -1.1601,
+      "distance": 4.24077178763461,
+      "velocity": 44.5963611,
+      "source": "horizons",
+      "category": "major_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Eros": {
+      "longitude": 226.3507,
+      "latitude": -10.5941,
+      "distance": 1.2496935039038,
+      "velocity": 31.0868358,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Psyche": {
+      "longitude": 120.4617,
+      "latitude": -1.5276,
+      "distance": 3.92599983652191,
+      "velocity": 46.4292787,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Sappho": {
+      "longitude": 136.842,
+      "latitude": -8.5855,
+      "distance": 3.47657538271726,
+      "velocity": 45.5410214,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Hekate": {
+      "longitude": 316.7996,
+      "latitude": -1.0818,
+      "distance": 1.81813145060713,
+      "velocity": 16.7459906,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Nemesis": {
+      "longitude": 285.084,
+      "latitude": -3.0302,
+      "distance": 1.71501840595569,
+      "velocity": 11.9991708,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Karma": {
+      "longitude": 235.719,
+      "latitude": -9.9282,
+      "distance": 2.35585949587181,
+      "velocity": 21.353397,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Destinn": {
+      "longitude": 45.5094,
+      "latitude": 6.9222,
+      "distance": 3.10056604192455,
+      "velocity": 43.9044754,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Aura": {
+      "longitude": 298.6009,
+      "latitude": -8.7419,
+      "distance": 2.43479192278033,
+      "velocity": 15.3314657,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Merlin": {
+      "longitude": 294.719,
+      "latitude": 7.7212,
+      "distance": 2.00218656835718,
+      "velocity": 15.4734468,
+      "source": "horizons",
+      "category": "expanded_asteroids",
+      "timestamp": "2026-07-05T10:41:30Z",
+      "errors": [
+        "miriade: unresolved"
+      ]
+    },
+    "Chiron": {
+      "longitude": 27.0717,
+      "latitude": 0.2703,
+      "distance": 18.5758317689959,
+      "velocity": 32.0564892,
+      "source": "horizons",
+      "category": "centaurs",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Pholus": {
+      "longitude": 281.0917,
+      "latitude": 8.1953,
+      "distance": 29.5950209891258,
+      "velocity": 26.1161389,
+      "source": "horizons",
+      "category": "centaurs",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Nessus": {
+      "longitude": 350.861,
+      "latitude": -10.2933,
+      "distance": 31.6615860953378,
+      "velocity": 26.1002757,
+      "source": "horizons",
+      "category": "centaurs",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Chariklo": {
+      "longitude": 323.326,
+      "latitude": 9.5529,
+      "distance": 16.9532421674926,
+      "velocity": 24.7867977,
+      "source": "horizons",
+      "category": "centaurs",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Hylonome": {
+      "longitude": 301.2284,
+      "latitude": 3.4759,
+      "distance": 25.4890843723247,
+      "velocity": 23.694162,
+      "source": "horizons",
+      "category": "centaurs",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Asbolus": {
+      "longitude": 94.7223,
+      "latitude": 17.6134,
+      "distance": 27.1482531464098,
+      "velocity": 32.8675489,
+      "source": "horizons",
+      "category": "centaurs",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Orcus": {
+      "longitude": 167.3147,
+      "latitude": -20.2042,
+      "distance": 48.4088166546542,
+      "velocity": 30.9574785,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Quaoar": {
+      "longitude": 281.3146,
+      "latitude": 7.9847,
+      "distance": 41.6042845167614,
+      "velocity": 24.6961235,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Sedna": {
+      "longitude": 61.3199,
+      "latitude": -11.8434,
+      "distance": 83.6442923866266,
+      "velocity": 33.3166011,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Gonggong": {
+      "longitude": 335.565,
+      "latitude": -0.7619,
+      "distance": 89.1957454910112,
+      "velocity": 27.3000357,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Ixion": {
+      "longitude": 277.5337,
+      "latitude": -9.0439,
+      "distance": 36.4546976157475,
+      "velocity": 24.6106275,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Varuna": {
+      "longitude": 130.3068,
+      "latitude": 9.5581,
+      "distance": 45.1532664518421,
+      "velocity": 33.1762835,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Huya": {
+      "longitude": 267.3163,
+      "latitude": 15.3332,
+      "distance": 28.4273763832924,
+      "velocity": 23.7206686,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Salacia": {
+      "longitude": 11.913,
+      "latitude": 23.9183,
+      "distance": 45.3540006600498,
+      "velocity": 29.221871,
+      "source": "horizons",
+      "category": "trans_neptunian_objects",
+      "timestamp": "2026-07-05T10:41:30Z"
+    },
+    "Aldebaran": {
+      "longitude": 69.78918794733352,
+      "latitude": -5.4673266340468905,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Antares": {
+      "longitude": 249.76229284318168,
+      "latitude": -4.569944164023126,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Arcturus": {
+      "longitude": 204.2336149172314,
+      "latitude": 30.736232842293024,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Betelgeuse": {
+      "longitude": 88.75459920922947,
+      "latitude": -16.027009001429224,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Capella": {
+      "longitude": 81.85791960050767,
+      "latitude": 22.86426550047521,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Fomalhaut": {
+      "longitude": 333.860303668846,
+      "latitude": -21.1356346947104,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Regulus": {
+      "longitude": 149.82913426785984,
+      "latitude": 0.46483841477959303,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Sirius": {
+      "longitude": 104.0816644702237,
+      "latitude": -39.605248579008055,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Spica": {
+      "longitude": 203.84135789547489,
+      "latitude": -2.0544885383661207,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Aetheric_SunMoon_Midpoint": {
+      "longitude": 26.64272213885323,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Jovian_Arc": {
+      "longitude": 116.28829999999999,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Elemental_Balance": {
+      "longitude": 178.66713333333334,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "calculated",
+      "category": "aether_points"
+    }
+  },
+  "calculated_harmonics": [
+    {
+      "body_a": "Sun",
+      "body_b": "Moon",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.76167786114678,
+      "orb": 0.23832213885322062
+    },
+    {
+      "body_a": "Sun",
+      "body_b": "Ceres",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 38.67212213885324,
+      "orb": 1.32787786114676
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Vesta",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.5043,
+      "orb": 1.4956999999999994
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Chariklo",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.12380000000002,
+      "orb": 0.12380000000001701
+    },
+    {
+      "body_a": "Moon",
+      "body_b": "Salacia",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 88.7108,
+      "orb": 1.289199999999994
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Pallas",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.02350000000001,
+      "orb": 0.023500000000012733
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Juno",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.734399999999994,
+      "orb": 0.7343999999999937
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Aura",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.13900000000001,
+      "orb": 0.13900000000001
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Chiron",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.60979999999998,
+      "orb": 1.3902000000000214
+    },
+    {
+      "body_a": "Mercury",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.79476666666667,
+      "orb": 0.20523333333332516
+    },
+    {
+      "body_a": "Venus",
+      "body_b": "Jupiter",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.4283,
+      "orb": 0.428299999999993
+    },
+    {
+      "body_a": "Venus",
+      "body_b": "Pluto",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.27390000000003,
+      "orb": 0.726099999999974
+    },
+    {
+      "body_a": "Venus",
+      "body_b": "Nemesis",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.55079999999998,
+      "orb": 1.449200000000019
+    },
+    {
+      "body_a": "Venus",
+      "body_b": "Asbolus",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.81089999999999,
+      "orb": 0.18910000000001048
+    },
+    {
+      "body_a": "Venus",
+      "body_b": "Gonggong",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 121.0318,
+      "orb": 1.031800000000004
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Saturn",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.449399999999997,
+      "orb": 0.44939999999999714
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Pallas",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.78059999999999,
+      "orb": 0.21940000000000737
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Vesta",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 44.559500000000014,
+      "orb": 0.4404999999999859
+    },
+    {
+      "body_a": "Mars",
+      "body_b": "Ixion",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.73229999999998,
+      "orb": 0.7322999999999809
+    },
+    {
+      "body_a": "Jupiter",
+      "body_b": "Pluto",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.7022,
+      "orb": 0.2977999999999952
+    },
+    {
+      "body_a": "Jupiter",
+      "body_b": "Ceres",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.3365,
+      "orb": 0.6634999999999991
+    },
+    {
+      "body_a": "Jupiter",
+      "body_b": "Haumea",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 88.95620000000002,
+      "orb": 1.043799999999976
+    },
+    {
+      "body_a": "Jupiter",
+      "body_b": "Asbolus",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.382599999999996,
+      "orb": 0.6174000000000035
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Merlin",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.0976,
+      "orb": 1.0976
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Chariklo",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 44.49059999999997,
+      "orb": 0.5094000000000278
+    },
+    {
+      "body_a": "Saturn",
+      "body_b": "Ixion",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.28289999999998,
+      "orb": 0.2828999999999837
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Neptune",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.534800000000004,
+      "orb": 0.46519999999999584
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Hygiea",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.07760000000002,
+      "orb": 0.9223999999999819
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Psyche",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 58.80970000000002,
+      "orb": 1.1902999999999793
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Nessus",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.791,
+      "orb": 1.2090000000000032
+    },
+    {
+      "body_a": "Uranus",
+      "body_b": "Hylonome",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.42359999999996,
+      "orb": 0.4235999999999649
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Hygiea",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.61240000000001,
+      "orb": 1.387599999999992
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Hekate",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.31760000000003,
+      "orb": 0.3176000000000272
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Chariklo",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 38.7912,
+      "orb": 1.2087999999999965
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Hylonome",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 60.8888,
+      "orb": 0.8888000000000034
+    },
+    {
+      "body_a": "Neptune",
+      "body_b": "Sedna",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.20269999999999,
+      "orb": 0.797300000000007
+    },
+    {
+      "body_a": "Pluto",
+      "body_b": "Ceres",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.9613,
+      "orb": 0.9612999999999943
+    },
+    {
+      "body_a": "Pluto",
+      "body_b": "Haumea",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.74599999999998,
+      "orb": 0.7459999999999809
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Eris",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.8087,
+      "orb": 0.19129999999999825
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Vesta",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.06189999999998,
+      "orb": 0.9381000000000199
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Sappho",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.0736,
+      "orb": 0.073599999999999
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Asbolus",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 29.953899999999976,
+      "orb": 0.04610000000002401
+    },
+    {
+      "body_a": "Ceres",
+      "body_b": "Gonggong",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.20339999999999,
+      "orb": 0.7966000000000122
+    },
+    {
+      "body_a": "Eris",
+      "body_b": "Vesta",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 31.253199999999993,
+      "orb": 1.2531999999999925
+    },
+    {
+      "body_a": "Eris",
+      "body_b": "Merlin",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.2407,
+      "orb": 0.2407000000000039
+    },
+    {
+      "body_a": "Eris",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 91.3286,
+      "orb": 1.3285999999999945
+    },
+    {
+      "body_a": "Haumea",
+      "body_b": "Nemesis",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.02289999999999,
+      "orb": 0.022899999999992815
+    },
+    {
+      "body_a": "Haumea",
+      "body_b": "Orcus",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.74640000000002,
+      "orb": 0.7464000000000226
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Hygiea",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.88839999999999,
+      "orb": 1.11160000000001
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Psyche",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 71.1563,
+      "orb": 0.8436999999999983
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Karma",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 44.101,
+      "orb": 0.8990000000000009
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Pholus",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.47370000000001,
+      "orb": 0.526299999999992
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Quaoar",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.69659999999999,
+      "orb": 0.30340000000001055
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Varuna",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 61.311199999999985,
+      "orb": 1.3111999999999853
+    },
+    {
+      "body_a": "Makemake",
+      "body_b": "Salacia",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.70499999999998,
+      "orb": 0.2950000000000159
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Juno",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.28910000000002,
+      "orb": 0.710899999999981
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Nemesis",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.40140000000002,
+      "orb": 1.4014000000000237
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Aura",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.8845,
+      "orb": 0.11549999999999727
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Chiron",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 28.586299999999994,
+      "orb": 1.4137000000000057
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Huya",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 91.16910000000001,
+      "orb": 1.1691000000000145
+    },
+    {
+      "body_a": "Pallas",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.8182666666667,
+      "orb": 0.18173333333331243
+    },
+    {
+      "body_a": "Juno",
+      "body_b": "Eros",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.84560000000002,
+      "orb": 0.8456000000000188
+    },
+    {
+      "body_a": "Juno",
+      "body_b": "Psyche",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 178.7346,
+      "orb": 1.2653999999999996
+    },
+    {
+      "body_a": "Juno",
+      "body_b": "Salacia",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.7167,
+      "orb": 0.716700000000003
+    },
+    {
+      "body_a": "Juno",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.52916666666667,
+      "orb": 0.5291666666666686
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Merlin",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 58.98750000000001,
+      "orb": 1.0124999999999886
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Pholus",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.6148,
+      "orb": 0.6148000000000025
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Chariklo",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.380499999999984,
+      "orb": 0.38049999999998363
+    },
+    {
+      "body_a": "Vesta",
+      "body_b": "Quaoar",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.39190000000002,
+      "orb": 0.391900000000021
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Hylonome",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.50119999999998,
+      "orb": 0.498800000000017
+    },
+    {
+      "body_a": "Hygiea",
+      "body_b": "Sedna",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.40970000000001,
+      "orb": 0.590299999999992
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Sappho",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.50869999999998,
+      "orb": 0.49130000000002383
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Hekate",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.44889999999998,
+      "orb": 0.44889999999998054
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Nemesis",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 58.733299999999986,
+      "orb": 1.2667000000000144
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Destinn",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.1587,
+      "orb": 0.8412999999999897
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Aura",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.25020000000006,
+      "orb": 0.2502000000000635
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Orcus",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.036,
+      "orb": 0.9639999999999986
+    },
+    {
+      "body_a": "Eros",
+      "body_b": "Huya",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.965599999999995,
+      "orb": 0.9655999999999949
+    },
+    {
+      "body_a": "Psyche",
+      "body_b": "Hylonome",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.23329999999999,
+      "orb": 0.7667000000000144
+    },
+    {
+      "body_a": "Psyche",
+      "body_b": "Sedna",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.141799999999996,
+      "orb": 0.8582000000000036
+    },
+    {
+      "body_a": "Sappho",
+      "body_b": "Hekate",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 179.95759999999999,
+      "orb": 0.04240000000001487
+    },
+    {
+      "body_a": "Sappho",
+      "body_b": "Destinn",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 91.33260000000001,
+      "orb": 1.3326000000000136
+    },
+    {
+      "body_a": "Sappho",
+      "body_b": "Orcus",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 30.472699999999975,
+      "orb": 0.4726999999999748
+    },
+    {
+      "body_a": "Hekate",
+      "body_b": "Destinn",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 88.70979999999997,
+      "orb": 1.290200000000027
+    },
+    {
+      "body_a": "Hekate",
+      "body_b": "Ixion",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 39.26589999999999,
+      "orb": 0.7341000000000122
+    },
+    {
+      "body_a": "Nemesis",
+      "body_b": "Destinn",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.4254,
+      "orb": 0.4253999999999962
+    },
+    {
+      "body_a": "Karma",
+      "body_b": "Merlin",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 59.0,
+      "orb": 1.0
+    },
+    {
+      "body_a": "Karma",
+      "body_b": "Pholus",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.37270000000001,
+      "orb": 0.3727000000000089
+    },
+    {
+      "body_a": "Karma",
+      "body_b": "Quaoar",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.59559999999999,
+      "orb": 0.5955999999999904
+    },
+    {
+      "body_a": "Karma",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.4307,
+      "orb": 0.5692999999999984
+    },
+    {
+      "body_a": "Destinn",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.77890000000002,
+      "orb": 1.2210999999999785
+    },
+    {
+      "body_a": "Aura",
+      "body_b": "Huya",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 31.28460000000001,
+      "orb": 1.2846000000000117
+    },
+    {
+      "body_a": "Aura",
+      "body_b": "Salacia",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.31209999999999,
+      "orb": 1.3120999999999867
+    },
+    {
+      "body_a": "Aura",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.93376666666668,
+      "orb": 0.06623333333331516
+    },
+    {
+      "body_a": "Merlin",
+      "body_b": "Chariklo",
+      "harmonic": 12,
+      "exact_angle": 30.0,
+      "separation": 28.607000000000028,
+      "orb": 1.3929999999999723
+    },
+    {
+      "body_a": "Merlin",
+      "body_b": "Gonggong",
+      "harmonic": 9,
+      "exact_angle": 40.0,
+      "separation": 40.846000000000004,
+      "orb": 0.8460000000000036
+    },
+    {
+      "body_a": "Chiron",
+      "body_b": "Huya",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.75539999999998,
+      "orb": 0.2446000000000197
+    },
+    {
+      "body_a": "Chiron",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.21659999999997,
+      "orb": 0.7834000000000287
+    },
+    {
+      "body_a": "Pholus",
+      "body_b": "Salacia",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.82130000000001,
+      "orb": 0.8213000000000079
+    },
+    {
+      "body_a": "Nessus",
+      "body_b": "Ixion",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 73.32729999999998,
+      "orb": 1.3272999999999797
+    },
+    {
+      "body_a": "Chariklo",
+      "body_b": "Ixion",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.79230000000001,
+      "orb": 0.7923000000000116
+    },
+    {
+      "body_a": "Hylonome",
+      "body_b": "Sedna",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 120.09149999999997,
+      "orb": 0.09149999999996794
+    },
+    {
+      "body_a": "Hylonome",
+      "body_b": "Salacia",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 70.68459999999999,
+      "orb": 1.315400000000011
+    },
+    {
+      "body_a": "Asbolus",
+      "body_b": "Orcus",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.5924,
+      "orb": 0.5923999999999978
+    },
+    {
+      "body_a": "Asbolus",
+      "body_b": "Gonggong",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.15730000000002,
+      "orb": 0.8426999999999794
+    },
+    {
+      "body_a": "Quaoar",
+      "body_b": "Salacia",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.59840000000003,
+      "orb": 0.5984000000000265
+    },
+    {
+      "body_a": "Huya",
+      "body_b": "Aetheric_SunMoon_Midpoint",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 119.32642213885322,
+      "orb": 0.6735778611467822
+    },
+    {
+      "body_a": "Huya",
+      "body_b": "Aetheric_Elemental_Balance",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 88.64916666666667,
+      "orb": 1.350833333333327
+    },
+    {
+      "body_a": "Aetheric_SunMoon_Midpoint",
+      "body_b": "Aetheric_Jovian_Arc",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.64557786114676,
+      "orb": 0.3544221388532378
+    }
+  ],
+  "aether_points": {
+    "Aetheric_SunMoon_Midpoint": {
+      "longitude": 26.64272213885323,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Jovian_Arc": {
+      "longitude": 116.28829999999999,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "calculated",
+      "category": "aether_points"
+    },
+    "Aetheric_Elemental_Balance": {
+      "longitude": 178.66713333333334,
+      "latitude": 0.0,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "calculated",
+      "category": "aether_points"
+    }
+  },
+  "fixed_star_positions": {
+    "Aldebaran": {
+      "longitude": 69.78918794733352,
+      "latitude": -5.4673266340468905,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Antares": {
+      "longitude": 249.76229284318168,
+      "latitude": -4.569944164023126,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Arcturus": {
+      "longitude": 204.2336149172314,
+      "latitude": 30.736232842293024,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Betelgeuse": {
+      "longitude": 88.75459920922947,
+      "latitude": -16.027009001429224,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Capella": {
+      "longitude": 81.85791960050767,
+      "latitude": 22.86426550047521,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Fomalhaut": {
+      "longitude": 333.860303668846,
+      "latitude": -21.1356346947104,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Regulus": {
+      "longitude": 149.82913426785984,
+      "latitude": 0.46483841477959303,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Sirius": {
+      "longitude": 104.0816644702237,
+      "latitude": -39.605248579008055,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    },
+    "Spica": {
+      "longitude": 203.84135789547489,
+      "latitude": -2.0544885383661207,
+      "distance": 0.0,
+      "velocity": 0.0,
+      "timestamp": "2026-07-05T10:41:30Z",
+      "source": "fixed_star_catalog",
+      "category": "fixed_stars"
+    }
+  },
+  "fixed_star_conjunctions": [
+    {
+      "body": "Sun",
+      "fixed_star": "Sirius",
+      "orb": 0.6411423313704745
+    }
+  ]
+}
