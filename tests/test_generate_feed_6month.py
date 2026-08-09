@@ -1,9 +1,10 @@
 import datetime
 import math
+import socket
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from scripts import generate_feed_6month as six
 
@@ -71,6 +72,9 @@ class TestGenerateFeed6Month(unittest.TestCase):
         ]
         stats = {
             "jpl_range_requests": 0,
+            "jpl_range_failures": 0,
+            "jpl_retries": 0,
+            "jpl_timeouts": 0,
             "miriade_fallback_requests": 0,
             "miriade_range_requests": 0,
             "miriade_points_resolved": 0,
@@ -107,6 +111,9 @@ class TestGenerateFeed6Month(unittest.TestCase):
         dt_list = [datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)]
         stats = {
             "jpl_range_requests": 0,
+            "jpl_range_failures": 0,
+            "jpl_retries": 0,
+            "jpl_timeouts": 0,
             "miriade_fallback_requests": 0,
             "miriade_range_requests": 0,
             "miriade_points_resolved": 0,
@@ -129,6 +136,9 @@ class TestGenerateFeed6Month(unittest.TestCase):
         dt_list = [datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc) + datetime.timedelta(days=i) for i in range(182)]
         stats = {
             "jpl_range_requests": 0,
+            "jpl_range_failures": 0,
+            "jpl_retries": 0,
+            "jpl_timeouts": 0,
             "miriade_fallback_requests": 0,
             "miriade_range_requests": 0,
             "miriade_points_resolved": 0,
@@ -178,7 +188,7 @@ class TestGenerateFeed6Month(unittest.TestCase):
 
         self.assertEqual(1, get_mock.call_count)
         _, kwargs = get_mock.call_args
-        self.assertEqual("182" if False else "3", kwargs["params"]["-nbd"])
+        self.assertEqual("3", kwargs["params"]["-nbd"])
         self.assertEqual("1d", kwargs["params"]["-step"])
         self.assertEqual(3, len(results))
         self.assertEqual(10.0, results["2026-01-01"]["ecl_lon_deg"])
@@ -199,6 +209,9 @@ class TestGenerateFeed6Month(unittest.TestCase):
         ]
         stats = {
             "jpl_range_requests": 0,
+            "jpl_range_failures": 0,
+            "jpl_retries": 0,
+            "jpl_timeouts": 0,
             "miriade_fallback_requests": 0,
             "miriade_range_requests": 0,
             "miriade_points_resolved": 0,
@@ -224,6 +237,143 @@ class TestGenerateFeed6Month(unittest.TestCase):
         self.assertEqual(3, len(resolved))
         self.assertEqual(["2026-01-02", "2026-01-03"], sorted(swiss_calls))
         self.assertEqual([], missing)
+
+    # ------------------------------------------------------------------
+    # JPL Horizons timeout / retry behavior
+    # ------------------------------------------------------------------
+
+    def _make_body_dt_list(self, name="Gonggong", days=3):
+        body = {"name": name, "_horizons_id": "225088;"}
+        dt_list = [datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc) + datetime.timedelta(days=i) for i in range(days)]
+        return body, dt_list
+
+    def _fresh_stats(self):
+        return {
+            "jpl_range_requests": 0,
+            "jpl_range_failures": 0,
+            "jpl_retries": 0,
+            "jpl_timeouts": 0,
+            "miriade_fallback_requests": 0,
+            "miriade_range_requests": 0,
+            "miriade_points_resolved": 0,
+            "swiss_fallback_requests": 0,
+        }
+
+    def test_horizons_request_receives_finite_timeout(self):
+        """The actual astroquery HTTP call must be bounded by a finite
+        timeout, applied via astroquery.conf.timeout (the supported
+        mechanism), not merely defined and unused."""
+        body, dt_list = self._make_body_dt_list()
+        stats = self._fresh_stats()
+
+        fake_eph = MagicMock()
+        fake_eph.colnames = []
+        fake_eph.__len__.return_value = 0
+
+        with patch.object(six, "Horizons", return_value=MagicMock(ephemerides=MagicMock(return_value=fake_eph))), \
+             patch.object(six.astroquery_conf, "timeout", 0):
+            six.fetch_horizons_range(body, dt_list, stats)
+            self.assertEqual(six.REQUEST_TIMEOUT_HORIZONS, six.astroquery_conf.timeout)
+            self.assertTrue(math.isfinite(six.REQUEST_TIMEOUT_HORIZONS))
+            self.assertGreaterEqual(six.REQUEST_TIMEOUT_HORIZONS, 20)
+            self.assertLessEqual(six.REQUEST_TIMEOUT_HORIZONS, 30)
+
+    def test_jpl_timeout_does_not_abort_generator_and_falls_back_to_miriade(self):
+        """A stalled/timed-out Horizons call must be caught, recorded, and
+        must not raise out of resolve_moving_body — Miriade must still run."""
+        body, dt_list = self._make_body_dt_list()
+        body["_provider_chain"] = ["jpl", "miriade", "swiss"]
+        stats = self._fresh_stats()
+
+        def raise_timeout(*_args, **_kwargs):
+            raise socket.timeout("timed out")
+
+        miriade_called = {"count": 0}
+
+        def fake_miriade_range(_body, _missing_dates, _stats):
+            miriade_called["count"] += 1
+            return {}
+
+        with patch.object(six, "Horizons", side_effect=raise_timeout), \
+             patch.object(six, "fetch_miriade_range", side_effect=fake_miriade_range), \
+             patch.object(six, "fetch_swiss_point", return_value=None), \
+             patch.object(six.time, "sleep", return_value=None):
+            # Should not raise.
+            resolved, missing = six.resolve_moving_body(body, dt_list, stats)
+
+        self.assertEqual(1, miriade_called["count"])
+        self.assertEqual({}, resolved)
+        self.assertEqual(len(dt_list), len(missing))
+
+    def test_jpl_timeout_triggers_at_most_configured_retry_count(self):
+        """One initial attempt + at most JPL_RETRY_ATTEMPTS-1 retries; the
+        request must remain range-level (one call per attempt, not per-date)."""
+        body, dt_list = self._make_body_dt_list(days=182)
+        stats = self._fresh_stats()
+
+        call_count = {"n": 0}
+
+        def raise_timeout(*_args, **_kwargs):
+            call_count["n"] += 1
+            raise socket.timeout("timed out")
+
+        with patch.object(six, "Horizons", side_effect=raise_timeout), \
+             patch.object(six.time, "sleep", return_value=None):
+            result = six.fetch_horizons_range(body, dt_list, stats)
+
+        self.assertEqual({}, result)
+        # Range-level: total Horizons() constructions == JPL_RETRY_ATTEMPTS,
+        # never per-date (which would be 182).
+        self.assertEqual(six.JPL_RETRY_ATTEMPTS, call_count["n"])
+        self.assertLess(call_count["n"], len(dt_list))
+        self.assertEqual(six.JPL_RETRY_ATTEMPTS, stats["jpl_range_requests"])
+        self.assertEqual(six.JPL_RETRY_ATTEMPTS - 1, stats["jpl_retries"])
+        self.assertEqual(six.JPL_RETRY_ATTEMPTS, stats["jpl_timeouts"])
+        self.assertEqual(1, stats["jpl_range_failures"])
+
+    def test_jpl_success_on_retry_does_not_count_as_failure(self):
+        body, dt_list = self._make_body_dt_list(days=3)
+        stats = self._fresh_stats()
+
+        fake_eph = MagicMock()
+        fake_eph.colnames = []
+        fake_eph.__len__.return_value = 0
+
+        attempts = {"n": 0}
+
+        def flaky_horizons(*_args, **_kwargs):
+            attempts["n"] += 1
+            if attempts["n"] == 1:
+                raise socket.timeout("timed out")
+            return MagicMock(ephemerides=MagicMock(return_value=fake_eph))
+
+        with patch.object(six, "Horizons", side_effect=flaky_horizons), \
+             patch.object(six.time, "sleep", return_value=None):
+            result = six.fetch_horizons_range(body, dt_list, stats)
+
+        self.assertEqual({}, result)  # empty eph, but no failure state
+        self.assertEqual(2, attempts["n"])
+        self.assertEqual(1, stats["jpl_timeouts"])
+        self.assertEqual(1, stats["jpl_retries"])
+        self.assertEqual(0, stats["jpl_range_failures"])
+
+    def test_non_timeout_jpl_exception_also_falls_back_gracefully(self):
+        body, dt_list = self._make_body_dt_list(days=5)
+        body["_provider_chain"] = ["jpl", "miriade", "swiss"]
+        stats = self._fresh_stats()
+
+        def raise_generic(*_args, **_kwargs):
+            raise ValueError("some non-network parsing error")
+
+        with patch.object(six, "Horizons", side_effect=raise_generic), \
+             patch.object(six, "fetch_miriade_range", return_value={}) as miriade_mock, \
+             patch.object(six, "fetch_swiss_point", return_value=None), \
+             patch.object(six.time, "sleep", return_value=None):
+            resolved, missing = six.resolve_moving_body(body, dt_list, stats)
+
+        self.assertEqual({}, resolved)
+        self.assertGreaterEqual(miriade_mock.call_count, 1)
+        self.assertEqual(1, stats["jpl_range_failures"])
 
     def test_coverage_counts_exclude_fixed_and_aether(self):
         fake_moving = [{"name": "BodyA", "_provider_chain": ["jpl"]}, {"name": "BodyB", "_provider_chain": ["jpl"]}]
@@ -262,6 +412,9 @@ class TestGenerateFeed6Month(unittest.TestCase):
         self.assertIn("BodyA", data["transits"]["2026-01-01"])
         self.assertIn("miriade_range_requests", data["runtime"])
         self.assertIn("miriade_points_resolved", data["runtime"])
+        self.assertIn("jpl_range_failures", data["runtime"])
+        self.assertIn("jpl_retries", data["runtime"])
+        self.assertIn("jpl_timeouts", data["runtime"])
 
     def test_atomic_write_preserves_existing_file_on_failure(self):
         with tempfile.TemporaryDirectory() as td:
