@@ -7,6 +7,7 @@ import datetime
 import json
 import math
 import os
+import socket
 import tempfile
 import time
 from pathlib import Path
@@ -14,6 +15,7 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 import pytz
 import requests
+from astroquery import conf as astroquery_conf
 from astroquery.jplhorizons import Horizons
 from dateutil import parser as date_parser
 
@@ -40,6 +42,12 @@ REQUEST_TIMEOUT_HORIZONS = 30
 REQUEST_TIMEOUT_MIRIADE = 20
 RETRY_ATTEMPTS = 3
 RETRY_BACKOFF_SECONDS = 1.5
+
+# JPL Horizons range requests are range-level (one request per body per
+# attempt), so retries must stay small and bounded: the initial attempt plus
+# at most one additional retry.
+JPL_RETRY_ATTEMPTS = 2
+JPL_RETRY_BACKOFF_SECONDS = 2.0
 
 SWISS_IDS = {
     "sun": swe.SUN,
@@ -256,6 +264,17 @@ def _call_with_retries(fn, attempts: int = RETRY_ATTEMPTS):
     raise RuntimeError("retry helper failed without exception")
 
 
+def _is_timeout_exception(exc: Exception) -> bool:
+    """Detect timeout-flavored exceptions across requests/socket/builtins."""
+    if isinstance(exc, (socket.timeout, TimeoutError)):
+        return True
+    if isinstance(exc, requests.exceptions.Timeout):
+        return True
+    # astroquery sometimes wraps the underlying requests exception; fall back
+    # to a message-based check as a last resort.
+    return "timed out" in str(exc).lower() or "timeout" in str(exc).lower()
+
+
 def fetch_horizons_range(
     body: Dict[str, Any],
     dt_list: Sequence[datetime.datetime],
@@ -268,8 +287,13 @@ def fetch_horizons_range(
     stop_dt = dt_list[-1]
     body_id = body.get("_horizons_id") or body["name"]
     id_type = body.get("horizons_id_type")
+    body_name = body.get("name", "unknown")
 
     def _request():
+        # Apply a finite timeout to the actual astroquery/requests HTTP call.
+        # astroquery routes its HTTP layer through astroquery.conf.timeout,
+        # so this is the supported mechanism for bounding the Horizons call.
+        astroquery_conf.timeout = REQUEST_TIMEOUT_HORIZONS
         kwargs = {
             "id": body_id,
             "location": HORIZONS_LOCATION,
@@ -283,8 +307,25 @@ def fetch_horizons_range(
             kwargs["id_type"] = id_type
         return Horizons(**kwargs).ephemerides()
 
-    stats["jpl_range_requests"] += 1
-    eph = _call_with_retries(_request)
+    eph = None
+    for attempt in range(JPL_RETRY_ATTEMPTS):
+        stats["jpl_range_requests"] = stats.get("jpl_range_requests", 0) + 1
+        try:
+            eph = _request()
+            break
+        except Exception as exc:
+            if _is_timeout_exception(exc):
+                stats["jpl_timeouts"] = stats.get("jpl_timeouts", 0) + 1
+                print(f"[6M] {body_name}: JPL range request timed out after {REQUEST_TIMEOUT_HORIZONS}s")
+            if attempt < JPL_RETRY_ATTEMPTS - 1:
+                stats["jpl_retries"] = stats.get("jpl_retries", 0) + 1
+                print(f"[6M] {body_name}: retry {attempt + 1}/{JPL_RETRY_ATTEMPTS - 1}")
+                time.sleep(JPL_RETRY_BACKOFF_SECONDS)
+
+    if eph is None:
+        stats["jpl_range_failures"] = stats.get("jpl_range_failures", 0) + 1
+        print(f"[6M] {body_name}: JPL failed, continuing to Miriade")
+        return {}
 
     results: Dict[str, Dict[str, Any]] = {}
     colnames = list(getattr(eph, "colnames", []))
@@ -622,6 +663,9 @@ def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tup
 
     stats: Dict[str, int] = {
         "jpl_range_requests": 0,
+        "jpl_range_failures": 0,
+        "jpl_retries": 0,
+        "jpl_timeouts": 0,
         "miriade_fallback_requests": 0,
         "miriade_range_requests": 0,
         "miriade_points_resolved": 0,
@@ -669,6 +713,9 @@ def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tup
         "runtime": {
             "duration_seconds": duration,
             "jpl_range_requests": stats["jpl_range_requests"],
+            "jpl_range_failures": stats["jpl_range_failures"],
+            "jpl_retries": stats["jpl_retries"],
+            "jpl_timeouts": stats["jpl_timeouts"],
             "miriade_fallback_requests": stats["miriade_fallback_requests"],
             "miriade_range_requests": stats["miriade_range_requests"],
             "miriade_points_resolved": stats["miriade_points_resolved"],
@@ -698,6 +745,9 @@ def main() -> None:
     print(f"   coverage                  : {data['coverage']:.6f}")
     print(f"   missing points            : {len(data['missing'])}")
     print(f"   jpl range requests        : {data['runtime']['jpl_range_requests']}")
+    print(f"   jpl range failures        : {data['runtime']['jpl_range_failures']}")
+    print(f"   jpl retries               : {data['runtime']['jpl_retries']}")
+    print(f"   jpl timeouts              : {data['runtime']['jpl_timeouts']}")
     print(f"   miriade range requests    : {data['runtime']['miriade_range_requests']}")
     print(f"   miriade points resolved   : {data['runtime']['miriade_points_resolved']}")
     print(f"   miriade fallback requests : {data['runtime']['miriade_fallback_requests']}")
