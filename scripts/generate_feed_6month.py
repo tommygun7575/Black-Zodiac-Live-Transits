@@ -1,361 +1,616 @@
 #!/usr/bin/env python3
-"""6-month transit feed generator — ZodiacOracle.SixMonthTransit.v2
+"""6-month transit feed generator — ZodiacOracle.SixMonthTransit.v2."""
 
-Provider priority (per body/date):
-  1. JPL Horizons — tried first for all moving bodies
-  2. Swiss Ephemeris — fallback when JPL fails or returns invalid data
-  3. If neither resolves the position the point is recorded as missing;
-     generation continues for all remaining bodies and dates.
+from __future__ import annotations
 
-JPL identifier notes:
-  - Planets/major bodies use NAIF integer-style string IDs.
-  - MPC small bodies (Chiron, Ceres, Pallas, Juno, Vesta) use IDs with a
-    trailing semicolon so Horizons resolves them as small bodies, not planets.
-
-Atomic file writing:
-  The completed JSON is written to a temp file first.  Only after successful
-  serialization is the temp file atomically renamed to the final output path,
-  so a serialization failure never corrupts the previously valid output file.
-"""
+import datetime
+import json
 import math
 import os
-import json
-import datetime
 import tempfile
+import time
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
+
 import pytz
+import requests
 from astroquery.jplhorizons import Horizons
+from dateutil import parser as date_parser
 
-# --- Dual import: Linux (swisseph) vs Windows (pyswisseph) ---
+from scripts.utils.coords import ra_dec_to_ecl
+
 try:
-    import swisseph as swe   # Linux / GitHub Actions
-except ImportError:
-    import pyswisseph as swe   # Windows local
+    import swisseph as swe  # Linux / GitHub Actions
+except ImportError:  # pragma: no cover
+    import pyswisseph as swe  # type: ignore
 
-# --- Configure Swiss Ephemeris path ---
-EPHE_PATH = os.path.join(os.getcwd(), "ephe")
-swe.set_ephe_path(EPHE_PATH)
-if not os.path.exists(EPHE_PATH):
-    raise RuntimeError(f"❌ Swiss ephemeris path not found: {EPHE_PATH}")
 
-# --- Moving-body target population (exactly 15 bodies — do not modify) ---
-MOVING_BODIES = [
-    "Sun", "Moon", "Mercury", "Venus", "Mars",
-    "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
-    "Chiron", "Ceres", "Pallas", "Juno", "Vesta",
-]
+ROOT = Path(__file__).resolve().parents[1]
+CATALOG_PATH = ROOT / "config" / "celestial_catalog.json"
+FIXED_STARS_PRIMARY = ROOT / "data" / "fixed_star_catalog.json"
+FIXED_STARS_FALLBACK = ROOT / "data" / "fixed_stars.json"
 
-# --- JPL Horizons identifiers ---
-# Planets/major bodies: NAIF integer IDs as strings.
-# Small bodies (Chiron, Ceres, Pallas, Juno, Vesta): MPC IDs with a trailing
-# semicolon so Horizons resolves them via the small-body search path, not the
-# planet/satellite table.  The semicolon is intentional — do not remove it.
-JPL_IDS = {
-    "Sun":     "10",
-    "Moon":    "301",
-    "Mercury": "199",
-    "Venus":   "299",
-    "Mars":    "499",
-    "Jupiter": "599",
-    "Saturn":  "699",
-    "Uranus":  "799",
-    "Neptune": "899",
-    "Pluto":   "999",
-    "Chiron":  "2060;",
-    "Ceres":   "1;",
-    "Pallas":  "2;",
-    "Juno":    "3;",
-    "Vesta":   "4;",
-}
+EPHE_PATH = ROOT / "ephe"
+swe.set_ephe_path(str(EPHE_PATH))
 
-# Swiss Ephemeris body constants
+SAMPLE_DAYS = 182
+HORIZONS_LOCATION = "500@399"
+MIRIADE_BASE = "https://ssp.imcce.fr/webservices/miriade/api/ephemcc.php"
+REQUEST_TIMEOUT_HORIZONS = 30
+REQUEST_TIMEOUT_MIRIADE = 20
+RETRY_ATTEMPTS = 3
+RETRY_BACKOFF_SECONDS = 1.5
+
 SWISS_IDS = {
-    "Sun":     swe.SUN,
-    "Moon":    swe.MOON,
-    "Mercury": swe.MERCURY,
-    "Venus":   swe.VENUS,
-    "Mars":    swe.MARS,
-    "Jupiter": swe.JUPITER,
-    "Saturn":  swe.SATURN,
-    "Uranus":  swe.URANUS,
-    "Neptune": swe.NEPTUNE,
-    "Pluto":   swe.PLUTO,
-    "Chiron":  swe.CHIRON,
-    "Ceres":   swe.CERES,
-    "Pallas":  swe.PALLAS,
-    "Juno":    swe.JUNO,
-    "Vesta":   swe.VESTA,
+    "sun": swe.SUN,
+    "moon": swe.MOON,
+    "mercury": swe.MERCURY,
+    "venus": swe.VENUS,
+    "mars": swe.MARS,
+    "jupiter": swe.JUPITER,
+    "saturn": swe.SATURN,
+    "uranus": swe.URANUS,
+    "neptune": swe.NEPTUNE,
+    "pluto": swe.PLUTO,
+    "chiron": swe.CHIRON,
+    "ceres": swe.CERES,
+    "pallas": swe.PALLAS,
+    "juno": swe.JUNO,
+    "vesta": swe.VESTA,
 }
 
-FIXED_STAR_FILE = "sefstars.txt"
 
-
-# ------------------------------------------------------------
-#  Coordinate validation
-# ------------------------------------------------------------
-def _is_valid(lon, lat) -> bool:
-    """Return True only when both coordinates are finite real numbers.
-
-    Validation rejects NaN, infinity, and None so that fabricated or
-    corrupted values are never written to the output feed.
-    """
+def _is_valid_number(value: Any) -> bool:
     try:
-        return (
-            lon is not None and lat is not None
-            and math.isfinite(float(lon))
-            and math.isfinite(float(lat))
-        )
+        return value is not None and math.isfinite(float(value))
     except (TypeError, ValueError):
         return False
 
 
 def _normalize_lon(lon: float) -> float:
-    """Normalize longitude to [0, 360)."""
     return float(lon) % 360.0
 
 
-# ------------------------------------------------------------
-#  Fixed star loader (preserved exactly — not counted in coverage)
-# ------------------------------------------------------------
-def get_fixed_stars():
-    stars = {}
-    if not os.path.exists(FIXED_STAR_FILE):
-        return stars
-    with open(FIXED_STAR_FILE, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
+def _iso_utc(dt: datetime.datetime) -> str:
+    return dt.astimezone(datetime.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _date_key(dt: datetime.datetime) -> str:
+    return dt.strftime("%Y-%m-%d")
+
+
+def _daily_samples(start_dt: datetime.datetime, days: int = SAMPLE_DAYS) -> List[datetime.datetime]:
+    start = start_dt.astimezone(datetime.timezone.utc)
+    return [start + datetime.timedelta(days=offset) for offset in range(days)]
+
+
+def _normalize_provider(provider: str) -> str:
+    lowered = provider.lower().strip()
+    if lowered in {"horizons", "jpl"}:
+        return "jpl"
+    if lowered in {"miriade", "imcce"}:
+        return "miriade"
+    if lowered in {"swiss", "swisseph", "swiss_ephemeris"}:
+        return "swiss"
+    if lowered in {"fixed_star_catalog", "fixed"}:
+        return "fixed"
+    if lowered == "calculated":
+        return "calculated"
+    return lowered
+
+
+def _is_moving_entry(category: str, body: Dict[str, Any]) -> bool:
+    if category in {"fixed_stars", "aether_points"}:
+        return False
+    providers = [_normalize_provider(p) for p in body.get("provider_priority", [])]
+    if "calculated" in providers or "fixed" in providers:
+        return False
+    return True
+
+
+def _normalize_horizons_id(body: Dict[str, Any]) -> Optional[str]:
+    raw = body.get("horizons_id")
+    if raw is None:
+        return body.get("name")
+    text = str(raw).strip()
+    if not text:
+        return body.get("name")
+
+    id_type = str(body.get("horizons_id_type") or "").lower()
+    category = str(body.get("category") or "").lower()
+    if id_type != "majorbody" and category != "core_bodies" and not text.endswith(";"):
+        return f"{text};"
+    return text
+
+
+def _provider_chain(body: Dict[str, Any]) -> List[str]:
+    providers = body.get("provider_priority") or ["horizons", "miriade", "swiss"]
+    normalized = []
+    for p in providers:
+        mapped = _normalize_provider(str(p))
+        if mapped in {"jpl", "miriade", "swiss"} and mapped not in normalized:
+            normalized.append(mapped)
+    if not normalized:
+        normalized = ["jpl", "miriade", "swiss"]
+    return normalized
+
+
+def load_catalog_targets(path: Path = CATALOG_PATH) -> Tuple[List[Dict[str, Any]], List[str], List[str]]:
+    with path.open("r", encoding="utf-8") as f:
+        catalog = json.load(f)
+
+    categories = catalog.get("categories", {})
+    moving: List[Dict[str, Any]] = []
+    fixed_star_names: List[str] = []
+    aether_names: List[str] = []
+
+    for category, bodies in categories.items():
+        for body in bodies:
+            entry = dict(body)
+            entry.setdefault("category", category)
+            if category == "fixed_stars":
+                fixed_star_names.append(entry["name"])
                 continue
-            parts = [p.strip() for p in line.split(",") if p.strip()]
-            if len(parts) < 3:
+            if category == "aether_points":
+                aether_names.append(entry["name"])
                 continue
-            try:
-                name = parts[0]
-                lon = float(parts[1])
-                lat = float(parts[2])
-                stars[name] = (lon, lat, "fixed")
-            except ValueError:
+            if not _is_moving_entry(category, entry):
                 continue
-    return stars
+            entry["_provider_chain"] = _provider_chain(entry)
+            entry["_horizons_id"] = _normalize_horizons_id(entry)
+            moving.append(entry)
+
+    return moving, fixed_star_names, aether_names
 
 
-# ------------------------------------------------------------
-#  Swiss Ephemeris calculator
-# ------------------------------------------------------------
-def swe_calc(body: str, dt: datetime.datetime):
-    """Return (lon, lat) from Swiss Ephemeris, or raise on failure."""
-    jd = swe.julday(
-        dt.year, dt.month, dt.day,
-        dt.hour + dt.minute / 60.0 + dt.second / 3600.0,
-    )
-    result = swe.calc_ut(jd, SWISS_IDS[body])
+def _extract_lon_lat(row: Any, colnames: Sequence[str], dt: datetime.datetime) -> Optional[Tuple[float, float]]:
+    lon = lat = None
+    for key in ("EclLon", "EclipticLon", "ELON"):
+        if key in colnames:
+            lon = row[key]
+            break
+    for key in ("EclLat", "EclipticLat", "ELAT"):
+        if key in colnames:
+            lat = row[key]
+            break
 
-    # Linux swisseph returns ((lon, lat, dist, ...), retflag)
-    if isinstance(result, tuple) and len(result) == 2 and isinstance(result[0], (list, tuple)):
-        lon, lat, *_ = result[0]
-        return float(lon), float(lat)
-
-    # Windows pyswisseph returns (lon, lat, dist, ...)
-    if isinstance(result, (list, tuple)) and len(result) >= 3:
-        lon, lat, *_ = result
-        return float(lon), float(lat)
-
-    raise RuntimeError(f"Unexpected Swiss Ephemeris return format: {result!r}")
-
-
-# ------------------------------------------------------------
-#  JPL Horizons fetch
-# ------------------------------------------------------------
-def get_jpl_ephemeris(body: str, dt: datetime.datetime):
-    """Return (lon, lat) from JPL Horizons, or None on failure.
-
-    Uses MPC trailing-semicolon IDs for small bodies (Chiron, Ceres, etc.)
-    so Horizons routes the lookup through the small-body search table.
-    """
-    try:
-        obj = Horizons(
-            id=JPL_IDS[body],
-            location="500@399",
-            epochs=dt.strftime("%Y-%m-%d %H:%M"),
-            id_type=None,
-        )
-        eph = obj.ephemerides()
-        if len(eph) == 0:
+    if (lon is None or lat is None) and "RA" in colnames and "DEC" in colnames:
+        try:
+            lon, lat = ra_dec_to_ecl(float(row["RA"]), float(row["DEC"]), _iso_utc(dt))
+        except Exception:
             return None
-        lon = float(eph["EclLon"][0])
-        lat = float(eph["EclLat"][0])
-        return lon, lat
+
+    if not _is_valid_number(lon) or not _is_valid_number(lat):
+        return None
+
+    return _normalize_lon(float(lon)), float(lat)
+
+
+def _parse_row_date(
+    row: Any,
+    colnames: Sequence[str],
+    fallback_dt: Optional[datetime.datetime],
+) -> Optional[datetime.date]:
+    if "datetime_str" in colnames:
+        raw = str(row["datetime_str"]).strip()
+        try:
+            parsed = date_parser.parse(raw)
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=datetime.timezone.utc)
+            return parsed.astimezone(datetime.timezone.utc).date()
+        except Exception:
+            pass
+    if "datetime_jd" in colnames:
+        try:
+            jd = float(row["datetime_jd"])
+            year, month, day, ut = swe.revjul(jd, swe.GREG_CAL)
+            hour = int(ut)
+            minute = int((ut - hour) * 60)
+            second = int(round((((ut - hour) * 60) - minute) * 60))
+            parsed = datetime.datetime(year, month, day, hour, minute, second, tzinfo=datetime.timezone.utc)
+            return parsed.date()
+        except Exception:
+            pass
+    if fallback_dt is None:
+        return None
+    return fallback_dt.date()
+
+
+def _call_with_retries(fn, attempts: int = RETRY_ATTEMPTS):
+    last_exc = None
+    for idx in range(attempts):
+        try:
+            return fn()
+        except Exception as exc:  # pragma: no cover - network variability
+            last_exc = exc
+            if idx < attempts - 1:
+                time.sleep(RETRY_BACKOFF_SECONDS * (idx + 1))
+    if last_exc:
+        raise last_exc
+    raise RuntimeError("retry helper failed without exception")
+
+
+def fetch_horizons_range(
+    body: Dict[str, Any],
+    dt_list: Sequence[datetime.datetime],
+    stats: Dict[str, int],
+) -> Dict[str, Dict[str, Any]]:
+    if not dt_list:
+        return {}
+
+    start_dt = dt_list[0]
+    stop_dt = dt_list[-1]
+    body_id = body.get("_horizons_id") or body["name"]
+    id_type = body.get("horizons_id_type")
+
+    def _request():
+        kwargs = {
+            "id": body_id,
+            "location": HORIZONS_LOCATION,
+            "epochs": {
+                "start": start_dt.strftime("%Y-%m-%d %H:%M"),
+                "stop": stop_dt.strftime("%Y-%m-%d %H:%M"),
+                "step": "1d",
+            },
+        }
+        if id_type:
+            kwargs["id_type"] = id_type
+        return Horizons(**kwargs).ephemerides()
+
+    stats["jpl_range_requests"] += 1
+    eph = _call_with_retries(_request)
+
+    results: Dict[str, Dict[str, Any]] = {}
+    colnames = list(getattr(eph, "colnames", []))
+    dt_by_idx = list(dt_list)
+    expected_dates = {d.date() for d in dt_by_idx}
+    dt_by_date = {d.date(): d for d in dt_by_idx}
+
+    for idx in range(len(eph)):
+        row = eph[idx]
+        fallback_dt = dt_by_idx[idx] if idx < len(dt_by_idx) else None
+        row_date = _parse_row_date(row, colnames, fallback_dt)
+        if row_date is None:
+            continue
+        if row_date not in expected_dates:
+            continue
+        expected_dt = dt_by_date[row_date]
+
+        lonlat = _extract_lon_lat(row, colnames, expected_dt)
+        if lonlat is None:
+            continue
+
+        lon, lat = lonlat
+        key = row_date.strftime("%Y-%m-%d")
+        results[key] = {
+            "ecl_lon_deg": lon,
+            "ecl_lat_deg": lat,
+            "source": "jpl",
+        }
+
+    return results
+
+
+def _miriade_name(body: Dict[str, Any]) -> str:
+    if body.get("miriade_name"):
+        return str(body["miriade_name"])
+    return f"a:{body['name']}"
+
+
+def fetch_miriade_point(body: Dict[str, Any], dt: datetime.datetime, stats: Dict[str, int]) -> Optional[Dict[str, Any]]:
+    stats["miriade_fallback_requests"] += 1
+    params = {
+        "-name": _miriade_name(body),
+        "-ep": _iso_utc(dt),
+        "-observer": "500",
+        "-theory": "DE431",
+        "-teph": "1",
+        "-tcoor": "1",
+        "-rplane": "2",
+        "-nbd": "1",
+        "-mime": "json",
+    }
+
+    def _request_json():
+        r = requests.get(MIRIADE_BASE, params=params, timeout=REQUEST_TIMEOUT_MIRIADE)
+        r.raise_for_status()
+        payload = r.json().get("result", {})
+        if isinstance(payload, str):
+            payload = json.loads(payload)
+        return payload
+
+    try:
+        payload = _call_with_retries(_request_json)
     except Exception:
         return None
 
+    rows = payload.get("data", [])
+    if not rows:
+        return None
+    row = {k.lower(): v for k, v in rows[0].items()}
 
-# ------------------------------------------------------------
-#  Per-body resolver: JPL → Swiss → unresolved
-# ------------------------------------------------------------
-def resolve_body(body: str, dt: datetime.datetime, day_key: str) -> dict:
-    """Resolve one body for one date.
-
-    Provider priority: JPL Horizons first, Swiss Ephemeris as fallback.
-    Validates each result strictly; fabrication or interpolation is never
-    used.  Returns a result dict with keys (ecl_lon_deg, ecl_lat_deg,
-    source) on success, or None on failure (caller tracks missing points).
-    Also returns the list of providers that were attempted.
-    """
-    attempted = []
-
-    # 1. Try JPL Horizons
-    attempted.append("JPL")
-    coords = get_jpl_ephemeris(body, dt)
-    if coords is not None:
-        lon, lat = coords
-        if _is_valid(lon, lat):
-            return {
-                "result": {
-                    "ecl_lon_deg": _normalize_lon(lon),
-                    "ecl_lat_deg": float(lat),
-                    "source": "jpl",
-                },
-                "attempted": attempted,
-            }
-
-    # 2. Try Swiss Ephemeris (only for bodies that have a Swiss ID)
-    if body in SWISS_IDS:
-        attempted.append("Swiss")
+    lon = row.get("elon") or row.get("ecllon")
+    lat = row.get("elat") or row.get("ecllat")
+    if (lon is None or lat is None) and row.get("ra") is not None and row.get("dec") is not None:
         try:
-            lon, lat = swe_calc(body, dt)
-            if _is_valid(lon, lat):
-                return {
-                    "result": {
-                        "ecl_lon_deg": _normalize_lon(lon),
-                        "ecl_lat_deg": float(lat),
-                        "source": "swiss",
-                    },
-                    "attempted": attempted,
-                }
-        except Exception as exc:
-            print(f"  [WARN] Swiss failed for {body} on {day_key}: {exc}")
+            lon, lat = ra_dec_to_ecl(float(row["ra"]), float(row["dec"]), _iso_utc(dt))
+        except Exception:
+            return None
 
-    # Neither provider resolved the position
-    return {"result": None, "attempted": attempted}
+    if not _is_valid_number(lon) or not _is_valid_number(lat):
+        return None
+
+    return {
+        "ecl_lon_deg": _normalize_lon(float(lon)),
+        "ecl_lat_deg": float(lat),
+        "source": "miriade",
+    }
 
 
-# ------------------------------------------------------------
-#  Main generator
-# ------------------------------------------------------------
-def main():
-    # Dynamic 6-month window starting from "now" — ≈ 182 days, daily sampling
-    now = datetime.datetime.now(pytz.UTC)
-    start = now
-    end = now + datetime.timedelta(days=182)
-    step_days = 1
+def fetch_swiss_point(body: Dict[str, Any], dt: datetime.datetime, stats: Dict[str, int]) -> Optional[Dict[str, Any]]:
+    stats["swiss_fallback_requests"] += 1
+    code = body.get("swiss_code")
+    if code is None:
+        code = SWISS_IDS.get(body["name"].lower())
+    if code is None:
+        return None
 
-    # Build the list of dates that will be generated
-    date_list = []
-    dt = start
-    while dt <= end:
-        date_list.append(dt)
-        dt += datetime.timedelta(days=step_days)
+    jd = swe.julday(dt.year, dt.month, dt.day, dt.hour + dt.minute / 60.0 + dt.second / 3600.0)
 
-    # Coverage counters (fixed stars are excluded from moving-body coverage)
-    total_points = len(MOVING_BODIES) * len(date_list)
+    try:
+        result = swe.calc_ut(jd, int(code))
+    except Exception:
+        return None
+
+    values = result[0] if isinstance(result, tuple) and len(result) == 2 else result
+    if not isinstance(values, (list, tuple)) or len(values) < 2:
+        return None
+
+    lon, lat = values[0], values[1]
+    if not _is_valid_number(lon) or not _is_valid_number(lat):
+        return None
+
+    return {
+        "ecl_lon_deg": _normalize_lon(float(lon)),
+        "ecl_lat_deg": float(lat),
+        "source": "swiss",
+    }
+
+
+def load_fixed_stars_for_catalog(
+    names: Iterable[str],
+    reference_dt: Optional[datetime.datetime] = None,
+) -> Dict[str, Dict[str, float]]:
+    selected = set(names)
+    if not selected:
+        return {}
+
+    path = FIXED_STARS_PRIMARY if FIXED_STARS_PRIMARY.exists() else FIXED_STARS_FALLBACK
+    if not path.exists():
+        return {}
+    epoch = reference_dt or datetime.datetime.now(datetime.timezone.utc)
+
+    with path.open("r", encoding="utf-8") as f:
+        payload = json.load(f)
+
+    stars = payload.get("stars", [])
+    output: Dict[str, Dict[str, float]] = {}
+    for star in stars:
+        star_id = star.get("id")
+        if star_id not in selected:
+            continue
+        lon, lat = ra_dec_to_ecl(float(star["ra_deg"]), float(star["dec_deg"]), _iso_utc(epoch))
+        if _is_valid_number(lon) and _is_valid_number(lat):
+            output[star_id] = {
+                "ecl_lon_deg": _normalize_lon(float(lon)),
+                "ecl_lat_deg": float(lat),
+                "source": "fixed",
+            }
+    return output
+
+
+def _lon_from_day(day_transits: Dict[str, Dict[str, Any]], name: str) -> Optional[float]:
+    entry = day_transits.get(name)
+    if not entry:
+        return None
+    lon = entry.get("ecl_lon_deg")
+    if not _is_valid_number(lon):
+        return None
+    return float(lon)
+
+
+def add_aether_points(day_transits: Dict[str, Dict[str, Any]], aether_names: Sequence[str]) -> None:
+    sun = _lon_from_day(day_transits, "Sun")
+    moon = _lon_from_day(day_transits, "Moon")
+    mars = _lon_from_day(day_transits, "Mars")
+    jupiter = _lon_from_day(day_transits, "Jupiter")
+    saturn = _lon_from_day(day_transits, "Saturn")
+    venus = _lon_from_day(day_transits, "Venus")
+
+    midpoint = None if sun is None or moon is None else _normalize_lon((sun + moon) % 360.0)
+    jovian_arc = None if jupiter is None or saturn is None else _normalize_lon(jupiter - saturn)
+    elemental_balance = None if mars is None or venus is None or moon is None else _normalize_lon((mars + venus + moon) / 3.0)
+
+    formulas = {
+        "Aetheric_SunMoon_Midpoint": midpoint,
+        "Aetheric_Jovian_Arc": jovian_arc,
+        "Aetheric_Elemental_Balance": elemental_balance,
+    }
+
+    for name in aether_names:
+        val = formulas.get(name)
+        day_transits[name] = {
+            "ecl_lon_deg": None if val is None else float(val),
+            "ecl_lat_deg": None if val is None else 0.0,
+            "source": "calculated",
+        }
+
+
+def resolve_moving_body(
+    body: Dict[str, Any],
+    dt_list: Sequence[datetime.datetime],
+    stats: Dict[str, int],
+) -> Tuple[Dict[str, Dict[str, Any]], List[Dict[str, Any]]]:
+    date_keys = [_date_key(dt) for dt in dt_list]
+    missing: Set[str] = set(date_keys)
+    resolved: Dict[str, Dict[str, Any]] = {}
+    attempted: Dict[str, List[str]] = {k: [] for k in date_keys}
+
+    chain = list(body.get("_provider_chain", ["jpl", "miriade", "swiss"]))
+
+    if "jpl" in chain:
+        for key in date_keys:
+            attempted[key].append("JPL")
+        try:
+            jpl_results = fetch_horizons_range(body, dt_list, stats)
+        except Exception:
+            jpl_results = {}
+        for key, point in jpl_results.items():
+            if key in missing:
+                resolved[key] = point
+                missing.discard(key)
+
+    dt_lookup = {_date_key(dt): dt for dt in dt_list}
+
+    if "miriade" in chain and missing:
+        for key in list(sorted(missing)):
+            attempted[key].append("Miriade")
+            point = fetch_miriade_point(body, dt_lookup[key], stats)
+            if point is not None:
+                resolved[key] = point
+                missing.discard(key)
+
+    if "swiss" in chain and missing:
+        for key in list(sorted(missing)):
+            attempted[key].append("Swiss")
+            point = fetch_swiss_point(body, dt_lookup[key], stats)
+            if point is not None:
+                resolved[key] = point
+                missing.discard(key)
+
+    missing_entries = [
+        {
+            "date": key,
+            "body": body["name"],
+            "providers_attempted": attempted[key],
+        }
+        for key in sorted(missing)
+    ]
+
+    return resolved, missing_entries
+
+
+def write_output_atomic(path: Path, payload: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp.json")
+    try:
+        try:
+            fh = os.fdopen(fd, "w", encoding="utf-8")
+        except Exception:
+            os.close(fd)
+            raise
+        with fh:
+            json.dump(payload, fh, indent=2)
+        os.replace(tmp_name, path)
+    except Exception:
+        try:
+            os.unlink(tmp_name)
+        except OSError:
+            pass
+        raise
+
+
+def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    started = time.perf_counter()
+    utc_now = start_dt.astimezone(datetime.timezone.utc) if start_dt else datetime.datetime.now(datetime.timezone.utc)
+    dt_list = _daily_samples(utc_now, SAMPLE_DAYS)
+    date_keys = [_date_key(dt) for dt in dt_list]
+
+    moving_bodies, fixed_star_names, aether_names = load_catalog_targets()
+    fixed_star_positions = load_fixed_stars_for_catalog(fixed_star_names, reference_dt=dt_list[0])
+
+    transits = {day: {} for day in date_keys}
+    total_points = len(moving_bodies) * len(dt_list)
+
+    stats: Dict[str, int] = {
+        "jpl_range_requests": 0,
+        "miriade_fallback_requests": 0,
+        "swiss_fallback_requests": 0,
+    }
+
+    missing: List[Dict[str, Any]] = []
     resolved_points = 0
-    missing = []  # structured unresolved-point entries
 
-    # Meta header
+    for body in moving_bodies:
+        body_points, body_missing = resolve_moving_body(body, dt_list, stats)
+        for day in date_keys:
+            if day in body_points:
+                transits[day][body["name"]] = body_points[day]
+                resolved_points += 1
+        missing.extend(body_missing)
+
+    for day in date_keys:
+        day_transits = transits[day]
+        for star_name, star_data in fixed_star_positions.items():
+            day_transits[star_name] = dict(star_data)
+        add_aether_points(day_transits, aether_names)
+
+    duration = time.perf_counter() - started
+    coverage = (resolved_points / total_points) if total_points else 0.0
+
+    start_range = dt_list[0]
+    end_range = dt_list[-1]
     data = {
         "engine_version": "ZodiacOracle.SixMonthTransit.v2",
         "meta": {
-            "generated_at_utc": datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).isoformat(),
+            "generated_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "generated_at_pacific": datetime.datetime.now(pytz.timezone("America/Los_Angeles")).isoformat(),
             "type": "6-month overlay",
-            "range_utc": [start.isoformat(), end.isoformat()],
-            "range": f"{start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}",
-            "source_order": ["jpl", "swiss", "fixed"],
+            "range_utc": [start_range.isoformat(), end_range.isoformat()],
+            "range": f"{start_range.strftime('%Y-%m-%d')} to {end_range.strftime('%Y-%m-%d')}",
+            "source_order": ["jpl", "miriade", "swiss", "fixed", "calculated"],
         },
-        "transits": {},
+        "transits": transits,
+        "coverage": coverage,
+        "resolved_points": resolved_points,
+        "total_points": total_points,
+        "missing": missing,
+        "moving_body_count": len(moving_bodies),
+        "runtime": {
+            "duration_seconds": duration,
+            "jpl_range_requests": stats["jpl_range_requests"],
+            "miriade_fallback_requests": stats["miriade_fallback_requests"],
+            "swiss_fallback_requests": stats["swiss_fallback_requests"],
+            "missing_points": len(missing),
+            "resolved_points": resolved_points,
+        },
     }
 
-    stars = get_fixed_stars()
+    return data, stats
 
-    # Build daily data — one failed body/date does NOT abort the whole run
-    for dt in date_list:
-        day_key = dt.strftime("%Y-%m-%d")
-        data["transits"][day_key] = {}
 
-        # Resolve each moving body independently
-        for body in MOVING_BODIES:
-            outcome = resolve_body(body, dt, day_key)
-            if outcome["result"] is not None:
-                data["transits"][day_key][body] = outcome["result"]
-                resolved_points += 1
-            else:
-                # Record the unresolved point with which providers were tried
-                missing.append({
-                    "date": day_key,
-                    "body": body,
-                    "providers_attempted": outcome["attempted"],
-                })
-                print(f"  [MISSING] {body} on {day_key} — tried: {outcome['attempted']}")
+def main() -> None:
+    data, _stats = generate_six_month_feed()
 
-        # Fixed stars are written per day but not counted in moving-body coverage
-        for star, (lon, lat, src) in stars.items():
-            data["transits"][day_key][star] = {
-                "ecl_lon_deg": lon,
-                "ecl_lat_deg": lat,
-                "source": src,
-            }
-
-    # Coverage calculation: resolved_points / total_points
-    coverage = resolved_points / total_points if total_points > 0 else 0.0
-
-    # Attach top-level diagnostics
-    data["coverage"] = coverage
-    data["resolved_points"] = resolved_points
-    data["total_points"] = total_points
-    data["missing"] = missing
-
-    # Filename & output path (preserves existing naming convention)
     pacific = datetime.datetime.now(pytz.timezone("America/Los_Angeles"))
     filename = f"feed_overlay_6month_{pacific.strftime('%b-%d-%Y_%I-%M%p')}_Pacific.json"
-    outdir = "docs"
-    outpath = os.path.join(outdir, filename)
-    os.makedirs(outdir, exist_ok=True)
+    outpath = ROOT / "docs" / filename
 
-    # Atomic file writing: serialize to a temp file first so that a
-    # serialization failure never overwrites a previously valid output file.
-    tmp_fd, tmp_path = tempfile.mkstemp(dir=outdir, suffix=".tmp.json")
-    try:
-        # os.fdopen takes ownership of tmp_fd; close it if that fails
-        try:
-            fh = os.fdopen(tmp_fd, "w", encoding="utf-8")
-        except Exception:
-            os.close(tmp_fd)
-            raise
-        with fh:
-            json.dump(data, fh, indent=2)
-        # Serialization succeeded — atomically replace the final output file
-        os.replace(tmp_path, outpath)
-    except Exception as exc:
-        # Clean up the temp file; the previously valid output file is untouched
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
-        raise RuntimeError(f"❌ Serialization failed; output file unchanged: {exc}") from exc
+    write_output_atomic(outpath, data)
 
-    # Final status report
-    if missing:
-        print(f"⚠️  6-month feed written with incomplete coverage.")
-        print(f"   resolved_points : {resolved_points}")
-        print(f"   total_points    : {total_points}")
-        print(f"   coverage        : {coverage:.4f}")
-        print(f"   missing points  : {len(missing)}")
-        print(f"   output          : {outpath}")
-    else:
-        print(f"✅ 6-month feed written — full coverage.")
-        print(f"   resolved_points : {resolved_points}/{total_points}")
-        print(f"   output          : {outpath}")
+    print("✅ 6-month feed generation complete")
+    print(f"   moving bodies             : {data['moving_body_count']}")
+    print(f"   date samples              : {len(data['transits'])}")
+    print(f"   total_points              : {data['total_points']}")
+    print(f"   resolved_points           : {data['resolved_points']}")
+    print(f"   coverage                  : {data['coverage']:.6f}")
+    print(f"   missing points            : {len(data['missing'])}")
+    print(f"   jpl range requests        : {data['runtime']['jpl_range_requests']}")
+    print(f"   miriade fallback requests : {data['runtime']['miriade_fallback_requests']}")
+    print(f"   swiss fallback requests   : {data['runtime']['swiss_fallback_requests']}")
+    print(f"   duration_seconds          : {data['runtime']['duration_seconds']:.2f}")
+    print(f"   output                    : {outpath}")
 
 
-# ------------------------------------------------------------
 if __name__ == "__main__":
     main()
