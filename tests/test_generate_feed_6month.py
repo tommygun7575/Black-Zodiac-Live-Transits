@@ -63,6 +63,201 @@ class TestGenerateFeed6Month(unittest.TestCase):
         self.assertEqual(2, len(groups[0]))
         self.assertEqual(2, len(groups[1]))
 
+    # ------------------------------------------------------------------
+    # Provider routing efficiency (capability-based provider chains)
+    # ------------------------------------------------------------------
+
+    def test_body_without_jpl_mapping_never_calls_horizons(self):
+        """A body with no horizons_id must not include 'jpl' in its chain,
+        and resolve_moving_body must never call fetch_horizons_range."""
+        body = {
+            "name": "MiriadeOnlyBody",
+            "provider_priority": ["horizons", "miriade", "swiss"],
+            # No horizons_id present at all.
+            "miriade_name": "a:MiriadeOnlyBody",
+        }
+        chain = six._provider_chain(body)
+        self.assertNotIn("jpl", chain)
+        self.assertIn("miriade", chain)
+
+        body["_provider_chain"] = chain
+        dt_list = [datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)]
+        stats = {
+            "jpl_range_requests": 0, "jpl_range_failures": 0, "jpl_retries": 0, "jpl_timeouts": 0,
+            "miriade_fallback_requests": 0, "miriade_range_requests": 0, "miriade_points_resolved": 0,
+            "swiss_fallback_requests": 0,
+        }
+
+        with patch.object(six, "fetch_horizons_range") as jpl_mock, \
+             patch.object(six, "fetch_miriade_range", return_value={"2026-01-01": {"ecl_lon_deg": 1.0, "ecl_lat_deg": 0.0, "source": "miriade"}}), \
+             patch.object(six, "fetch_swiss_point", return_value=None):
+            six.resolve_moving_body(body, dt_list, stats)
+
+        jpl_mock.assert_not_called()
+
+    def test_body_without_miriade_mapping_never_calls_miriade(self):
+        """If a body has no name and no miriade_name, Miriade must be
+        excluded from its chain and never invoked."""
+        body = {
+            "name": "",
+            "provider_priority": ["horizons", "miriade", "swiss"],
+            "horizons_id": "12345",
+        }
+        chain = six._provider_chain(body)
+        self.assertNotIn("miriade", chain)
+
+    def test_body_without_swiss_support_never_calls_swiss(self):
+        """A body with no swiss_code and no SWISS_IDS entry must exclude
+        'swiss' from its chain and resolve_moving_body must never call
+        fetch_swiss_point for it."""
+        body = {
+            "name": "Hygiea",  # not in SWISS_IDS, no swiss_code in this test
+            "provider_priority": ["horizons", "miriade", "swiss"],
+            "horizons_id": "10;",
+            "miriade_name": "a:Hygiea",
+        }
+        chain = six._provider_chain(body)
+        self.assertNotIn("swiss", chain)
+
+        body["_provider_chain"] = chain
+        dt_list = [datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)]
+        stats = {
+            "jpl_range_requests": 0, "jpl_range_failures": 0, "jpl_retries": 0, "jpl_timeouts": 0,
+            "miriade_fallback_requests": 0, "miriade_range_requests": 0, "miriade_points_resolved": 0,
+            "swiss_fallback_requests": 0,
+        }
+
+        with patch.object(six, "fetch_horizons_range", return_value={}), \
+             patch.object(six, "fetch_miriade_range", return_value={}), \
+             patch.object(six, "fetch_swiss_point") as swiss_mock:
+            six.resolve_moving_body(body, dt_list, stats)
+
+        swiss_mock.assert_not_called()
+
+    def test_provider_chain_calculated_from_actual_mappings_not_guesses(self):
+        # Has swiss_code explicitly -> swiss included.
+        body_with_swiss = {
+            "name": "Chiron",
+            "provider_priority": ["miriade", "horizons", "swiss"],
+            "horizons_id": "2060",
+            "miriade_name": "a:Chiron",
+            "swiss_code": 15,
+        }
+        self.assertEqual(["miriade", "jpl", "swiss"], six._provider_chain(body_with_swiss))
+
+        # No swiss_code and name not in SWISS_IDS -> swiss excluded.
+        body_without_swiss = {
+            "name": "Pholus",
+            "provider_priority": ["miriade", "horizons", "swiss"],
+            "horizons_id": "5145",
+            "miriade_name": "a:Pholus",
+        }
+        self.assertEqual(["miriade", "jpl"], six._provider_chain(body_without_swiss))
+
+    def test_valid_jpl_first_bodies_remain_jpl_first(self):
+        body = {
+            "name": "Sun",
+            "provider_priority": ["horizons", "miriade", "swiss"],
+            "horizons_id": "10",
+            "miriade_name": "p:Sun",
+            "swiss_code": 0,
+        }
+        chain = six._provider_chain(body)
+        self.assertEqual(["jpl", "miriade", "swiss"], chain)
+        self.assertEqual("jpl_primary", six._classify_provider_route(chain))
+
+    def test_miriade_primary_bodies_skip_jpl_completely_when_unmapped(self):
+        """A body whose provider_priority lists miriade first AND has no
+        JPL mapping must skip JPL entirely (not merely deprioritize it)."""
+        body = {
+            "name": "Hekate",
+            "provider_priority": ["miriade", "horizons", "swiss"],
+            # Intentionally no horizons_id.
+            "miriade_name": "a:Hekate",
+        }
+        chain = six._provider_chain(body)
+        self.assertEqual(["miriade"], chain)
+        self.assertEqual("miriade_primary", six._classify_provider_route(chain))
+
+    def test_body_with_no_valid_providers_creates_missing_diagnostics_without_network_calls(self):
+        body = {
+            "name": "GhostBody",
+            "_provider_chain": [],  # simulates no valid configured provider
+        }
+        dt_list = [datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc) + datetime.timedelta(days=i) for i in range(3)]
+        stats = {
+            "jpl_range_requests": 0, "jpl_range_failures": 0, "jpl_retries": 0, "jpl_timeouts": 0,
+            "miriade_fallback_requests": 0, "miriade_range_requests": 0, "miriade_points_resolved": 0,
+            "swiss_fallback_requests": 0,
+        }
+
+        with patch.object(six, "fetch_horizons_range") as jpl_mock, \
+             patch.object(six, "fetch_miriade_range") as miriade_mock, \
+             patch.object(six, "fetch_swiss_point") as swiss_mock:
+            resolved, missing = six.resolve_moving_body(body, dt_list, stats)
+
+        jpl_mock.assert_not_called()
+        miriade_mock.assert_not_called()
+        swiss_mock.assert_not_called()
+        self.assertEqual({}, resolved)
+        self.assertEqual(3, len(missing))
+        for entry in missing:
+            self.assertEqual("GhostBody", entry["body"])
+            self.assertEqual([], entry["providers_attempted"])
+        self.assertEqual(1, stats["provider_route_counts"]["no_valid_provider"])
+
+    def test_routing_calculated_once_per_body_not_per_date(self):
+        """_provider_chain must be invoked once at catalog-load time, not
+        once per date during range resolution."""
+        call_count = {"n": 0}
+        original = six._provider_chain
+
+        def counting_provider_chain(body):
+            call_count["n"] += 1
+            return original(body)
+
+        with patch.object(six, "_provider_chain", side_effect=counting_provider_chain):
+            moving, _, _ = six.load_catalog_targets(six.CATALOG_PATH)
+
+        # Exactly one call per moving body in the catalog (41), never per date.
+        self.assertEqual(len(moving), call_count["n"])
+        self.assertEqual(41, call_count["n"])
+
+        # resolve_moving_body itself never recomputes the chain.
+        body = moving[0]
+        dt_list = [datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc) + datetime.timedelta(days=i) for i in range(5)]
+        stats = {
+            "jpl_range_requests": 0, "jpl_range_failures": 0, "jpl_retries": 0, "jpl_timeouts": 0,
+            "miriade_fallback_requests": 0, "miriade_range_requests": 0, "miriade_points_resolved": 0,
+            "swiss_fallback_requests": 0,
+        }
+        with patch.object(six, "_provider_chain") as chain_mock, \
+             patch.object(six, "fetch_horizons_range", return_value={k: {"ecl_lon_deg": 1.0, "ecl_lat_deg": 0.0, "source": "jpl"} for k in [six._date_key(d) for d in dt_list]}):
+            six.resolve_moving_body(body, dt_list, stats)
+        chain_mock.assert_not_called()
+
+    def test_full_catalog_provider_route_distribution(self):
+        """Sanity-check the real catalog's routing distribution: every one
+        of the 41 bodies currently has a valid horizons_id mapping, so none
+        are routed away from JPL by this change — but the classification
+        must still be computed correctly from real catalog fields."""
+        moving, _, _ = six.load_catalog_targets(six.CATALOG_PATH)
+        self.assertEqual(41, len(moving))
+
+        routes = {"jpl_primary": 0, "miriade_primary": 0, "swiss_primary": 0, "no_valid_provider": 0}
+        for body in moving:
+            chain = body["_provider_chain"]
+            routes[six._classify_provider_route(chain)] += 1
+
+        self.assertEqual(0, routes["no_valid_provider"])
+        self.assertEqual(41, routes["jpl_primary"] + routes["miriade_primary"] + routes["swiss_primary"])
+        # Every body in the current catalog carries a horizons_id, so JPL is
+        # never dropped from a chain that requests it — this test guards
+        # against accidentally excluding still-valid JPL mappings.
+        for body in moving:
+            if body.get("horizons_id"):
+                self.assertIn("jpl", body["_provider_chain"])
+
     def test_gap_only_fallback_keeps_valid_primary(self):
         body = {"name": "Test", "_provider_chain": ["jpl", "miriade", "swiss"]}
         dt_list = [
@@ -415,6 +610,7 @@ class TestGenerateFeed6Month(unittest.TestCase):
         self.assertIn("jpl_range_failures", data["runtime"])
         self.assertIn("jpl_retries", data["runtime"])
         self.assertIn("jpl_timeouts", data["runtime"])
+        self.assertIn("provider_route_counts", data["runtime"])
 
     def test_atomic_write_preserves_existing_file_on_failure(self):
         with tempfile.TemporaryDirectory() as td:
