@@ -95,9 +95,7 @@ HORIZONS_API = (
 # ---------------------------------------------------------------------------
 
 
-def _is_valid_number(
-    value: Any,
-) -> bool:
+def _is_valid_number(value: Any) -> bool:
     """Return True only for finite, non-masked numeric values."""
 
     if value is None:
@@ -137,31 +135,42 @@ def _normalize_minor_body_id(
 def _normalize_horizons_id(
     body: Dict[str, Any],
 ) -> Optional[str]:
-    """Return the Horizons identifier appropriate for this body.
+    """Return the correct JPL Horizons identifier.
 
-    Major/core bodies retain their normal Horizons identifier.
+    Core/major bodies retain their normal Horizons identifier.
 
-    Small bodies use the Horizons semicolon form:
+    Minor bodies use Horizons' explicit small-body semicolon form:
 
         1;
         2;
+        433;
         2060;
         90377;
 
-    This avoids relying on the deprecated explicit id_type argument.
+    The catalog's horizons_id_type may still be consulted here to
+    distinguish major bodies from small bodies, but it is NOT passed
+    to astroquery. This avoids the deprecated explicit id_type API.
     """
 
     raw = body.get("horizons_id")
 
     if raw is None:
         name = body.get("name")
-        return str(name).strip() if name else None
+
+        if not name:
+            return None
+
+        return str(name).strip() or None
 
     text = str(raw).strip()
 
     if not text:
         name = body.get("name")
-        return str(name).strip() if name else None
+
+        if not name:
+            return None
+
+        return str(name).strip() or None
 
     category = str(
         body.get("category")
@@ -169,20 +178,19 @@ def _normalize_horizons_id(
         or ""
     ).lower()
 
-    id_type = str(
+    catalog_id_type = str(
         body.get("horizons_id_type")
         or ""
     ).lower()
 
-    # Core planets / major bodies must not receive the small-body semicolon.
+    # Major/core objects must not receive a small-body semicolon.
     if (
         category == "core_bodies"
-        or id_type == "majorbody"
+        or catalog_id_type == "majorbody"
     ):
         return text.rstrip(";")
 
-    # Everything else using a configured numeric/minor-body Horizons ID
-    # receives the explicit small-body semicolon.
+    # Minor bodies explicitly use Horizons small-body syntax.
     if not text.endswith(";"):
         text = f"{text};"
 
@@ -192,7 +200,7 @@ def _normalize_horizons_id(
 def _miriade_identifiers(
     body: Dict[str, Any],
 ) -> List[str]:
-    """Build possible Miriade identifiers for a body."""
+    """Build possible Miriade identifiers for compatibility."""
 
     name = body["name"]
 
@@ -321,7 +329,7 @@ def _horizons_position(
     body: Dict[str, Any],
     dt: datetime,
 ) -> Optional[Dict[str, float]]:
-    """Resolve one geocentric ecliptic position through JPL Horizons."""
+    """Resolve one geocentric position through JPL Horizons."""
 
     prefetched = body.get("_horizons_prefetch")
 
@@ -331,14 +339,20 @@ def _horizons_position(
     ):
         return prefetched[body["name"]]
 
-    body_id = _normalize_horizons_id(body)
+    # IMPORTANT:
+    # fetch_all_positions() normalizes this once while loading the catalog.
+    # Use that normalized identifier here instead of rebuilding it.
+    body_id = (
+        body.get("_normalized_horizons_id")
+        or _normalize_horizons_id(body)
+    )
 
     if not body_id:
         return None
 
-    # Astroquery's Horizons instance exposes TIMEOUT directly.
     Horizons.TIMEOUT = REQUEST_TIMEOUT_HORIZONS
 
+    # Do NOT pass id_type here.
     eph = Horizons(
         id=body_id,
         location=HORIZONS_LOCATION,
@@ -379,8 +393,8 @@ def _horizons_position(
             lat = float(value)
             break
 
-    # If Horizons does not expose direct ecliptic columns,
-    # derive them from RA / DEC.
+    # If Horizons does not expose usable direct ecliptic values,
+    # derive ecliptic longitude/latitude from RA and DEC.
     if (
         lon is None
         or lat is None
@@ -503,7 +517,8 @@ def _parse_horizons_vector_batch(
                     math.atan2(
                         z,
                         math.sqrt(
-                            x * x + y * y
+                            x * x
+                            + y * y
                         ),
                     )
                 )
@@ -532,10 +547,9 @@ def _horizons_batch_positions(
     bodies: List[Dict[str, Any]],
     dt: datetime,
 ) -> Dict[str, Dict[str, float]]:
-    """Optional Horizons vector batch helper.
+    """Optional batch helper retained for compatibility.
 
-    The normal daily resolution path currently uses _horizons_position().
-    This helper is retained for compatibility/future batching.
+    The active daily path resolves bodies through _horizons_position().
     """
 
     if not bodies:
@@ -545,7 +559,10 @@ def _horizons_batch_positions(
     name_by_command: Dict[str, str] = {}
 
     for body in bodies:
-        normalized = _normalize_horizons_id(body)
+        normalized = (
+            body.get("_normalized_horizons_id")
+            or _normalize_horizons_id(body)
+        )
 
         if not normalized:
             continue
@@ -698,11 +715,7 @@ def _miriade_position(
         in rows[0].items()
     }
 
-    # Do NOT use:
-    #
-    # row.get("elon") or row.get("ecllon")
-    #
-    # because 0.0 is a valid astronomical longitude.
+    # Do not use `a or b` for coordinates because 0.0 is valid.
     lon = row.get("elon")
 
     if lon is None:
@@ -842,10 +855,12 @@ def _has_valid_horizons_mapping(
 ) -> bool:
     value = body.get("horizons_id")
 
-    if value is not None and str(value).strip():
+    if (
+        value is not None
+        and str(value).strip()
+    ):
         return True
 
-    # Core major bodies may still be queryable by their canonical name.
     category = str(
         body.get("category")
         or body.get("_catalog_category")
@@ -900,18 +915,15 @@ def _normalize_provider_priority(
     body: Dict[str, Any],
     category: str,
 ) -> List[str]:
-    """Return the mandatory provider chain for the daily feed.
+    """Build the mandatory daily provider chain.
 
     Moving-body priority is ALWAYS:
 
-        JPL Horizons
-        -> Miriade
-        -> Swiss Ephemeris
+        JPL Horizons -> Miriade -> Swiss Ephemeris
 
-    A provider is included only when the body has usable capability
-    for that provider.
+    Unsupported providers are skipped.
 
-    Fixed stars and Aether calculations are separate layers.
+    Fixed stars and calculated Aether points are separate layers.
     """
 
     if category == "fixed_stars":
@@ -1233,11 +1245,11 @@ def _resolve_body(
     body: Dict[str, Any],
     dt: datetime,
 ) -> Dict[str, Any]:
-    """Resolve one moving body through the fixed provider chain.
+    """Resolve one moving body using gap-only provider fallback.
 
     JPL first.
-    Miriade only if JPL did not resolve.
-    Swiss only if both upstream providers did not resolve.
+    Miriade only if JPL does not resolve.
+    Swiss only if JPL and Miriade do not resolve.
     """
 
     name = body["name"]
@@ -1339,7 +1351,7 @@ def fetch_all_positions(
         Dict[str, Any]
     ] = None,
 ) -> Dict[str, Any]:
-    """Resolve the full catalog for one daily transit timestamp."""
+    """Resolve the complete catalog for one daily transit timestamp."""
 
     catalog_data = (
         catalog
@@ -1378,21 +1390,21 @@ def fetch_all_positions(
                 "_catalog_category"
             ] = category
 
+            # Normalize the JPL identifier ONCE when loading the catalog.
+            enriched[
+                "_normalized_horizons_id"
+            ] = (
+                _normalize_horizons_id(
+                    enriched
+                )
+            )
+
             enriched[
                 "_provider_chain"
             ] = (
                 _normalize_provider_priority(
                     enriched,
                     category,
-                )
-            )
-
-            # Store the normalized Horizons ID once.
-            enriched[
-                "_normalized_horizons_id"
-            ] = (
-                _normalize_horizons_id(
-                    enriched
                 )
             )
 
@@ -1462,7 +1474,9 @@ def fetch_all_positions(
                 candidate_ok
                 and not existing_ok
             ):
-                positions[name] = candidate
+                positions[
+                    name
+                ] = candidate
 
     # -------------------------------------------------------------------
     # FIXED STARS
