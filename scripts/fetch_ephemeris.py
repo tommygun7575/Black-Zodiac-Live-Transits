@@ -13,15 +13,43 @@ from astroquery.jplhorizons import Horizons
 
 from scripts.utils.coords import ra_dec_to_ecl
 
-ROOT = Path(__file__).resolve().parents[1]
-CATALOG_PATH = ROOT / "config" / "celestial_catalog.json"
-FIXED_STARS_PATH = ROOT / "data" / "fixed_stars.json"
-ALT_FIXED_STARS_PATH = ROOT / "data" / "fixed_star_catalog.json"
 
-EPHEMERIS_PATH = ROOT / "ephemeris"
+ROOT = Path(__file__).resolve().parents[1]
+
+CATALOG_PATH = (
+    ROOT
+    / "config"
+    / "celestial_catalog.json"
+)
+
+FIXED_STARS_PATH = (
+    ROOT
+    / "data"
+    / "fixed_stars.json"
+)
+
+ALT_FIXED_STARS_PATH = (
+    ROOT
+    / "data"
+    / "fixed_star_catalog.json"
+)
+
+
+EPHEMERIS_PATH = (
+    ROOT
+    / "ephemeris"
+)
+
 if not EPHEMERIS_PATH.exists():
-    EPHEMERIS_PATH = ROOT / "ephe"
-swe.set_ephe_path(str(EPHEMERIS_PATH))
+    EPHEMERIS_PATH = (
+        ROOT
+        / "ephe"
+    )
+
+swe.set_ephe_path(
+    str(EPHEMERIS_PATH)
+)
+
 
 SWISS_CODES = {
     "sun": swe.SUN,
@@ -41,19 +69,12 @@ SWISS_CODES = {
     "vesta": swe.VESTA,
 }
 
-MIRIADE_BASE = "https://ssp.imcce.fr/webservices/miriade/api/ephemcc.php"
-HORIZONS_BODIES = [
-    "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn",
-    "Uranus", "Neptune", "Pluto",
-    "Ceres", "Eris", "Haumea", "Makemake",
-    "Orcus", "Quaoar", "Sedna", "Gonggong",
-    "Ixion", "Varuna", "Huya", "Salacia",
-]
-MIRIADE_BODIES = [
-    "Pallas", "Juno", "Vesta", "Hygiea", "Astraea",
-    "Eros", "Psyche", "Sappho", "Hekate", "Nemesis",
-    "Karma", "Destinn", "Aura", "Merlin",
-]
+
+MIRIADE_BASE = (
+    "https://ssp.imcce.fr/"
+    "webservices/miriade/api/ephemcc.php"
+)
+
 
 ASTEROID_MIRIADE_IDS = {
     "Ceres": "1",
@@ -72,178 +93,647 @@ ASTEROID_MIRIADE_IDS = {
     "Merlin": "2598",
 }
 
-HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
+
+HORIZONS_API = (
+    "https://ssd.jpl.nasa.gov/"
+    "api/horizons.api"
+)
 
 
-def _is_valid_number(value: Any) -> bool:
-    return isinstance(value, (int, float)) and math.isfinite(float(value))
+# ---------------------------------------------------------------------------
+# BASIC HELPERS
+# ---------------------------------------------------------------------------
 
 
-def _normalize_minor_body_id(value: Any) -> Optional[str]:
+def _is_valid_number(
+    value: Any,
+) -> bool:
+    return (
+        isinstance(
+            value,
+            (int, float),
+        )
+        and math.isfinite(
+            float(value)
+        )
+    )
+
+
+def _normalize_minor_body_id(
+    value: Any,
+) -> Optional[str]:
+
     if value is None:
         return None
-    text = str(value).strip().rstrip(";")
-    return text or None
+
+    text = (
+        str(value)
+        .strip()
+        .rstrip(";")
+    )
+
+    return (
+        text
+        or None
+    )
 
 
-def _miriade_identifiers(body: Dict[str, Any]) -> List[str]:
+def _miriade_identifiers(
+    body: Dict[str, Any],
+) -> List[str]:
+
     name = body["name"]
+
     identifiers: List[str] = []
 
-    explicit = body.get("miriade_name")
+    explicit = body.get(
+        "miriade_name"
+    )
+
     if explicit:
-        identifiers.append(str(explicit))
 
-    minor_body_id = _normalize_minor_body_id(body.get("mpc_designation") or body.get("horizons_id") or body.get("id"))
+        identifiers.append(
+            str(explicit)
+        )
+
+    minor_body_id = (
+        _normalize_minor_body_id(
+            body.get(
+                "mpc_designation"
+            )
+            or body.get(
+                "horizons_id"
+            )
+            or body.get(
+                "id"
+            )
+        )
+    )
+
     if minor_body_id:
-        identifiers.extend([
-            f"a:{minor_body_id}",
-            f"a:{minor_body_id} {name}",
-        ])
 
-    lowered = name.lower()
+        identifiers.extend(
+            [
+                f"a:{minor_body_id}",
+                (
+                    f"a:{minor_body_id} "
+                    f"{name}"
+                ),
+            ]
+        )
+
+    lowered = (
+        name.lower()
+    )
+
     if lowered == "moon":
-        identifiers.append("s:Moon")
-    elif lowered in {"sun", "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune"}:
-        identifiers.append(f"p:{name}")
-    elif lowered == "pluto":
-        identifiers.append("dp:Pluto")
-    else:
-        identifiers.append(f"a:{name}")
 
-    identifiers.append(name)
+        identifiers.append(
+            "s:Moon"
+        )
+
+    elif lowered in {
+        "sun",
+        "mercury",
+        "venus",
+        "mars",
+        "jupiter",
+        "saturn",
+        "uranus",
+        "neptune",
+    }:
+
+        identifiers.append(
+            f"p:{name}"
+        )
+
+    elif lowered == "pluto":
+
+        identifiers.append(
+            "dp:Pluto"
+        )
+
+    else:
+
+        identifiers.append(
+            f"a:{name}"
+        )
+
+    identifiers.append(
+        name
+    )
 
     deduped: List[str] = []
+
     for ident in identifiers:
-        if ident and ident not in deduped:
-            deduped.append(ident)
+
+        if (
+            ident
+            and ident
+            not in deduped
+        ):
+
+            deduped.append(
+                ident
+            )
+
     return deduped
 
 
-def load_catalog(path: Path = CATALOG_PATH) -> Dict[str, Any]:
-    with path.open("r", encoding="utf-8") as f:
+def load_catalog(
+    path: Path = CATALOG_PATH,
+) -> Dict[str, Any]:
+
+    with path.open(
+        "r",
+        encoding="utf-8",
+    ) as f:
+
         return json.load(f)
 
 
-def _utc_iso(dt: datetime) -> str:
-    return dt.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+def _utc_iso(
+    dt: datetime,
+) -> str:
+
+    return (
+        dt.astimezone(
+            timezone.utc
+        )
+        .replace(
+            microsecond=0
+        )
+        .isoformat()
+        .replace(
+            "+00:00",
+            "Z",
+        )
+    )
 
 
-def _to_jd(dt: datetime) -> float:
-    dt_utc = dt.astimezone(timezone.utc)
+def _to_jd(
+    dt: datetime,
+) -> float:
+
+    dt_utc = (
+        dt.astimezone(
+            timezone.utc
+        )
+    )
+
     return swe.julday(
         dt_utc.year,
         dt_utc.month,
         dt_utc.day,
-        dt_utc.hour + dt_utc.minute / 60.0 + dt_utc.second / 3600.0,
+        (
+            dt_utc.hour
+            + dt_utc.minute / 60.0
+            + dt_utc.second / 3600.0
+        ),
     )
 
 
-def _horizons_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, float]]:
-    prefetched = body.get("_horizons_prefetch")
-    if isinstance(prefetched, dict) and body["name"] in prefetched:
-        return prefetched[body["name"]]
+# ---------------------------------------------------------------------------
+# JPL HORIZONS
+# ---------------------------------------------------------------------------
 
-    body_id = body.get("horizons_id") or body["name"]
-    id_type = body.get("horizons_id_type")
-    kwargs: Dict[str, Any] = {
-        "id": body_id,
-        "location": "500@399",
-        "epochs": [_to_jd(dt)],
+
+def _horizons_position(
+    body: Dict[str, Any],
+    dt: datetime,
+) -> Optional[
+    Dict[str, float]
+]:
+
+    prefetched = body.get(
+        "_horizons_prefetch"
+    )
+
+    if (
+        isinstance(
+            prefetched,
+            dict,
+        )
+        and body["name"]
+        in prefetched
+    ):
+
+        return prefetched[
+            body["name"]
+        ]
+
+    body_id = (
+        body.get(
+            "horizons_id"
+        )
+        or body["name"]
+    )
+
+    id_type = body.get(
+        "horizons_id_type"
+    )
+
+    kwargs: Dict[
+        str,
+        Any,
+    ] = {
+        "id":
+            body_id,
+
+        "location":
+            "500@399",
+
+        "epochs": [
+            _to_jd(dt)
+        ],
     }
+
     if id_type:
-        kwargs["id_type"] = id_type
 
-    eph = Horizons(**kwargs).ephemerides()
+        kwargs[
+            "id_type"
+        ] = id_type
 
-    lon, lat = None, None
-    for key in ("EclLon", "EclipticLon", "ELON"):
+    eph = (
+        Horizons(
+            **kwargs
+        )
+        .ephemerides()
+    )
+
+    lon = None
+    lat = None
+
+    for key in (
+        "EclLon",
+        "EclipticLon",
+        "ELON",
+    ):
+
         if key in eph.colnames:
-            lon = float(eph[key][0])
+
+            lon = float(
+                eph[key][0]
+            )
+
             break
-    for key in ("EclLat", "EclipticLat", "ELAT"):
+
+    for key in (
+        "EclLat",
+        "EclipticLat",
+        "ELAT",
+    ):
+
         if key in eph.colnames:
-            lat = float(eph[key][0])
+
+            lat = float(
+                eph[key][0]
+            )
+
             break
 
-    if (lon is None or lat is None) and {"RA", "DEC"}.issubset(eph.colnames):
-        lon, lat = ra_dec_to_ecl(float(eph["RA"][0]), float(eph["DEC"][0]), _utc_iso(dt))
+    if (
+        lon is None
+        or lat is None
+    ) and {
+        "RA",
+        "DEC",
+    }.issubset(
+        eph.colnames
+    ):
 
-    if not _is_valid_number(lon) or not _is_valid_number(lat):
+        lon, lat = (
+            ra_dec_to_ecl(
+                float(
+                    eph["RA"][0]
+                ),
+                float(
+                    eph["DEC"][0]
+                ),
+                _utc_iso(dt),
+            )
+        )
+
+    if (
+        not _is_valid_number(
+            lon
+        )
+        or not _is_valid_number(
+            lat
+        )
+    ):
+
         return None
 
-    distance = float(eph["delta"][0]) if "delta" in eph.colnames else 0.0
-    velocity = float(eph["vel_obs"][0]) if "vel_obs" in eph.colnames else 0.0
-    return {"longitude": lon % 360.0, "latitude": lat, "distance": distance, "velocity": velocity}
+    distance = (
+        float(
+            eph["delta"][0]
+        )
+        if "delta"
+        in eph.colnames
+        else 0.0
+    )
+
+    velocity = (
+        float(
+            eph["vel_obs"][0]
+        )
+        if "vel_obs"
+        in eph.colnames
+        else 0.0
+    )
+
+    return {
+        "longitude":
+            float(lon)
+            % 360.0,
+
+        "latitude":
+            float(lat),
+
+        "distance":
+            distance,
+
+        "velocity":
+            velocity,
+    }
 
 
-def _parse_horizons_vector_batch(text: str, name_by_command: Dict[str, str]) -> Dict[str, Dict[str, float]]:
-    parsed: Dict[str, Dict[str, float]] = {}
-    current_name: Optional[str] = None
+# ---------------------------------------------------------------------------
+# OPTIONAL HORIZONS BATCH SUPPORT
+# ---------------------------------------------------------------------------
+
+
+def _parse_horizons_vector_batch(
+    text: str,
+    name_by_command:
+        Dict[str, str],
+) -> Dict[
+    str,
+    Dict[str, float],
+]:
+
+    parsed: Dict[
+        str,
+        Dict[str, float],
+    ] = {}
+
+    current_name: Optional[
+        str
+    ] = None
+
     in_block = False
-    for raw in text.splitlines():
-        line = raw.strip()
-        if line.startswith("Target body name:"):
+
+    for raw in (
+        text.splitlines()
+    ):
+
+        line = (
+            raw.strip()
+        )
+
+        if line.startswith(
+            "Target body name:"
+        ):
+
             current_name = None
-            for command, body_name in name_by_command.items():
-                if f"({command})" in line:
-                    current_name = body_name
+
+            for (
+                command,
+                body_name,
+            ) in (
+                name_by_command.items()
+            ):
+
+                if (
+                    f"({command})"
+                    in line
+                ):
+
+                    current_name = (
+                        body_name
+                    )
+
                     break
+
             continue
+
         if line == "$$SOE":
+
             in_block = True
             continue
+
         if line == "$$EOE":
+
             in_block = False
             continue
-        if not in_block or current_name is None:
+
+        if (
+            not in_block
+            or current_name
+            is None
+        ):
+
             continue
-        if line.startswith("X ="):
-            tokens = line.replace("=", " ").split()
+
+        if line.startswith(
+            "X ="
+        ):
+
+            tokens = (
+                line
+                .replace(
+                    "=",
+                    " ",
+                )
+                .split()
+            )
+
             try:
-                x = float(tokens[tokens.index("X") + 1])
-                y = float(tokens[tokens.index("Y") + 1])
-                z = float(tokens[tokens.index("Z") + 1])
-                lon = math.degrees(math.atan2(y, x)) % 360.0
-                lat = math.degrees(math.atan2(z, math.sqrt(x * x + y * y)))
-                parsed[current_name] = {
-                    "longitude": lon,
-                    "latitude": lat,
-                    "distance": math.sqrt(x * x + y * y + z * z),
-                    "velocity": 0.0,
+
+                x = float(
+                    tokens[
+                        tokens.index(
+                            "X"
+                        )
+                        + 1
+                    ]
+                )
+
+                y = float(
+                    tokens[
+                        tokens.index(
+                            "Y"
+                        )
+                        + 1
+                    ]
+                )
+
+                z = float(
+                    tokens[
+                        tokens.index(
+                            "Z"
+                        )
+                        + 1
+                    ]
+                )
+
+                lon = (
+                    math.degrees(
+                        math.atan2(
+                            y,
+                            x,
+                        )
+                    )
+                    % 360.0
+                )
+
+                lat = (
+                    math.degrees(
+                        math.atan2(
+                            z,
+                            math.sqrt(
+                                x * x
+                                + y * y
+                            ),
+                        )
+                    )
+                )
+
+                parsed[
+                    current_name
+                ] = {
+                    "longitude":
+                        lon,
+
+                    "latitude":
+                        lat,
+
+                    "distance":
+                        math.sqrt(
+                            x * x
+                            + y * y
+                            + z * z
+                        ),
+
+                    "velocity":
+                        0.0,
                 }
-            except (ValueError, IndexError):
+
+            except (
+                ValueError,
+                IndexError,
+            ):
+
                 continue
+
     return parsed
 
 
-def _horizons_batch_positions(bodies: List[Dict[str, Any]], dt: datetime) -> Dict[str, Dict[str, float]]:
+def _horizons_batch_positions(
+    bodies:
+        List[
+            Dict[
+                str,
+                Any,
+            ]
+        ],
+    dt: datetime,
+) -> Dict[
+    str,
+    Dict[str, float],
+]:
+
     if not bodies:
         return {}
-    command_by_name: Dict[str, str] = {}
-    name_by_command: Dict[str, str] = {}
+
+    command_by_name: Dict[
+        str,
+        str,
+    ] = {}
+
+    name_by_command: Dict[
+        str,
+        str,
+    ] = {}
+
     for body in bodies:
-        command = str(body.get("horizons_id") or body["name"]).rstrip(";")
-        command_by_name[body["name"]] = command
-        name_by_command[command] = body["name"]
 
-    command_list = ",".join(command_by_name.values())
+        command = str(
+            body.get(
+                "horizons_id"
+            )
+            or body["name"]
+        ).rstrip(";")
+
+        command_by_name[
+            body["name"]
+        ] = command
+
+        name_by_command[
+            command
+        ] = body["name"]
+
+    command_list = (
+        ",".join(
+            command_by_name.values()
+        )
+    )
+
     params = {
-        "format": "text",
-        "COMMAND": f"'{command_list}'",
-        "CENTER": "'500@0'",
-        "TABLE_TYPE": "'VECTOR'",
-        "REF_PLANE": "'ECLIPTIC'",
-        "START_TIME": f"'{_utc_iso(dt)}'",
-        "STOP_TIME": f"'{_utc_iso(dt)}'",
-        "STEP_SIZE": "'1d'",
+        "format":
+            "text",
+
+        "COMMAND":
+            f"'{command_list}'",
+
+        "CENTER":
+            "'500@0'",
+
+        "TABLE_TYPE":
+            "'VECTOR'",
+
+        "REF_PLANE":
+            "'ECLIPTIC'",
+
+        "START_TIME":
+            f"'{_utc_iso(dt)}'",
+
+        "STOP_TIME":
+            f"'{_utc_iso(dt)}'",
+
+        "STEP_SIZE":
+            "'1d'",
     }
-    response = requests.get(HORIZONS_API, params=params, timeout=30)
+
+    response = requests.get(
+        HORIZONS_API,
+        params=params,
+        timeout=30,
+    )
+
     response.raise_for_status()
-    return _parse_horizons_vector_batch(response.text, name_by_command)
+
+    return (
+        _parse_horizons_vector_batch(
+            response.text,
+            name_by_command,
+        )
+    )
 
 
-def _miriade_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, float]]:
+# ---------------------------------------------------------------------------
+# MIRIADE
+# ---------------------------------------------------------------------------
+
+
+def _miriade_position(
+    body: Dict[str, Any],
+    dt: datetime,
+) -> Optional[
+    Dict[str, float]
+]:
+
     miriade_designations = {
         "Chiron": "2060",
         "Pholus": "5145",
@@ -259,299 +749,1134 @@ def _miriade_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, 
         "Huya": "38628",
         "Salacia": "120347",
     }
-    body_name = body["name"]
-    if body_name in ASTEROID_MIRIADE_IDS:
-        query_id = ASTEROID_MIRIADE_IDS[body_name]
+
+    body_name = (
+        body["name"]
+    )
+
+    if (
+        body_name
+        in ASTEROID_MIRIADE_IDS
+    ):
+
+        query_id = (
+            ASTEROID_MIRIADE_IDS[
+                body_name
+            ]
+        )
+
     else:
-        query_id = miriade_designations.get(body_name, body_name)
+
+        query_id = (
+            miriade_designations.get(
+                body_name,
+                body_name,
+            )
+        )
 
     params = {
-        "name": query_id,
-        "epoch": _utc_iso(dt),
-        "observer": "500",
-        "eph": "1",
-        "-theory": "DE431",
-        "-teph": "1",
-        "-tcoor": "1",
-        "-rplane": "2",
-        "-nbd": "1",
-        "-mime": "json",
+        "name":
+            query_id,
+
+        "epoch":
+            _utc_iso(dt),
+
+        "observer":
+            "500",
+
+        "eph":
+            "1",
+
+        "-theory":
+            "DE431",
+
+        "-teph":
+            "1",
+
+        "-tcoor":
+            "1",
+
+        "-rplane":
+            "2",
+
+        "-nbd":
+            "1",
+
+        "-mime":
+            "json",
     }
-    response = requests.get(MIRIADE_BASE, params=params, timeout=20)
+
+    response = requests.get(
+        MIRIADE_BASE,
+        params=params,
+        timeout=20,
+    )
+
     try:
+
         response.raise_for_status()
+
     except requests.HTTPError:
-        if response.status_code == 400:
-            print(f"[WARN] miriade failed for {body_name}")
+
+        if (
+            response.status_code
+            == 400
+        ):
+
+            print(
+                f"[WARN] "
+                f"miriade failed "
+                f"for {body_name}"
+            )
+
             return None
+
         raise
 
-    data = response.json().get("result", {})
-    if isinstance(data, str):
-        data = json.loads(data)
-    rows = data.get("data", [])
+    data = (
+        response.json()
+        .get(
+            "result",
+            {},
+        )
+    )
+
+    if isinstance(
+        data,
+        str,
+    ):
+
+        data = json.loads(
+            data
+        )
+
+    rows = data.get(
+        "data",
+        [],
+    )
+
     if not rows:
         return None
-    row = {k.lower(): v for k, v in rows[0].items()}
 
-    lon = row.get("elon") or row.get("ecllon")
-    lat = row.get("elat") or row.get("ecllat")
-    if lon is None or lat is None:
-        ra, dec = row.get("ra"), row.get("dec")
-        if ra is None or dec is None:
-            return None
-        lon, lat = ra_dec_to_ecl(float(ra), float(dec), _utc_iso(dt))
-
-    distance = float(row.get("delta") or row.get("dist") or 0.0)
-    velocity = float(row.get("deldot") or row.get("vel") or 0.0)
-    timestamp = row.get("epoch") or row.get("date") or row.get("datetime") or _utc_iso(dt)
-    return {
-        "longitude": float(lon) % 360.0,
-        "latitude": float(lat),
-        "distance": distance,
-        "velocity": velocity,
-        "timestamp": str(timestamp),
+    row = {
+        k.lower(): v
+        for k, v
+        in rows[0].items()
     }
 
-    return None
+    lon = (
+        row.get(
+            "elon"
+        )
+        or row.get(
+            "ecllon"
+        )
+    )
+
+    lat = (
+        row.get(
+            "elat"
+        )
+        or row.get(
+            "ecllat"
+        )
+    )
+
+    if (
+        lon is None
+        or lat is None
+    ):
+
+        ra = row.get(
+            "ra"
+        )
+
+        dec = row.get(
+            "dec"
+        )
+
+        if (
+            ra is None
+            or dec is None
+        ):
+
+            return None
+
+        lon, lat = (
+            ra_dec_to_ecl(
+                float(ra),
+                float(dec),
+                _utc_iso(dt),
+            )
+        )
+
+    distance = float(
+        row.get(
+            "delta"
+        )
+        or row.get(
+            "dist"
+        )
+        or 0.0
+    )
+
+    velocity = float(
+        row.get(
+            "deldot"
+        )
+        or row.get(
+            "vel"
+        )
+        or 0.0
+    )
+
+    timestamp = (
+        row.get(
+            "epoch"
+        )
+        or row.get(
+            "date"
+        )
+        or row.get(
+            "datetime"
+        )
+        or _utc_iso(dt)
+    )
+
+    return {
+        "longitude":
+            float(lon)
+            % 360.0,
+
+        "latitude":
+            float(lat),
+
+        "distance":
+            distance,
+
+        "velocity":
+            velocity,
+
+        "timestamp":
+            str(timestamp),
+    }
 
 
-def _swiss_position(body: Dict[str, Any], dt: datetime) -> Optional[Dict[str, float]]:
-    code = body.get("swiss_code")
+# ---------------------------------------------------------------------------
+# SWISS EPHEMERIS
+# ---------------------------------------------------------------------------
+
+
+def _swiss_position(
+    body: Dict[str, Any],
+    dt: datetime,
+) -> Optional[
+    Dict[str, float]
+]:
+
+    code = body.get(
+        "swiss_code"
+    )
+
     if code is None:
-        code = SWISS_CODES.get(body["name"].lower())
+
+        code = (
+            SWISS_CODES.get(
+                body[
+                    "name"
+                ].lower()
+            )
+        )
+
     if code is None:
         return None
 
-    result, _ = swe.calc_ut(_to_jd(dt), int(code), swe.FLG_SPEED)
-    lon, lat, distance, lon_speed = result[0], result[1], result[2], result[3]
+    result, _ = (
+        swe.calc_ut(
+            _to_jd(dt),
+            int(code),
+            swe.FLG_SPEED,
+        )
+    )
+
+    lon = result[0]
+    lat = result[1]
+    distance = result[2]
+    lon_speed = result[3]
+
     return {
-        "longitude": float(lon) % 360.0,
-        "latitude": float(lat),
-        "distance": float(distance),
-        "velocity": float(lon_speed),
+        "longitude":
+            float(lon)
+            % 360.0,
+
+        "latitude":
+            float(lat),
+
+        "distance":
+            float(distance),
+
+        "velocity":
+            float(
+                lon_speed
+            ),
     }
 
 
-def _normalize_provider_priority(body: Dict[str, Any], category: str) -> List[str]:
-    name = body["name"]
-    if name == "Sun":
-        return ["swiss"]
-    if name in HORIZONS_BODIES:
-        return ["horizons", "miriade", "swiss"]
-    if name in MIRIADE_BODIES:
-        return ["miriade", "horizons", "swiss"]
-    if category == "fixed_stars":
-        return ["fixed_star_catalog"]
-    if category == "aether_points":
-        return ["calculated"]
-    return ["horizons", "miriade", "swiss"]
+# ---------------------------------------------------------------------------
+# PROVIDER ROUTING
+# ---------------------------------------------------------------------------
 
 
-def _compute_single(provider: str, body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
-    loader_map: Dict[str, Callable[[Dict[str, Any], datetime], Optional[Dict[str, float]]]] = {
-        "horizons": _horizons_position,
-        "miriade": _miriade_position,
-        "swiss": _swiss_position,
+def _normalize_provider_priority(
+    body: Dict[str, Any],
+    category: str,
+) -> List[str]:
+    """Return the mandatory provider order for the daily feed.
+
+    Moving-body provider priority is ALWAYS:
+
+        JPL Horizons -> Miriade -> Swiss Ephemeris
+
+    Fixed stars and calculated Aether points remain separate from the
+    moving-body provider chain.
+
+    Provider fallback stops as soon as a valid position is resolved.
+    """
+
+    if (
+        category
+        == "fixed_stars"
+    ):
+
+        return [
+            "fixed_star_catalog"
+        ]
+
+    if (
+        category
+        == "aether_points"
+    ):
+
+        return [
+            "calculated"
+        ]
+
+    # Mandatory daily moving-body provider order.
+    return [
+        "horizons",
+        "miriade",
+        "swiss",
+    ]
+
+
+# ---------------------------------------------------------------------------
+# SINGLE PROVIDER EXECUTION
+# ---------------------------------------------------------------------------
+
+
+def _compute_single(
+    provider: str,
+    body: Dict[str, Any],
+    dt: datetime,
+) -> Dict[str, Any]:
+
+    loader_map: Dict[
+        str,
+        Callable[
+            [
+                Dict[str, Any],
+                datetime,
+            ],
+            Optional[
+                Dict[str, float]
+            ],
+        ],
+    ] = {
+        "horizons":
+            _horizons_position,
+
+        "miriade":
+            _miriade_position,
+
+        "swiss":
+            _swiss_position,
     }
-    loader = loader_map[provider]
-    name = body["name"]
-    category = body.get("category") or body.get("_catalog_category", "unknown")
+
+    loader = (
+        loader_map[
+            provider
+        ]
+    )
+
+    name = (
+        body["name"]
+    )
+
+    category = (
+        body.get(
+            "category"
+        )
+        or body.get(
+            "_catalog_category",
+            "unknown",
+        )
+    )
 
     try:
-        data = loader(body, dt)
-        if data and _is_valid_number(data.get("longitude")) and _is_valid_number(data.get("latitude")):
+
+        data = (
+            loader(
+                body,
+                dt,
+            )
+        )
+
+        if (
+            data
+            and _is_valid_number(
+                data.get(
+                    "longitude"
+                )
+            )
+            and _is_valid_number(
+                data.get(
+                    "latitude"
+                )
+            )
+        ):
+
             return {
                 name: {
                     **data,
-                    "source": provider,
-                    "category": category,
-                    "timestamp": str(data.get("timestamp") or _utc_iso(dt)),
+
+                    "source":
+                        provider,
+
+                    "category":
+                        category,
+
+                    "timestamp":
+                        str(
+                            data.get(
+                                "timestamp"
+                            )
+                            or _utc_iso(dt)
+                        ),
                 }
             }
+
         return {
             name: {
-                "longitude": None,
-                "latitude": None,
-                "distance": None,
-                "velocity": None,
-                "source": "unresolved",
-                "category": category,
-                "timestamp": _utc_iso(dt),
-                "errors": [f"{provider}: unresolved"],
+                "longitude":
+                    None,
+
+                "latitude":
+                    None,
+
+                "distance":
+                    None,
+
+                "velocity":
+                    None,
+
+                "source":
+                    "unresolved",
+
+                "category":
+                    category,
+
+                "timestamp":
+                    _utc_iso(dt),
+
+                "errors": [
+                    (
+                        f"{provider}: "
+                        "unresolved"
+                    )
+                ],
             }
         }
+
     except Exception as exc:
+
         return {
             name: {
-                "longitude": None,
-                "latitude": None,
-                "distance": None,
-                "velocity": None,
-                "source": "unresolved",
-                "category": category,
-                "timestamp": _utc_iso(dt),
-                "errors": [f"{provider}: {exc}"],
+                "longitude":
+                    None,
+
+                "latitude":
+                    None,
+
+                "distance":
+                    None,
+
+                "velocity":
+                    None,
+
+                "source":
+                    "unresolved",
+
+                "category":
+                    category,
+
+                "timestamp":
+                    _utc_iso(dt),
+
+                "errors": [
+                    (
+                        f"{provider}: "
+                        f"{exc}"
+                    )
+                ],
             }
         }
+
+
+# ---------------------------------------------------------------------------
+# PROVIDER GROUP SUPPORT
+# ---------------------------------------------------------------------------
 
 
 def _fetch_group(
     provider: str,
-    bodies: List[Dict[str, Any]],
+    bodies:
+        List[
+            Dict[
+                str,
+                Any,
+            ]
+        ],
     dt: datetime,
-) -> Dict[str, Dict[str, Any]]:
+) -> Dict[
+    str,
+    Dict[str, Any],
+]:
+
     if not bodies:
         return {}
 
-    results: Dict[str, Dict[str, Any]] = {}
-    max_workers = min(8, len(bodies))
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [executor.submit(_compute_single, provider, body, dt) for body in bodies]
-        for future in as_completed(futures):
-            results.update(future.result())
+    results: Dict[
+        str,
+        Dict[str, Any],
+    ] = {}
+
+    max_workers = min(
+        8,
+        len(bodies),
+    )
+
+    with ThreadPoolExecutor(
+        max_workers=max_workers
+    ) as executor:
+
+        futures = [
+            executor.submit(
+                _compute_single,
+                provider,
+                body,
+                dt,
+            )
+            for body
+            in bodies
+        ]
+
+        for future in (
+            as_completed(
+                futures
+            )
+        ):
+
+            results.update(
+                future.result()
+            )
+
     return results
 
 
+# ---------------------------------------------------------------------------
+# AETHER CALCULATIONS
+# ---------------------------------------------------------------------------
+
+
 def _compute_aether_points(
-    positions: Dict[str, Dict[str, Any]],
-    aether_bodies: List[Dict[str, Any]],
+    positions:
+        Dict[
+            str,
+            Dict[str, Any],
+        ],
+    aether_bodies:
+        List[
+            Dict[
+                str,
+                Any,
+            ]
+        ],
     dt: datetime,
-) -> Dict[str, Dict[str, Any]]:
-    def lon(name: str) -> Optional[float]:
-        entry = positions.get(name)
+) -> Dict[
+    str,
+    Dict[str, Any],
+]:
+
+    def lon(
+        name: str,
+    ) -> Optional[float]:
+
+        entry = (
+            positions.get(
+                name
+            )
+        )
+
         if not entry:
             return None
-        value = entry.get("longitude")
-        return float(value) if value is not None else None
 
-    sun = lon("Sun")
-    moon = lon("Moon")
-    mars = lon("Mars")
-    jupiter = lon("Jupiter")
-    saturn = lon("Saturn")
-    venus = lon("Venus")
+        value = (
+            entry.get(
+                "longitude"
+            )
+        )
 
-    def midpoint(a: Optional[float], b: Optional[float]) -> Optional[float]:
-        if not _is_valid_number(a) or not _is_valid_number(b):
+        return (
+            float(value)
+            if value
+            is not None
+            else None
+        )
+
+    sun = lon(
+        "Sun"
+    )
+
+    moon = lon(
+        "Moon"
+    )
+
+    mars = lon(
+        "Mars"
+    )
+
+    jupiter = lon(
+        "Jupiter"
+    )
+
+    saturn = lon(
+        "Saturn"
+    )
+
+    venus = lon(
+        "Venus"
+    )
+
+    def midpoint(
+        a: Optional[float],
+        b: Optional[float],
+    ) -> Optional[float]:
+
+        if (
+            not _is_valid_number(a)
+            or not _is_valid_number(b)
+        ):
+
             return None
-        return (float(a) + float(b)) % 360.0
+
+        return (
+            float(a)
+            + float(b)
+        ) % 360.0
 
     formulas = {
-        "Aetheric_SunMoon_Midpoint": midpoint(sun, moon),
-        "Aetheric_Jovian_Arc": None if jupiter is None or saturn is None else ((jupiter - saturn) + 360.0) % 360.0,
-        "Aetheric_Elemental_Balance": None if mars is None or venus is None or moon is None else ((mars + venus + moon) / 3.0) % 360.0,
+        "Aetheric_SunMoon_Midpoint":
+            midpoint(
+                sun,
+                moon,
+            ),
+
+        "Aetheric_Jovian_Arc":
+            (
+                None
+                if (
+                    jupiter is None
+                    or saturn is None
+                )
+                else (
+                    (
+                        jupiter
+                        - saturn
+                    )
+                    + 360.0
+                )
+                % 360.0
+            ),
+
+        "Aetheric_Elemental_Balance":
+            (
+                None
+                if (
+                    mars is None
+                    or venus is None
+                    or moon is None
+                )
+                else (
+                    (
+                        mars
+                        + venus
+                        + moon
+                    )
+                    / 3.0
+                )
+                % 360.0
+            ),
     }
 
-    computed: Dict[str, Dict[str, Any]] = {}
-    for body in aether_bodies:
-        name = body["name"]
-        category = body.get("category", "aether_points")
-        value = formulas.get(name)
-        computed[name] = {
-            "longitude": value,
-            "latitude": 0.0 if value is not None else None,
-            "distance": 0.0 if value is not None else None,
-            "velocity": 0.0,
-            "timestamp": _utc_iso(dt),
-            "source": "calculated",
-            "category": category,
+    computed: Dict[
+        str,
+        Dict[str, Any],
+    ] = {}
+
+    for body in (
+        aether_bodies
+    ):
+
+        name = (
+            body["name"]
+        )
+
+        category = (
+            body.get(
+                "category",
+                "aether_points",
+            )
+        )
+
+        value = (
+            formulas.get(
+                name
+            )
+        )
+
+        computed[
+            name
+        ] = {
+            "longitude":
+                value,
+
+            "latitude":
+                (
+                    0.0
+                    if value
+                    is not None
+                    else None
+                ),
+
+            "distance":
+                (
+                    0.0
+                    if value
+                    is not None
+                    else None
+                ),
+
+            "velocity":
+                0.0,
+
+            "timestamp":
+                _utc_iso(dt),
+
+            "source":
+                "calculated",
+
+            "category":
+                category,
         }
+
     return computed
 
 
-def _resolve_body(body: Dict[str, Any], dt: datetime) -> Dict[str, Any]:
-    name = body["name"]
-    category = body.get("category") or body.get("_catalog_category", "unknown")
+# ---------------------------------------------------------------------------
+# BODY FALLBACK RESOLUTION
+# ---------------------------------------------------------------------------
+
+
+def _resolve_body(
+    body: Dict[str, Any],
+    dt: datetime,
+) -> Dict[str, Any]:
+
+    name = (
+        body["name"]
+    )
+
+    category = (
+        body.get(
+            "category"
+        )
+        or body.get(
+            "_catalog_category",
+            "unknown",
+        )
+    )
+
     errors: List[str] = []
 
-    for provider in body.get("_provider_chain", ["horizons", "miriade", "swiss"]):
-        result = _compute_single(provider, body, dt)[name]
-        lon = result.get("longitude")
-        lat = result.get("latitude")
+    provider_chain = (
+        body.get(
+            "_provider_chain",
+            [
+                "horizons",
+                "miriade",
+                "swiss",
+            ],
+        )
+    )
+
+    for provider in (
+        provider_chain
+    ):
+
+        result = (
+            _compute_single(
+                provider,
+                body,
+                dt,
+            )[
+                name
+            ]
+        )
+
+        lon = (
+            result.get(
+                "longitude"
+            )
+        )
+
+        lat = (
+            result.get(
+                "latitude"
+            )
+        )
+
         if (
-            result.get("source") != "unresolved"
-            and _is_valid_number(lon)
-            and _is_valid_number(lat)
+            result.get(
+                "source"
+            )
+            != "unresolved"
+            and _is_valid_number(
+                lon
+            )
+            and _is_valid_number(
+                lat
+            )
         ):
+
             if errors:
-                result["errors"] = errors
-            return {name: result}
-        errors.extend(result.get("errors", [f"{provider}: unresolved"]))
+
+                result[
+                    "errors"
+                ] = errors
+
+            return {
+                name:
+                    result
+            }
+
+        errors.extend(
+            result.get(
+                "errors",
+                [
+                    (
+                        f"{provider}: "
+                        "unresolved"
+                    )
+                ],
+            )
+        )
 
     return {
         name: {
-            "longitude": None,
-            "latitude": None,
-            "distance": None,
-            "velocity": None,
-            "source": "unresolved",
-            "category": category,
-            "timestamp": _utc_iso(dt),
-            "errors": errors,
+            "longitude":
+                None,
+
+            "latitude":
+                None,
+
+            "distance":
+                None,
+
+            "velocity":
+                None,
+
+            "source":
+                "unresolved",
+
+            "category":
+                category,
+
+            "timestamp":
+                _utc_iso(dt),
+
+            "errors":
+                errors,
         }
     }
 
 
-def fetch_all_positions(dt: datetime, catalog: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    catalog_data = catalog or load_catalog()
-    categories = catalog_data.get("categories", {})
+# ---------------------------------------------------------------------------
+# FULL DAILY POSITION RESOLUTION
+# ---------------------------------------------------------------------------
 
-    all_bodies: List[Dict[str, Any]] = []
-    fixed_star_names: set[str] = set()
-    aether_bodies: List[Dict[str, Any]] = []
 
-    for category, objects in categories.items():
+def fetch_all_positions(
+    dt: datetime,
+    catalog: Optional[
+        Dict[str, Any]
+    ] = None,
+) -> Dict[str, Any]:
+
+    catalog_data = (
+        catalog
+        or load_catalog()
+    )
+
+    categories = (
+        catalog_data.get(
+            "categories",
+            {},
+        )
+    )
+
+    all_bodies: List[
+        Dict[str, Any]
+    ] = []
+
+    fixed_star_names: set[
+        str
+    ] = set()
+
+    aether_bodies: List[
+        Dict[str, Any]
+    ] = []
+
+    for (
+        category,
+        objects,
+    ) in (
+        categories.items()
+    ):
+
         for body in objects:
-            enriched = dict(body)
-            enriched.setdefault("category", category)
-            enriched["_catalog_category"] = category
-            enriched["_provider_chain"] = _normalize_provider_priority(enriched, category)
 
-            if category == "fixed_stars":
-                fixed_star_names.add(enriched["name"])
+            enriched = (
+                dict(body)
+            )
+
+            enriched.setdefault(
+                "category",
+                category,
+            )
+
+            enriched[
+                "_catalog_category"
+            ] = category
+
+            enriched[
+                "_provider_chain"
+            ] = (
+                _normalize_provider_priority(
+                    enriched,
+                    category,
+                )
+            )
+
+            if (
+                category
+                == "fixed_stars"
+            ):
+
+                fixed_star_names.add(
+                    enriched[
+                        "name"
+                    ]
+                )
+
                 continue
-            if category == "aether_points":
-                aether_bodies.append(enriched)
-                continue
-            all_bodies.append(enriched)
 
-    positions: Dict[str, Dict[str, Any]] = {}
-    for body in all_bodies:
-        resolved = _resolve_body(body, dt)
-        for name, candidate in resolved.items():
-            existing = positions.get(name)
-            if existing is None:
-                positions[name] = candidate
+            if (
+                category
+                == "aether_points"
+            ):
+
+                aether_bodies.append(
+                    enriched
+                )
+
                 continue
 
-            existing_ok = existing.get("longitude") is not None
-            candidate_ok = candidate.get("longitude") is not None
-            if candidate_ok and not existing_ok:
-                positions[name] = candidate
+            all_bodies.append(
+                enriched
+            )
 
-    stars_path = ALT_FIXED_STARS_PATH if ALT_FIXED_STARS_PATH.exists() else FIXED_STARS_PATH
-    if stars_path.exists() and fixed_star_names:
-        with stars_path.open("r", encoding="utf-8") as f:
-            stars = json.load(f).get("stars", [])
+    positions: Dict[
+        str,
+        Dict[str, Any],
+    ] = {}
+
+    for body in (
+        all_bodies
+    ):
+
+        resolved = (
+            _resolve_body(
+                body,
+                dt,
+            )
+        )
+
+        for (
+            name,
+            candidate,
+        ) in (
+            resolved.items()
+        ):
+
+            existing = (
+                positions.get(
+                    name
+                )
+            )
+
+            if (
+                existing
+                is None
+            ):
+
+                positions[
+                    name
+                ] = candidate
+
+                continue
+
+            existing_ok = (
+                existing.get(
+                    "longitude"
+                )
+                is not None
+            )
+
+            candidate_ok = (
+                candidate.get(
+                    "longitude"
+                )
+                is not None
+            )
+
+            if (
+                candidate_ok
+                and not existing_ok
+            ):
+
+                positions[
+                    name
+                ] = candidate
+
+    stars_path = (
+        ALT_FIXED_STARS_PATH
+        if ALT_FIXED_STARS_PATH.exists()
+        else FIXED_STARS_PATH
+    )
+
+    if (
+        stars_path.exists()
+        and fixed_star_names
+    ):
+
+        with stars_path.open(
+            "r",
+            encoding="utf-8",
+        ) as f:
+
+            stars = (
+                json.load(f)
+                .get(
+                    "stars",
+                    [],
+                )
+            )
+
         for star in stars:
-            if star["id"] not in fixed_star_names:
+
+            if (
+                star["id"]
+                not in fixed_star_names
+            ):
+
                 continue
-            lon, lat = ra_dec_to_ecl(star["ra_deg"], star["dec_deg"], _utc_iso(dt))
-            positions[star["id"]] = {
-                "longitude": lon,
-                "latitude": lat,
-                "distance": 0.0,
-                "velocity": 0.0,
-                "timestamp": _utc_iso(dt),
-                "source": "fixed_star_catalog",
-                "category": "fixed_stars",
+
+            lon, lat = (
+                ra_dec_to_ecl(
+                    star[
+                        "ra_deg"
+                    ],
+                    star[
+                        "dec_deg"
+                    ],
+                    _utc_iso(dt),
+                )
+            )
+
+            positions[
+                star["id"]
+            ] = {
+                "longitude":
+                    lon,
+
+                "latitude":
+                    lat,
+
+                "distance":
+                    0.0,
+
+                "velocity":
+                    0.0,
+
+                "timestamp":
+                    _utc_iso(dt),
+
+                "source":
+                    "fixed_star_catalog",
+
+                "category":
+                    "fixed_stars",
             }
 
-    positions.update(_compute_aether_points(positions, aether_bodies, dt))
+    positions.update(
+        _compute_aether_points(
+            positions,
+            aether_bodies,
+            dt,
+        )
+    )
+
     return positions
 
 
+# ---------------------------------------------------------------------------
+# DIRECT EXECUTION
+# ---------------------------------------------------------------------------
+
+
 if __name__ == "__main__":
-    now = datetime.now(timezone.utc)
-    print(json.dumps(fetch_all_positions(now), indent=2))
+
+    now = (
+        datetime.now(
+            timezone.utc
+        )
+    )
+
+    print(
+        json.dumps(
+            fetch_all_positions(
+                now
+            ),
+            indent=2,
+        )
+    )
