@@ -51,7 +51,7 @@ REQUEST_TIMEOUT_MIRIADE = 20
 RETRY_ATTEMPTS = 3
 RETRY_BACKOFF_SECONDS = 1.5
 
-# JPL requests are RANGE-level, never one request per date.
+# JPL requests operate at RANGE level.
 # Initial attempt + one retry maximum.
 JPL_RETRY_ATTEMPTS = 2
 JPL_RETRY_BACKOFF_SECONDS = 2.0
@@ -89,14 +89,13 @@ SWISS_IDS = {
 
 
 def _is_valid_number(value: Any) -> bool:
-    """Return True only for real, finite, unmasked numeric values."""
+    """Return True only for finite, unmasked numeric values."""
 
     if value is None:
         return False
 
-    # Astropy tables frequently use NumPy masked constants/values for missing
-    # ephemeris fields. Detect them BEFORE float() so they do not emit:
-    # "Warning: converting a masked element to nan."
+    # Astropy tables can contain masked values for unavailable ephemeris
+    # fields. Detect these BEFORE converting to float.
     try:
         if np.ma.is_masked(value):
             return False
@@ -132,7 +131,7 @@ def _daily_samples(
     start_dt: datetime.datetime,
     days: int = SAMPLE_DAYS,
 ) -> List[datetime.datetime]:
-    """Generate exactly `days` UTC daily samples."""
+    """Generate exactly `days` daily UTC samples."""
 
     start = start_dt.astimezone(datetime.timezone.utc)
 
@@ -198,7 +197,7 @@ def _normalize_horizons_id(
 ) -> Optional[str]:
     """Normalize Horizons identifiers.
 
-    Small-body numeric identifiers receive a trailing semicolon so Horizons
+    Numeric small-body identifiers receive a trailing semicolon so Horizons
     treats them as small-body identifiers rather than major-body IDs.
     """
 
@@ -233,6 +232,8 @@ def _normalize_horizons_id(
 def _has_valid_jpl_mapping(
     body: Dict[str, Any],
 ) -> bool:
+    """Return True only when the body has a configured Horizons ID."""
+
     raw = body.get("horizons_id")
 
     if raw is None:
@@ -244,19 +245,23 @@ def _has_valid_jpl_mapping(
 def _has_valid_miriade_mapping(
     body: Dict[str, Any],
 ) -> bool:
+    """Return True when the body can be addressed through Miriade."""
+
     explicit = body.get("miriade_name")
 
     if explicit and str(explicit).strip():
         return True
 
     # Existing repository convention:
-    # unspecified objects may be addressed as a:<Name>.
+    # Miriade may be addressed using a:<Name>.
     return bool(body.get("name"))
 
 
 def _has_valid_swiss_mapping(
     body: Dict[str, Any],
 ) -> bool:
+    """Return True only when Swiss has an actual local mapping."""
+
     code = body.get("swiss_code")
 
     if code is not None:
@@ -276,39 +281,33 @@ def _has_valid_swiss_mapping(
 def _provider_chain(
     body: Dict[str, Any],
 ) -> List[str]:
-    """Build provider chain ONCE, preserving catalog order."""
+    """Build the mandatory 6-month provider chain.
 
-    providers = body.get(
-        "provider_priority"
-    ) or [
-        "horizons",
-        "miriade",
-        "swiss",
-    ]
+    Provider priority is ALWAYS:
 
-    capability_checks = {
-        "jpl": _has_valid_jpl_mapping,
-        "miriade": _has_valid_miriade_mapping,
-        "swiss": _has_valid_swiss_mapping,
-    }
+        JPL Horizons -> Miriade -> Swiss Ephemeris
 
-    normalized: List[str] = []
+    Unsupported providers are skipped.
 
-    for provider in providers:
-        mapped = _normalize_provider(
-            str(provider)
-        )
+    The celestial catalog supplies body/provider capability information,
+    but it does not override this mandatory 6-month priority.
+    """
 
-        if mapped not in capability_checks:
-            continue
+    chain: List[str] = []
 
-        if mapped in normalized:
-            continue
+    # PRIMARY
+    if _has_valid_jpl_mapping(body):
+        chain.append("jpl")
 
-        if capability_checks[mapped](body):
-            normalized.append(mapped)
+    # SECONDARY
+    if _has_valid_miriade_mapping(body):
+        chain.append("miriade")
 
-    return normalized
+    # FINAL LOCAL FALLBACK
+    if _has_valid_swiss_mapping(body):
+        chain.append("swiss")
+
+    return chain
 
 
 def load_catalog_targets(
@@ -318,7 +317,7 @@ def load_catalog_targets(
     List[str],
     List[str],
 ]:
-    """Load all celestial target populations from the shared catalog."""
+    """Load moving bodies, fixed stars, and Aether points."""
 
     with path.open(
         "r",
@@ -336,7 +335,9 @@ def load_catalog_targets(
     aether_names: List[str] = []
 
     for category, bodies in categories.items():
+
         for body in bodies:
+
             entry = dict(body)
 
             entry.setdefault(
@@ -345,15 +346,19 @@ def load_catalog_targets(
             )
 
             if category == "fixed_stars":
+
                 fixed_star_names.append(
                     entry["name"]
                 )
+
                 continue
 
             if category == "aether_points":
+
                 aether_names.append(
                     entry["name"]
                 )
+
                 continue
 
             if not _is_moving_entry(
@@ -362,7 +367,9 @@ def load_catalog_targets(
             ):
                 continue
 
-            # Provider routing is determined exactly once per body.
+            # Provider capability is determined once per body.
+            # Mandatory 6-month priority:
+            # JPL -> Miriade -> Swiss.
             entry["_provider_chain"] = (
                 _provider_chain(entry)
             )
@@ -412,7 +419,8 @@ def _extract_lon_lat(
             lat = row[key]
             break
 
-    # If Horizons does not supply ecliptic columns, convert RA/DEC.
+    # If direct ecliptic coordinates are unavailable,
+    # derive them from RA/DEC.
     if (
         lon is None
         or lat is None
@@ -420,7 +428,9 @@ def _extract_lon_lat(
         "RA" in colnames
         and "DEC" in colnames
     ):
+
         try:
+
             ra = row["RA"]
             dec = row["DEC"]
 
@@ -460,10 +470,13 @@ def _parse_row_date(
 ) -> Optional[datetime.date]:
 
     if "datetime_str" in colnames:
+
         raw = row["datetime_str"]
 
         if not np.ma.is_masked(raw):
+
             try:
+
                 parsed = date_parser.parse(
                     str(raw).strip()
                 )
@@ -483,10 +496,13 @@ def _parse_row_date(
                 pass
 
     if "datetime_jd" in colnames:
+
         raw_jd = row["datetime_jd"]
 
         if _is_valid_number(raw_jd):
+
             try:
+
                 jd = float(raw_jd)
 
                 year, month, day, ut = (
@@ -516,7 +532,6 @@ def _parse_row_date(
                     )
                 )
 
-                # Protect against a rounded second=60 edge case.
                 if second >= 60:
                     second = 59
 
@@ -555,7 +570,9 @@ def _parse_miriade_row_date(
     )
 
     if raw is not None:
+
         try:
+
             parsed = date_parser.parse(
                 str(raw).strip()
             )
@@ -574,10 +591,14 @@ def _parse_miriade_row_date(
         except Exception:
             pass
 
-    raw_jd = row.get("datetime_jd")
+    raw_jd = row.get(
+        "datetime_jd"
+    )
 
     if _is_valid_number(raw_jd):
+
         try:
+
             jd = float(raw_jd)
 
             year, month, day, ut = (
@@ -643,13 +664,16 @@ def _call_with_retries(
     last_exc = None
 
     for idx in range(attempts):
+
         try:
             return fn()
 
         except Exception as exc:
+
             last_exc = exc
 
             if idx < attempts - 1:
+
                 time.sleep(
                     RETRY_BACKOFF_SECONDS
                     * (idx + 1)
@@ -669,7 +693,10 @@ def _is_timeout_exception(
 
     if isinstance(
         exc,
-        (socket.timeout, TimeoutError),
+        (
+            socket.timeout,
+            TimeoutError,
+        ),
     ):
         return True
 
@@ -703,7 +730,9 @@ def fetch_horizons_range(
     if not dt_list:
         return {}
 
-    ordered = sorted(dt_list)
+    ordered = sorted(
+        dt_list
+    )
 
     start_dt = ordered[0]
     stop_dt = ordered[-1]
@@ -719,16 +748,13 @@ def fetch_horizons_range(
     )
 
     def _request():
-        # Astroquery Horizons uses the object's TIMEOUT attribute in its
-        # underlying HTTP request. Set it directly before performing this
-        # request.
+
+        # Apply timeout to Horizons requests.
         Horizons.TIMEOUT = (
             REQUEST_TIMEOUT_HORIZONS
         )
 
-        # Do not pass deprecated majorbody/id id_type values. The normalized
-        # identifier itself determines the target, including semicolon-form
-        # small-body IDs.
+        # One range request returns the complete contiguous daily interval.
         return Horizons(
             id=body_id,
             location=HORIZONS_LOCATION,
@@ -758,12 +784,15 @@ def fetch_horizons_range(
         )
 
         try:
+
             eph = _request()
+
             break
 
         except Exception as exc:
 
             if _is_timeout_exception(exc):
+
                 stats["jpl_timeouts"] = (
                     stats.get(
                         "jpl_timeouts",
@@ -780,6 +809,7 @@ def fetch_horizons_range(
                 )
 
             else:
+
                 print(
                     f"[6M] {body_name}: "
                     f"JPL range request failed: "
@@ -790,6 +820,7 @@ def fetch_horizons_range(
                 attempt
                 < JPL_RETRY_ATTEMPTS - 1
             ):
+
                 stats["jpl_retries"] = (
                     stats.get(
                         "jpl_retries",
@@ -821,7 +852,8 @@ def fetch_horizons_range(
 
         print(
             f"[6M] {body_name}: "
-            "JPL range unresolved"
+            "JPL unresolved; "
+            "continuing to next provider"
         )
 
         return {}
@@ -849,7 +881,9 @@ def fetch_horizons_range(
         for dt in ordered
     }
 
-    for idx in range(len(eph)):
+    for idx in range(
+        len(eph)
+    ):
 
         row = eph[idx]
 
@@ -859,10 +893,12 @@ def fetch_horizons_range(
             else None
         )
 
-        row_date = _parse_row_date(
-            row,
-            colnames,
-            fallback_dt,
+        row_date = (
+            _parse_row_date(
+                row,
+                colnames,
+                fallback_dt,
+            )
         )
 
         if row_date is None:
@@ -872,13 +908,17 @@ def fetch_horizons_range(
             continue
 
         expected_dt = (
-            dt_by_date[row_date]
+            dt_by_date[
+                row_date
+            ]
         )
 
-        lonlat = _extract_lon_lat(
-            row,
-            colnames,
-            expected_dt,
+        lonlat = (
+            _extract_lon_lat(
+                row,
+                colnames,
+                expected_dt,
+            )
         )
 
         if lonlat is None:
@@ -886,8 +926,10 @@ def fetch_horizons_range(
 
         lon, lat = lonlat
 
-        key = row_date.strftime(
-            "%Y-%m-%d"
+        key = (
+            row_date.strftime(
+                "%Y-%m-%d"
+            )
         )
 
         results[key] = {
@@ -899,7 +941,8 @@ def fetch_horizons_range(
     print(
         f"[6M] {body_name}: "
         f"JPL resolved "
-        f"{len(results)}/{len(ordered)} points"
+        f"{len(results)}/"
+        f"{len(ordered)} points"
     )
 
     return results
@@ -914,12 +957,18 @@ def _miriade_name(
     body: Dict[str, Any],
 ) -> str:
 
-    if body.get("miriade_name"):
+    if body.get(
+        "miriade_name"
+    ):
         return str(
-            body["miriade_name"]
+            body[
+                "miriade_name"
+            ]
         )
 
-    return f"a:{body['name']}"
+    return (
+        f"a:{body['name']}"
+    )
 
 
 def _group_contiguous_dates(
@@ -927,16 +976,22 @@ def _group_contiguous_dates(
         datetime.datetime
     ],
 ) -> List[
-    List[datetime.datetime]
+    List[
+        datetime.datetime
+    ]
 ]:
 
     if not sorted_dts:
         return []
 
-    ordered = sorted(sorted_dts)
+    ordered = sorted(
+        sorted_dts
+    )
 
     groups: List[
-        List[datetime.datetime]
+        List[
+            datetime.datetime
+        ]
     ] = []
 
     current: List[
@@ -957,18 +1012,29 @@ def _group_contiguous_dates(
             ).days
             == 1
         ):
-            current.append(dt)
+
+            current.append(
+                dt
+            )
 
         else:
+
             if current:
-                groups.append(current)
+                groups.append(
+                    current
+                )
 
             current = [dt]
 
-        prev_date = dt.date()
+        prev_date = (
+            dt.date()
+        )
 
     if current:
-        groups.append(current)
+
+        groups.append(
+            current
+        )
 
     return groups
 
@@ -980,7 +1046,7 @@ def fetch_miriade_range(
     ],
     stats: Dict[str, Any],
 ) -> Dict[str, Dict[str, Any]]:
-    """Fetch one contiguous Miriade date range in a single HTTP call."""
+    """Resolve one contiguous date range with a single Miriade request."""
 
     if not missing_dates:
         return {}
@@ -990,7 +1056,10 @@ def fetch_miriade_range(
     )
 
     start_dt = ordered[0]
-    nbd = len(ordered)
+
+    nbd = len(
+        ordered
+    )
 
     body_name = body.get(
         "name",
@@ -998,8 +1067,12 @@ def fetch_miriade_range(
     )
 
     params = {
-        "-name": _miriade_name(body),
-        "-ep": _iso_utc(start_dt),
+        "-name": _miriade_name(
+            body
+        ),
+        "-ep": _iso_utc(
+            start_dt
+        ),
         "-observer": "500",
         "-theory": "DE431",
         "-teph": "1",
@@ -1015,35 +1088,47 @@ def fetch_miriade_range(
         response = requests.get(
             MIRIADE_BASE,
             params=params,
-            timeout=REQUEST_TIMEOUT_MIRIADE,
+            timeout=(
+                REQUEST_TIMEOUT_MIRIADE
+            ),
         )
 
         response.raise_for_status()
 
-        raw_payload = response.json()
+        raw_payload = (
+            response.json()
+        )
 
-        payload = raw_payload.get(
-            "result",
-            {},
+        payload = (
+            raw_payload.get(
+                "result",
+                {},
+            )
         )
 
         if isinstance(
             payload,
             str,
         ):
-            payload = json.loads(
-                payload
+
+            payload = (
+                json.loads(
+                    payload
+                )
             )
 
         if not isinstance(
             payload,
             dict,
         ):
+
             return {}
 
         return payload
 
-    stats["miriade_range_requests"] = (
+    stats[
+        "miriade_range_requests"
+    ] = (
         stats.get(
             "miriade_range_requests",
             0,
@@ -1062,8 +1147,11 @@ def fetch_miriade_range(
     )
 
     try:
-        payload = _call_with_retries(
-            _request_json
+
+        payload = (
+            _call_with_retries(
+                _request_json
+            )
         )
 
     except Exception as exc:
@@ -1081,7 +1169,10 @@ def fetch_miriade_range(
         [],
     )
 
-    if not isinstance(rows, list):
+    if not isinstance(
+        rows,
+        list,
+    ):
         return {}
 
     if not rows:
@@ -1102,7 +1193,9 @@ def fetch_miriade_range(
         for dt in ordered
     }
 
-    for idx, raw_row in enumerate(rows):
+    for idx, raw_row in enumerate(
+        rows
+    ):
 
         if not isinstance(
             raw_row,
@@ -1132,24 +1225,32 @@ def fetch_miriade_range(
         if row_date is None:
             continue
 
-        if row_date not in expected_dates:
+        if (
+            row_date
+            not in expected_dates
+        ):
             continue
 
         expected_dt = (
-            dt_by_date[row_date]
+            dt_by_date[
+                row_date
+            ]
         )
 
-        # IMPORTANT: do not use:
-        # row.get("elon") or row.get("ecllon")
-        # because longitude 0.0 is a valid value but is falsey.
-        lon = row.get("elon")
+        # 0.0 is valid, so do not use Python "or" when choosing
+        # coordinate columns.
+        lon = row.get(
+            "elon"
+        )
 
         if lon is None:
             lon = row.get(
                 "ecllon"
             )
 
-        lat = row.get("elat")
+        lat = row.get(
+            "elat"
+        )
 
         if lat is None:
             lat = row.get(
@@ -1161,14 +1262,25 @@ def fetch_miriade_range(
             or lat is None
         ):
 
-            ra = row.get("ra")
-            dec = row.get("dec")
+            ra = row.get(
+                "ra"
+            )
+
+            dec = row.get(
+                "dec"
+            )
 
             if (
-                _is_valid_number(ra)
-                and _is_valid_number(dec)
+                _is_valid_number(
+                    ra
+                )
+                and _is_valid_number(
+                    dec
+                )
             ):
+
                 try:
+
                     lon, lat = (
                         ra_dec_to_ecl(
                             float(ra),
@@ -1183,23 +1295,32 @@ def fetch_miriade_range(
                     continue
 
         if (
-            not _is_valid_number(lon)
-            or not _is_valid_number(lat)
+            not _is_valid_number(
+                lon
+            )
+            or not _is_valid_number(
+                lat
+            )
         ):
             continue
 
-        key = row_date.strftime(
-            "%Y-%m-%d"
+        key = (
+            row_date.strftime(
+                "%Y-%m-%d"
+            )
         )
 
         results[key] = {
-            "ecl_lon_deg": (
+            "ecl_lon_deg":
                 _normalize_lon(
                     float(lon)
-                )
-            ),
-            "ecl_lat_deg": float(lat),
-            "source": "miriade",
+                ),
+
+            "ecl_lat_deg":
+                float(lat),
+
+            "source":
+                "miriade",
         }
 
         stats[
@@ -1215,7 +1336,8 @@ def fetch_miriade_range(
     print(
         f"[6M] {body_name}: "
         f"Miriade resolved "
-        f"{len(results)}/{len(ordered)} points"
+        f"{len(results)}/"
+        f"{len(ordered)} points"
     )
 
     return results
@@ -1230,7 +1352,9 @@ def fetch_swiss_point(
     body: Dict[str, Any],
     dt: datetime.datetime,
     stats: Dict[str, Any],
-) -> Optional[Dict[str, Any]]:
+) -> Optional[
+    Dict[str, Any]
+]:
 
     stats[
         "swiss_fallback_requests"
@@ -1247,8 +1371,13 @@ def fetch_swiss_point(
     )
 
     if code is None:
-        code = SWISS_IDS.get(
-            body["name"].lower()
+
+        code = (
+            SWISS_IDS.get(
+                body[
+                    "name"
+                ].lower()
+            )
         )
 
     if code is None:
@@ -1266,6 +1395,7 @@ def fetch_swiss_point(
     )
 
     try:
+
         result = swe.calc_ut(
             jd,
             int(code),
@@ -1277,7 +1407,10 @@ def fetch_swiss_point(
     values = (
         result[0]
         if (
-            isinstance(result, tuple)
+            isinstance(
+                result,
+                tuple,
+            )
             and len(result) == 2
         )
         else result
@@ -1296,17 +1429,26 @@ def fetch_swiss_point(
     lat = values[1]
 
     if (
-        not _is_valid_number(lon)
-        or not _is_valid_number(lat)
+        not _is_valid_number(
+            lon
+        )
+        or not _is_valid_number(
+            lat
+        )
     ):
         return None
 
     return {
-        "ecl_lon_deg": (
-            _normalize_lon(float(lon))
-        ),
-        "ecl_lat_deg": float(lat),
-        "source": "swiss",
+        "ecl_lon_deg":
+            _normalize_lon(
+                float(lon)
+            ),
+
+        "ecl_lat_deg":
+            float(lat),
+
+        "source":
+            "swiss",
     }
 
 
@@ -1320,9 +1462,14 @@ def load_fixed_stars_for_catalog(
     reference_dt: Optional[
         datetime.datetime
     ] = None,
-) -> Dict[str, Dict[str, float]]:
+) -> Dict[
+    str,
+    Dict[str, float],
+]:
 
-    selected = set(names)
+    selected = set(
+        names
+    )
 
     if not selected:
         return {}
@@ -1347,7 +1494,10 @@ def load_fixed_stars_for_catalog(
         "r",
         encoding="utf-8",
     ) as f:
-        payload = json.load(f)
+
+        payload = (
+            json.load(f)
+        )
 
     stars = payload.get(
         "stars",
@@ -1361,25 +1511,37 @@ def load_fixed_stars_for_catalog(
 
     for star in stars:
 
-        star_id = star.get("id")
+        star_id = (
+            star.get("id")
+        )
 
-        if star_id not in selected:
+        if (
+            star_id
+            not in selected
+        ):
             continue
 
         try:
+
             ra = float(
-                star["ra_deg"]
+                star[
+                    "ra_deg"
+                ]
             )
 
             dec = float(
-                star["dec_deg"]
+                star[
+                    "dec_deg"
+                ]
             )
 
             lon, lat = (
                 ra_dec_to_ecl(
                     ra,
                     dec,
-                    _iso_utc(epoch),
+                    _iso_utc(
+                        epoch
+                    ),
                 )
             )
 
@@ -1387,17 +1549,27 @@ def load_fixed_stars_for_catalog(
             continue
 
         if (
-            _is_valid_number(lon)
-            and _is_valid_number(lat)
+            _is_valid_number(
+                lon
+            )
+            and _is_valid_number(
+                lat
+            )
         ):
-            output[star_id] = {
-                "ecl_lon_deg": (
+
+            output[
+                star_id
+            ] = {
+                "ecl_lon_deg":
                     _normalize_lon(
                         float(lon)
-                    )
-                ),
-                "ecl_lat_deg": float(lat),
-                "source": "fixed",
+                    ),
+
+                "ecl_lat_deg":
+                    float(lat),
+
+                "source":
+                    "fixed",
             }
 
     return output
@@ -1416,8 +1588,10 @@ def _lon_from_day(
     name: str,
 ) -> Optional[float]:
 
-    entry = day_transits.get(
-        name
+    entry = (
+        day_transits.get(
+            name
+        )
     )
 
     if not entry:
@@ -1427,10 +1601,14 @@ def _lon_from_day(
         "ecl_lon_deg"
     )
 
-    if not _is_valid_number(lon):
+    if not _is_valid_number(
+        lon
+    ):
         return None
 
-    return float(lon)
+    return float(
+        lon
+    )
 
 
 def add_aether_points(
@@ -1478,7 +1656,11 @@ def add_aether_points(
             or moon is None
         )
         else _normalize_lon(
-            (sun + moon) % 360.0
+            (
+                sun
+                + moon
+            )
+            % 360.0
         )
     )
 
@@ -1489,7 +1671,8 @@ def add_aether_points(
             or saturn is None
         )
         else _normalize_lon(
-            jupiter - saturn
+            jupiter
+            - saturn
         )
     )
 
@@ -1523,20 +1706,31 @@ def add_aether_points(
 
     for name in aether_names:
 
-        value = formulas.get(name)
+        value = (
+            formulas.get(
+                name
+            )
+        )
 
-        day_transits[name] = {
-            "ecl_lon_deg": (
-                None
-                if value is None
-                else float(value)
-            ),
-            "ecl_lat_deg": (
-                None
-                if value is None
-                else 0.0
-            ),
-            "source": "calculated",
+        day_transits[
+            name
+        ] = {
+            "ecl_lon_deg":
+                (
+                    None
+                    if value is None
+                    else float(value)
+                ),
+
+            "ecl_lat_deg":
+                (
+                    None
+                    if value is None
+                    else 0.0
+                ),
+
+            "source":
+                "calculated",
         }
 
 
@@ -1573,18 +1767,29 @@ def resolve_moving_body(
     ],
     stats: Dict[str, Any],
 ) -> Tuple[
-    Dict[str, Dict[str, Any]],
-    List[Dict[str, Any]],
+    Dict[
+        str,
+        Dict[str, Any],
+    ],
+    List[
+        Dict[str, Any]
+    ],
 ]:
-    """Resolve one moving body across the complete 182-day range.
+    """Resolve one body across the complete 182-day range.
 
-    IMPORTANT:
-    Providers execute STRICTLY in the catalog-derived provider-chain order.
+    Mandatory provider priority:
 
-    Each provider only fills dates unresolved by earlier providers.
+        1. JPL Horizons
+        2. Miriade
+        3. Swiss Ephemeris
 
-    Remote providers operate in ranges. Swiss is local and may operate
-    per-date.
+    Unsupported providers are skipped.
+
+    Each subsequent provider receives only dates not resolved by the
+    previous provider.
+
+    JPL and Miriade operate using range requests.
+    Swiss is local and resolves only remaining dates.
     """
 
     date_keys = [
@@ -1593,12 +1798,13 @@ def resolve_moving_body(
     ]
 
     dt_lookup = {
-        _date_key(dt): dt
+        _date_key(dt):
+            dt
         for dt in dt_list
     }
 
-    missing: Set[str] = set(
-        date_keys
+    missing: Set[str] = (
+        set(date_keys)
     )
 
     resolved: Dict[
@@ -1619,7 +1825,11 @@ def resolve_moving_body(
         "unknown",
     )
 
-    # This chain was computed once when the catalog loaded.
+    # Chain is already ordered:
+    #
+    # JPL -> Miriade -> Swiss
+    #
+    # Unsupported providers are absent.
     chain = list(
         body.get(
             "_provider_chain",
@@ -1659,19 +1869,27 @@ def resolve_moving_body(
 
         print(
             f"[6M] WARNING: "
-            f"{body_name} has no valid "
-            "configured provider"
+            f"{body_name} has no "
+            "valid provider"
         )
 
         missing_entries = [
             {
                 "date": key,
-                "body": body_name,
-                "providers_attempted": [],
+                "body":
+                    body_name,
+
+                "providers_attempted":
+                    [],
+
                 "reason":
                     "no_valid_provider_configured",
             }
-            for key in sorted(missing)
+
+            for key
+            in sorted(
+                missing
+            )
         ]
 
         return (
@@ -1679,12 +1897,15 @@ def resolve_moving_body(
             missing_entries,
         )
 
-    chain_labels = " -> ".join(
-        PROVIDER_LABELS.get(
-            provider,
-            provider,
+    chain_labels = (
+        " -> ".join(
+            PROVIDER_LABELS.get(
+                provider,
+                provider,
+            )
+            for provider
+            in chain
         )
-        for provider in chain
     )
 
     print(
@@ -1692,27 +1913,20 @@ def resolve_moving_body(
         f"{chain_labels}"
     )
 
-    # ------------------------------------------------------------------
-    # CRITICAL FIX:
+    # Execute provider chain exactly as built:
     #
-    # Execute providers IN THE ORDER supplied by _provider_chain.
+    # JPL -> Miriade -> Swiss
     #
-    # Old broken logic checked:
-    #
-    #     if "jpl" in chain:
-    #     if "miriade" in chain:
-    #
-    # which forced JPL first even for Miriade-primary bodies.
-    # ------------------------------------------------------------------
+    # Only unresolved dates continue downstream.
 
     for provider in chain:
 
         if not missing:
             break
 
-        # --------------------------------------------------------------
-        # JPL HORIZONS
-        # --------------------------------------------------------------
+        # ===============================================================
+        # JPL HORIZONS — PRIMARY
+        # ===============================================================
 
         if provider == "jpl":
 
@@ -1723,7 +1937,10 @@ def resolve_moving_body(
             )
 
             for key in missing_keys:
-                attempted[key].append(
+
+                attempted[
+                    key
+                ].append(
                     "JPL"
                 )
 
@@ -1732,8 +1949,6 @@ def resolve_moving_body(
                 for key in missing_keys
             ]
 
-            # If an earlier provider filled only part of the range,
-            # avoid asking Horizons for dates already resolved.
             groups = (
                 _group_contiguous_dates(
                     missing_dts
@@ -1746,6 +1961,7 @@ def resolve_moving_body(
                     continue
 
                 try:
+
                     jpl_results = (
                         fetch_horizons_range(
                             body,
@@ -1757,7 +1973,8 @@ def resolve_moving_body(
                 except Exception as exc:
 
                     print(
-                        f"[6M] {body_name}: "
+                        f"[6M] "
+                        f"{body_name}: "
                         f"JPL range failure: "
                         f"{exc}"
                     )
@@ -1767,20 +1984,27 @@ def resolve_moving_body(
                 for (
                     key,
                     point,
-                ) in jpl_results.items():
+                ) in (
+                    jpl_results.items()
+                ):
 
-                    if key not in missing:
+                    if (
+                        key
+                        not in missing
+                    ):
                         continue
 
-                    resolved[key] = point
+                    resolved[
+                        key
+                    ] = point
 
                     missing.discard(
                         key
                     )
 
-        # --------------------------------------------------------------
-        # MIRIADE
-        # --------------------------------------------------------------
+        # ===============================================================
+        # MIRIADE — SECONDARY
+        # ===============================================================
 
         elif provider == "miriade":
 
@@ -1791,13 +2015,17 @@ def resolve_moving_body(
             )
 
             for key in missing_keys:
-                attempted[key].append(
+
+                attempted[
+                    key
+                ].append(
                     "Miriade"
                 )
 
             missing_dts = [
                 dt_lookup[key]
-                for key in missing_keys
+                for key
+                in missing_keys
             ]
 
             groups = (
@@ -1812,6 +2040,7 @@ def resolve_moving_body(
                     continue
 
                 try:
+
                     miriade_results = (
                         fetch_miriade_range(
                             body,
@@ -1823,7 +2052,8 @@ def resolve_moving_body(
                 except Exception as exc:
 
                     print(
-                        f"[6M] {body_name}: "
+                        f"[6M] "
+                        f"{body_name}: "
                         f"Miriade range failure: "
                         f"{exc}"
                     )
@@ -1837,41 +2067,52 @@ def resolve_moving_body(
                     miriade_results.items()
                 ):
 
-                    if key not in missing:
+                    if (
+                        key
+                        not in missing
+                    ):
                         continue
 
-                    resolved[key] = point
+                    resolved[
+                        key
+                    ] = point
 
                     missing.discard(
                         key
                     )
 
-        # --------------------------------------------------------------
-        # SWISS EPHEMERIS
-        # --------------------------------------------------------------
+        # ===============================================================
+        # SWISS EPHEMERIS — FINAL LOCAL FALLBACK
+        # ===============================================================
 
         elif provider == "swiss":
 
-            # Swiss is local; resolving remaining dates individually does
-            # not create remote-network overhead.
             for key in sorted(
-                list(missing)
+                list(
+                    missing
+                )
             ):
 
-                attempted[key].append(
+                attempted[
+                    key
+                ].append(
                     "Swiss"
                 )
 
-                point = fetch_swiss_point(
-                    body,
-                    dt_lookup[key],
-                    stats,
+                point = (
+                    fetch_swiss_point(
+                        body,
+                        dt_lookup[key],
+                        stats,
+                    )
                 )
 
                 if point is None:
                     continue
 
-                resolved[key] = point
+                resolved[
+                    key
+                ] = point
 
                 missing.discard(
                     key
@@ -1879,18 +2120,28 @@ def resolve_moving_body(
 
     missing_entries = [
         {
-            "date": key,
-            "body": body_name,
+            "date":
+                key,
+
+            "body":
+                body_name,
+
             "providers_attempted":
                 attempted[key],
         }
-        for key in sorted(missing)
+
+        for key
+        in sorted(
+            missing
+        )
     ]
 
     print(
-        f"[6M] {body_name}: "
+        f"[6M] "
+        f"{body_name}: "
         f"resolved "
-        f"{len(resolved)}/{len(date_keys)}"
+        f"{len(resolved)}/"
+        f"{len(date_keys)}"
     )
 
     return (
@@ -1916,7 +2167,9 @@ def write_output_atomic(
 
     fd, tmp_name = (
         tempfile.mkstemp(
-            dir=str(path.parent),
+            dir=str(
+                path.parent
+            ),
             suffix=".tmp.json",
         )
     )
@@ -1924,6 +2177,7 @@ def write_output_atomic(
     try:
 
         try:
+
             fh = os.fdopen(
                 fd,
                 "w",
@@ -1931,10 +2185,15 @@ def write_output_atomic(
             )
 
         except Exception:
-            os.close(fd)
+
+            os.close(
+                fd
+            )
+
             raise
 
         with fh:
+
             json.dump(
                 payload,
                 fh,
@@ -1949,6 +2208,7 @@ def write_output_atomic(
     except Exception:
 
         try:
+
             os.unlink(
                 tmp_name
             )
@@ -1973,7 +2233,9 @@ def generate_six_month_feed(
     Dict[str, Any],
 ]:
 
-    started = time.perf_counter()
+    started = (
+        time.perf_counter()
+    )
 
     utc_now = (
         start_dt.astimezone(
@@ -1985,35 +2247,46 @@ def generate_six_month_feed(
         )
     )
 
-    dt_list = _daily_samples(
-        utc_now,
-        SAMPLE_DAYS,
+    dt_list = (
+        _daily_samples(
+            utc_now,
+            SAMPLE_DAYS,
+        )
     )
 
     date_keys = [
         _date_key(dt)
-        for dt in dt_list
+        for dt
+        in dt_list
     ]
 
     (
         moving_bodies,
         fixed_star_names,
         aether_names,
-    ) = load_catalog_targets()
+    ) = (
+        load_catalog_targets()
+    )
 
     fixed_star_positions = (
         load_fixed_stars_for_catalog(
             fixed_star_names,
-            reference_dt=dt_list[0],
+            reference_dt=(
+                dt_list[0]
+            ),
         )
     )
 
     transits: Dict[
         str,
-        Dict[str, Dict[str, Any]],
+        Dict[
+            str,
+            Dict[str, Any],
+        ],
     ] = {
         day: {}
-        for day in date_keys
+        for day
+        in date_keys
     }
 
     total_points = (
@@ -2021,23 +2294,46 @@ def generate_six_month_feed(
         * len(dt_list)
     )
 
-    stats: Dict[str, Any] = {
-        "jpl_range_requests": 0,
-        "jpl_range_failures": 0,
-        "jpl_retries": 0,
-        "jpl_timeouts": 0,
+    stats: Dict[
+        str,
+        Any,
+    ] = {
+        "jpl_range_requests":
+            0,
 
-        "miriade_fallback_requests": 0,
-        "miriade_range_requests": 0,
-        "miriade_points_resolved": 0,
+        "jpl_range_failures":
+            0,
 
-        "swiss_fallback_requests": 0,
+        "jpl_retries":
+            0,
+
+        "jpl_timeouts":
+            0,
+
+        "miriade_fallback_requests":
+            0,
+
+        "miriade_range_requests":
+            0,
+
+        "miriade_points_resolved":
+            0,
+
+        "swiss_fallback_requests":
+            0,
 
         "provider_route_counts": {
-            "jpl_primary": 0,
-            "miriade_primary": 0,
-            "swiss_primary": 0,
-            "no_valid_provider": 0,
+            "jpl_primary":
+                0,
+
+            "miriade_primary":
+                0,
+
+            "swiss_primary":
+                0,
+
+            "no_valid_provider":
+                0,
         },
     }
 
@@ -2052,16 +2348,20 @@ def generate_six_month_feed(
         (
             body_points,
             body_missing,
-        ) = resolve_moving_body(
-            body,
-            dt_list,
-            stats,
+        ) = (
+            resolve_moving_body(
+                body,
+                dt_list,
+                stats,
+            )
         )
 
         for day in date_keys:
 
-            point = body_points.get(
-                day
+            point = (
+                body_points.get(
+                    day
+                )
             )
 
             if point is None:
@@ -2079,8 +2379,8 @@ def generate_six_month_feed(
             body_missing
         )
 
-    # Fixed stars and Aether points are deliberately added AFTER moving-body
-    # resolution so they never alter moving-body coverage calculations.
+    # Fixed stars and Aether points are added after moving-body resolution.
+    # They do not affect moving-body coverage.
     for day in date_keys:
 
         day_transits = (
@@ -2096,7 +2396,9 @@ def generate_six_month_feed(
 
             day_transits[
                 star_name
-            ] = dict(star_data)
+            ] = dict(
+                star_data
+            )
 
         add_aether_points(
             day_transits,
@@ -2115,10 +2417,18 @@ def generate_six_month_feed(
         else 0.0
     )
 
-    start_range = dt_list[0]
-    end_range = dt_list[-1]
+    start_range = (
+        dt_list[0]
+    )
 
-    data: Dict[str, Any] = {
+    end_range = (
+        dt_list[-1]
+    )
+
+    data: Dict[
+        str,
+        Any,
+    ] = {
         "engine_version":
             "ZodiacOracle.SixMonthTransit.v2",
 
@@ -2143,11 +2453,12 @@ def generate_six_month_feed(
                 end_range.isoformat(),
             ],
 
-            "range": (
-                f"{start_range.strftime('%Y-%m-%d')} "
-                f"to "
-                f"{end_range.strftime('%Y-%m-%d')}"
-            ),
+            "range":
+                (
+                    f"{start_range.strftime('%Y-%m-%d')} "
+                    f"to "
+                    f"{end_range.strftime('%Y-%m-%d')}"
+                ),
 
             "source_order": [
                 "jpl",
@@ -2174,7 +2485,9 @@ def generate_six_month_feed(
             missing,
 
         "moving_body_count":
-            len(moving_bodies),
+            len(
+                moving_bodies
+            ),
 
         "runtime": {
             "duration_seconds":
@@ -2226,7 +2539,9 @@ def generate_six_month_feed(
                 ],
 
             "missing_points":
-                len(missing),
+                len(
+                    missing
+                ),
 
             "resolved_points":
                 resolved_points,
@@ -2250,9 +2565,11 @@ def main() -> None:
         generate_six_month_feed()
     )
 
-    pacific = datetime.datetime.now(
-        pytz.timezone(
-            "America/Los_Angeles"
+    pacific = (
+        datetime.datetime.now(
+            pytz.timezone(
+                "America/Los_Angeles"
+            )
         )
     )
 
