@@ -216,6 +216,32 @@ def _parse_row_date(
     return fallback_dt.date()
 
 
+def _parse_miriade_row_date(row: Dict[str, Any], fallback_dt: Optional[datetime.datetime]) -> Optional[datetime.date]:
+    raw = row.get("datetime_str") or row.get("date") or row.get("epoch")
+    if raw is not None:
+        try:
+            parsed = date_parser.parse(str(raw).strip())
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=datetime.timezone.utc)
+            return parsed.astimezone(datetime.timezone.utc).date()
+        except Exception:
+            pass
+    if row.get("datetime_jd") is not None:
+        try:
+            jd = float(row["datetime_jd"])
+            year, month, day, ut = swe.revjul(jd, swe.GREG_CAL)
+            hour = int(ut)
+            minute = int((ut - hour) * 60)
+            second = int(round((((ut - hour) * 60) - minute) * 60))
+            parsed = datetime.datetime(year, month, day, hour, minute, second, tzinfo=datetime.timezone.utc)
+            return parsed.date()
+        except Exception:
+            pass
+    if fallback_dt is None:
+        return None
+    return fallback_dt.date()
+
+
 def _call_with_retries(fn, attempts: int = RETRY_ATTEMPTS):
     last_exc = None
     for idx in range(attempts):
@@ -297,17 +323,54 @@ def _miriade_name(body: Dict[str, Any]) -> str:
     return f"a:{body['name']}"
 
 
-def fetch_miriade_point(body: Dict[str, Any], dt: datetime.datetime, stats: Dict[str, int]) -> Optional[Dict[str, Any]]:
-    stats["miriade_fallback_requests"] += 1
+def _group_contiguous_dates(sorted_dts: Sequence[datetime.datetime]) -> List[List[datetime.datetime]]:
+    """Group a sorted sequence of datetimes into contiguous daily runs."""
+    groups: List[List[datetime.datetime]] = []
+    current: List[datetime.datetime] = []
+    prev_date: Optional[datetime.date] = None
+
+    for dt in sorted_dts:
+        if prev_date is not None and (dt.date() - prev_date).days == 1:
+            current.append(dt)
+        else:
+            if current:
+                groups.append(current)
+            current = [dt]
+        prev_date = dt.date()
+
+    if current:
+        groups.append(current)
+
+    return groups
+
+
+def fetch_miriade_range(
+    body: Dict[str, Any],
+    missing_dates: Sequence[datetime.datetime],
+    stats: Dict[str, int],
+) -> Dict[str, Dict[str, Any]]:
+    """Fetch a contiguous run of dates from Miriade in ONE HTTP request.
+
+    Uses Miriade ephemcc's native multi-epoch support (-ep start, -nbd count,
+    -step 1d) instead of issuing one request per missing date.
+    """
+    if not missing_dates:
+        return {}
+
+    ordered = sorted(missing_dates)
+    start_dt = ordered[0]
+    nbd = len(ordered)
+
     params = {
         "-name": _miriade_name(body),
-        "-ep": _iso_utc(dt),
+        "-ep": _iso_utc(start_dt),
         "-observer": "500",
         "-theory": "DE431",
         "-teph": "1",
         "-tcoor": "1",
         "-rplane": "2",
-        "-nbd": "1",
+        "-nbd": str(nbd),
+        "-step": "1d",
         "-mime": "json",
     }
 
@@ -319,32 +382,50 @@ def fetch_miriade_point(body: Dict[str, Any], dt: datetime.datetime, stats: Dict
             payload = json.loads(payload)
         return payload
 
+    stats["miriade_range_requests"] = stats.get("miriade_range_requests", 0) + 1
+    stats["miriade_fallback_requests"] = stats.get("miriade_fallback_requests", 0) + 1
+
     try:
         payload = _call_with_retries(_request_json)
     except Exception:
-        return None
+        return {}
 
     rows = payload.get("data", [])
     if not rows:
-        return None
-    row = {k.lower(): v for k, v in rows[0].items()}
+        return {}
 
-    lon = row.get("elon") or row.get("ecllon")
-    lat = row.get("elat") or row.get("ecllat")
-    if (lon is None or lat is None) and row.get("ra") is not None and row.get("dec") is not None:
-        try:
-            lon, lat = ra_dec_to_ecl(float(row["ra"]), float(row["dec"]), _iso_utc(dt))
-        except Exception:
-            return None
+    results: Dict[str, Dict[str, Any]] = {}
 
-    if not _is_valid_number(lon) or not _is_valid_number(lat):
-        return None
+    for idx, raw_row in enumerate(rows):
+        if idx >= len(ordered):
+            break
+        row = {k.lower(): v for k, v in raw_row.items()}
+        fallback_dt = ordered[idx]
 
-    return {
-        "ecl_lon_deg": _normalize_lon(float(lon)),
-        "ecl_lat_deg": float(lat),
-        "source": "miriade",
-    }
+        row_date = _parse_miriade_row_date(row, fallback_dt)
+        if row_date is None:
+            continue
+
+        lon = row.get("elon") or row.get("ecllon")
+        lat = row.get("elat") or row.get("ecllat")
+        if (lon is None or lat is None) and row.get("ra") is not None and row.get("dec") is not None:
+            try:
+                lon, lat = ra_dec_to_ecl(float(row["ra"]), float(row["dec"]), _iso_utc(fallback_dt))
+            except Exception:
+                continue
+
+        if not _is_valid_number(lon) or not _is_valid_number(lat):
+            continue
+
+        key = row_date.strftime("%Y-%m-%d")
+        results[key] = {
+            "ecl_lon_deg": _normalize_lon(float(lon)),
+            "ecl_lat_deg": float(lat),
+            "source": "miriade",
+        }
+        stats["miriade_points_resolved"] = stats.get("miriade_points_resolved", 0) + 1
+
+    return results
 
 
 def fetch_swiss_point(body: Dict[str, Any], dt: datetime.datetime, stats: Dict[str, int]) -> Optional[Dict[str, Any]]:
@@ -473,12 +554,19 @@ def resolve_moving_body(
     dt_lookup = {_date_key(dt): dt for dt in dt_list}
 
     if "miriade" in chain and missing:
-        for key in list(sorted(missing)):
+        sorted_keys = sorted(missing, key=lambda k: dt_lookup[k])
+        for key in sorted_keys:
             attempted[key].append("Miriade")
-            point = fetch_miriade_point(body, dt_lookup[key], stats)
-            if point is not None:
-                resolved[key] = point
-                missing.discard(key)
+
+        missing_dts = [dt_lookup[k] for k in sorted_keys]
+        contiguous_groups = _group_contiguous_dates(missing_dts)
+
+        for group in contiguous_groups:
+            group_results = fetch_miriade_range(body, group, stats)
+            for key, point in group_results.items():
+                if key in missing:
+                    resolved[key] = point
+                    missing.discard(key)
 
     if "swiss" in chain and missing:
         for key in list(sorted(missing)):
@@ -535,6 +623,8 @@ def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tup
     stats: Dict[str, int] = {
         "jpl_range_requests": 0,
         "miriade_fallback_requests": 0,
+        "miriade_range_requests": 0,
+        "miriade_points_resolved": 0,
         "swiss_fallback_requests": 0,
     }
 
@@ -580,6 +670,8 @@ def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tup
             "duration_seconds": duration,
             "jpl_range_requests": stats["jpl_range_requests"],
             "miriade_fallback_requests": stats["miriade_fallback_requests"],
+            "miriade_range_requests": stats["miriade_range_requests"],
+            "miriade_points_resolved": stats["miriade_points_resolved"],
             "swiss_fallback_requests": stats["swiss_fallback_requests"],
             "missing_points": len(missing),
             "resolved_points": resolved_points,
@@ -606,6 +698,8 @@ def main() -> None:
     print(f"   coverage                  : {data['coverage']:.6f}")
     print(f"   missing points            : {len(data['missing'])}")
     print(f"   jpl range requests        : {data['runtime']['jpl_range_requests']}")
+    print(f"   miriade range requests    : {data['runtime']['miriade_range_requests']}")
+    print(f"   miriade points resolved   : {data['runtime']['miriade_points_resolved']}")
     print(f"   miriade fallback requests : {data['runtime']['miriade_fallback_requests']}")
     print(f"   swiss fallback requests   : {data['runtime']['swiss_fallback_requests']}")
     print(f"   duration_seconds          : {data['runtime']['duration_seconds']:.2f}")
