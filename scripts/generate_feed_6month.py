@@ -49,6 +49,12 @@ RETRY_BACKOFF_SECONDS = 1.5
 JPL_RETRY_ATTEMPTS = 2
 JPL_RETRY_BACKOFF_SECONDS = 2.0
 
+PROVIDER_LABELS = {
+    "jpl": "JPL",
+    "miriade": "Miriade",
+    "swiss": "Swiss",
+}
+
 SWISS_IDS = {
     "sun": swe.SUN,
     "moon": swe.MOON,
@@ -131,15 +137,69 @@ def _normalize_horizons_id(body: Dict[str, Any]) -> Optional[str]:
     return text
 
 
+def _has_valid_jpl_mapping(body: Dict[str, Any]) -> bool:
+    """A body is JPL-capable only if it carries an actual Horizons identifier.
+
+    This is a real capability check (not a guess): it inspects the
+    repository's own catalog field (`horizons_id`) rather than assuming
+    every body supports JPL just because "jpl"/"horizons" appears in its
+    provider_priority list.
+    """
+    raw = body.get("horizons_id")
+    if raw is None:
+        return False
+    return bool(str(raw).strip())
+
+
+def _has_valid_miriade_mapping(body: Dict[str, Any]) -> bool:
+    """A body is Miriade-capable only if it has a usable Miriade identifier.
+
+    Falls back to the generic "a:<Name>" convention used elsewhere in this
+    repository (see _miriade_name / scripts/fetch_ephemeris.py) when no
+    explicit miriade_name is present, since that convention is an actual,
+    already-used repository mapping rather than a guess.
+    """
+    explicit = body.get("miriade_name")
+    if explicit and str(explicit).strip():
+        return True
+    return bool(body.get("name"))
+
+
+def _has_valid_swiss_mapping(body: Dict[str, Any]) -> bool:
+    """A body is Swiss-capable only if it maps to an actual Swiss Ephemeris
+    planet/body code, either explicitly via `swiss_code` in the catalog or
+    via the repository's existing SWISS_IDS name lookup table.
+    """
+    code = body.get("swiss_code")
+    if code is not None:
+        return True
+    name = body.get("name")
+    if not name:
+        return False
+    return SWISS_IDS.get(str(name).lower()) is not None
+
+
 def _provider_chain(body: Dict[str, Any]) -> List[str]:
+    """Build the effective provider chain for a body from actual repository
+    capability mappings (horizons_id, miriade_name, swiss_code/SWISS_IDS),
+    preserving the catalog's intended priority order and never including a
+    provider the body cannot actually be resolved through.
+    """
     providers = body.get("provider_priority") or ["horizons", "miriade", "swiss"]
-    normalized = []
+    capability_checks = {
+        "jpl": _has_valid_jpl_mapping,
+        "miriade": _has_valid_miriade_mapping,
+        "swiss": _has_valid_swiss_mapping,
+    }
+
+    normalized: List[str] = []
     for p in providers:
         mapped = _normalize_provider(str(p))
-        if mapped in {"jpl", "miriade", "swiss"} and mapped not in normalized:
+        if mapped not in capability_checks or mapped in normalized:
+            continue
+        if capability_checks[mapped](body):
             normalized.append(mapped)
-    if not normalized:
-        normalized = ["jpl", "miriade", "swiss"]
+
     return normalized
 
 
@@ -164,6 +224,9 @@ def load_catalog_targets(path: Path = CATALOG_PATH) -> Tuple[List[Dict[str, Any]
                 continue
             if not _is_moving_entry(category, entry):
                 continue
+            # Provider chain is computed ONCE per body here, at catalog load
+            # time — never rediscovered per date during the 182-day range
+            # resolution.
             entry["_provider_chain"] = _provider_chain(entry)
             entry["_horizons_id"] = _normalize_horizons_id(entry)
             moving.append(entry)
@@ -568,6 +631,20 @@ def add_aether_points(day_transits: Dict[str, Dict[str, Any]], aether_names: Seq
         }
 
 
+def _classify_provider_route(chain: Sequence[str]) -> str:
+    """Classify a body's provider chain for aggregate routing statistics."""
+    if not chain:
+        return "no_valid_provider"
+    primary = chain[0]
+    if primary == "jpl":
+        return "jpl_primary"
+    if primary == "miriade":
+        return "miriade_primary"
+    if primary == "swiss":
+        return "swiss_primary"
+    return "no_valid_provider"
+
+
 def resolve_moving_body(
     body: Dict[str, Any],
     dt_list: Sequence[datetime.datetime],
@@ -578,7 +655,36 @@ def resolve_moving_body(
     resolved: Dict[str, Dict[str, Any]] = {}
     attempted: Dict[str, List[str]] = {k: [] for k in date_keys}
 
-    chain = list(body.get("_provider_chain", ["jpl", "miriade", "swiss"]))
+    body_name = body.get("name", "unknown")
+    # Provider chain was already computed ONCE per body in
+    # load_catalog_targets(); it is only read here, never recalculated
+    # per-date.
+    chain = list(body.get("_provider_chain", []))
+
+    route = _classify_provider_route(chain)
+    stats["provider_route_counts"] = stats.get("provider_route_counts") or {
+        "jpl_primary": 0,
+        "miriade_primary": 0,
+        "swiss_primary": 0,
+        "no_valid_provider": 0,
+    }
+    stats["provider_route_counts"][route] = stats["provider_route_counts"].get(route, 0) + 1
+
+    if not chain:
+        print(f"[6M] WARNING: {body_name} has no valid configured provider; skipping all network requests")
+        missing_entries = [
+            {
+                "date": key,
+                "body": body_name,
+                "providers_attempted": [],
+                "reason": "no_valid_provider_configured",
+            }
+            for key in sorted(missing)
+        ]
+        return resolved, missing_entries
+
+    chain_labels = " -> ".join(PROVIDER_LABELS.get(p, p) for p in chain)
+    print(f"[6M] {body_name} providers: {chain_labels}")
 
     if "jpl" in chain:
         for key in date_keys:
@@ -620,7 +726,7 @@ def resolve_moving_body(
     missing_entries = [
         {
             "date": key,
-            "body": body["name"],
+            "body": body_name,
             "providers_attempted": attempted[key],
         }
         for key in sorted(missing)
@@ -661,7 +767,7 @@ def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tup
     transits = {day: {} for day in date_keys}
     total_points = len(moving_bodies) * len(dt_list)
 
-    stats: Dict[str, int] = {
+    stats: Dict[str, Any] = {
         "jpl_range_requests": 0,
         "jpl_range_failures": 0,
         "jpl_retries": 0,
@@ -670,6 +776,12 @@ def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tup
         "miriade_range_requests": 0,
         "miriade_points_resolved": 0,
         "swiss_fallback_requests": 0,
+        "provider_route_counts": {
+            "jpl_primary": 0,
+            "miriade_primary": 0,
+            "swiss_primary": 0,
+            "no_valid_provider": 0,
+        },
     }
 
     missing: List[Dict[str, Any]] = []
@@ -720,6 +832,7 @@ def generate_six_month_feed(start_dt: Optional[datetime.datetime] = None) -> Tup
             "miriade_range_requests": stats["miriade_range_requests"],
             "miriade_points_resolved": stats["miriade_points_resolved"],
             "swiss_fallback_requests": stats["swiss_fallback_requests"],
+            "provider_route_counts": stats["provider_route_counts"],
             "missing_points": len(missing),
             "resolved_points": resolved_points,
         },
@@ -752,6 +865,7 @@ def main() -> None:
     print(f"   miriade points resolved   : {data['runtime']['miriade_points_resolved']}")
     print(f"   miriade fallback requests : {data['runtime']['miriade_fallback_requests']}")
     print(f"   swiss fallback requests   : {data['runtime']['swiss_fallback_requests']}")
+    print(f"   provider route counts     : {data['runtime']['provider_route_counts']}")
     print(f"   duration_seconds          : {data['runtime']['duration_seconds']:.2f}")
     print(f"   output                    : {outpath}")
 
