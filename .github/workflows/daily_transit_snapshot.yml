@@ -5,29 +5,232 @@ on:
     - cron: "0 10 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-transit-snapshot
+  cancel-in-progress: false
+
 jobs:
   run-transit-generator:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install -r requirements.txt
 
-      - name: Run generator
-        run: python generate_transits.py
-
-      - name: Commit dataset
+      - name: Validate Python source
         run: |
+          python -m py_compile \
+            generate_transits.py \
+            scripts/generate_transits.py \
+            scripts/fetch_ephemeris.py \
+            scripts/calculate_aspects.py
+
+      - name: Run daily transit generator
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python generate_transits.py
+
+      - name: Validate generated daily feed
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+          from datetime import datetime, timezone
+
+          docs = Path("docs")
+
+          pacific_now = datetime.now(
+              timezone.utc
+          ).astimezone(
+              ZoneInfo("America/Los_Angeles")
+          )
+
+          expected_name = (
+              "feed_overlay_"
+              + pacific_now.strftime("%Y_%m_%d")
+              + ".json"
+          )
+
+          output = docs / expected_name
+
+          if not output.exists():
+              raise SystemExit(
+                  f"Expected daily feed was not generated: {output}"
+              )
+
+          with output.open(
+              "r",
+              encoding="utf-8",
+          ) as f:
+              payload = json.load(f)
+
+          required_top_level = {
+              "engine_version",
+              "generated_at_utc",
+              "generated_at_pacific",
+              "type",
+              "coverage",
+              "resolved_targets",
+              "total_targets",
+              "missing",
+              "unresolved",
+              "population",
+              "provider_runtime",
+              "transit_positions",
+              "calculated_harmonics",
+              "aether_points",
+              "fixed_star_positions",
+              "fixed_star_conjunctions",
+          }
+
+          missing_keys = (
+              required_top_level
+              - set(payload.keys())
+          )
+
+          if missing_keys:
+              raise SystemExit(
+                  "Generated daily feed is missing required keys: "
+                  + ", ".join(sorted(missing_keys))
+              )
+
+          positions = payload.get(
+              "transit_positions",
+              {},
+          )
+
+          if not isinstance(
+              positions,
+              dict,
+          ):
+              raise SystemExit(
+                  "transit_positions is not a JSON object"
+              )
+
+          population = payload.get(
+              "population",
+              {},
+          )
+
+          expected_total = (
+              int(
+                  population.get(
+                      "moving_body_count",
+                      0,
+                  )
+              )
+              + int(
+                  population.get(
+                      "fixed_star_count",
+                      0,
+                  )
+              )
+              + int(
+                  population.get(
+                      "aether_point_count",
+                      0,
+                  )
+              )
+          )
+
+          reported_total = int(
+              payload.get(
+                  "total_targets",
+                  0,
+              )
+          )
+
+          if (
+              expected_total
+              != reported_total
+          ):
+              raise SystemExit(
+                  "Population count mismatch: "
+                  f"population={expected_total}, "
+                  f"total_targets={reported_total}"
+              )
+
+          unresolved = payload.get(
+              "unresolved",
+              [],
+          )
+
+          missing = payload.get(
+              "missing",
+              [],
+          )
+
+          print(
+              "[OK] Daily feed validated:"
+          )
+
+          print(
+              f"     file={output}"
+          )
+
+          print(
+              f"     coverage={payload.get('coverage')}"
+          )
+
+          print(
+              f"     resolved="
+              f"{payload.get('resolved_targets')}/"
+              f"{payload.get('total_targets')}"
+          )
+
+          print(
+              f"     missing={missing}"
+          )
+
+          print(
+              f"     unresolved={unresolved}"
+          )
+
+          print(
+              "     provider_counts="
+              f"{payload.get('provider_runtime', {}).get('source_counts', {})}"
+          )
+          PY
+
+      - name: Commit daily dataset
+        run: |
+          DATE_TAG=$(TZ=America/Los_Angeles date +'%Y_%m_%d')
+          DAILY_FILE="docs/feed_overlay_${DATE_TAG}.json"
+
+          if [ ! -f "$DAILY_FILE" ]; then
+            echo "Expected daily file not found: $DAILY_FILE"
+            exit 1
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          git commit -m "Generate daily transit snapshot" || echo "No changes"
-          git push
+
+          git add "$DAILY_FILE"
+
+          if git diff --cached --quiet; then
+            echo "No daily transit changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Generate daily transit snapshot ${DATE_TAG}"
+
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
