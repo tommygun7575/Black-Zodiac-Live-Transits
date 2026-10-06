@@ -58,3 +58,22 @@ f1d6a4a fix: schema validator integer type; regenerate daily 2026_10_06
 5934e3c feat: expand celestial stack (nodes, stars, derived layers)
 6356afa docs: Phase 1 celestial stack upgrade audit
 ```
+
+## Push / CI note
+
+- Core stack, feeds, schemas, tests, and docs are on **origin/main**.
+- Upgraded GitHub Actions YAMLs are mirrored at `docs/ci_workflows/` because the available OAuth token lacks `workflow` scope to update `.github/workflows/*.yml`.
+- To activate CI gates: copy `docs/ci_workflows/*.yml` → `.github/workflows/` and push with a token that has the `workflow` scope.
+
+## Key commits on main
+
+```
+17134cf chore: ship CI workflow mirrors in docs/; defer .github push
+5b057a4 ci: restore upgraded validate→test→generate workflows
+7260f41 chore: keep CI workflow updates local until workflow-scoped token available
+d222740 feat: provenance + schema/config validators; regenerate daily
+155dd09 docs+data: coverage/acceptance reports and 6-month feed
+f1d6a4a fix: schema validator integer type; regenerate daily 2026_10_06
+5934e3c feat: expand celestial stack (nodes, stars, derived layers)
+6356afa docs: Phase 1 celestial stack upgrade audit
+```
