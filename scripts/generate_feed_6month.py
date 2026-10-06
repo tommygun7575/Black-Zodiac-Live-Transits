@@ -2461,6 +2461,18 @@ def generate_six_month_feed(
         "engine_version":
             "ZodiacOracle.SixMonthTransit.v3",
 
+        "provenance": {
+            "catalog_path": "config/celestial_catalog.json",
+            "provider_order": ["horizons", "miriade", "swiss", "fixed_star_catalog", "calculated"],
+            "aether_formulas": [
+                "Aetheric_SunMoon_Midpoint",
+                "Aetheric_Jovian_Arc",
+                "Aetheric_Elemental_Balance",
+            ],
+            "no_fabricated_positions": True,
+            "houses_policy": "user_specific_downstream",
+        },
+
         "meta": {
             "generated_at_utc":
                 datetime.datetime.now(

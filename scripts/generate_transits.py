@@ -48,6 +48,28 @@ SOURCE_ORDER = [
 ]
 
 
+VERIFIED_AETHER_FORMULAS = [
+    "Aetheric_SunMoon_Midpoint",
+    "Aetheric_Jovian_Arc",
+    "Aetheric_Elemental_Balance",
+]
+
+PROVENANCE_TEMPLATE = {
+    "catalog_path": "config/celestial_catalog.json",
+    "provider_order": list(SOURCE_ORDER),
+    "aether_formulas": list(VERIFIED_AETHER_FORMULAS),
+    "no_fabricated_positions": True,
+    "houses_policy": "user_specific_downstream",
+    "notes": (
+        "Geocentric public feed. Houses/ASC/MC and Arabic parts "
+        "require observer lat/lon and are computed downstream. "
+        "Stations/aspect motion require longitude_speed deg/day; "
+        "Horizons vel_obs is never treated as lambda-dot. "
+        "Unresolved targets stay listed; coordinates are never invented."
+    ),
+}
+
+
 # ---------------------------------------------------------------------------
 # BASIC HELPERS
 # ---------------------------------------------------------------------------
@@ -852,6 +874,10 @@ def main() -> Path:
             derived[
                 "arabic_parts"
             ],
+
+        "provenance": {
+            **PROVENANCE_TEMPLATE,
+        },
     }
 
     output = _sanitize_nans(

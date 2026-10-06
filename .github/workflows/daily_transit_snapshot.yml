@@ -33,7 +33,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Validate Python source
+      - name: Validate config
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           python -m py_compile \
             generate_transits.py \
@@ -41,7 +43,10 @@ jobs:
             scripts/fetch_ephemeris.py \
             scripts/calculate_aspects.py \
             scripts/utils/celestial_math.py \
-            scripts/utils/coords.py
+            scripts/utils/coords.py \
+            scripts/validate_config.py \
+            scripts/validate_output_schema.py
+          python scripts/validate_config.py
 
       - name: Run unit tests
         env:
@@ -61,7 +66,8 @@ jobs:
         run: |
           DATE_TAG=$(TZ=America/Los_Angeles date +'%Y_%m_%d')
           DAILY_FILE="docs/feed_overlay_${DATE_TAG}.json"
-          python scripts/validate_output_schema.py "$DAILY_FILE"
+          python scripts/validate_output_schema.py "$DAILY_FILE" \
+            --schema schemas/daily_overlay.schema.json
 
       - name: Validate generated daily feed coverage
         run: |
@@ -95,6 +101,7 @@ jobs:
               "unresolved",
               "population",
               "provider_runtime",
+              "provenance",
               "transit_positions",
               "calculated_harmonics",
               "aether_points",
@@ -116,6 +123,18 @@ jobs:
                   + ", ".join(sorted(missing_keys))
               )
 
+          provenance = payload.get("provenance") or {}
+          if provenance.get("no_fabricated_positions") is not True:
+              raise SystemExit("provenance.no_fabricated_positions must be true")
+          formulas = provenance.get("aether_formulas") or []
+          expected_aether = [
+              "Aetheric_SunMoon_Midpoint",
+              "Aetheric_Jovian_Arc",
+              "Aetheric_Elemental_Balance",
+          ]
+          if list(formulas) != expected_aether:
+              raise SystemExit(f"provenance.aether_formulas mismatch: {formulas}")
+
           positions = payload.get("transit_positions", {})
           if not isinstance(positions, dict):
               raise SystemExit("transit_positions is not a JSON object")
@@ -125,19 +144,26 @@ jobs:
                   raise SystemExit(f"Missing required body: {required_body}")
 
           aether = payload.get("aether_points") or {}
-          for name in (
-              "Aetheric_SunMoon_Midpoint",
-              "Aetheric_Jovian_Arc",
-              "Aetheric_Elemental_Balance",
-          ):
+          for name in expected_aether:
               if name not in aether:
                   raise SystemExit(f"Missing aether point: {name}")
+          if set(aether.keys()) != set(expected_aether):
+              raise SystemExit(f"Unexpected aether keys: {sorted(aether.keys())}")
 
           if payload.get("houses_and_angles", {}).get("status") != "user_specific_downstream":
               raise SystemExit("houses_and_angles must document user-specific downstream policy")
 
           if payload.get("arabic_parts", {}).get("status") != "unavailable":
               raise SystemExit("arabic_parts must be unavailable without observer location")
+
+          if not isinstance(payload.get("unresolved"), list):
+              raise SystemExit("unresolved must be a list")
+          if not isinstance(payload.get("midpoints"), list):
+              raise SystemExit("midpoints must be a list")
+          if not isinstance(payload.get("declination_aspects"), list):
+              raise SystemExit("declination_aspects must be a list")
+          if not isinstance(payload.get("geometric_patterns"), list):
+              raise SystemExit("geometric_patterns must be a list")
 
           population = payload.get("population", {})
           expected_total = (

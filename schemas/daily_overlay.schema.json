@@ -1,6 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://black-zodiac.local/schemas/daily_overlay.schema.json",
   "title": "Daily Overlay",
+  "description": "Geocentric daily transit feed. No fabricated positions. Houses/ASC/Arabic parts are user-specific downstream without observer lat/lon.",
   "type": "object",
   "required": [
     "engine_version",
@@ -14,6 +16,7 @@
     "unresolved",
     "population",
     "provider_runtime",
+    "provenance",
     "transit_positions",
     "calculated_harmonics",
     "aether_points",
@@ -29,44 +32,101 @@
     "arabic_parts"
   ],
   "properties": {
-    "engine_version": {"type": "string"},
-    "generated_at_utc": {"type": "string"},
-    "generated_at_pacific": {"type": "string"},
+    "engine_version": {"type": "string", "minLength": 1},
+    "generated_at_utc": {"type": "string", "minLength": 1},
+    "generated_at_pacific": {"type": "string", "minLength": 1},
     "type": {"type": "string"},
-    "coverage": {"type": "number"},
-    "resolved_targets": {"type": "integer"},
-    "total_targets": {"type": "integer"},
-    "missing": {"type": "array"},
-    "unresolved": {"type": "array"},
-    "population": {"type": "object"},
-    "provider_runtime": {"type": "object"},
+    "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "resolved_targets": {"type": "integer", "minimum": 0},
+    "total_targets": {"type": "integer", "minimum": 0},
+    "missing": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Catalog targets absent from the resolved payload."
+    },
+    "unresolved": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Catalog targets present but not resolved to finite lon/lat. Never backfilled with invented coordinates."
+    },
+    "population": {
+      "type": "object",
+      "required": [
+        "moving_body_count",
+        "moving_body_resolved",
+        "fixed_star_count",
+        "fixed_star_resolved",
+        "aether_point_count",
+        "aether_point_resolved"
+      ],
+      "properties": {
+        "moving_body_count": {"type": "integer"},
+        "moving_body_resolved": {"type": "integer"},
+        "fixed_star_count": {"type": "integer"},
+        "fixed_star_resolved": {"type": "integer"},
+        "aether_point_count": {"type": "integer", "const": 3},
+        "aether_point_resolved": {"type": "integer"}
+      }
+    },
+    "provider_runtime": {
+      "type": "object",
+      "required": ["source_order", "source_counts"],
+      "properties": {
+        "source_order": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Canonical order: horizons → miriade → swiss → fixed_star_catalog → calculated"
+        },
+        "source_counts": {"type": "object"},
+        "bodies_with_provider_errors": {"type": "integer"},
+        "provider_errors": {"type": "object"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "catalog_path",
+        "provider_order",
+        "aether_formulas",
+        "no_fabricated_positions",
+        "houses_policy"
+      ],
+      "properties": {
+        "catalog_path": {"type": "string"},
+        "provider_order": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "aether_formulas": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"type": "string"}
+        },
+        "no_fabricated_positions": {"type": "boolean"},
+        "houses_policy": {"type": "string"},
+        "notes": {"type": "string"}
+      }
+    },
     "transit_positions": {
       "type": "object",
       "additionalProperties": {
-        "type": "object",
-        "required": ["longitude", "latitude", "source", "timestamp"],
-        "properties": {
-          "longitude": {"type": ["number", "null"]},
-          "latitude": {"type": ["number", "null"]},
-          "distance": {"type": ["number", "null"]},
-          "velocity": {"type": ["number", "null"]},
-          "longitude_speed": {"type": ["number", "null"]},
-          "declination": {"type": ["number", "null"]},
-          "right_ascension": {"type": ["number", "null"]},
-          "retrograde": {"type": ["boolean", "null"]},
-          "station": {"type": ["boolean", "null"]},
-          "motion_status": {"type": ["string", "null"]},
-          "timestamp": {"type": "string"},
-          "source": {"type": "string"},
-          "category": {"type": "string"}
-        }
+        "$ref": "#/$defs/position"
       }
     },
     "calculated_harmonics": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["body_a", "body_b", "harmonic", "exact_angle", "separation", "orb", "motion"],
+        "required": [
+          "body_a",
+          "body_b",
+          "harmonic",
+          "exact_angle",
+          "separation",
+          "orb",
+          "motion"
+        ],
         "properties": {
           "body_a": {"type": "string"},
           "body_b": {"type": "string"},
@@ -74,20 +134,102 @@
           "exact_angle": {"type": "number"},
           "separation": {"type": "number"},
           "orb": {"type": "number"},
-          "motion": {"type": "string"},
+          "motion": {
+            "type": "string",
+            "description": "applying | exact | separating | unresolved"
+          },
           "motion_reason": {"type": ["string", "null"]}
         }
       }
     },
-    "aether_points": {"type": "object"},
-    "fixed_star_positions": {"type": "object"},
+    "aether_points": {
+      "type": "object",
+      "description": "Exactly the three verified Oracle formulas; no Vulcan/Hades expansions.",
+      "required": [
+        "Aetheric_SunMoon_Midpoint",
+        "Aetheric_Jovian_Arc",
+        "Aetheric_Elemental_Balance"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "Aetheric_SunMoon_Midpoint": {"$ref": "#/$defs/position"},
+        "Aetheric_Jovian_Arc": {"$ref": "#/$defs/position"},
+        "Aetheric_Elemental_Balance": {"$ref": "#/$defs/position"}
+      }
+    },
+    "fixed_star_positions": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/position"}
+    },
     "fixed_star_conjunctions": {"type": "array"},
-    "lunar_nodes": {"type": "object"},
+    "lunar_nodes": {
+      "type": "object",
+      "properties": {
+        "True_Node": {"$ref": "#/$defs/position"},
+        "Mean_Node": {"$ref": "#/$defs/position"},
+        "South_Node": {"$ref": "#/$defs/position"}
+      }
+    },
     "lunar_geometry": {"type": "object"},
-    "stations": {"type": "object"},
-    "declination_aspects": {"type": "array"},
-    "midpoints": {"type": "array"},
-    "geometric_patterns": {"type": "array"},
+    "stations": {
+      "type": "object",
+      "properties": {
+        "items": {"type": "array"},
+        "unresolved_motion_count": {"type": "integer"},
+        "unresolved_sample": {"type": "array"},
+        "note": {"type": "string"}
+      }
+    },
+    "declination_aspects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["body_a", "body_b", "type", "declination_a", "declination_b", "orb"],
+        "properties": {
+          "body_a": {"type": "string"},
+          "body_b": {"type": "string"},
+          "type": {"type": "string", "enum": ["parallel", "contraparallel"]},
+          "declination_a": {"type": "number"},
+          "declination_b": {"type": "number"},
+          "orb": {"type": "number"}
+        }
+      }
+    },
+    "midpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["body_a", "body_b", "longitude"],
+        "properties": {
+          "body_a": {"type": "string"},
+          "body_b": {"type": "string"},
+          "longitude": {"type": "number", "minimum": 0, "maximum": 360}
+        }
+      }
+    },
+    "geometric_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "bodies"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["grand_trine", "t_square", "grand_cross", "yod", "stellium"]
+          },
+          "bodies": {
+            "type": "array",
+            "items": {"type": "string"},
+            "minItems": 3
+          },
+          "apex": {"type": "string"},
+          "opposition": {"type": "array"},
+          "base": {"type": "array"},
+          "orb_max": {"type": "number"},
+          "span_deg": {"type": "number"}
+        }
+      }
+    },
     "houses_and_angles": {
       "type": "object",
       "required": ["status", "reason"],
@@ -98,12 +240,37 @@
     },
     "arabic_parts": {
       "type": "object",
+      "required": ["status", "reason"],
       "properties": {
         "status": {"type": "string"},
         "reason": {"type": "string"},
         "Part_of_Fortune": {"type": ["number", "null"]},
         "Part_of_Spirit": {"type": ["number", "null"]},
         "Part_of_Eros": {"type": ["number", "null"]}
+      }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "object",
+      "required": ["longitude", "latitude", "source", "timestamp"],
+      "properties": {
+        "longitude": {"type": ["number", "null"]},
+        "latitude": {"type": ["number", "null"]},
+        "distance": {"type": ["number", "null"]},
+        "velocity": {"type": ["number", "null"]},
+        "longitude_speed": {"type": ["number", "null"]},
+        "longitude_speed_source": {"type": ["string", "null"]},
+        "declination": {"type": ["number", "null"]},
+        "right_ascension": {"type": ["number", "null"]},
+        "retrograde": {"type": ["boolean", "null"]},
+        "station": {"type": ["boolean", "null"]},
+        "motion_status": {"type": ["string", "null"]},
+        "motion_reason": {"type": ["string", "null"]},
+        "timestamp": {"type": "string"},
+        "source": {"type": "string"},
+        "category": {"type": "string"},
+        "reason": {"type": ["string", "null"]}
       }
     }
   }

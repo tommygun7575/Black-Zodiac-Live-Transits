@@ -95,5 +95,25 @@ class TestCelestialMath(unittest.TestCase):
         self.assertIn("grand_trine", types)
 
 
+    def test_normalize_large_negative(self):
+        self.assertAlmostEqual(normalize(-725.5), 354.5)
+
+    def test_aether_formulas_only_three_keys(self):
+        vals = compute_aether_longitudes(0, 0, 0, 0, 0, 0)
+        self.assertEqual(
+            {
+                "Aetheric_SunMoon_Midpoint",
+                "Aetheric_Jovian_Arc",
+                "Aetheric_Elemental_Balance",
+            },
+            set(vals.keys()),
+        )
+
+    def test_aether_unresolved_when_inputs_missing(self):
+        vals = compute_aether_longitudes(None, 10.0, 20.0, 30.0, None, 40.0)
+        self.assertIsNone(vals["Aetheric_SunMoon_Midpoint"])
+        self.assertIsNone(vals["Aetheric_Jovian_Arc"])
+        self.assertAlmostEqual(vals["Aetheric_Elemental_Balance"], 20.0)
+
 if __name__ == "__main__":
     unittest.main()

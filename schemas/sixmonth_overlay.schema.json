@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://black-zodiac.local/schemas/sixmonth_overlay.schema.json",
+  "title": "Six-Month Overlay",
+  "description": "182-day geocentric overlay. Body fields use ecl_lon_deg/ecl_lat_deg; declination enrichment is required for parity with daily when present.",
+  "type": "object",
+  "required": [
+    "coverage",
+    "transits",
+    "runtime",
+    "missing"
+  ],
+  "properties": {
+    "engine_version": {"type": "string"},
+    "generated_at_utc": {"type": "string"},
+    "generated_at_pacific": {"type": "string"},
+    "coverage": {"type": "number"},
+    "moving_body_count": {"type": "integer"},
+    "resolved_points": {"type": "integer"},
+    "total_points": {"type": "integer"},
+    "transits": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "description": "Per-day body map (moving + stars + aether)."
+      }
+    },
+    "runtime": {"type": "object"},
+    "meta": {"type": "object"},
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "catalog_path": {"type": "string"},
+        "provider_order": {"type": "array"},
+        "aether_formulas": {"type": "array"},
+        "no_fabricated_positions": {"type": "boolean"}
+      }
+    },
+    "unresolved": {"type": "array"},
+    "missing": {"type": "array"}
+  }
+}

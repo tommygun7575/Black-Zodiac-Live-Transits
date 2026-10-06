@@ -3477,7 +3477,7 @@
         "reason": "longitude_speed_deg_per_day unavailable from resolving provider"
       }
     ],
-    "note": "Station/retrograde requires longitude_speed deg/day. Swiss-resolved bodies and Swiss-enriched speeds qualify; Horizons vel_obs is not used as λ̇."
+    "note": "Station/retrograde requires longitude_speed deg/day. Swiss-resolved bodies and Swiss-enriched speeds qualify; Horizons vel_obs is not used as \u03bb\u0307."
   },
   "declination_aspects": [
     {
@@ -4317,5 +4317,23 @@
     "Part_of_Fortune": null,
     "Part_of_Spirit": null,
     "Part_of_Eros": null
+  },
+  "provenance": {
+    "catalog_path": "config/celestial_catalog.json",
+    "provider_order": [
+      "horizons",
+      "miriade",
+      "swiss",
+      "fixed_star_catalog",
+      "calculated"
+    ],
+    "aether_formulas": [
+      "Aetheric_SunMoon_Midpoint",
+      "Aetheric_Jovian_Arc",
+      "Aetheric_Elemental_Balance"
+    ],
+    "no_fabricated_positions": true,
+    "houses_policy": "user_specific_downstream",
+    "notes": "Geocentric public feed. Houses/ASC/MC and Arabic parts require observer lat/lon and are computed downstream. Stations/aspect motion require longitude_speed deg/day; Horizons vel_obs is never treated as lambda-dot. Unresolved targets stay listed; coordinates are never invented."
   }
 }
