@@ -132,7 +132,34 @@
         "swiss_code": 9
       }
     ],
-
+    "lunar_nodes": [
+      {
+        "name": "True_Node",
+        "category": "lunar_nodes",
+        "provider_priority": [
+          "swiss"
+        ],
+        "swiss_code": 11,
+        "notes": "Swiss SE_TRUE_NODE; primary lunar ascending node for Oracle"
+      },
+      {
+        "name": "Mean_Node",
+        "category": "lunar_nodes",
+        "provider_priority": [
+          "swiss"
+        ],
+        "swiss_code": 10,
+        "notes": "Swiss SE_MEAN_NODE"
+      },
+      {
+        "name": "South_Node",
+        "category": "lunar_nodes",
+        "provider_priority": [
+          "calculated"
+        ],
+        "notes": "normalize(True_Node + 180); explicit opposition to True_Node"
+      }
+    ],
     "dwarf_planets": [
       {
         "name": "Ceres",
@@ -180,7 +207,6 @@
         "miriade_name": "a:Makemake"
       }
     ],
-
     "major_asteroids": [
       {
         "name": "Pallas",
@@ -230,7 +256,6 @@
         "miriade_name": "a:Hygiea"
       }
     ],
-
     "expanded_asteroids": [
       {
         "name": "Eros",
@@ -332,7 +357,6 @@
         "miriade_name": "a:Merlin"
       }
     ],
-
     "centaurs": [
       {
         "name": "Chiron",
@@ -402,7 +426,6 @@
         "miriade_name": "a:Asbolus"
       }
     ],
-
     "trans_neptunian_objects": [
       {
         "name": "Orcus",
@@ -493,22 +516,7 @@
         "miriade_name": "a:Salacia"
       }
     ],
-
     "fixed_stars": [
-      {
-        "name": "Regulus",
-        "category": "fixed_stars",
-        "provider_priority": [
-          "fixed_star_catalog"
-        ]
-      },
-      {
-        "name": "Spica",
-        "category": "fixed_stars",
-        "provider_priority": [
-          "fixed_star_catalog"
-        ]
-      },
       {
         "name": "Aldebaran",
         "category": "fixed_stars",
@@ -517,21 +525,21 @@
         ]
       },
       {
+        "name": "Algol",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Altair",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
         "name": "Antares",
-        "category": "fixed_stars",
-        "provider_priority": [
-          "fixed_star_catalog"
-        ]
-      },
-      {
-        "name": "Fomalhaut",
-        "category": "fixed_stars",
-        "provider_priority": [
-          "fixed_star_catalog"
-        ]
-      },
-      {
-        "name": "Sirius",
         "category": "fixed_stars",
         "provider_priority": [
           "fixed_star_catalog"
@@ -552,14 +560,97 @@
         ]
       },
       {
+        "name": "Canopus",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
         "name": "Capella",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Deneb",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Fomalhaut",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Pollux",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Procyon",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Regulus",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Rigel",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Sirius",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Spica",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Vega",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Zubenelgenubi",
+        "category": "fixed_stars",
+        "provider_priority": [
+          "fixed_star_catalog"
+        ]
+      },
+      {
+        "name": "Zubeneschamali",
         "category": "fixed_stars",
         "provider_priority": [
           "fixed_star_catalog"
         ]
       }
     ],
-
     "aether_points": [
       {
         "name": "Aetheric_SunMoon_Midpoint",

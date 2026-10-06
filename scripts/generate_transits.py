@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Set
 from zoneinfo import ZoneInfo
 
 from scripts.calculate_aspects import (
+    build_derived_layers,
     fixed_star_conjunctions,
     harmonic_aspects,
 )
@@ -35,7 +36,7 @@ PACIFIC_ZONE = ZoneInfo(
 )
 
 ENGINE_VERSION = (
-    "ZodiacOracle.DailyTransit.v2"
+    "ZodiacOracle.DailyTransit.v3"
 )
 
 SOURCE_ORDER = [
@@ -677,11 +678,13 @@ def main() -> Path:
     # DERIVED LAYERS
     # -------------------------------------------------------------------
 
-    calculated_harmonics = (
-        harmonic_aspects(
-            transit_positions
-        )
+    derived = build_derived_layers(
+        transit_positions
     )
+
+    calculated_harmonics = derived[
+        "calculated_harmonics"
+    ]
 
     aether_points = {
         name: data
@@ -701,11 +704,18 @@ def main() -> Path:
         ) == "fixed_stars"
     }
 
-    calculated_fixed_star_conjunctions = (
-        fixed_star_conjunctions(
-            transit_positions
-        )
-    )
+    lunar_nodes = {
+        name: data
+        for name, data
+        in transit_positions.items()
+        if data.get(
+            "category"
+        ) == "lunar_nodes"
+    }
+
+    calculated_fixed_star_conjunctions = derived[
+        "fixed_star_conjunctions"
+    ]
 
     # -------------------------------------------------------------------
     # OUTPUT
@@ -804,6 +814,44 @@ def main() -> Path:
 
         "fixed_star_conjunctions":
             calculated_fixed_star_conjunctions,
+
+        "lunar_nodes":
+            lunar_nodes,
+
+        "lunar_geometry":
+            derived[
+                "lunar_geometry"
+            ],
+
+        "stations":
+            derived[
+                "stations"
+            ],
+
+        "declination_aspects":
+            derived[
+                "declination_aspects"
+            ],
+
+        "midpoints":
+            derived[
+                "midpoints"
+            ],
+
+        "geometric_patterns":
+            derived[
+                "geometric_patterns"
+            ],
+
+        "houses_and_angles":
+            derived[
+                "houses_and_angles"
+            ],
+
+        "arabic_parts":
+            derived[
+                "arabic_parts"
+            ],
     }
 
     output = _sanitize_nans(

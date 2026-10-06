@@ -3,41 +3,108 @@
   "title": "Daily Overlay",
   "type": "object",
   "required": [
+    "engine_version",
     "generated_at_utc",
     "generated_at_pacific",
+    "type",
+    "coverage",
+    "resolved_targets",
+    "total_targets",
+    "missing",
+    "unresolved",
+    "population",
+    "provider_runtime",
     "transit_positions",
     "calculated_harmonics",
-    "arabic_parts",
-    "natal_overlays"
+    "aether_points",
+    "fixed_star_positions",
+    "fixed_star_conjunctions",
+    "lunar_nodes",
+    "lunar_geometry",
+    "stations",
+    "declination_aspects",
+    "midpoints",
+    "geometric_patterns",
+    "houses_and_angles",
+    "arabic_parts"
   ],
   "properties": {
+    "engine_version": {"type": "string"},
     "generated_at_utc": {"type": "string"},
     "generated_at_pacific": {"type": "string"},
+    "type": {"type": "string"},
+    "coverage": {"type": "number"},
+    "resolved_targets": {"type": "integer"},
+    "total_targets": {"type": "integer"},
+    "missing": {"type": "array"},
+    "unresolved": {"type": "array"},
+    "population": {"type": "object"},
+    "provider_runtime": {"type": "object"},
     "transit_positions": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["longitude", "latitude", "distance", "velocity", "timestamp", "source"],
+        "required": ["longitude", "latitude", "source", "timestamp"],
         "properties": {
           "longitude": {"type": ["number", "null"]},
           "latitude": {"type": ["number", "null"]},
           "distance": {"type": ["number", "null"]},
           "velocity": {"type": ["number", "null"]},
+          "longitude_speed": {"type": ["number", "null"]},
+          "declination": {"type": ["number", "null"]},
+          "right_ascension": {"type": ["number", "null"]},
+          "retrograde": {"type": ["boolean", "null"]},
+          "station": {"type": ["boolean", "null"]},
+          "motion_status": {"type": ["string", "null"]},
           "timestamp": {"type": "string"},
           "source": {"type": "string"},
           "category": {"type": "string"}
         }
       }
     },
-    "calculated_harmonics": {"type": "array"},
+    "calculated_harmonics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["body_a", "body_b", "harmonic", "exact_angle", "separation", "orb", "motion"],
+        "properties": {
+          "body_a": {"type": "string"},
+          "body_b": {"type": "string"},
+          "harmonic": {"type": "integer"},
+          "exact_angle": {"type": "number"},
+          "separation": {"type": "number"},
+          "orb": {"type": "number"},
+          "motion": {"type": "string"},
+          "motion_reason": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "aether_points": {"type": "object"},
+    "fixed_star_positions": {"type": "object"},
+    "fixed_star_conjunctions": {"type": "array"},
+    "lunar_nodes": {"type": "object"},
+    "lunar_geometry": {"type": "object"},
+    "stations": {"type": "object"},
+    "declination_aspects": {"type": "array"},
+    "midpoints": {"type": "array"},
+    "geometric_patterns": {"type": "array"},
+    "houses_and_angles": {
+      "type": "object",
+      "required": ["status", "reason"],
+      "properties": {
+        "status": {"type": "string"},
+        "reason": {"type": "string"}
+      }
+    },
     "arabic_parts": {
       "type": "object",
-      "additionalProperties": {"type": ["number", "null"]}
-    },
-    "fixed_star_conjunctions": {"type": "array"},
-    "natal_overlays": {
-      "type": "object",
-      "additionalProperties": {"type": "array"}
+      "properties": {
+        "status": {"type": "string"},
+        "reason": {"type": "string"},
+        "Part_of_Fortune": {"type": ["number", "null"]},
+        "Part_of_Spirit": {"type": ["number", "null"]},
+        "Part_of_Eros": {"type": ["number", "null"]}
+      }
     }
   }
 }

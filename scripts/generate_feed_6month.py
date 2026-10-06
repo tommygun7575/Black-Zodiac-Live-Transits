@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""6-month transit feed generator — ZodiacOracle.SixMonthTransit.v2."""
+"""6-month transit feed generator — ZodiacOracle.SixMonthTransit.v3."""
 
 from __future__ import annotations
 
@@ -25,6 +25,12 @@ try:
     import swisseph as swe
 except ImportError:  # pragma: no cover
     import pyswisseph as swe  # type: ignore
+
+from scripts.utils.celestial_math import (
+    compute_aether_longitudes,
+    ecliptic_to_equatorial,
+    normalize as normalize_shared,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +86,9 @@ SWISS_IDS = {
     "pallas": swe.PALLAS,
     "juno": swe.JUNO,
     "vesta": swe.VESTA,
+    "true_node": swe.TRUE_NODE,
+    "mean_node": swe.MEAN_NODE,
+    "north_node": swe.TRUE_NODE,
 }
 
 
@@ -292,6 +301,16 @@ def _provider_chain(
     The celestial catalog supplies body/provider capability information,
     but it does not override this mandatory 6-month priority.
     """
+
+    # Lunar nodes: Swiss is authoritative (no Horizons major-body id).
+    category = str(body.get("category") or "").lower()
+    if category == "lunar_nodes" or str(body.get("name") or "") in {
+        "True_Node",
+        "Mean_Node",
+    }:
+        if _has_valid_swiss_mapping(body):
+            return ["swiss"]
+        return []
 
     chain: List[str] = []
 
@@ -1649,60 +1668,14 @@ def add_aether_points(
         "Venus",
     )
 
-    midpoint = (
-        None
-        if (
-            sun is None
-            or moon is None
-        )
-        else _normalize_lon(
-            (
-                sun
-                + moon
-            )
-            % 360.0
-        )
+    formulas = compute_aether_longitudes(
+        sun=sun,
+        moon=moon,
+        venus=venus,
+        mars=mars,
+        jupiter=jupiter,
+        saturn=saturn,
     )
-
-    jovian_arc = (
-        None
-        if (
-            jupiter is None
-            or saturn is None
-        )
-        else _normalize_lon(
-            jupiter
-            - saturn
-        )
-    )
-
-    elemental_balance = (
-        None
-        if (
-            mars is None
-            or venus is None
-            or moon is None
-        )
-        else _normalize_lon(
-            (
-                mars
-                + venus
-                + moon
-            )
-            / 3.0
-        )
-    )
-
-    formulas = {
-        "Aetheric_SunMoon_Midpoint":
-            midpoint,
-
-        "Aetheric_Jovian_Arc":
-            jovian_arc,
-
-        "Aetheric_Elemental_Balance":
-            elemental_balance,
-    }
 
     for name in aether_names:
 
@@ -1733,6 +1706,54 @@ def add_aether_points(
                 "calculated",
         }
 
+
+
+def add_south_node(
+    day_transits: Dict[
+        str,
+        Dict[str, Any],
+    ],
+) -> None:
+    """South_Node = normalize(True_Node + 180)."""
+    true_node = day_transits.get("True_Node")
+    if not true_node:
+        return
+    lon = true_node.get("ecl_lon_deg")
+    if not _is_valid_number(lon):
+        day_transits["South_Node"] = {
+            "ecl_lon_deg": None,
+            "ecl_lat_deg": None,
+            "source": "unresolved",
+            "errors": ["South_Node requires resolved True_Node"],
+        }
+        return
+    south = normalize_shared(float(lon) + 180.0)
+    ra, dec = ecliptic_to_equatorial(south, 0.0)
+    day_transits["South_Node"] = {
+        "ecl_lon_deg": south,
+        "ecl_lat_deg": 0.0,
+        "declination": dec,
+        "right_ascension": ra,
+        "source": "calculated",
+    }
+
+
+def enrich_day_equatorial_fields(
+    day_transits: Dict[str, Dict[str, Any]],
+) -> None:
+    """Add declination/RA from ecliptic lon/lat for daily/6mo field parity."""
+    for name, entry in list(day_transits.items()):
+        if not isinstance(entry, dict):
+            continue
+        if entry.get("declination") is not None:
+            continue
+        lon = entry.get("ecl_lon_deg")
+        lat = entry.get("ecl_lat_deg")
+        if not _is_valid_number(lon) or not _is_valid_number(lat):
+            continue
+        ra, dec = ecliptic_to_equatorial(float(lon), float(lat))
+        entry["right_ascension"] = ra
+        entry["declination"] = dec
 
 # ---------------------------------------------------------------------------
 # BODY RESOLUTION
@@ -2405,6 +2426,14 @@ def generate_six_month_feed(
             aether_names,
         )
 
+        add_south_node(
+            day_transits,
+        )
+
+        enrich_day_equatorial_fields(
+            day_transits,
+        )
+
     duration = (
         time.perf_counter()
         - started
@@ -2430,7 +2459,7 @@ def generate_six_month_feed(
         Any,
     ] = {
         "engine_version":
-            "ZodiacOracle.SixMonthTransit.v2",
+            "ZodiacOracle.SixMonthTransit.v3",
 
         "meta": {
             "generated_at_utc":

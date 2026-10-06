@@ -8,6 +8,18 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 import swisseph as swe
 
+from scripts.utils.celestial_math import (
+    aspect_motion_status,
+    compute_midpoints,
+    declination_aspects,
+    geometric_patterns,
+    lunar_geometry,
+    collect_stations,
+    position_longitude_speed,
+    HOUSES_POLICY,
+    arabic_parts_unavailable_payload,
+)
+
 
 # ---------------------------------------------------------------------------
 # ASPECT CONFIGURATION
@@ -39,6 +51,7 @@ HARMONIC_ANGLES: Dict[int, float] = {
     4: 90.0,
     5: 72.0,
     6: 60.0,
+    7: 360.0 / 7.0,  # septile ≈ 51.428571°
     8: 45.0,
     9: 40.0,
     12: 30.0,
@@ -281,6 +294,19 @@ def harmonic_aspects(
                 <= allowed_orb
             ):
 
+                motion = aspect_motion_status(
+                    left_lon,
+                    right_lon,
+                    position_longitude_speed(
+                        valid[left]
+                    ),
+                    position_longitude_speed(
+                        valid[right]
+                    ),
+                    exact_angle,
+                    aspect_orb,
+                )
+
                 aspects.append(
                     {
                         "body_a":
@@ -300,6 +326,16 @@ def harmonic_aspects(
 
                         "orb":
                             aspect_orb,
+
+                        "motion":
+                            motion[
+                                "motion"
+                            ],
+
+                        "motion_reason":
+                            motion[
+                                "reason"
+                            ],
                     }
                 )
 
@@ -746,3 +782,27 @@ def fixed_star_conjunctions(
     )
 
     return matches
+
+
+
+# ---------------------------------------------------------------------------
+# DERIVED LAYER FACADES (shared with daily + 6-month)
+# ---------------------------------------------------------------------------
+
+
+def build_derived_layers(
+    positions: Dict[str, Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Compute enrichment layers used by the daily feed (and reusable by 6mo)."""
+
+    return {
+        "calculated_harmonics": harmonic_aspects(positions),
+        "declination_aspects": declination_aspects(positions),
+        "midpoints": compute_midpoints(positions),
+        "geometric_patterns": geometric_patterns(positions),
+        "lunar_geometry": lunar_geometry(positions),
+        "stations": collect_stations(positions),
+        "houses_and_angles": dict(HOUSES_POLICY),
+        "arabic_parts": arabic_parts_unavailable_payload(),
+        "fixed_star_conjunctions": fixed_star_conjunctions(positions),
+    }

@@ -22,6 +22,7 @@ class TestGenerateFeed6Month(unittest.TestCase):
         moving_names = {b["name"] for b in moving}
         expected = {
             "Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
+            "True_Node", "Mean_Node",
             "Ceres", "Eris", "Haumea", "Makemake",
             "Pallas", "Juno", "Vesta", "Hygiea",
             "Eros", "Psyche", "Sappho", "Hekate", "Nemesis", "Karma", "Destinn", "Aura", "Merlin",
@@ -29,9 +30,12 @@ class TestGenerateFeed6Month(unittest.TestCase):
             "Orcus", "Quaoar", "Sedna", "Gonggong", "Ixion", "Varuna", "Huya", "Salacia",
         }
         self.assertEqual(expected, moving_names)
-        self.assertEqual(41, len(moving_names))
+        self.assertEqual(43, len(moving_names))
         self.assertIn("Regulus", set(fixed))
+        self.assertGreaterEqual(len(fixed), 19)
         self.assertIn("Aetheric_SunMoon_Midpoint", set(aether))
+        # South_Node is calculated (like aether), not a moving provider body.
+        self.assertNotIn("South_Node", moving_names)
 
     def test_small_body_ids_preserve_semicolons(self):
         chiron = {"name": "Chiron", "category": "centaurs", "horizons_id": "2060"}
@@ -143,7 +147,8 @@ class TestGenerateFeed6Month(unittest.TestCase):
             "miriade_name": "a:Chiron",
             "swiss_code": 15,
         }
-        self.assertEqual(["miriade", "jpl", "swiss"], six._provider_chain(body_with_swiss))
+        # Mandatory capability order is always JPL -> Miriade -> Swiss.
+        self.assertEqual(["jpl", "miriade", "swiss"], six._provider_chain(body_with_swiss))
 
         # No swiss_code and name not in SWISS_IDS -> swiss excluded.
         body_without_swiss = {
@@ -152,7 +157,16 @@ class TestGenerateFeed6Month(unittest.TestCase):
             "horizons_id": "5145",
             "miriade_name": "a:Pholus",
         }
-        self.assertEqual(["miriade", "jpl"], six._provider_chain(body_without_swiss))
+        self.assertEqual(["jpl", "miriade"], six._provider_chain(body_without_swiss))
+
+        # Lunar nodes are Swiss-primary (no Horizons major-body id).
+        node = {
+            "name": "True_Node",
+            "category": "lunar_nodes",
+            "provider_priority": ["swiss"],
+            "swiss_code": 11,
+        }
+        self.assertEqual(["swiss"], six._provider_chain(node))
 
     def test_valid_jpl_first_bodies_remain_jpl_first(self):
         body = {
@@ -221,7 +235,7 @@ class TestGenerateFeed6Month(unittest.TestCase):
 
         # Exactly one call per moving body in the catalog (41), never per date.
         self.assertEqual(len(moving), call_count["n"])
-        self.assertEqual(41, call_count["n"])
+        self.assertEqual(43, call_count["n"])
 
         # resolve_moving_body itself never recomputes the chain.
         body = moving[0]
@@ -242,7 +256,7 @@ class TestGenerateFeed6Month(unittest.TestCase):
         are routed away from JPL by this change — but the classification
         must still be computed correctly from real catalog fields."""
         moving, _, _ = six.load_catalog_targets(six.CATALOG_PATH)
-        self.assertEqual(41, len(moving))
+        self.assertEqual(43, len(moving))
 
         routes = {"jpl_primary": 0, "miriade_primary": 0, "swiss_primary": 0, "no_valid_provider": 0}
         for body in moving:
@@ -250,10 +264,9 @@ class TestGenerateFeed6Month(unittest.TestCase):
             routes[six._classify_provider_route(chain)] += 1
 
         self.assertEqual(0, routes["no_valid_provider"])
-        self.assertEqual(41, routes["jpl_primary"] + routes["miriade_primary"] + routes["swiss_primary"])
-        # Every body in the current catalog carries a horizons_id, so JPL is
-        # never dropped from a chain that requests it — this test guards
-        # against accidentally excluding still-valid JPL mappings.
+        self.assertEqual(43, routes["jpl_primary"] + routes["miriade_primary"] + routes["swiss_primary"])
+        # Lunar nodes are Swiss-primary; all horizons_id bodies keep JPL in chain.
+        self.assertEqual(2, routes["swiss_primary"])
         for body in moving:
             if body.get("horizons_id"):
                 self.assertIn("jpl", body["_provider_chain"])
@@ -455,23 +468,22 @@ class TestGenerateFeed6Month(unittest.TestCase):
         }
 
     def test_horizons_request_receives_finite_timeout(self):
-        """The actual astroquery HTTP call must be bounded by a finite
-        timeout, applied via astroquery.conf.timeout (the supported
-        mechanism), not merely defined and unused."""
+        """Horizons.TIMEOUT must be set to the configured finite request timeout."""
         body, dt_list = self._make_body_dt_list()
         stats = self._fresh_stats()
 
         fake_eph = MagicMock()
         fake_eph.colnames = []
         fake_eph.__len__.return_value = 0
+        fake_horizons = MagicMock(ephemerides=MagicMock(return_value=fake_eph))
 
-        with patch.object(six, "Horizons", return_value=MagicMock(ephemerides=MagicMock(return_value=fake_eph))), \
-             patch.object(six.astroquery_conf, "timeout", 0):
+        with patch.object(six, "Horizons", return_value=fake_horizons) as horizons_cls:
             six.fetch_horizons_range(body, dt_list, stats)
-            self.assertEqual(six.REQUEST_TIMEOUT_HORIZONS, six.astroquery_conf.timeout)
+            self.assertEqual(six.REQUEST_TIMEOUT_HORIZONS, six.Horizons.TIMEOUT)
             self.assertTrue(math.isfinite(six.REQUEST_TIMEOUT_HORIZONS))
             self.assertGreaterEqual(six.REQUEST_TIMEOUT_HORIZONS, 20)
             self.assertLessEqual(six.REQUEST_TIMEOUT_HORIZONS, 30)
+            horizons_cls.assert_called()
 
     def test_jpl_timeout_does_not_abort_generator_and_falls_back_to_miriade(self):
         """A stalled/timed-out Horizons call must be caught, recorded, and

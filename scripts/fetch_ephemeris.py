@@ -13,6 +13,12 @@ import swisseph as swe
 from astroquery.jplhorizons import Horizons
 
 from scripts.utils.coords import ra_dec_to_ecl
+from scripts.utils.celestial_math import (
+    compute_aether_longitudes,
+    ecliptic_to_equatorial,
+    enrich_motion_fields,
+    normalize as normalize_lon,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,6 +63,9 @@ SWISS_CODES = {
     "pallas": swe.PALLAS,
     "juno": swe.JUNO,
     "vesta": swe.VESTA,
+    "true_node": swe.TRUE_NODE,
+    "mean_node": swe.MEAN_NODE,
+    "north_node": swe.TRUE_NODE,
 }
 
 
@@ -434,12 +443,30 @@ def _horizons_position(
         default=0.0,
     )
 
-    return {
+    # Preserve equatorial coordinates when Horizons supplies them.
+    # Declination is required for parallel/contraparallel aspects.
+    # NOTE: velocity here is Horizons vel_obs (km/s), NOT λ̇ deg/day.
+    ra_val = None
+    dec_val = None
+    if "RA" in eph.colnames and _is_valid_number(eph["RA"][0]):
+        ra_val = float(eph["RA"][0])
+    if "DEC" in eph.colnames and _is_valid_number(eph["DEC"][0]):
+        dec_val = float(eph["DEC"][0])
+    if dec_val is None:
+        _, dec_val = ecliptic_to_equatorial(float(lon), float(lat))
+        if ra_val is None:
+            ra_val, _ = ecliptic_to_equatorial(float(lon), float(lat))
+
+    result = {
         "longitude": float(lon) % 360.0,
         "latitude": float(lat),
         "distance": distance,
         "velocity": velocity,
+        "declination": dec_val,
     }
+    if ra_val is not None:
+        result["right_ascension"] = ra_val
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -829,7 +856,12 @@ def _swiss_position(
     ):
         return None
 
-    return {
+    speed = (
+        float(lon_speed)
+        if _is_valid_number(lon_speed)
+        else None
+    )
+    result = {
         "longitude": float(lon) % 360.0,
         "latitude": float(lat),
         "distance": (
@@ -837,12 +869,14 @@ def _swiss_position(
             if _is_valid_number(distance)
             else 0.0
         ),
-        "velocity": (
-            float(lon_speed)
-            if _is_valid_number(lon_speed)
-            else 0.0
-        ),
+        # Swiss velocity IS longitude speed (deg/day).
+        "velocity": speed if speed is not None else 0.0,
+        "longitude_speed": speed,
     }
+    ra, dec = ecliptic_to_equatorial(result["longitude"], result["latitude"])
+    result["right_ascension"] = ra
+    result["declination"] = dec
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -935,6 +969,17 @@ def _normalize_provider_priority(
         return [
             "calculated"
         ]
+
+    # South_Node is derived from True_Node (explicit +180° formula).
+    if str(body.get("name") or "") == "South_Node":
+        return ["calculated"]
+
+    # Lunar nodes: Swiss is authoritative (no Horizons major-body id).
+    if category == "lunar_nodes":
+        chain: List[str] = []
+        if _has_valid_swiss_mapping(body):
+            chain.append("swiss")
+        return chain
 
     chain: List[str] = []
 
@@ -1132,71 +1177,14 @@ def _compute_aether_points(
 
         return float(value)
 
-    sun = lon("Sun")
-    moon = lon("Moon")
-    mars = lon("Mars")
-    jupiter = lon("Jupiter")
-    saturn = lon("Saturn")
-    venus = lon("Venus")
-
-    def midpoint(
-        a: Optional[float],
-        b: Optional[float],
-    ) -> Optional[float]:
-        if (
-            not _is_valid_number(a)
-            or not _is_valid_number(b)
-        ):
-            return None
-
-        return (
-            float(a)
-            + float(b)
-        ) % 360.0
-
-    formulas = {
-        "Aetheric_SunMoon_Midpoint":
-            midpoint(
-                sun,
-                moon,
-            ),
-
-        "Aetheric_Jovian_Arc":
-            (
-                None
-                if (
-                    jupiter is None
-                    or saturn is None
-                )
-                else (
-                    (
-                        jupiter
-                        - saturn
-                    )
-                    + 360.0
-                )
-                % 360.0
-            ),
-
-        "Aetheric_Elemental_Balance":
-            (
-                None
-                if (
-                    mars is None
-                    or venus is None
-                    or moon is None
-                )
-                else (
-                    (
-                        mars
-                        + venus
-                        + moon
-                    )
-                    / 3.0
-                )
-                % 360.0
-            ),
-    }
+    formulas = compute_aether_longitudes(
+        sun=lon("Sun"),
+        moon=lon("Moon"),
+        venus=lon("Venus"),
+        mars=lon("Mars"),
+        jupiter=lon("Jupiter"),
+        saturn=lon("Saturn"),
+    )
 
     computed: Dict[
         str,
@@ -1228,12 +1216,95 @@ def _compute_aether_points(
                 else None
             ),
             "velocity": 0.0,
+            "longitude_speed": None,
             "timestamp": _utc_iso(dt),
             "source": "calculated",
             "category": category,
         }
 
     return computed
+
+
+def _compute_south_node(
+    positions: Dict[str, Dict[str, Any]],
+    dt: datetime,
+) -> Dict[str, Dict[str, Any]]:
+    """South_Node = normalize(True_Node + 180). Explicit opposition formula."""
+    true_node = positions.get("True_Node")
+    if not true_node or not _is_valid_number(true_node.get("longitude")):
+        return {
+            "South_Node": {
+                "longitude": None,
+                "latitude": None,
+                "distance": None,
+                "velocity": None,
+                "longitude_speed": None,
+                "timestamp": _utc_iso(dt),
+                "source": "unresolved",
+                "category": "lunar_nodes",
+                "errors": [
+                    "South_Node requires resolved True_Node longitude"
+                ],
+            }
+        }
+
+    lon = normalize_lon(float(true_node["longitude"]) + 180.0)
+    speed = true_node.get("longitude_speed")
+    if _is_valid_number(speed):
+        # Opposition point shares magnitude of nodal speed, opposite sign convention
+        # for longitude advance of the south node equals true-node speed.
+        node_speed = float(speed)
+    else:
+        node_speed = None
+
+    return {
+        "South_Node": {
+            "longitude": lon,
+            "latitude": 0.0,
+            "distance": 0.0,
+            "velocity": node_speed if node_speed is not None else 0.0,
+            "longitude_speed": node_speed,
+            "declination": ecliptic_to_equatorial(lon, 0.0)[1],
+            "right_ascension": ecliptic_to_equatorial(lon, 0.0)[0],
+            "timestamp": _utc_iso(dt),
+            "source": "calculated",
+            "category": "lunar_nodes",
+        }
+    }
+
+
+def _enrich_swiss_longitude_speed(
+    positions: Dict[str, Dict[str, Any]],
+    dt: datetime,
+) -> None:
+    """Attach Swiss λ̇ (deg/day) when a body has a Swiss mapping.
+
+    Does not replace the primary provider longitude. Used for stations and
+    applying/separating classification. Horizons vel_obs is never treated as λ̇.
+    """
+    for name, pos in list(positions.items()):
+        if not isinstance(pos, dict):
+            continue
+        if pos.get("source") in {"unresolved", "fixed_star_catalog", "calculated"}:
+            continue
+        if _is_valid_number(pos.get("longitude_speed")):
+            continue
+        body = {"name": name, "swiss_code": SWISS_CODES.get(name.lower())}
+        if body["swiss_code"] is None and not _has_valid_swiss_mapping(body):
+            continue
+        try:
+            swiss = _swiss_position(body, dt)
+        except Exception:
+            continue
+        if not swiss or not _is_valid_number(swiss.get("longitude_speed")):
+            continue
+        pos["longitude_speed"] = float(swiss["longitude_speed"])
+        pos["longitude_speed_source"] = "swiss"
+        if not _is_valid_number(pos.get("declination")):
+            if _is_valid_number(swiss.get("declination")):
+                pos["declination"] = swiss["declination"]
+            if _is_valid_number(swiss.get("right_ascension")):
+                pos["right_ascension"] = swiss["right_ascension"]
 
 
 # ---------------------------------------------------------------------------
@@ -1420,6 +1491,10 @@ def fetch_all_positions(
                 )
                 continue
 
+            # South_Node is calculated from True_Node after moving resolution.
+            if enriched.get("name") == "South_Node":
+                continue
+
             all_bodies.append(
                 enriched
             )
@@ -1567,6 +1642,15 @@ def fetch_all_positions(
                 "velocity":
                     0.0,
 
+                "longitude_speed":
+                    0.0,
+
+                "right_ascension":
+                    float(ra),
+
+                "declination":
+                    float(dec),
+
                 "timestamp":
                     _utc_iso(dt),
 
@@ -1578,6 +1662,22 @@ def fetch_all_positions(
             }
 
     # -------------------------------------------------------------------
+    # SOUTH NODE (calculated from True_Node)
+    # -------------------------------------------------------------------
+
+    if any(
+        str(b.get("name")) == "True_Node"
+        or str(b.get("category")) == "lunar_nodes"
+        for b in all_bodies
+    ):
+        positions.update(
+            _compute_south_node(
+                positions,
+                dt,
+            )
+        )
+
+    # -------------------------------------------------------------------
     # AETHER POINTS
     # -------------------------------------------------------------------
 
@@ -1587,6 +1687,19 @@ def fetch_all_positions(
             aether_bodies,
             dt,
         )
+    )
+
+    # -------------------------------------------------------------------
+    # KINEMATICS ENRICHMENT (Swiss λ̇) + motion/declination fields
+    # -------------------------------------------------------------------
+
+    _enrich_swiss_longitude_speed(
+        positions,
+        dt,
+    )
+
+    positions = enrich_motion_fields(
+        positions
     )
 
     return positions
