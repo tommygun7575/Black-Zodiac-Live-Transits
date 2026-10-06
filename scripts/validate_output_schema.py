@@ -16,6 +16,8 @@ def _assert_type(value: Any, schema_type: str) -> bool:
         "array": list,
         "string": str,
         "number": (int, float),
+        "integer": int,
+        "boolean": bool,
         "null": type(None),
     }
     expected = mapping[schema_type]
