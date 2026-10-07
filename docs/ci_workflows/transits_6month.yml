@@ -56,7 +56,10 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
-          LATEST=$(ls -1 docs/feed_overlay_6month_*.json | sort | tail -n 1)
+          # Pick newest by the timestamp in the filename (Mon-DD-YYYY_HH-MMAM),
+          # not lexical order (which would rank "Sep" after "Oct").
+          LATEST=$(python -c 'import datetime as d,pathlib as p; print(max(p.Path("docs").glob("feed_overlay_6month_*.json"), key=lambda f: d.datetime.strptime(f.stem[len("feed_overlay_6month_"):].removesuffix("_Pacific"), "%b-%d-%Y_%I-%M%p")))')
+          echo "Validating $LATEST"
           python scripts/validate_output_schema.py "$LATEST" \
             --schema schemas/sixmonth_overlay.schema.json
 
@@ -65,7 +68,13 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          files = sorted(Path("docs").glob("feed_overlay_6month_*.json"))
+          from datetime import datetime
+          def _stamp(f):
+              # feed_overlay_6month_Oct-07-2026_11-45AM_Pacific.json
+              raw = f.stem[len("feed_overlay_6month_"):].removesuffix("_Pacific")
+              return datetime.strptime(raw, "%b-%d-%Y_%I-%M%p")
+          # Lexical sort ranks "Sep-..." after "Oct-...", so order by timestamp.
+          files = sorted(Path("docs").glob("feed_overlay_6month_*.json"), key=_stamp)
           if not files:
               raise SystemExit("No 6-month overlay files found")
           latest = files[-1]
