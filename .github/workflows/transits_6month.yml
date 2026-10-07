@@ -34,6 +34,8 @@ jobs:
           python -m py_compile \
             scripts/generate_feed_6month.py \
             scripts/utils/celestial_math.py \
+            scripts/utils/frames.py \
+            scripts/check_feed_frames.py \
             scripts/fetch_ephemeris.py \
             scripts/calculate_aspects.py \
             scripts/validate_config.py \
@@ -62,6 +64,8 @@ jobs:
           echo "Validating $LATEST"
           python scripts/validate_output_schema.py "$LATEST" \
             --schema schemas/sixmonth_overlay.schema.json
+          echo "Asserting geocentric of-date frame for $LATEST"
+          python scripts/check_feed_frames.py "$LATEST"
 
       - name: Validate 6-month overlay coverage
         run: |

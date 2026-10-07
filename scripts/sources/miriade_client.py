@@ -23,7 +23,7 @@ def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float
         "-ep": when_iso,
         "-observer": "500",
         "-theory": "DE431",
-        "-teph": "1",
+        "-teph": "2",  # apparent, equinox of date (1 = astrometric J2000)
         "-tcoor": "1",
         "-rplane": "2",
         "-nbd": "1",
@@ -31,7 +31,9 @@ def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float
     }
     try:
         r = requests.get(MIRIADE_BASE, params=params, timeout=30)
-        data = r.json().get("result", {})
+        data = r.json()
+        if isinstance(data, dict) and "data" not in data:
+            data = data.get("result", {})
         if isinstance(data, str):
             data = json.loads(data)
 
@@ -40,14 +42,10 @@ def get_ecliptic_lonlat(name: str, when_iso: str) -> Optional[Tuple[float, float
             return None
 
         row = {k.lower(): v for k, v in rows[0].items()}
-        elon = row.get("elon") or row.get("ecllon")
-        elat = row.get("elat") or row.get("ecllat")
+        from scripts.utils.frames import miriade_row_lon_lat
+        elon, elat = miriade_row_lon_lat(row)
 
-        # fallback RA/DEC
         if elon is None or elat is None:
-            ra, dec = row.get("ra"), row.get("dec")
-            if ra and dec:
-                return ra_dec_to_ecl(float(ra), float(dec), when_iso)
             return None
 
         return (float(elon) % 360.0, float(elat))

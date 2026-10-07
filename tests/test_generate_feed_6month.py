@@ -46,10 +46,10 @@ class TestGenerateFeed6Month(unittest.TestCase):
         self.assertEqual("1;", six._normalize_horizons_id(ceres))
 
     def test_invalid_nan_and_inf_are_rejected(self):
-        row = {"EclLon": float("nan"), "EclLat": 1.0}
-        self.assertIsNone(six._extract_lon_lat(row, ["EclLon", "EclLat"], datetime.datetime.now(datetime.timezone.utc)))
-        row = {"EclLon": 1.0, "EclLat": float("inf")}
-        self.assertIsNone(six._extract_lon_lat(row, ["EclLon", "EclLat"], datetime.datetime.now(datetime.timezone.utc)))
+        row = {"ObsEclLon": float("nan"), "ObsEclLat": 1.0}
+        self.assertIsNone(six._extract_lon_lat(row, ["ObsEclLon", "ObsEclLat"], datetime.datetime.now(datetime.timezone.utc)))
+        row = {"ObsEclLon": 1.0, "ObsEclLat": float("inf")}
+        self.assertIsNone(six._extract_lon_lat(row, ["ObsEclLon", "ObsEclLat"], datetime.datetime.now(datetime.timezone.utc)))
 
     def test_longitude_normalization(self):
         self.assertTrue(0.0 <= six._normalize_lon(-1.0) < 360.0)

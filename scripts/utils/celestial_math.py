@@ -174,8 +174,13 @@ def motion_status(
 
 def enrich_motion_fields(
     positions: Dict[str, Dict[str, Any]],
+    obliquity_deg: float = OBLIQUITY_J2000_DEG,
 ) -> Dict[str, Dict[str, Any]]:
-    """Attach declination + motion fields in-place-safe copy style."""
+    """Attach declination + motion fields in-place-safe copy style.
+
+    Pass the TRUE obliquity of date when longitudes are ecliptic-of-date so
+    RA/Dec are apparent-of-date and consistent with provider RA/Dec.
+    """
     out: Dict[str, Dict[str, Any]] = {}
     for name, pos in positions.items():
         if not isinstance(pos, dict):
@@ -184,7 +189,7 @@ def enrich_motion_fields(
         lon = position_longitude(entry)
         lat = position_latitude(entry)
         if lon is not None and lat is not None and not is_finite_number(entry.get("declination")):
-            ra, dec = ecliptic_to_equatorial(lon, lat)
+            ra, dec = ecliptic_to_equatorial(lon, lat, obliquity_deg)
             entry["right_ascension"] = ra
             entry["declination"] = dec
         speed = position_longitude_speed(entry)

@@ -13,6 +13,19 @@ import swisseph as swe
 from astroquery.jplhorizons import Horizons
 
 from scripts.utils.coords import ra_dec_to_ecl
+from scripts.utils.frames import (
+    HORIZONS_APPARENT_DEC_KEYS,
+    HORIZONS_APPARENT_RA_KEYS,
+    HORIZONS_GEOCENTRIC_LAT_KEYS,
+    HORIZONS_GEOCENTRIC_LON_KEYS,
+    MIRIADE_APPARENT_OF_DATE_PARAMS,
+    apparent_radec_to_ecliptic_of_date,
+    ecliptic_to_equatorial_of_date,
+    fixed_star_of_date,
+    miriade_row_lon_lat,
+    parse_angle,
+    true_obliquity_deg,
+)
 from scripts.utils.celestial_math import (
     compute_aether_longitudes,
     ecliptic_to_equatorial,
@@ -334,6 +347,20 @@ def _safe_table_number(
         return default
 
 
+def _first_valid(
+    table: Any,
+    keys: Any,
+    index: int = 0,
+) -> Optional[float]:
+    for key in keys:
+        if key not in getattr(table, "colnames", []):
+            continue
+        value = table[key][index]
+        if _is_valid_number(value):
+            return float(value)
+    return None
+
+
 def _horizons_position(
     body: Dict[str, Any],
     dt: datetime,
@@ -371,59 +398,21 @@ def _horizons_position(
     if len(eph) < 1:
         return None
 
-    lon = None
-    lat = None
+    jd = _to_jd(dt)
 
-    for key in (
-        "EclLon",
-        "EclipticLon",
-        "ELON",
-    ):
-        if key not in eph.colnames:
-            continue
+    # GEOCENTRIC apparent ecliptic of date = Horizons quantity 31
+    # (astroquery ObsEclLon/ObsEclLat). NEVER use astroquery "EclLon"/"EclLat":
+    # those are quantity 18, the target's HELIOCENTRIC ecliptic position
+    # (root cause of the Sun-centred Black feeds: Moon == Earth helio == Sun+180).
+    lon = _first_valid(eph, HORIZONS_GEOCENTRIC_LON_KEYS)
+    lat = _first_valid(eph, HORIZONS_GEOCENTRIC_LAT_KEYS)
 
-        value = eph[key][0]
+    ra_app = _first_valid(eph, HORIZONS_APPARENT_RA_KEYS)
+    dec_app = _first_valid(eph, HORIZONS_APPARENT_DEC_KEYS)
 
-        if _is_valid_number(value):
-            lon = float(value)
-            break
-
-    for key in (
-        "EclLat",
-        "EclipticLat",
-        "ELAT",
-    ):
-        if key not in eph.colnames:
-            continue
-
-        value = eph[key][0]
-
-        if _is_valid_number(value):
-            lat = float(value)
-            break
-
-    # If Horizons does not expose usable direct ecliptic values,
-    # derive ecliptic longitude/latitude from RA and DEC.
-    if (
-        lon is None
-        or lat is None
-    ) and {
-        "RA",
-        "DEC",
-    }.issubset(eph.colnames):
-
-        ra = eph["RA"][0]
-        dec = eph["DEC"][0]
-
-        if (
-            _is_valid_number(ra)
-            and _is_valid_number(dec)
-        ):
-            lon, lat = ra_dec_to_ecl(
-                float(ra),
-                float(dec),
-                _utc_iso(dt),
-            )
+    # Fallback: apparent RA/DEC of date -> ecliptic of date (true obliquity).
+    if (lon is None or lat is None) and ra_app is not None and dec_app is not None:
+        lon, lat = apparent_radec_to_ecliptic_of_date(ra_app, dec_app, jd)
 
     if (
         not _is_valid_number(lon)
@@ -443,19 +432,13 @@ def _horizons_position(
         default=0.0,
     )
 
-    # Preserve equatorial coordinates when Horizons supplies them.
+    # Apparent RA/Dec of date (consistent with the of-date ecliptic longitude).
     # Declination is required for parallel/contraparallel aspects.
     # NOTE: velocity here is Horizons vel_obs (km/s), NOT λ̇ deg/day.
-    ra_val = None
-    dec_val = None
-    if "RA" in eph.colnames and _is_valid_number(eph["RA"][0]):
-        ra_val = float(eph["RA"][0])
-    if "DEC" in eph.colnames and _is_valid_number(eph["DEC"][0]):
-        dec_val = float(eph["DEC"][0])
-    if dec_val is None:
-        _, dec_val = ecliptic_to_equatorial(float(lon), float(lat))
-        if ra_val is None:
-            ra_val, _ = ecliptic_to_equatorial(float(lon), float(lat))
+    if ra_app is None or dec_app is None:
+        ra_app, dec_app = ecliptic_to_equatorial_of_date(float(lon), float(lat), jd)
+    ra_val = ra_app
+    dec_val = dec_app
 
     result = {
         "longitude": float(lon) % 360.0,
@@ -474,26 +457,24 @@ def _horizons_position(
 # ---------------------------------------------------------------------------
 
 
-def _parse_horizons_vector_batch(
+def _parse_horizons_observer_q31(
     text: str,
-    name_by_command: Dict[str, str],
-) -> Dict[str, Dict[str, float]]:
-    parsed: Dict[str, Dict[str, float]] = {}
+) -> Optional[Dict[str, float]]:
+    """Parse a Horizons OBSERVER CSV table with QUANTITIES='31'.
 
-    current_name: Optional[str] = None
+    Returns the first row's geocentric apparent ecliptic-of-date lon/lat.
+    Columns are located by header name (ObsEcLon / ObsEcLat), never by a
+    fixed index.
+    """
+
+    header: Optional[List[str]] = None
     in_block = False
 
     for raw in text.splitlines():
         line = raw.strip()
 
-        if line.startswith("Target body name:"):
-            current_name = None
-
-            for command, body_name in name_by_command.items():
-                if f"({command})" in line:
-                    current_name = body_name
-                    break
-
+        if "ObsEcLon" in line and "ObsEcLat" in line:
+            header = [c.strip() for c in line.split(",")]
             continue
 
         if line == "$$SOE":
@@ -501,89 +482,66 @@ def _parse_horizons_vector_batch(
             continue
 
         if line == "$$EOE":
-            in_block = False
+            break
+
+        if not in_block or header is None:
             continue
 
-        if not in_block or current_name is None:
+        cells = [c.strip() for c in line.split(",")]
+
+        try:
+            lon = float(cells[header.index("ObsEcLon")])
+            lat = float(cells[header.index("ObsEcLat")])
+        except (ValueError, IndexError):
             continue
 
-        if line.startswith("X ="):
-            tokens = (
-                line
-                .replace("=", " ")
-                .split()
-            )
+        if not (_is_valid_number(lon) and _is_valid_number(lat)):
+            continue
 
-            try:
-                x = float(
-                    tokens[
-                        tokens.index("X") + 1
-                    ]
-                )
+        return {
+            "longitude": lon % 360.0,
+            "latitude": lat,
+            "distance": 0.0,
+            "velocity": 0.0,
+        }
 
-                y = float(
-                    tokens[
-                        tokens.index("Y") + 1
-                    ]
-                )
+    return None
 
-                z = float(
-                    tokens[
-                        tokens.index("Z") + 1
-                    ]
-                )
 
-                lon = (
-                    math.degrees(
-                        math.atan2(y, x)
-                    )
-                    % 360.0
-                )
+def _parse_horizons_vector_batch(
+    text: str,
+    name_by_command: Dict[str, str],
+) -> Dict[str, Dict[str, float]]:
+    """DEPRECATED — retained only so old imports do not break.
 
-                lat = math.degrees(
-                    math.atan2(
-                        z,
-                        math.sqrt(
-                            x * x
-                            + y * y
-                        ),
-                    )
-                )
+    The former implementation converted VECTOR-table X/Y/Z (geometric,
+    J2000 ecliptic, no light-time/aberration/precession/nutation) straight into
+    "longitude"/"latitude". That is NOT the apparent ecliptic of date the feeds
+    publish, so this parser now refuses to produce positions.
+    """
 
-                parsed[current_name] = {
-                    "longitude": lon,
-                    "latitude": lat,
-                    "distance": math.sqrt(
-                        x * x
-                        + y * y
-                        + z * z
-                    ),
-                    "velocity": 0.0,
-                }
-
-            except (
-                ValueError,
-                IndexError,
-            ):
-                continue
-
-    return parsed
+    return {}
 
 
 def _horizons_batch_positions(
     bodies: List[Dict[str, Any]],
     dt: datetime,
 ) -> Dict[str, Dict[str, float]]:
-    """Optional batch helper retained for compatibility.
+    """Optional batch helper (not used by the daily path).
 
-    The active daily path resolves bodies through _horizons_position().
+    Horizons' API resolves exactly ONE target per request: a comma-joined
+    COMMAND list silently resolves only the first id, and START==STOP is
+    rejected ("Bad dates"). This helper therefore issues one OBSERVER /
+    QUANTITIES='31' request per body (geocentric apparent ecliptic of date).
     """
 
     if not bodies:
         return {}
 
-    command_by_name: Dict[str, str] = {}
-    name_by_command: Dict[str, str] = {}
+    results: Dict[str, Dict[str, float]] = {}
+    start = _utc_iso(dt).replace("T", " ").replace("Z", "")
+    stop_dt = datetime.fromtimestamp(dt.timestamp() + 60, tz=timezone.utc)
+    stop = _utc_iso(stop_dt).replace("T", " ").replace("Z", "")
 
     for body in bodies:
         normalized = (
@@ -594,46 +552,35 @@ def _horizons_batch_positions(
         if not normalized:
             continue
 
-        command = normalized.rstrip(";")
+        params = {
+            "format": "text",
+            "COMMAND": f"'{normalized}'",
+            "MAKE_EPHEM": "YES",
+            "EPHEM_TYPE": "OBSERVER",
+            "CENTER": "'500@399'",
+            "QUANTITIES": "'31'",
+            "CSV_FORMAT": "YES",
+            "START_TIME": f"'{start}'",
+            "STOP_TIME": f"'{stop}'",
+            "STEP_SIZE": "'1m'",
+        }
 
-        command_by_name[
-            body["name"]
-        ] = command
+        try:
+            response = requests.get(
+                HORIZONS_API,
+                params=params,
+                timeout=REQUEST_TIMEOUT_HORIZONS,
+            )
+            response.raise_for_status()
+        except Exception:
+            continue
 
-        name_by_command[
-            command
-        ] = body["name"]
+        parsed = _parse_horizons_observer_q31(response.text)
 
-    if not command_by_name:
-        return {}
+        if parsed is not None:
+            results[body["name"]] = parsed
 
-    command_list = ",".join(
-        command_by_name.values()
-    )
-
-    params = {
-        "format": "text",
-        "COMMAND": f"'{command_list}'",
-        "CENTER": "'500@399'",
-        "TABLE_TYPE": "'VECTOR'",
-        "REF_PLANE": "'ECLIPTIC'",
-        "START_TIME": f"'{_utc_iso(dt)}'",
-        "STOP_TIME": f"'{_utc_iso(dt)}'",
-        "STEP_SIZE": "'1d'",
-    }
-
-    response = requests.get(
-        HORIZONS_API,
-        params=params,
-        timeout=REQUEST_TIMEOUT_HORIZONS,
-    )
-
-    response.raise_for_status()
-
-    return _parse_horizons_vector_batch(
-        response.text,
-        name_by_command,
-    )
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -675,17 +622,30 @@ def _miriade_position(
             body_name,
         )
 
+    if body_name.lower() == "moon":
+        miriade_name = "s:Moon"
+    elif body_name.lower() == "sun":
+        miriade_name = "p:Sun"
+    elif body_name.lower() in {
+        "mercury", "venus", "mars", "jupiter",
+        "saturn", "uranus", "neptune",
+    }:
+        miriade_name = f"p:{body_name}"
+    elif body_name.lower() == "pluto":
+        miriade_name = "dp:Pluto"
+    elif body.get("miriade_name"):
+        miriade_name = str(body["miriade_name"])
+    else:
+        miriade_name = f"a:{query_id}"
+
+    # Geocentric APPARENT ecliptic of date (-teph=2, -rplane=2, -tcoor=1).
+    # -teph=1 would be astrometric J2000 (~0.37 deg low in 2026).
     params = {
-        "name": query_id,
-        "epoch": _utc_iso(dt),
-        "observer": "500",
-        "eph": "1",
-        "-theory": "DE431",
-        "-teph": "1",
-        "-tcoor": "1",
-        "-rplane": "2",
+        "-name": miriade_name,
+        "-ep": _utc_iso(dt),
         "-nbd": "1",
         "-mime": "json",
+        **MIRIADE_APPARENT_OF_DATE_PARAMS,
     }
 
     response = requests.get(
@@ -708,13 +668,10 @@ def _miriade_position(
 
         raise
 
-    data = (
-        response.json()
-        .get(
-            "result",
-            {},
-        )
-    )
+    data = response.json()
+
+    if isinstance(data, dict) and "result" in data and "data" not in data:
+        data = data.get("result", {})
 
     if isinstance(data, str):
         data = json.loads(data)
@@ -742,37 +699,7 @@ def _miriade_position(
         in rows[0].items()
     }
 
-    # Do not use `a or b` for coordinates because 0.0 is valid.
-    lon = row.get("elon")
-
-    if lon is None:
-        lon = row.get("ecllon")
-
-    lat = row.get("elat")
-
-    if lat is None:
-        lat = row.get("ecllat")
-
-    if (
-        lon is None
-        or lat is None
-        or not _is_valid_number(lon)
-        or not _is_valid_number(lat)
-    ):
-        ra = row.get("ra")
-        dec = row.get("dec")
-
-        if (
-            not _is_valid_number(ra)
-            or not _is_valid_number(dec)
-        ):
-            return None
-
-        lon, lat = ra_dec_to_ecl(
-            float(ra),
-            float(dec),
-            _utc_iso(dt),
-        )
+    lon, lat = miriade_row_lon_lat(row)
 
     if (
         not _is_valid_number(lon)
@@ -781,6 +708,9 @@ def _miriade_position(
         return None
 
     raw_distance = row.get("delta")
+
+    if raw_distance is None:
+        raw_distance = row.get("dobs")
 
     if raw_distance is None:
         raw_distance = row.get("dist")
@@ -802,11 +732,10 @@ def _miriade_position(
         else 0.0
     )
 
-    timestamp = (
-        row.get("epoch")
-        or row.get("date")
-        or row.get("datetime")
-        or _utc_iso(dt)
+    timestamp = _utc_iso(dt)
+
+    ra_m, dec_m = ecliptic_to_equatorial_of_date(
+        float(lon), float(lat), _to_jd(dt)
     )
 
     return {
@@ -814,6 +743,8 @@ def _miriade_position(
         "latitude": float(lat),
         "distance": distance,
         "velocity": velocity,
+        "right_ascension": ra_m,
+        "declination": dec_m,
         "timestamp": str(timestamp),
     }
 
@@ -873,7 +804,18 @@ def _swiss_position(
         "velocity": speed if speed is not None else 0.0,
         "longitude_speed": speed,
     }
-    ra, dec = ecliptic_to_equatorial(result["longitude"], result["latitude"])
+    # Apparent RA/Dec of date straight from Swiss (true equator/equinox).
+    try:
+        equ, _ = swe.calc_ut(
+            _to_jd(dt),
+            int(code),
+            swe.FLG_SPEED | swe.FLG_EQUATORIAL,
+        )
+        ra, dec = float(equ[0]) % 360.0, float(equ[1])
+    except Exception:
+        ra, dec = ecliptic_to_equatorial_of_date(
+            result["longitude"], result["latitude"], _to_jd(dt)
+        )
     result["right_ascension"] = ra
     result["declination"] = dec
     return result
@@ -1249,6 +1191,7 @@ def _compute_south_node(
         }
 
     lon = normalize_lon(float(true_node["longitude"]) + 180.0)
+    south_ra, south_dec = ecliptic_to_equatorial_of_date(lon, 0.0, _to_jd(dt))
     speed = true_node.get("longitude_speed")
     if _is_valid_number(speed):
         # Opposition point shares magnitude of nodal speed, opposite sign convention
@@ -1264,8 +1207,8 @@ def _compute_south_node(
             "distance": 0.0,
             "velocity": node_speed if node_speed is not None else 0.0,
             "longitude_speed": node_speed,
-            "declination": ecliptic_to_equatorial(lon, 0.0)[1],
-            "right_ascension": ecliptic_to_equatorial(lon, 0.0)[0],
+            "declination": south_dec,
+            "right_ascension": south_ra,
             "timestamp": _utc_iso(dt),
             "source": "calculated",
             "category": "lunar_nodes",
@@ -1590,39 +1533,22 @@ def fetch_all_positions(
             ):
                 continue
 
+            # Catalog RA/Dec are J2000. Publish the APPARENT position OF DATE
+            # (Swiss fixstar2_ut; precession fallback) — same frame as planets.
             try:
-                ra = star[
-                    "ra_deg"
-                ]
-
-                dec = star[
-                    "dec_deg"
-                ]
-
-                if (
-                    not _is_valid_number(ra)
-                    or not _is_valid_number(dec)
-                ):
-                    continue
-
-                star_lon, star_lat = (
-                    ra_dec_to_ecl(
-                        float(ra),
-                        float(dec),
-                        _utc_iso(dt),
-                    )
+                star_pos = fixed_star_of_date(
+                    star_id,
+                    star.get("ra_deg"),
+                    star.get("dec_deg"),
+                    _to_jd(dt),
                 )
-
             except Exception:
-                continue
+                star_pos = None
 
             if (
-                not _is_valid_number(
-                    star_lon
-                )
-                or not _is_valid_number(
-                    star_lat
-                )
+                not star_pos
+                or not _is_valid_number(star_pos.get("longitude"))
+                or not _is_valid_number(star_pos.get("latitude"))
             ):
                 continue
 
@@ -1630,11 +1556,11 @@ def fetch_all_positions(
                 star_id
             ] = {
                 "longitude":
-                    float(star_lon)
+                    float(star_pos["longitude"])
                     % 360.0,
 
                 "latitude":
-                    float(star_lat),
+                    float(star_pos["latitude"]),
 
                 "distance":
                     0.0,
@@ -1646,10 +1572,10 @@ def fetch_all_positions(
                     0.0,
 
                 "right_ascension":
-                    float(ra),
+                    float(star_pos["right_ascension"]),
 
                 "declination":
-                    float(dec),
+                    float(star_pos["declination"]),
 
                 "timestamp":
                     _utc_iso(dt),
@@ -1699,7 +1625,8 @@ def fetch_all_positions(
     )
 
     positions = enrich_motion_fields(
-        positions
+        positions,
+        true_obliquity_deg(_to_jd(dt)),
     )
 
     return positions

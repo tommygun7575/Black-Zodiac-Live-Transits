@@ -44,6 +44,8 @@ jobs:
             scripts/calculate_aspects.py \
             scripts/utils/celestial_math.py \
             scripts/utils/coords.py \
+            scripts/utils/frames.py \
+            scripts/check_feed_frames.py \
             scripts/validate_config.py \
             scripts/validate_output_schema.py
           python scripts/validate_config.py
@@ -68,6 +70,13 @@ jobs:
           DAILY_FILE="docs/feed_overlay_${DATE_TAG}.json"
           python scripts/validate_output_schema.py "$DAILY_FILE" \
             --schema schemas/daily_overlay.schema.json
+
+      - name: Assert geocentric of-date frame (regression)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          DATE_TAG=$(TZ=America/Los_Angeles date +'%Y_%m_%d')
+          python scripts/check_feed_frames.py "docs/feed_overlay_${DATE_TAG}.json"
 
       - name: Validate generated daily feed coverage
         run: |

@@ -33,25 +33,33 @@ def get_ecliptic_lonlat(target: str, when_iso: str) -> Optional[Tuple[float, flo
         # Special case: Sun → request explicit geocentric ecliptic coords
         if target.upper() == "SUN":
             obj = Horizons(id='10', location='500@399', epochs=[jd], id_type='majorbody')
-            eph = obj.ephemerides(quantities="1,3")  # RA/DEC + ecliptic
+            eph = obj.ephemerides(quantities="1,2,31")  # RA/DEC + apparent + observer ecliptic of date
         else:
             obj = Horizons(id=tid, location="500@399", epochs=[jd])
             eph = obj.ephemerides()
 
         ecl_lon, ecl_lat = None, None
 
-        for lon_key in ("EclLon", "EclipticLon", "ELON"):
-            if lon_key in eph.colnames:
-                ecl_lon = float(eph[lon_key][0])
-                break
-        for lat_key in ("EclLat", "EclipticLat", "ELAT"):
-            if lat_key in eph.colnames:
-                ecl_lat = float(eph[lat_key][0])
-                break
+        # Geocentric apparent ecliptic OF DATE = Horizons quantity 31
+        # (astroquery ObsEclLon/ObsEclLat). astroquery "EclLon"/"EclLat" are
+        # quantity 18 (HELIOCENTRIC) and must never be used here.
+        for lon_key, lat_key in (("ObsEclLon", "ObsEclLat"),):
+            if lon_key in eph.colnames and lat_key in eph.colnames:
+                try:
+                    lon_v = float(eph[lon_key][0])
+                    lat_v = float(eph[lat_key][0])
+                except (TypeError, ValueError):
+                    continue
+                if lon_v == lon_v and lat_v == lat_v:
+                    ecl_lon, ecl_lat = lon_v, lat_v
+                    break
 
-        # Convert RA/DEC if Horizons didn’t give ecliptic
-        if (ecl_lon is None or ecl_lat is None) and {"RA", "DEC"}.issubset(eph.colnames):
-            ecl_lon, ecl_lat = ra_dec_to_ecl(float(eph["RA"][0]), float(eph["DEC"][0]), when_iso)
+        # Fallback: apparent RA/DEC of date with the true obliquity of date.
+        if (ecl_lon is None or ecl_lat is None) and {"RA_app", "DEC_app"}.issubset(eph.colnames):
+            from scripts.utils.frames import apparent_radec_to_ecliptic_of_date
+            ecl_lon, ecl_lat = apparent_radec_to_ecliptic_of_date(
+                float(eph["RA_app"][0]), float(eph["DEC_app"][0]), jd
+            )
 
         if ecl_lon is None or ecl_lat is None:
             print(f"[HORIZONS] {target} @ {when_iso} → FAILED (no ecliptic coords)")

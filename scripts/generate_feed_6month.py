@@ -20,6 +20,18 @@ from astroquery.jplhorizons import Horizons
 from dateutil import parser as date_parser
 
 from scripts.utils.coords import ra_dec_to_ecl
+from scripts.utils.frames import (
+    HORIZONS_APPARENT_DEC_KEYS,
+    HORIZONS_APPARENT_RA_KEYS,
+    HORIZONS_GEOCENTRIC_LAT_KEYS,
+    HORIZONS_GEOCENTRIC_LON_KEYS,
+    MIRIADE_APPARENT_OF_DATE_PARAMS,
+    apparent_radec_to_ecliptic_of_date,
+    fixed_star_of_date,
+    jd_ut,
+    miriade_row_lon_lat,
+    true_obliquity_deg,
+)
 
 try:
     import swisseph as swe
@@ -417,54 +429,35 @@ def _extract_lon_lat(
     dt: datetime.datetime,
 ) -> Optional[Tuple[float, float]]:
 
-    lon = None
-    lat = None
+    def _first(keys: Sequence[str]) -> Optional[float]:
+        for key in keys:
+            if key not in colnames:
+                continue
+            try:
+                value = row[key]
+            except Exception:
+                continue
+            if _is_valid_number(value):
+                return float(value)
+        return None
 
-    for key in (
-        "EclLon",
-        "EclipticLon",
-        "ELON",
-    ):
-        if key in colnames:
-            lon = row[key]
-            break
+    # GEOCENTRIC apparent ecliptic of date = Horizons quantity 31
+    # (astroquery ObsEclLon/ObsEclLat). astroquery "EclLon"/"EclLat" are
+    # quantity 18 = HELIOCENTRIC and must never be used (root cause of the
+    # Sun-centred 6-month feed).
+    lon = _first(HORIZONS_GEOCENTRIC_LON_KEYS)
+    lat = _first(HORIZONS_GEOCENTRIC_LAT_KEYS)
 
-    for key in (
-        "EclLat",
-        "EclipticLat",
-        "ELAT",
-    ):
-        if key in colnames:
-            lat = row[key]
-            break
-
-    # If direct ecliptic coordinates are unavailable,
-    # derive them from RA/DEC.
-    if (
-        lon is None
-        or lat is None
-    ) and (
-        "RA" in colnames
-        and "DEC" in colnames
-    ):
-
+    # Fallback: apparent RA/DEC of date -> ecliptic of date (true obliquity).
+    if lon is None or lat is None:
+        ra = _first(HORIZONS_APPARENT_RA_KEYS)
+        dec = _first(HORIZONS_APPARENT_DEC_KEYS)
+        if ra is None or dec is None:
+            return None
         try:
-
-            ra = row["RA"]
-            dec = row["DEC"]
-
-            if (
-                not _is_valid_number(ra)
-                or not _is_valid_number(dec)
-            ):
-                return None
-
-            lon, lat = ra_dec_to_ecl(
-                float(ra),
-                float(dec),
-                _iso_utc(dt),
+            lon, lat = apparent_radec_to_ecliptic_of_date(
+                ra, dec, jd_ut(dt)
             )
-
         except Exception:
             return None
 
@@ -1092,11 +1085,10 @@ def fetch_miriade_range(
         "-ep": _iso_utc(
             start_dt
         ),
-        "-observer": "500",
         "-theory": "DE431",
-        "-teph": "1",
-        "-tcoor": "1",
-        "-rplane": "2",
+        # Geocentric APPARENT ecliptic of date (-teph=2). -teph=1 would be
+        # astrometric J2000 (~0.37 deg low in 2026).
+        **MIRIADE_APPARENT_OF_DATE_PARAMS,
         "-nbd": str(nbd),
         "-step": "1d",
         "-mime": "json",
@@ -1118,12 +1110,17 @@ def fetch_miriade_range(
             response.json()
         )
 
-        payload = (
-            raw_payload.get(
-                "result",
-                {},
+        # Miriade JSON carries "data" at top level; older wrappers nest it
+        # under "result" (sometimes as a JSON string).
+        if isinstance(raw_payload, dict) and "data" in raw_payload:
+            payload = raw_payload
+        else:
+            payload = (
+                raw_payload.get(
+                    "result",
+                    {},
+                )
             )
-        )
 
         if isinstance(
             payload,
@@ -1256,62 +1253,9 @@ def fetch_miriade_range(
             ]
         )
 
-        # 0.0 is valid, so do not use Python "or" when choosing
-        # coordinate columns.
-        lon = row.get(
-            "elon"
-        )
-
-        if lon is None:
-            lon = row.get(
-                "ecllon"
-            )
-
-        lat = row.get(
-            "elat"
-        )
-
-        if lat is None:
-            lat = row.get(
-                "ecllat"
-            )
-
-        if (
-            lon is None
-            or lat is None
-        ):
-
-            ra = row.get(
-                "ra"
-            )
-
-            dec = row.get(
-                "dec"
-            )
-
-            if (
-                _is_valid_number(
-                    ra
-                )
-                and _is_valid_number(
-                    dec
-                )
-            ):
-
-                try:
-
-                    lon, lat = (
-                        ra_dec_to_ecl(
-                            float(ra),
-                            float(dec),
-                            _iso_utc(
-                                expected_dt
-                            ),
-                        )
-                    )
-
-                except Exception:
-                    continue
+        # Miriade returns ecliptic "Longitude"/"Latitude" as sexagesimal
+        # strings (e.g. "+218:47:55.13"); 0.0 is valid, so no "or" chaining.
+        lon, lat = miriade_row_lon_lat(row)
 
         if (
             not _is_valid_number(
@@ -1540,32 +1484,22 @@ def load_fixed_stars_for_catalog(
         ):
             continue
 
+        # Catalog RA/Dec are J2000: publish the apparent position OF DATE.
         try:
-
-            ra = float(
-                star[
-                    "ra_deg"
-                ]
+            star_pos = fixed_star_of_date(
+                star_id,
+                star.get("ra_deg"),
+                star.get("dec_deg"),
+                jd_ut(epoch),
             )
-
-            dec = float(
-                star[
-                    "dec_deg"
-                ]
-            )
-
-            lon, lat = (
-                ra_dec_to_ecl(
-                    ra,
-                    dec,
-                    _iso_utc(
-                        epoch
-                    ),
-                )
-            )
-
         except Exception:
+            star_pos = None
+
+        if not star_pos:
             continue
+
+        lon = star_pos.get("longitude")
+        lat = star_pos.get("latitude")
 
         if (
             _is_valid_number(
@@ -1589,6 +1523,12 @@ def load_fixed_stars_for_catalog(
 
                 "source":
                     "fixed",
+
+                "right_ascension":
+                    float(star_pos["right_ascension"]),
+
+                "declination":
+                    float(star_pos["declination"]),
             }
 
     return output
@@ -1713,6 +1653,7 @@ def add_south_node(
         str,
         Dict[str, Any],
     ],
+    obliquity_deg: Optional[float] = None,
 ) -> None:
     """South_Node = normalize(True_Node + 180)."""
     true_node = day_transits.get("True_Node")
@@ -1728,7 +1669,11 @@ def add_south_node(
         }
         return
     south = normalize_shared(float(lon) + 180.0)
-    ra, dec = ecliptic_to_equatorial(south, 0.0)
+    ra, dec = (
+        ecliptic_to_equatorial(south, 0.0, obliquity_deg)
+        if obliquity_deg is not None
+        else ecliptic_to_equatorial(south, 0.0)
+    )
     day_transits["South_Node"] = {
         "ecl_lon_deg": south,
         "ecl_lat_deg": 0.0,
@@ -1740,6 +1685,7 @@ def add_south_node(
 
 def enrich_day_equatorial_fields(
     day_transits: Dict[str, Dict[str, Any]],
+    obliquity_deg: Optional[float] = None,
 ) -> None:
     """Add declination/RA from ecliptic lon/lat for daily/6mo field parity."""
     for name, entry in list(day_transits.items()):
@@ -1751,7 +1697,11 @@ def enrich_day_equatorial_fields(
         lat = entry.get("ecl_lat_deg")
         if not _is_valid_number(lon) or not _is_valid_number(lat):
             continue
-        ra, dec = ecliptic_to_equatorial(float(lon), float(lat))
+        ra, dec = (
+            ecliptic_to_equatorial(float(lon), float(lat), obliquity_deg)
+            if obliquity_deg is not None
+            else ecliptic_to_equatorial(float(lon), float(lat))
+        )
         entry["right_ascension"] = ra
         entry["declination"] = dec
 
@@ -2402,17 +2352,37 @@ def generate_six_month_feed(
 
     # Fixed stars and Aether points are added after moving-body resolution.
     # They do not affect moving-body coverage.
+    dt_by_key = {
+        _date_key(dt): dt
+        for dt in dt_list
+    }
+
     for day in date_keys:
 
         day_transits = (
             transits[day]
         )
 
+        day_dt = dt_by_key[day]
+
+        # Fixed stars: apparent of date for THIS sample instant.
+        day_star_positions = (
+            load_fixed_stars_for_catalog(
+                fixed_star_names,
+                reference_dt=day_dt,
+            )
+            or fixed_star_positions
+        )
+
+        day_obliquity = true_obliquity_deg(
+            jd_ut(day_dt)
+        )
+
         for (
             star_name,
             star_data,
         ) in (
-            fixed_star_positions.items()
+            day_star_positions.items()
         ):
 
             day_transits[
@@ -2428,10 +2398,12 @@ def generate_six_month_feed(
 
         add_south_node(
             day_transits,
+            day_obliquity,
         )
 
         enrich_day_equatorial_fields(
             day_transits,
+            day_obliquity,
         )
 
     duration = (
