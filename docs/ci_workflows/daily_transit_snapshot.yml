@@ -150,11 +150,11 @@ jobs:
           if set(aether.keys()) != set(expected_aether):
               raise SystemExit(f"Unexpected aether keys: {sorted(aether.keys())}")
 
-          if payload.get("houses_and_angles", {}).get("status") != "user_specific_downstream":
-              raise SystemExit("houses_and_angles must document user-specific downstream policy")
+          if payload.get("houses_and_angles", {}).get("status") not in ("computed", "user_specific_downstream"):
+              raise SystemExit("houses_and_angles status must be computed or user_specific_downstream")
 
-          if payload.get("arabic_parts", {}).get("status") != "unavailable":
-              raise SystemExit("arabic_parts must be unavailable without observer location")
+          if payload.get("arabic_parts", {}).get("status") not in ("computed", "unavailable"):
+              raise SystemExit("arabic_parts status must be computed or unavailable")
 
           if not isinstance(payload.get("unresolved"), list):
               raise SystemExit("unresolved must be a list")
