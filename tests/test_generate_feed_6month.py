@@ -26,11 +26,13 @@ class TestGenerateFeed6Month(unittest.TestCase):
             "Ceres", "Eris", "Haumea", "Makemake",
             "Pallas", "Juno", "Vesta", "Hygiea",
             "Eros", "Psyche", "Sappho", "Hekate", "Nemesis", "Karma", "Destinn", "Aura", "Merlin",
+            "Astraea", "Amphitrite", "Euphrosyne", "Cupido", "Hidalgo", "Amor", "Aphrodite", "Bacchus", "Panacea",
             "Chiron", "Pholus", "Nessus", "Chariklo", "Hylonome", "Asbolus",
             "Orcus", "Quaoar", "Sedna", "Gonggong", "Ixion", "Varuna", "Huya", "Salacia",
+            "Typhon", "2002 AW197", "2003 VS2",
         }
         self.assertEqual(expected, moving_names)
-        self.assertEqual(43, len(moving_names))
+        self.assertEqual(55, len(moving_names))
         self.assertIn("Regulus", set(fixed))
         self.assertGreaterEqual(len(fixed), 19)
         self.assertIn("Aetheric_SunMoon_Midpoint", set(aether))
@@ -233,9 +235,9 @@ class TestGenerateFeed6Month(unittest.TestCase):
         with patch.object(six, "_provider_chain", side_effect=counting_provider_chain):
             moving, _, _ = six.load_catalog_targets(six.CATALOG_PATH)
 
-        # Exactly one call per moving body in the catalog (41), never per date.
+        # Exactly one call per moving body in the catalog (55), never per date.
         self.assertEqual(len(moving), call_count["n"])
-        self.assertEqual(43, call_count["n"])
+        self.assertEqual(55, call_count["n"])
 
         # resolve_moving_body itself never recomputes the chain.
         body = moving[0]
@@ -252,11 +254,11 @@ class TestGenerateFeed6Month(unittest.TestCase):
 
     def test_full_catalog_provider_route_distribution(self):
         """Sanity-check the real catalog's routing distribution: every one
-        of the 41 bodies currently has a valid horizons_id mapping, so none
+        of the 55 bodies currently has a valid horizons_id mapping, so none
         are routed away from JPL by this change — but the classification
         must still be computed correctly from real catalog fields."""
         moving, _, _ = six.load_catalog_targets(six.CATALOG_PATH)
-        self.assertEqual(43, len(moving))
+        self.assertEqual(55, len(moving))
 
         routes = {"jpl_primary": 0, "miriade_primary": 0, "swiss_primary": 0, "no_valid_provider": 0}
         for body in moving:
@@ -264,7 +266,7 @@ class TestGenerateFeed6Month(unittest.TestCase):
             routes[six._classify_provider_route(chain)] += 1
 
         self.assertEqual(0, routes["no_valid_provider"])
-        self.assertEqual(43, routes["jpl_primary"] + routes["miriade_primary"] + routes["swiss_primary"])
+        self.assertEqual(55, routes["jpl_primary"] + routes["miriade_primary"] + routes["swiss_primary"])
         # Lunar nodes are Swiss-primary; all horizons_id bodies keep JPL in chain.
         self.assertEqual(2, routes["swiss_primary"])
         for body in moving:
