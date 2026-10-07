@@ -20,15 +20,81 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Generate 6-month overlay
+      - name: Validate config
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          PYTHONPATH=$(pwd) python scripts/generate_feed_6month.py
+          python -m py_compile \
+            scripts/generate_feed_6month.py \
+            scripts/utils/celestial_math.py \
+            scripts/fetch_ephemeris.py \
+            scripts/calculate_aspects.py \
+            scripts/validate_config.py \
+            scripts/validate_output_schema.py
+          python scripts/validate_config.py
+
+      - name: Run unit tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python -m unittest discover -s tests -v
+
+      - name: Generate 6-month overlay
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python scripts/generate_feed_6month.py
+
+      - name: Validate 6-month overlay schema
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          LATEST=$(ls -1 docs/feed_overlay_6month_*.json | sort | tail -n 1)
+          python scripts/validate_output_schema.py "$LATEST" \
+            --schema schemas/sixmonth_overlay.schema.json
+
+      - name: Validate 6-month overlay coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          files = sorted(Path("docs").glob("feed_overlay_6month_*.json"))
+          if not files:
+              raise SystemExit("No 6-month overlay files found")
+          latest = files[-1]
+          payload = json.loads(latest.read_text(encoding="utf-8"))
+          if "transits" not in payload:
+              raise SystemExit("6-month feed missing transits")
+          days = payload["transits"]
+          if len(days) != 182:
+              raise SystemExit(f"Expected 182 days, got {len(days)}")
+          sample_day = next(iter(days.values()))
+          for required in ("Sun", "Moon", "True_Node", "Mean_Node", "South_Node",
+                           "Aetheric_SunMoon_Midpoint", "Regulus"):
+              if required not in sample_day:
+                  raise SystemExit(f"Sample day missing {required}")
+          # Field parity: declination present on Sun when lon/lat resolved
+          sun = sample_day["Sun"]
+          if sun.get("ecl_lon_deg") is not None and "declination" not in sun:
+              raise SystemExit("Sun missing declination enrichment (parity)")
+          aether_names = [
+              "Aetheric_SunMoon_Midpoint",
+              "Aetheric_Jovian_Arc",
+              "Aetheric_Elemental_Balance",
+          ]
+          for name in aether_names:
+              if name not in sample_day:
+                  raise SystemExit(f"Sample day missing aether point {name}")
+          print(f"[OK] 6-month feed validated: {latest}")
+          print(f"     days={len(days)} coverage={payload.get('coverage')}")
+          PY
 
       - name: Commit & push 6-month overlay
         run: |

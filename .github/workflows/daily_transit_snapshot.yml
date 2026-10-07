@@ -33,13 +33,26 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Validate Python source
+      - name: Validate config
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           python -m py_compile \
             generate_transits.py \
             scripts/generate_transits.py \
             scripts/fetch_ephemeris.py \
-            scripts/calculate_aspects.py
+            scripts/calculate_aspects.py \
+            scripts/utils/celestial_math.py \
+            scripts/utils/coords.py \
+            scripts/validate_config.py \
+            scripts/validate_output_schema.py
+          python scripts/validate_config.py
+
+      - name: Run unit tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python -m unittest discover -s tests -v
 
       - name: Run daily transit generator
         env:
@@ -47,7 +60,16 @@ jobs:
         run: |
           python generate_transits.py
 
-      - name: Validate generated daily feed
+      - name: Validate generated daily feed schema
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          DATE_TAG=$(TZ=America/Los_Angeles date +'%Y_%m_%d')
+          DAILY_FILE="docs/feed_overlay_${DATE_TAG}.json"
+          python scripts/validate_output_schema.py "$DAILY_FILE" \
+            --schema schemas/daily_overlay.schema.json
+
+      - name: Validate generated daily feed coverage
         run: |
           python - <<'PY'
           import json
@@ -56,30 +78,15 @@ jobs:
           from datetime import datetime, timezone
 
           docs = Path("docs")
-
-          pacific_now = datetime.now(
-              timezone.utc
-          ).astimezone(
+          pacific_now = datetime.now(timezone.utc).astimezone(
               ZoneInfo("America/Los_Angeles")
           )
-
-          expected_name = (
-              "feed_overlay_"
-              + pacific_now.strftime("%Y_%m_%d")
-              + ".json"
-          )
-
+          expected_name = "feed_overlay_" + pacific_now.strftime("%Y_%m_%d") + ".json"
           output = docs / expected_name
-
           if not output.exists():
-              raise SystemExit(
-                  f"Expected daily feed was not generated: {output}"
-              )
+              raise SystemExit(f"Expected daily feed was not generated: {output}")
 
-          with output.open(
-              "r",
-              encoding="utf-8",
-          ) as f:
+          with output.open("r", encoding="utf-8") as f:
               payload = json.load(f)
 
           required_top_level = {
@@ -94,120 +101,102 @@ jobs:
               "unresolved",
               "population",
               "provider_runtime",
+              "provenance",
               "transit_positions",
               "calculated_harmonics",
               "aether_points",
               "fixed_star_positions",
               "fixed_star_conjunctions",
+              "lunar_nodes",
+              "lunar_geometry",
+              "stations",
+              "declination_aspects",
+              "midpoints",
+              "geometric_patterns",
+              "houses_and_angles",
+              "arabic_parts",
           }
-
-          missing_keys = (
-              required_top_level
-              - set(payload.keys())
-          )
-
+          missing_keys = required_top_level - set(payload.keys())
           if missing_keys:
               raise SystemExit(
                   "Generated daily feed is missing required keys: "
                   + ", ".join(sorted(missing_keys))
               )
 
-          positions = payload.get(
-              "transit_positions",
-              {},
-          )
+          provenance = payload.get("provenance") or {}
+          if provenance.get("no_fabricated_positions") is not True:
+              raise SystemExit("provenance.no_fabricated_positions must be true")
+          formulas = provenance.get("aether_formulas") or []
+          expected_aether = [
+              "Aetheric_SunMoon_Midpoint",
+              "Aetheric_Jovian_Arc",
+              "Aetheric_Elemental_Balance",
+          ]
+          if list(formulas) != expected_aether:
+              raise SystemExit(f"provenance.aether_formulas mismatch: {formulas}")
 
-          if not isinstance(
-              positions,
-              dict,
-          ):
-              raise SystemExit(
-                  "transit_positions is not a JSON object"
-              )
+          positions = payload.get("transit_positions", {})
+          if not isinstance(positions, dict):
+              raise SystemExit("transit_positions is not a JSON object")
 
-          population = payload.get(
-              "population",
-              {},
-          )
+          for required_body in ("Sun", "Moon", "True_Node", "Mean_Node", "South_Node"):
+              if required_body not in positions:
+                  raise SystemExit(f"Missing required body: {required_body}")
 
+          aether = payload.get("aether_points") or {}
+          for name in expected_aether:
+              if name not in aether:
+                  raise SystemExit(f"Missing aether point: {name}")
+          if set(aether.keys()) != set(expected_aether):
+              raise SystemExit(f"Unexpected aether keys: {sorted(aether.keys())}")
+
+          if payload.get("houses_and_angles", {}).get("status") != "user_specific_downstream":
+              raise SystemExit("houses_and_angles must document user-specific downstream policy")
+
+          if payload.get("arabic_parts", {}).get("status") != "unavailable":
+              raise SystemExit("arabic_parts must be unavailable without observer location")
+
+          if not isinstance(payload.get("unresolved"), list):
+              raise SystemExit("unresolved must be a list")
+          if not isinstance(payload.get("midpoints"), list):
+              raise SystemExit("midpoints must be a list")
+          if not isinstance(payload.get("declination_aspects"), list):
+              raise SystemExit("declination_aspects must be a list")
+          if not isinstance(payload.get("geometric_patterns"), list):
+              raise SystemExit("geometric_patterns must be a list")
+
+          population = payload.get("population", {})
           expected_total = (
-              int(
-                  population.get(
-                      "moving_body_count",
-                      0,
-                  )
-              )
-              + int(
-                  population.get(
-                      "fixed_star_count",
-                      0,
-                  )
-              )
-              + int(
-                  population.get(
-                      "aether_point_count",
-                      0,
-                  )
-              )
+              int(population.get("moving_body_count", 0))
+              + int(population.get("fixed_star_count", 0))
+              + int(population.get("aether_point_count", 0))
           )
-
-          reported_total = int(
-              payload.get(
-                  "total_targets",
-                  0,
-              )
-          )
-
-          if (
-              expected_total
-              != reported_total
-          ):
+          reported_total = int(payload.get("total_targets", 0))
+          if expected_total != reported_total:
               raise SystemExit(
                   "Population count mismatch: "
-                  f"population={expected_total}, "
-                  f"total_targets={reported_total}"
+                  f"population={expected_total}, total_targets={reported_total}"
               )
 
-          unresolved = payload.get(
-              "unresolved",
-              [],
-          )
+          harmonics = payload.get("calculated_harmonics") or []
+          if harmonics and "motion" not in harmonics[0]:
+              raise SystemExit("calculated_harmonics entries must include motion status")
 
-          missing = payload.get(
-              "missing",
-              [],
-          )
-
+          print("[OK] Daily feed validated:")
+          print(f"     file={output}")
+          print(f"     coverage={payload.get('coverage')}")
           print(
-              "[OK] Daily feed validated:"
-          )
-
-          print(
-              f"     file={output}"
-          )
-
-          print(
-              f"     coverage={payload.get('coverage')}"
-          )
-
-          print(
-              f"     resolved="
-              f"{payload.get('resolved_targets')}/"
+              f"     resolved={payload.get('resolved_targets')}/"
               f"{payload.get('total_targets')}"
           )
-
-          print(
-              f"     missing={missing}"
-          )
-
-          print(
-              f"     unresolved={unresolved}"
-          )
-
+          print(f"     missing={payload.get('missing')}")
+          print(f"     unresolved={payload.get('unresolved')}")
           print(
               "     provider_counts="
               f"{payload.get('provider_runtime', {}).get('source_counts', {})}"
           )
+          print(f"     fixed_stars={len(payload.get('fixed_star_positions') or {})}")
+          print(f"     lunar_nodes={sorted((payload.get('lunar_nodes') or {}).keys())}")
           PY
 
       - name: Commit daily dataset
