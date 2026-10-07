@@ -135,12 +135,45 @@ def _mission_checks(payload: Dict[str, Any], schema_path: Path) -> None:
         raise ValueError("provenance.no_fabricated_positions must be true")
 
     houses = payload.get("houses_and_angles") or {}
-    if houses.get("status") != "user_specific_downstream":
-        raise ValueError("houses_and_angles.status must be user_specific_downstream")
+    houses_status = houses.get("status")
+    if houses_status not in {"computed", "user_specific_downstream"}:
+        raise ValueError(
+            "houses_and_angles.status must be computed or user_specific_downstream; "
+            f"got {houses_status!r}"
+        )
+    if houses_status == "computed":
+        angles = houses.get("angles") or {}
+        for key in ("ASC", "MC", "DSC", "IC"):
+            if key not in angles:
+                raise ValueError(f"houses_and_angles.angles missing {key}")
+        cusps = houses.get("cusps") or {}
+        for i in range(1, 13):
+            if f"House_{i}" not in cusps:
+                raise ValueError(f"houses_and_angles.cusps missing House_{i}")
 
     arabic = payload.get("arabic_parts") or {}
-    if arabic.get("status") != "unavailable":
-        raise ValueError("arabic_parts.status must be unavailable without observer location")
+    arabic_status = arabic.get("status")
+    if arabic_status not in {"computed", "unavailable"}:
+        raise ValueError(
+            "arabic_parts.status must be computed or unavailable; "
+            f"got {arabic_status!r}"
+        )
+    if arabic_status == "computed":
+        for key in ("Part_of_Fortune", "Part_of_Spirit", "Part_of_Eros"):
+            if key not in arabic:
+                raise ValueError(f"arabic_parts missing {key}")
+        # Necessity must remain unavailable when no in-repo formula exists
+        necessity = (arabic.get("parts") or {}).get("Part_of_Necessity") or {}
+        if necessity and necessity.get("status") not in {None, "unavailable"}:
+            if necessity.get("longitude") is not None and not necessity.get("formula"):
+                raise ValueError("Part_of_Necessity must not be fabricated without formula")
+
+    natal = payload.get("natal_chart") or {}
+    if not isinstance(natal, dict) or natal.get("status") != "computed":
+        raise ValueError("natal_chart.status must be computed when observer config is wired")
+    observer = payload.get("observer") or {}
+    if not observer.get("config_path"):
+        raise ValueError("observer.config_path required")
 
     for section, required_keys in (
         ("midpoints", ("body_a", "body_b", "longitude")),

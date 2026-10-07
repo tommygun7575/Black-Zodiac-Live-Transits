@@ -22,6 +22,12 @@ from scripts.fetch_ephemeris import (
     load_catalog,
 )
 
+from scripts.utils.houses_parts import (
+    birth_datetime_utc,
+    build_observer_layers,
+    load_natal_observer,
+)
+
 
 # ---------------------------------------------------------------------------
 # PATHS / CONSTANTS
@@ -59,12 +65,15 @@ PROVENANCE_TEMPLATE = {
     "provider_order": list(SOURCE_ORDER),
     "aether_formulas": list(VERIFIED_AETHER_FORMULAS),
     "no_fabricated_positions": True,
-    "houses_policy": "user_specific_downstream",
+    "houses_policy": "daily_transit_at_natal_observer",
+    "natal_observer_config": "config/natal_observer.json",
     "notes": (
-        "Geocentric public feed. Houses/ASC/MC and Arabic parts "
-        "require observer lat/lon and are computed downstream. "
-        "Stations/aspect motion require longitude_speed deg/day; "
-        "Horizons vel_obs is never treated as lambda-dot. "
+        "Daily houses/ASC/MC/DSC/IC: Placidus at the daily transit "
+        "timestamp using config/natal_observer.json (Bronx) lat/lon. "
+        "Natal chart block + Arabic Parts use birth datetime and natal "
+        "ASC/planets (sect-aware Fortune/Spirit). Part_of_Necessity is "
+        "unavailable (no in-repo formula). Stations/aspect motion require "
+        "longitude_speed deg/day; Horizons vel_obs is never lambda-dot. "
         "Unresolved targets stay listed; coordinates are never invented."
     ),
 }
@@ -704,6 +713,32 @@ def main() -> Path:
         transit_positions
     )
 
+    # Reference natal observer (Bronx): daily houses at transit time;
+    # natal chart + Arabic Parts from natal ASC/planets.
+    natal_observer = load_natal_observer()
+    natal_birth_utc = birth_datetime_utc(natal_observer)
+    print(
+        "[INFO] "
+        f"Natal observer birth UTC: "
+        f"{_utc_iso(natal_birth_utc)}"
+    )
+    natal_positions = fetch_all_positions(
+        natal_birth_utc,
+        catalog=catalog,
+    )
+    observer_layers = build_observer_layers(
+        transit_dt_utc=transit_dt_utc,
+        transit_positions=transit_positions,
+        natal_positions=natal_positions,
+        observer=natal_observer,
+    )
+    derived["houses_and_angles"] = observer_layers[
+        "houses_and_angles"
+    ]
+    derived["arabic_parts"] = observer_layers[
+        "arabic_parts"
+    ]
+
     calculated_harmonics = derived[
         "calculated_harmonics"
     ]
@@ -873,6 +908,16 @@ def main() -> Path:
         "arabic_parts":
             derived[
                 "arabic_parts"
+            ],
+
+        "natal_chart":
+            observer_layers[
+                "natal_chart"
+            ],
+
+        "observer":
+            observer_layers[
+                "observer"
             ],
 
         "provenance": {

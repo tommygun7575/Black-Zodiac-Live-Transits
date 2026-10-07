@@ -1,0 +1,36 @@
+{
+  "id": "tommy_bronx_reference",
+  "label": "Tommy — reference natal / daily observer",
+  "person": "Tommy",
+  "birth": {
+    "date": "1975-09-12",
+    "time_local": "09:20",
+    "timezone": "America/New_York",
+    "datetime_local_iso": "1975-09-12T09:20:00-04:00",
+    "datetime_utc_iso": "1975-09-12T13:20:00Z",
+    "place_name": "Bronx, New York, USA",
+    "latitude": 40.8466508,
+    "longitude": -73.8785937,
+    "geocode": {
+      "provider": "OpenStreetMap Nominatim",
+      "query": "Bronx, New York, USA",
+      "retrieved_at_utc": "2026-10-06T18:57:00Z",
+      "display_name": "The Bronx, Bronx County, New York, United States",
+      "osm_type": "relation",
+      "osm_id": 9691916,
+      "licence": "Data © OpenStreetMap contributors, ODbL 1.0",
+      "notes": "Verified live geocode. User-approx coords (~40.8448, -73.8648) and prior natal_profiles.json values are nearby; this file is the daily-feed source of truth."
+    }
+  },
+  "houses": {
+    "system": "P",
+    "system_name": "Placidus",
+    "engine": "swisseph.houses",
+    "daily_policy": "transit_timestamp_at_observer_location",
+    "notes": "Daily feed houses/angles use the daily transit snapshot datetime at this Bronx location. Natal houses use birth datetime at the same location. ASC/MC from Swiss ascmc; DSC=ASC+180, IC=MC+180."
+  },
+  "arabic_parts": {
+    "source_chart": "natal",
+    "notes": "Arabic Parts on the daily feed are computed from natal ASC + natal planets (not transit planets). Only formulas already defined in-repo are emitted."
+  }
+}
