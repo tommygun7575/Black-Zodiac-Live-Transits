@@ -1,8 +1,8 @@
 {
   "file": "docs/feed_overlay_2026_10_08.json",
   "engine_version": "ZodiacOracle.DailyTransit.v3",
-  "generated_at_utc": "2026-10-08T09:11:59.179199+00:00",
-  "validated_at_utc": "2026-10-08T09:12:57.264084+00:00",
+  "generated_at_utc": "2026-10-08T10:03:13.603703+00:00",
+  "validated_at_utc": "2026-10-08T10:04:14.772864+00:00",
   "all_passed": true,
   "summary": {
     "coverage": 1.0,
@@ -126,73 +126,73 @@
         "tolerance_deg_per_day": 0.01,
         "bodies": {
           "Sun": {
-            "longitude_speed": 0.9873215614458307,
+            "longitude_speed": 0.9873428590009261,
             "retrograde": false,
             "motion_status": "direct",
-            "swiss_speed": 0.987322,
+            "swiss_speed": 0.987343,
             "abs_diff": 0.0
           },
           "Moon": {
-            "longitude_speed": 13.485867581050103,
+            "longitude_speed": 13.47941519277423,
             "retrograde": false,
             "motion_status": "direct",
-            "swiss_speed": 13.485867,
-            "abs_diff": 0.0
+            "swiss_speed": 13.479414,
+            "abs_diff": 1e-06
           },
           "Mercury": {
-            "longitude_speed": 1.1358570164174246,
+            "longitude_speed": 1.1347066548491518,
             "retrograde": false,
             "motion_status": "direct",
-            "swiss_speed": 1.135857,
+            "swiss_speed": 1.134706,
             "abs_diff": 0.0
           },
           "Venus": {
-            "longitude_speed": -0.20091402710761241,
+            "longitude_speed": -0.20232578574602889,
             "retrograde": true,
             "motion_status": "retrograde",
-            "swiss_speed": -0.200914,
+            "swiss_speed": -0.202326,
             "abs_diff": 0.0
           },
           "Mars": {
-            "longitude_speed": 0.5671964659282289,
+            "longitude_speed": 0.5671155396746969,
             "retrograde": false,
             "motion_status": "direct",
-            "swiss_speed": 0.567196,
+            "swiss_speed": 0.567116,
             "abs_diff": 0.0
           },
           "Jupiter": {
-            "longitude_speed": 0.16792005977533972,
+            "longitude_speed": 0.16786210751663994,
             "retrograde": false,
             "motion_status": "direct",
-            "swiss_speed": 0.16792,
+            "swiss_speed": 0.167862,
             "abs_diff": 0.0
           },
           "Saturn": {
-            "longitude_speed": -0.07841812105734279,
+            "longitude_speed": -0.07841262778525594,
             "retrograde": true,
             "motion_status": "retrograde",
-            "swiss_speed": -0.078418,
+            "swiss_speed": -0.078413,
             "abs_diff": 0.0
           },
           "Uranus": {
-            "longitude_speed": -0.0223159069912774,
+            "longitude_speed": -0.022342153690609715,
             "retrograde": true,
             "motion_status": "retrograde",
-            "swiss_speed": -0.022316,
+            "swiss_speed": -0.022342,
             "abs_diff": 0.0
           },
           "Neptune": {
-            "longitude_speed": -0.026983813922079443,
+            "longitude_speed": -0.026979341598774954,
             "retrograde": true,
             "motion_status": "retrograde",
-            "swiss_speed": -0.026984,
+            "swiss_speed": -0.026979,
             "abs_diff": 0.0
           },
           "Pluto": {
-            "longitude_speed": -0.0036985736873587616,
+            "longitude_speed": -0.003682300228305035,
             "retrograde": true,
             "motion_status": "retrograde",
-            "swiss_speed": -0.003699,
+            "swiss_speed": -0.003682,
             "abs_diff": 0.0
           }
         },
