@@ -60,11 +60,42 @@ VERIFIED_AETHER_FORMULAS = [
     "Aetheric_Elemental_Balance",
 ]
 
+HARMONICS_SCOPE = "transit_to_transit_sky_geometry"
+
+REFERENCE_DATA_ROLE = (
+    "reference_test_data: embedded reference natal observer used to validate "
+    "house/Arabic-Part code paths; not a user's natal chart and not personal "
+    "transit-to-natal evidence"
+)
+
+MOTION_POLICY = {
+    "speed_field": "longitude_speed (deg/day, apparent ecliptic of date)",
+    "velocity_field": (
+        "provider-native and NOT zodiac longitude speed (Horizons vel_obs km/s; "
+        "0.0 placeholder for catalog/calculated rows); never used for motion"
+    ),
+    "direction_rule": "direct/retrograde/applying/separating use longitude_speed only",
+    "null_speed_rule": (
+        "longitude_speed null -> motion_status 'unresolved', retrograde null; "
+        "never guessed; downstream may derive motion from weekly_6h_difference "
+        "or six_month_series (motion_fallback_available)"
+    ),
+    "station_eligibility": (
+        "physical moving bodies only; fixed stars (motion_status 'fixed', "
+        "station false), Aether points, Sun, Moon and lunar nodes never "
+        "produce station events"
+    ),
+    "true_station_source": False,
+    "calculated_harmonics_scope": "transit_to_transit_sky_geometry",
+    "natal_blocks_role": "reference_test_data",
+}
+
 PROVENANCE_TEMPLATE = {
     "catalog_path": "config/celestial_catalog.json",
     "provider_order": list(SOURCE_ORDER),
     "aether_formulas": list(VERIFIED_AETHER_FORMULAS),
     "no_fabricated_positions": True,
+    "motion_policy": MOTION_POLICY,
     "houses_policy": "daily_transit_at_natal_observer",
     "natal_observer_config": "config/natal_observer.json",
     "notes": (
@@ -739,9 +770,21 @@ def main() -> Path:
         "arabic_parts"
     ]
 
-    calculated_harmonics = derived[
-        "calculated_harmonics"
+    # Daily harmonics are transit-to-transit SKY geometry, never personal
+    # transit-to-natal evidence.
+    calculated_harmonics = [
+        {**row, "scope": HARMONICS_SCOPE}
+        for row in derived["calculated_harmonics"]
     ]
+
+    # Embedded natal / houses / Arabic Parts are reference/test data only.
+    for block in (
+        observer_layers.get("natal_chart"),
+        derived.get("houses_and_angles"),
+        derived.get("arabic_parts"),
+    ):
+        if isinstance(block, dict):
+            block["data_role"] = REFERENCE_DATA_ROLE
 
     aether_points = {
         name: data

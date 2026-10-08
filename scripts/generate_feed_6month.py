@@ -2603,6 +2603,18 @@ def main() -> None:
         data,
     )
 
+    # Derived layer (separate files under docs/derived/; raw feed untouched):
+    # finite-difference speeds, authoritative true stations and the reference
+    # transit-to-natal report (embedded daily-feed natal = test data only).
+    try:
+        from scripts.sixmonth_derived import latest_daily_feed, run as run_derived
+
+        derived_paths = run_derived(outpath, latest_daily_feed())
+        for label, path in derived_paths.items():
+            print(f"   derived {label:<18}: {path}")
+    except Exception as exc:  # raw feed is still written; CI validates derived separately
+        print(f"[WARN] six-month derived layer failed: {exc}")
+
     print(
         "✅ 6-month feed generation complete"
     )

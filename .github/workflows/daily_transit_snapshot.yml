@@ -47,7 +47,8 @@ jobs:
             scripts/utils/frames.py \
             scripts/check_feed_frames.py \
             scripts/validate_config.py \
-            scripts/validate_output_schema.py
+            scripts/validate_output_schema.py \
+            scripts/validate_daily_motion.py
           python scripts/validate_config.py
 
       - name: Run unit tests
@@ -208,10 +209,19 @@ jobs:
           print(f"     lunar_nodes={sorted((payload.get('lunar_nodes') or {}).keys())}")
           PY
 
+      - name: Validate station / motion rules (fixed stars never stations; null speed unresolved)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          DATE_TAG=$(TZ=America/Los_Angeles date +'%Y_%m_%d')
+          python scripts/validate_daily_motion.py "docs/feed_overlay_${DATE_TAG}.json" \
+            --report "docs/derived/daily_motion_validation_${DATE_TAG}.json"
+
       - name: Commit daily dataset
         run: |
           DATE_TAG=$(TZ=America/Los_Angeles date +'%Y_%m_%d')
           DAILY_FILE="docs/feed_overlay_${DATE_TAG}.json"
+          REPORT_FILE="docs/derived/daily_motion_validation_${DATE_TAG}.json"
 
           if [ ! -f "$DAILY_FILE" ]; then
             echo "Expected daily file not found: $DAILY_FILE"
@@ -222,6 +232,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add "$DAILY_FILE"
+          [ -f "$REPORT_FILE" ] && git add "$REPORT_FILE"
 
           if git diff --cached --quiet; then
             echo "No daily transit changes to commit."

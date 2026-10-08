@@ -138,9 +138,9 @@ def position_longitude_speed(pos: Dict[str, Any]) -> Optional[float]:
     ):
         if is_finite_number(pos.get(key)):
             return float(pos[key])
-    # Swiss-sourced velocity is λ̇ (deg/day). Horizons stores vel_obs in velocity.
-    if pos.get("source") == "swiss" and is_finite_number(pos.get("velocity")):
-        return float(pos["velocity"])
+    # ``velocity`` is NEVER read as zodiac longitude speed (rule: keep velocity
+    # separate from λ̇). Swiss rows already carry an explicit longitude_speed;
+    # Horizons rows store vel_obs (km/s) in ``velocity``.
     return None
 
 
@@ -149,20 +149,49 @@ def position_longitude_speed(pos: Dict[str, Any]) -> Optional[float]:
 # ---------------------------------------------------------------------------
 
 
+# Station eligibility (2026-10-08 transit-workflow rules): only PHYSICAL
+# moving bodies may produce true station events. Fixed stars, Aether points,
+# the Sun, the Moon and the lunar nodes are excluded (nodes pending approval).
+STATION_EXCLUDED_CATEGORIES = frozenset({"fixed_stars", "aether_points", "lunar_nodes"})
+STATION_EXCLUDED_BODIES = frozenset(
+    {"Sun", "Moon", "True_Node", "Mean_Node", "South_Node"}
+)
+MOTION_FALLBACK_SOURCES = ["weekly_6h_difference", "six_month_series"]
+UNRESOLVED_SPEED_REASON = "longitude_speed_deg_per_day unavailable from resolving provider"
+
+
+def is_station_eligible(name: str, pos: Optional[Dict[str, Any]] = None) -> bool:
+    """True only for physical moving bodies (never stars, Aether, luminaries, nodes)."""
+    if str(name) in STATION_EXCLUDED_BODIES:
+        return False
+    category = (pos or {}).get("category") if isinstance(pos, dict) else None
+    if category in STATION_EXCLUDED_CATEGORIES:
+        return False
+    if isinstance(pos, dict) and pos.get("source") in {"fixed_star_catalog", "fixed"}:
+        return False
+    return True
+
+
 def motion_status(
     longitude_speed: Optional[float],
     station_threshold: float = STATION_SPEED_THRESHOLD_DEG_PER_DAY,
+    station_eligible: bool = True,
 ) -> Dict[str, Any]:
+    """Classify motion from λ̇ (deg/day) only.
+
+    ``station_eligible=False`` means a near-zero speed is never reported as a
+    station (direction is still reported from the sign of λ̇).
+    """
     if not is_finite_number(longitude_speed):
         return {
             "retrograde": None,
-            "station": None,
+            "station": None if station_eligible else False,
             "longitude_speed": None,
             "status": "unresolved",
-            "reason": "longitude_speed_deg_per_day unavailable from resolving provider",
+            "reason": UNRESOLVED_SPEED_REASON,
         }
     speed = float(longitude_speed)
-    stationary = abs(speed) <= float(station_threshold)
+    stationary = station_eligible and abs(speed) <= float(station_threshold)
     return {
         "retrograde": speed < 0.0 and not stationary,
         "station": stationary,
@@ -170,6 +199,42 @@ def motion_status(
         "status": "station" if stationary else ("retrograde" if speed < 0.0 else "direct"),
         "reason": None,
     }
+
+
+def classify_position_motion(name: str, pos: Dict[str, Any]) -> Dict[str, Any]:
+    """Motion fields for one feed object under the station-eligibility rules."""
+    category = pos.get("category") if isinstance(pos, dict) else None
+    speed = position_longitude_speed(pos)
+    if category == "fixed_stars" or (isinstance(pos, dict) and pos.get("source") == "fixed_star_catalog"):
+        return {
+            "longitude_speed": speed,
+            "retrograde": False,
+            "station": False,
+            "motion_status": "fixed",
+            "station_eligible": False,
+            "motion_reason": (
+                "fixed star: catalog position (precession only); zero/near-zero "
+                "motion is never a station"
+            ),
+        }
+    eligible = is_station_eligible(name, pos)
+    motion = motion_status(speed, station_eligible=eligible)
+    out: Dict[str, Any] = {
+        "longitude_speed": motion["longitude_speed"],
+        "retrograde": motion["retrograde"],
+        "station": motion["station"],
+        "motion_status": motion["status"],
+        "station_eligible": eligible,
+    }
+    if motion["status"] == "unresolved":
+        out["motion_reason"] = motion["reason"]
+        out["motion_fallback_available"] = list(MOTION_FALLBACK_SOURCES)
+    elif not eligible:
+        out["motion_reason"] = (
+            "not station-eligible (Sun/Moon/nodes/Aether excluded); direction "
+            "from longitude_speed sign only"
+        )
+    return out
 
 
 def enrich_motion_fields(
@@ -180,6 +245,7 @@ def enrich_motion_fields(
 
     Pass the TRUE obliquity of date when longitudes are ecliptic-of-date so
     RA/Dec are apparent-of-date and consistent with provider RA/Dec.
+    Positions (longitude/latitude/distance/velocity) are never modified.
     """
     out: Dict[str, Dict[str, Any]] = {}
     for name, pos in positions.items():
@@ -192,14 +258,9 @@ def enrich_motion_fields(
             ra, dec = ecliptic_to_equatorial(lon, lat, obliquity_deg)
             entry["right_ascension"] = ra
             entry["declination"] = dec
-        speed = position_longitude_speed(entry)
-        motion = motion_status(speed)
-        entry["longitude_speed"] = motion["longitude_speed"]
-        entry["retrograde"] = motion["retrograde"]
-        entry["station"] = motion["station"]
-        entry["motion_status"] = motion["status"]
-        if motion["reason"]:
-            entry["motion_reason"] = motion["reason"]
+        entry.pop("motion_reason", None)
+        entry.pop("motion_fallback_available", None)
+        entry.update(classify_position_motion(name, entry))
         out[name] = entry
     return out
 
@@ -207,34 +268,60 @@ def enrich_motion_fields(
 def collect_stations(
     positions: Dict[str, Dict[str, Any]],
 ) -> Dict[str, Any]:
+    """Daily motion summary. Only station-eligible physical bodies are listed.
+
+    The daily feed is NOT the authoritative station source (six-month series
+    is). ``items`` lists eligible bodies that are retrograde or within the
+    near-zero speed threshold at the daily instant.
+    """
     stations: List[Dict[str, Any]] = []
     unresolved: List[Dict[str, Any]] = []
+    excluded: List[Dict[str, Any]] = []
     for name in sorted(positions.keys()):
         pos = positions[name]
         if position_longitude(pos) is None:
             continue
-        speed = position_longitude_speed(pos)
-        motion = motion_status(speed)
-        if motion["status"] == "unresolved":
-            unresolved.append({"body": name, "reason": motion["reason"]})
+        cls = classify_position_motion(name, pos)
+        if not cls["station_eligible"]:
+            if pos.get("category") == "lunar_nodes" and cls["motion_status"] != "unresolved":
+                excluded.append(
+                    {
+                        "body": name,
+                        "status": cls["motion_status"],
+                        "longitude_speed": cls["longitude_speed"],
+                        "category": pos.get("category"),
+                    }
+                )
             continue
-        if motion["station"] or motion["retrograde"]:
+        if cls["motion_status"] == "unresolved":
+            unresolved.append({"body": name, "reason": cls["motion_reason"]})
+            continue
+        if cls["station"] or cls["retrograde"]:
             stations.append(
                 {
                     "body": name,
-                    "status": motion["status"],
-                    "longitude_speed": motion["longitude_speed"],
+                    "status": cls["motion_status"],
+                    "longitude_speed": cls["longitude_speed"],
                     "longitude": position_longitude(pos),
                 }
             )
     return {
         "items": stations,
+        "true_station_source": False,
+        "station_events_count": sum(1 for s in stations if s["status"] == "station"),
         "unresolved_motion_count": len(unresolved),
         "unresolved_sample": unresolved[:20],
+        "unresolved_motion_fallback": list(MOTION_FALLBACK_SOURCES),
+        "excluded_node_motion": excluded,
+        "eligibility": (
+            "physical moving bodies only; fixed stars, Aether points, Sun, Moon "
+            "and lunar nodes never produce station events"
+        ),
         "note": (
-            "Station/retrograde requires longitude_speed deg/day. "
-            "Swiss-resolved bodies and Swiss-enriched speeds qualify; "
-            "Horizons vel_obs is not used as λ̇."
+            "Station/retrograde requires longitude_speed deg/day (velocity is "
+            "never used). Daily |λ̇| <= 0.002 deg/day is a near-station "
+            "indicator only; authoritative station timing comes from the "
+            "six-month series. Null speeds stay unresolved (no fabrication)."
         ),
     }
 

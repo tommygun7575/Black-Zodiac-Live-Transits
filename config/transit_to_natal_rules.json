@@ -1,0 +1,232 @@
+{
+  "_comment": "Transit-to-natal rules for scripts/transit_to_natal.py. Values copied verbatim from luminous_gate_reconstruction.json (version 2.1.1-proposed-reconstruction) section aspects_orbs; no orbs invented. Parameters under 'documented_parameters' are NOT defined there and are conservative, labelled engine parameters pending user decision.",
+  "source": "lg_output/luminous_gate_reconstruction.json#aspects_orbs (2.1.1-proposed-reconstruction)",
+  "aspects_orbs": {
+    "angle_helpers": {
+      "norm": "((x mod 360) + 360) mod 360",
+      "wrap180": "((x + 180) mod 360 + 360) mod 360 - 180, range (-180,180]",
+      "sep": "abs(wrap180(a - b))",
+      "signIndex": "floor(norm(lon)/30), 0 = Aries",
+      "provenance": "project_source_or_spec.md:§4.1"
+    },
+    "aspect_set": {
+      "major": {
+        "conjunction": 0,
+        "opposition": 180,
+        "square": 90,
+        "trine": 120,
+        "sextile": 60
+      },
+      "quincunx": {
+        "angle": 150,
+        "enabled": true
+      },
+      "minor_off_by_default": {
+        "semisquare": 45,
+        "sesquiquadrate": 135,
+        "quintile": 72,
+        "biquintile": 144
+      },
+      "provenance": "project_source_or_spec.md:§4.3"
+    },
+    "transit_to_natal_orbs_deg": {
+      "keyed_by": "transiting class",
+      "provenance": "project_source_or_spec.md:§4.3",
+      "table": {
+        "Moon (DAILY only)": {
+          "conj_opp": 3.0,
+          "square": 3.0,
+          "trine": 2.5,
+          "sextile": 2.0,
+          "quincunx": 1.0,
+          "minor": "n/a (SPEC '—': minor aspects not used for this class)"
+        },
+        "Sun, Mercury, Venus, Mars": {
+          "conj_opp": 2.0,
+          "square": 2.0,
+          "trine": 1.5,
+          "sextile": 1.5,
+          "quincunx": 1.0,
+          "minor": 0.5
+        },
+        "Jupiter, Saturn": {
+          "conj_opp": 2.0,
+          "square": 2.0,
+          "trine": 1.5,
+          "sextile": 1.5,
+          "quincunx": 1.0,
+          "minor": 0.5
+        },
+        "Uranus, Neptune, Pluto": {
+          "conj_opp": 1.5,
+          "square": 1.5,
+          "trine": 1.5,
+          "sextile": 1.0,
+          "quincunx": 1.0,
+          "minor": "n/a (SPEC '—': minor aspects not used for this class)"
+        },
+        "NODE": {
+          "conj_opp": 1.5,
+          "square": 1.5
+        },
+        "CHIRON_MAJOR": {
+          "conj_opp": 1.0,
+          "square": 1.0
+        },
+        "CATALOG_MINOR / OTHER_MINOR": {
+          "conj_opp": "1.0 / 0.5"
+        },
+        "AETHER": {
+          "conj_opp": 1.0
+        }
+      },
+      "natal_target_bonus": "+0.5 degree when natal target is Sun, Moon, ASC or MC (time known)",
+      "angles": "aspects to DSC/IC produced as mirror of ASC/MC and deduplicated",
+      "declination": "transit-to-natal parallel/contraparallel orb 1.0 degree"
+    },
+    "motion": {
+      "provenance": "project_source_or_spec.md:§4.4",
+      "speed_source_order": [
+        "daily longitude_speed",
+        "central difference on six-month series wrap180(L[i+1]-L[i-1])/2",
+        "weekly snapshots wrap180(L[t+6h]-L[t-6h])/0.5"
+      ],
+      "f": "f(t) = wrap180(lambda_T(t) - lambda_N - s*A); s in {+1,-1}, s=+1 only when A in {0,180}; choose side with smallest |f|",
+      "EXACT": "|f| <= 0.1 degree",
+      "APPLYING": "f * speed < 0",
+      "SEPARATING": "f * speed > 0",
+      "UNRESOLVED": "speed null"
+    },
+    "exactness_search": {
+      "provenance": "project_source_or_spec.md:§4.5",
+      "steps": [
+        "compute f at all six-month samples",
+        "hit: f(t_i)*f(t_i+1) <= 0 and |f(t_i)-f(t_i+1)| < 30; linear interpolation; quadratic near stations (|speed| < 0.05 deg/day)",
+        "touch: local min |f| <= orb without sign change = NEAR_MISS (not a hit)",
+        "window: contiguous samples with |f| <= orb; entry/exit interpolated",
+        "series: all windows and hits of one signature in horizon = one TransitSeries",
+        "Moon: use weekly 6 h snapshots or daily position + speed; round to the hour",
+        "times stored UTC, displayed in user tz with label"
+      ]
+    },
+    "stations": {
+      "provenance": "project_source_or_spec.md:§4.6",
+      "rule": "sign change of daily motion in six-month series, quadratic vertex refine",
+      "eligible": [
+        "Mercury",
+        "Venus",
+        "Mars",
+        "Jupiter",
+        "Saturn",
+        "Uranus",
+        "Neptune",
+        "Pluto",
+        "CHIRON_MAJOR"
+      ],
+      "excluded": [
+        "fixed stars",
+        "aether points",
+        "nodes",
+        "Sun",
+        "Moon"
+      ],
+      "half_window_days": {
+        "Mercury": 2,
+        "Venus": 3,
+        "Mars": 4,
+        "Jupiter": 7,
+        "Saturn": 7,
+        "Uranus/Neptune/Pluto": 10,
+        "CHIRON_MAJOR": 7
+      },
+      "station_on_point": "station longitude within 1.5 degree of conj/opp/square point of a natal point"
+    },
+    "ingresses_returns_cycles_lunations": {
+      "provenance": "project_source_or_spec.md:§4.7",
+      "sign_ingress": "signIndex change; interpolate to 30-degree boundary; reingress flag; Sun..Pluto, Chiron, True_Node",
+      "house_ingress": "time known only; root of wrap180(lambda_T - cusp_k)",
+      "returns": "transiting body conjunct own natal position; ordinal from age/mean period labelled approximate",
+      "cycle_checkpoints": "square/opposition to own natal position; phase = norm(lambda_T - lambda_N) (nodes: norm(lambda_N - lambda_T)); 8 phases of 45 degrees New..Balsamic",
+      "lunations": "New = root wrap180(Moon-Sun); Full = root wrap180(Moon-Sun-180); on natal point within 3 (conj) or 2 (opp/sq) degrees",
+      "eclipse_candidate": "syzygy with |Moon ecl_lat| < 1.6 (new) or < 1.1 (full); 'candidate' until eclipse table imported"
+    }
+  },
+  "body_classes": {
+    "LUMINARY": [
+      "Sun",
+      "Moon"
+    ],
+    "PERSONAL": [
+      "Mercury",
+      "Venus",
+      "Mars"
+    ],
+    "SOCIAL": [
+      "Jupiter",
+      "Saturn"
+    ],
+    "OUTER": [
+      "Uranus",
+      "Neptune",
+      "Pluto"
+    ],
+    "NODE": [
+      "True_Node"
+    ],
+    "CHIRON_MAJOR": [
+      "Chiron",
+      "Ceres",
+      "Pallas",
+      "Juno",
+      "Vesta"
+    ],
+    "CATALOG_MINOR": [
+      "Pholus",
+      "Nessus",
+      "Chariklo",
+      "Hygiea",
+      "Eros",
+      "Sappho"
+    ],
+    "OTHER_MINOR": "all other moving feed bodies",
+    "AETHER": [
+      "Aetheric_SunMoon_Midpoint",
+      "Aetheric_Jovian_Arc",
+      "Aetheric_Elemental_Balance"
+    ],
+    "_provenance": "luminous_gate_reconstruction.json celestial_layers.body_classes (SPEC §4.2); Mean_Node excluded by default; South_Node derived from True_Node"
+  },
+  "documented_parameters": {
+    "sampling_adequacy_max_daily_step_deg": {
+      "value": 10.0,
+      "rule": "a transiting series is computed from daily six-month samples only if the body's max |daily step| < 10 deg; faster points (Moon, Aether SunMoon/Elemental) are reported as sampling_insufficient (Moon is DAILY-only per the orb table)",
+      "decision_ref": "D-TRANSIT-PARAMS"
+    },
+    "recurring_activation_min_windows": {
+      "value": 2,
+      "rule": "recurring activation = the same transit signature (body, aspect, side, natal point) re-enters orb in >= 2 separate windows inside the horizon (distinct from multi-pass inside one window)",
+      "decision_ref": "D-TRANSIT-PARAMS"
+    },
+    "convergence_min_simultaneous_windows": {
+      "value": 3,
+      "classes": [
+        "LUMINARY",
+        "PERSONAL",
+        "SOCIAL",
+        "OUTER",
+        "NODE"
+      ],
+      "rule": "candidate convergence = >= 3 distinct transiting bodies from the listed classes simultaneously inside orb of the SAME natal point (sample-level); candidate only because 'unique signal' is undefined",
+      "decision_ref": "D-CONVERGENCE"
+    },
+    "exact_hit_max_step_deg": {
+      "value": 30.0,
+      "rule": "from exactness_search: |f(t_i)-f(t_i+1)| < 30",
+      "decision_ref": "spec"
+    },
+    "fixed_stars_in_transit_series": {
+      "value": false,
+      "rule": "fixed stars do not move appreciably over six months; natal fixed-star contacts are natal-level and not transit series"
+    }
+  }
+}

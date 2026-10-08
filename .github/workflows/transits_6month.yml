@@ -39,7 +39,10 @@ jobs:
             scripts/fetch_ephemeris.py \
             scripts/calculate_aspects.py \
             scripts/validate_config.py \
-            scripts/validate_output_schema.py
+            scripts/validate_output_schema.py \
+            scripts/sixmonth_derived.py \
+            scripts/transit_to_natal.py \
+            scripts/validate_sixmonth_derived.py
           python scripts/validate_config.py
 
       - name: Run unit tests
@@ -109,10 +112,30 @@ jobs:
           print(f"     days={len(days)} coverage={payload.get('coverage')}")
           PY
 
+      - name: Validate derived layer (speeds, true stations, reference transit-to-natal)
+        id: derived_validate
+        continue-on-error: true
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          # Derived files live in docs/derived/ (separate from raw feed data).
+          python scripts/validate_sixmonth_derived.py
+
       - name: Commit & push 6-month overlay
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/feed_overlay_6month_*.json
+          if [ "${{ steps.derived_validate.outcome }}" = "success" ]; then
+            git add docs/derived/sixmonth_*.json
+          else
+            echo "Derived layer validation failed: raw feed committed, derived files withheld"
+          fi
           git commit -m "🔄 Update 6-month overlay feed" || echo "No changes to commit"
           git push
+
+      - name: Fail if derived layer validation failed
+        if: steps.derived_validate.outcome != 'success'
+        run: |
+          echo "Six-month derived layer validation failed (raw feed was still committed)."
+          exit 1
