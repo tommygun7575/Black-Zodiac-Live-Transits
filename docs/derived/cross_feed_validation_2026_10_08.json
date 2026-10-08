@@ -1,0 +1,1743 @@
+{
+ "engine": "cross_feed_validation.v1",
+ "generated_at_utc": "2026-10-08T09:15:58.448555+00:00",
+ "comparison_instant_utc": "2026-10-08T09:11:59.179199+00:00",
+ "inputs": {
+  "daily": "docs/feed_overlay_2026_10_08.json",
+  "weekly": "https://raw.githubusercontent.com/tommygun7575/Zodiac-Oracle-Live-Transits/main/docs/current_week.json",
+  "weekly_derived": "https://raw.githubusercontent.com/tommygun7575/Zodiac-Oracle-Live-Transits/main/docs/derived/current_week_speed_2026-10-04.json",
+  "six_month": "docs/feed_overlay_6month_Oct-07-2026_11-58AM_Pacific.json",
+  "six_month_derived": "docs/derived/sixmonth_derived_Oct-07-2026_11-58AM_Pacific.json"
+ },
+ "method": {
+  "interpolation": "3-point Lagrange (quadratic) on unwrapped longitudes around the daily instant; linear also reported",
+  "no_averaging": "disagreements are recorded per feed, never averaged",
+  "authority": "daily position is authoritative for the instant; weekly/six-month never override it",
+  "position_tolerance_deg": 0.0005,
+  "speed_tolerance_deg_per_day": 0.005,
+  "moon_speed_tolerance": 0.05
+ },
+ "summary": {
+  "bodies_compared": 38,
+  "agree_after_interpolation": 35,
+  "largest_interp_residuals": [
+   {
+    "body": "True_Node",
+    "arcsec": 2.691,
+    "reason": "derived vs direct speed: six_month finite-difference -0.05101 vs daily -0.04293 deg/day (|diff| 0.00808)"
+   },
+   {
+    "body": "Moon",
+    "arcsec": 2.088,
+    "reason": "interpolation: six_month residual 2.09\" (1 day sampling of a fast body)"
+   },
+   {
+    "body": "Aetheric_SunMoon_Midpoint",
+    "arcsec": 1.891,
+    "reason": "derived vs direct speed: daily longitude_speed is null (unresolved, not fabricated); weekly/six-month derived speeds are the fallback"
+   },
+   {
+    "body": "Aetheric_Elemental_Balance",
+    "arcsec": 0.651,
+    "reason": "derived vs direct speed: daily longitude_speed is null (unresolved, not fabricated); weekly/six-month derived speeds are the fallback"
+   },
+   {
+    "body": "Mercury",
+    "arcsec": 0.292,
+    "reason": "derived vs direct speed: six_month finite-difference +1.12887 vs daily +1.13586 deg/day (|diff| 0.00698)"
+   },
+   {
+    "body": "Sun",
+    "arcsec": 0.196,
+    "reason": "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   },
+   {
+    "body": "Mars",
+    "arcsec": 0.107,
+    "reason": "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   },
+   {
+    "body": "Aetheric_Jovian_Arc",
+    "arcsec": 0.037,
+    "reason": "derived vs direct speed: daily longitude_speed is null (unresolved, not fabricated); weekly/six-month derived speeds are the fallback"
+   }
+  ],
+  "largest_raw_nearest_differences_deg": [
+   {
+    "body": "Aetheric_SunMoon_Midpoint",
+    "weekly_raw_deg": 1.68748,
+    "six_month_raw_deg": 5.86477
+   },
+   {
+    "body": "Moon",
+    "weekly_raw_deg": 1.57227,
+    "six_month_raw_deg": 5.46361
+   },
+   {
+    "body": "Aetheric_Elemental_Balance",
+    "weekly_raw_deg": 0.53824,
+    "six_month_raw_deg": 1.86965
+   },
+   {
+    "body": "Mercury",
+    "weekly_raw_deg": 0.13231,
+    "six_month_raw_deg": 0.45876
+   },
+   {
+    "body": "Sun",
+    "weekly_raw_deg": 0.1152,
+    "six_month_raw_deg": 0.40116
+   },
+   {
+    "body": "Mars",
+    "weekly_raw_deg": 0.06616,
+    "six_month_raw_deg": 0.23024
+   }
+  ]
+ },
+ "rows": [
+  {
+   "body": "Sun",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 195.1115311,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 195.2267341,
+    "interpolated": 195.11153316532446,
+    "linear": 195.11153780714946
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 195.5126911,
+    "interpolated": 195.11147652715331,
+    "linear": 195.11154830322505
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.11520299999995132,
+    "weekly_interp_minus_daily_deg": 2.065324451905326e-06,
+    "weekly_linear_interp_minus_daily_deg": 6.707149395879242e-06,
+    "six_month_raw_nearest_minus_daily_deg": 0.4011600000000044,
+    "six_month_interp_minus_daily_deg": -5.457284669319051e-05,
+    "six_month_linear_interp_minus_daily_deg": 1.7203225070261396e-05,
+    "six_month_interp_minus_weekly_interp_deg": -5.663817114509584e-05
+   },
+   "max_interp_residual_arcsec": 0.19646224809548585,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.9873215614458307,
+    "weekly_6h_derived": 0.9873211809818762,
+    "six_month_derived": 0.987441350266428
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Moon",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 167.1758014,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 168.7480754,
+    "interpolated": 167.17585149743172,
+    "linear": 167.17442301001128
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 172.6394143,
+    "interpolated": 167.17638137871313,
+    "linear": 167.15339127739134
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.572273999999993,
+    "weekly_interp_minus_daily_deg": 5.0097431767426315e-05,
+    "weekly_linear_interp_minus_daily_deg": -0.0013783899887584994,
+    "six_month_raw_nearest_minus_daily_deg": 5.463612900000044,
+    "six_month_interp_minus_daily_deg": 0.0005799787131763878,
+    "six_month_linear_interp_minus_daily_deg": -0.02241012260867592,
+    "six_month_interp_minus_weekly_interp_deg": 0.0005298812814089615
+   },
+   "max_interp_residual_arcsec": 2.087923367434996,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 13.485867581050103,
+    "weekly_6h_derived": 13.485486010752966,
+    "six_month_derived": 13.445235964565088
+   },
+   "agree_after_interpolation": false,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)",
+    "interpolation: six_month residual 2.09\" (1 day sampling of a fast body)"
+   ]
+  },
+  {
+   "body": "Mercury",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 219.814362,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 219.9466713,
+    "interpolated": 219.81436670988046,
+    "linear": 219.81411331352493
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 220.2731244,
+    "interpolated": 219.81444311227642,
+    "linear": 219.8104217586541
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.13230929999997443,
+    "weekly_interp_minus_daily_deg": 4.709880499831343e-06,
+    "weekly_linear_interp_minus_daily_deg": -0.000248686475060822,
+    "six_month_raw_nearest_minus_daily_deg": 0.45876240000006874,
+    "six_month_interp_minus_daily_deg": 8.111227646168118e-05,
+    "six_month_linear_interp_minus_daily_deg": -0.003940241345844697,
+    "six_month_interp_minus_weekly_interp_deg": 7.640239596184983e-05
+   },
+   "max_interp_residual_arcsec": 0.29200419526205224,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 1.1358570164174246,
+    "weekly_6h_derived": 1.135811866592021,
+    "six_month_derived": 1.128874424670531
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)",
+    "derived vs direct speed: six_month finite-difference +1.12887 vs daily +1.13586 deg/day (|diff| 0.00698)"
+   ]
+  },
+  {
+   "body": "Venus",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 217.9829203,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 217.959208,
+    "interpolated": 217.98291969268016,
+    "linear": 217.98261127887608
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 217.8980248,
+    "interpolated": 217.98291306594115,
+    "linear": 217.97814367804403
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.023712299999942843,
+    "weekly_interp_minus_daily_deg": -6.073198619560571e-07,
+    "weekly_linear_interp_minus_daily_deg": -0.00030902112393960124,
+    "six_month_raw_nearest_minus_daily_deg": -0.084895500000016,
+    "six_month_interp_minus_daily_deg": -7.234058784888475e-06,
+    "six_month_linear_interp_minus_daily_deg": -0.004776621955898008,
+    "six_month_interp_minus_weekly_interp_deg": -6.626739036619256e-06
+   },
+   "max_interp_residual_arcsec": 0.02604261162559851,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.20091402710761241,
+    "weekly_6h_derived": -0.2009094363196992,
+    "six_month_derived": -0.20892108516388067
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)",
+    "derived vs direct speed: six_month finite-difference -0.20892 vs daily -0.20091 deg/day (|diff| 0.00801)"
+   ]
+  },
+  {
+   "body": "Mars",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 125.9354251,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 126.0015891,
+    "interpolated": 125.93542632585147,
+    "linear": 125.93540860478234
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 126.1656671,
+    "interpolated": 125.9353952577327,
+    "linear": 125.93511945476976
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.06616400000007161,
+    "weekly_interp_minus_daily_deg": 1.22585151984822e-06,
+    "weekly_linear_interp_minus_daily_deg": -1.6495217664669326e-05,
+    "six_month_raw_nearest_minus_daily_deg": 0.23024199999997563,
+    "six_month_interp_minus_daily_deg": -2.9842267281310342e-05,
+    "six_month_linear_interp_minus_daily_deg": -0.0003056452302416801,
+    "six_month_interp_minus_weekly_interp_deg": -3.106811880115856e-05
+   },
+   "max_interp_residual_arcsec": 0.10743216221271723,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.5671964659282289,
+    "weekly_6h_derived": 0.5671956749326156,
+    "six_month_derived": 0.5667290129654113
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Jupiter",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 140.8735661,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 140.8931474,
+    "interpolated": 140.87356641899532,
+    "linear": 140.8735537379774
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 140.9416504,
+    "interpolated": 140.8735573452283,
+    "linear": 140.8733598675569
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.019581300000027113,
+    "weekly_interp_minus_daily_deg": 3.189952622051351e-07,
+    "weekly_linear_interp_minus_daily_deg": -1.236202263044106e-05,
+    "six_month_raw_nearest_minus_daily_deg": 0.06808430000000953,
+    "six_month_interp_minus_daily_deg": -8.754771670282935e-06,
+    "six_month_linear_interp_minus_daily_deg": -0.00020623244313355826,
+    "six_month_interp_minus_weekly_interp_deg": -9.073767046174908e-06
+   },
+   "max_interp_residual_arcsec": 0.031517178013018565,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.16792005977533972,
+    "weekly_6h_derived": 0.16791852216311728,
+    "six_month_derived": 0.16758588171524463
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Saturn",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 10.9984428,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 10.9892947,
+    "interpolated": 10.998442593817693,
+    "linear": 10.998443838274808
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 10.9665996,
+    "interpolated": 10.99844419745829,
+    "linear": 10.998465364826107
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.00914809999994759,
+    "weekly_interp_minus_daily_deg": -2.061823352050851e-07,
+    "weekly_linear_interp_minus_daily_deg": 1.0382748314441415e-06,
+    "six_month_raw_nearest_minus_daily_deg": -0.03184320000002572,
+    "six_month_interp_minus_daily_deg": 1.39745827709703e-06,
+    "six_month_linear_interp_minus_daily_deg": 2.2564826167581487e-05,
+    "six_month_interp_minus_weekly_interp_deg": 1.6036406123021152e-06
+   },
+   "max_interp_residual_arcsec": 0.005030849797549308,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.07841812105734279,
+    "weekly_6h_derived": -0.0784128148001694,
+    "six_month_derived": -0.07837370434925532
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Uranus",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 65.3819109,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 65.3793021,
+    "interpolated": 65.3819108822258,
+    "linear": 65.38190514527855
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 65.372784,
+    "interpolated": 65.3819112253297,
+    "linear": 65.38182305811672
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.002608799999961775,
+    "weekly_interp_minus_daily_deg": -1.7774254956748337e-08,
+    "weekly_linear_interp_minus_daily_deg": -5.754721428274934e-06,
+    "six_month_raw_nearest_minus_daily_deg": -0.00912689999995564,
+    "six_month_interp_minus_daily_deg": 3.253296654293081e-07,
+    "six_month_linear_interp_minus_daily_deg": -8.784188321442343e-05,
+    "six_month_interp_minus_weekly_interp_deg": 3.431039203860564e-07
+   },
+   "max_interp_residual_arcsec": 0.001171186795545509,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.0223159069912774,
+    "weekly_6h_derived": -0.022316046318507175,
+    "six_month_derived": -0.02246329100112366
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Neptune",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 2.660311,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 2.6571635,
+    "interpolated": 2.6603109874569384,
+    "linear": 2.6603119830226043
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 2.6493591,
+    "interpolated": 2.660311441132418,
+    "linear": 2.660327434254775
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.0031475000000682485,
+    "weekly_interp_minus_daily_deg": -1.2543068805825897e-08,
+    "weekly_linear_interp_minus_daily_deg": 9.830225735640852e-07,
+    "six_month_raw_nearest_minus_daily_deg": -0.010951900000009118,
+    "six_month_interp_minus_daily_deg": 4.411324425745988e-07,
+    "six_month_linear_interp_minus_daily_deg": 1.6434254803243675e-05,
+    "six_month_interp_minus_weekly_interp_deg": 4.536755113804247e-07
+   },
+   "max_interp_residual_arcsec": 0.0015880767932685558,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.026983813922079443,
+    "weekly_6h_derived": -0.026983361185662857,
+    "six_month_derived": -0.026955138841648407
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Pluto",
+   "category": "core_bodies",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 303.082959,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 303.0825313,
+    "interpolated": 303.0829589884226,
+    "linear": 303.0829627217939
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 303.0814981,
+    "interpolated": 303.08295924983724,
+    "linear": 303.08301691433047
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.000427700000045661,
+    "weekly_interp_minus_daily_deg": -1.157741280621849e-08,
+    "weekly_linear_interp_minus_daily_deg": 3.7217938597677858e-06,
+    "six_month_raw_nearest_minus_daily_deg": -0.001460899999983667,
+    "six_month_interp_minus_daily_deg": 2.498372850823216e-07,
+    "six_month_linear_interp_minus_daily_deg": 5.791433045487793e-05,
+    "six_month_interp_minus_weekly_interp_deg": 2.614146978885401e-07
+   },
+   "max_interp_residual_arcsec": 0.0008994142262963578,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.0036985736873587616,
+    "weekly_6h_derived": -0.003693417878215044,
+    "six_month_derived": -0.0035960801673854893
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "True_Node",
+   "category": "lunar_nodes",
+   "sources": {
+    "daily": "swiss",
+    "weekly": "Swiss",
+    "six_month": "swiss"
+   },
+   "daily_longitude": 329.0857898105378,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 329.0798267289382,
+    "interpolated": 329.08504227206527,
+    "linear": 329.084743695144
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 329.06521265999925,
+    "interpolated": 329.0859390902901,
+    "linear": 329.08133320694157
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.005963081599588804,
+    "weekly_interp_minus_daily_deg": -0.0007475384725239564,
+    "weekly_linear_interp_minus_daily_deg": -0.0010461153938194911,
+    "six_month_raw_nearest_minus_daily_deg": -0.02057715053854281,
+    "six_month_interp_minus_daily_deg": 0.0001492797523496847,
+    "six_month_linear_interp_minus_daily_deg": -0.004456603596281639,
+    "six_month_interp_minus_weekly_interp_deg": 0.0008968182248736412
+   },
+   "max_interp_residual_arcsec": 2.691138501086243,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.042931153201973916,
+    "weekly_6h_derived": -0.042558849395863574,
+    "six_month_derived": -0.05101044602494832
+   },
+   "agree_after_interpolation": false,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)",
+    "provider difference (same provider, different implementation): weekly residual 2.69\" \u2014 both Swiss Ephemeris, computed by different code/flags in each repo",
+    "derived vs direct speed: six_month finite-difference -0.05101 vs daily -0.04293 deg/day (|diff| 0.00808)"
+   ]
+  },
+  {
+   "body": "Chiron",
+   "category": "centaurs",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 29.1667491,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 29.1615011,
+    "interpolated": 29.166748976030892,
+    "linear": 29.16674686045383
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 29.1484602,
+    "interpolated": 29.16675003256257,
+    "linear": 29.16671839609203
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.005247999999937747,
+    "weekly_interp_minus_daily_deg": -1.2396913007250987e-07,
+    "weekly_linear_interp_minus_daily_deg": -2.239546120108571e-06,
+    "six_month_raw_nearest_minus_daily_deg": -0.01828890000001593,
+    "six_month_interp_minus_daily_deg": 9.325625569545082e-07,
+    "six_month_linear_interp_minus_daily_deg": -3.0703908009854786e-05,
+    "six_month_interp_minus_weekly_interp_deg": 1.056531687027018e-06
+   },
+   "max_interp_residual_arcsec": 0.0033572252050362295,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.04496249249230843,
+    "weekly_6h_derived": -0.04496207740069552,
+    "six_month_derived": -0.045013661476845684
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Ceres",
+   "category": "dwarf_planets",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 107.9667858,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 107.9949053,
+    "interpolated": 107.96678634798451,
+    "linear": 107.96675731480028
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 108.0644753,
+    "interpolated": 107.96677598299011,
+    "linear": 107.96632344758237
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.028119500000002517,
+    "weekly_interp_minus_daily_deg": 5.47984541299229e-07,
+    "weekly_linear_interp_minus_daily_deg": -2.8485199663919047e-05,
+    "six_month_raw_nearest_minus_daily_deg": 0.09768950000000132,
+    "six_month_interp_minus_daily_deg": -9.81700986812939e-06,
+    "six_month_linear_interp_minus_daily_deg": -0.00046235241757131007,
+    "six_month_interp_minus_weekly_interp_deg": -1.0364994409428618e-05
+   },
+   "max_interp_residual_arcsec": 0.0353412355252658,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.24121837597545095,
+    "weekly_6h_derived": 0.2412168887265419,
+    "six_month_derived": 0.24045075138682878
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Pallas",
+   "category": "major_asteroids",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 13.2835273,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 13.2491649,
+    "interpolated": 13.283526385417865,
+    "linear": 13.283521270699156
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 13.1638434,
+    "interpolated": 13.28352489877924,
+    "linear": 13.283457139079868
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.0343623999999636,
+    "weekly_interp_minus_daily_deg": -9.145821877609706e-07,
+    "weekly_linear_interp_minus_daily_deg": -6.0293008345979615e-06,
+    "six_month_raw_nearest_minus_daily_deg": -0.11968390000004092,
+    "six_month_interp_minus_daily_deg": -2.4012207404666697e-06,
+    "six_month_linear_interp_minus_daily_deg": -7.01609201314568e-05,
+    "six_month_interp_minus_weekly_interp_deg": -1.4866386663925368e-06
+   },
+   "max_interp_residual_arcsec": 0.00864439466568001,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.29446465873365885,
+    "weekly_6h_derived": -0.29445972668333714,
+    "six_month_derived": -0.294551765450664
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Juno",
+   "category": "major_asteroids",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 297.1682782,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 297.1842664,
+    "interpolated": 297.1682784703599,
+    "linear": 297.168323955267
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 297.2242914,
+    "interpolated": 297.16827345182,
+    "linear": 297.16897677530704
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.015988200000037978,
+    "weekly_interp_minus_daily_deg": 2.7035991934099e-07,
+    "weekly_linear_interp_minus_daily_deg": 4.5755267024105706e-05,
+    "six_month_raw_nearest_minus_daily_deg": 0.056013200000052166,
+    "six_month_interp_minus_daily_deg": -4.748179890157189e-06,
+    "six_month_linear_interp_minus_daily_deg": 0.0006985753070694045,
+    "six_month_interp_minus_weekly_interp_deg": -5.018539923185017e-06
+   },
+   "max_interp_residual_arcsec": 0.01709344760456588,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.13668767681109248,
+    "weekly_6h_derived": 0.13668651773167445,
+    "six_month_derived": 0.13786747075905287
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Vesta",
+   "category": "major_asteroids",
+   "sources": {
+    "daily": "horizons",
+    "weekly": "JPL",
+    "six_month": "jpl"
+   },
+   "daily_longitude": 21.2063449,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 21.1762771,
+    "interpolated": 21.206344009197096,
+    "linear": 21.206334327320814
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 21.1015799,
+    "interpolated": 21.206339088299487,
+    "linear": 21.206201422011002
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -0.030067799999983436,
+    "weekly_interp_minus_daily_deg": -8.908028803489287e-07,
+    "weekly_linear_interp_minus_daily_deg": -1.0572679229881032e-05,
+    "six_month_raw_nearest_minus_daily_deg": -0.10476500000004307,
+    "six_month_interp_minus_daily_deg": -5.811700475533144e-06,
+    "six_month_linear_interp_minus_daily_deg": -0.00014347798901326314,
+    "six_month_interp_minus_weekly_interp_deg": -4.920897595184215e-06
+   },
+   "max_interp_residual_arcsec": 0.020922121711919317,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": -0.25762374012514566,
+    "weekly_6h_derived": -0.2576176277563139,
+    "six_month_derived": -0.2578260146767187
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)"
+   ]
+  },
+  {
+   "body": "Aetheric_SunMoon_Midpoint",
+   "category": "aether_points",
+   "sources": {
+    "daily": "calculated",
+    "weekly": "calculated",
+    "six_month": "calculated"
+   },
+   "daily_longitude": 2.2873325000000477,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 3.974809499999992,
+    "interpolated": 2.2873846627561556,
+    "linear": 2.285960817160715
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 8.152105399999982,
+    "interpolated": 2.287857905866474,
+    "linear": 2.2649395806163852
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.6874769999999444,
+    "weekly_interp_minus_daily_deg": 5.21627561056448e-05,
+    "weekly_linear_interp_minus_daily_deg": -0.0013716828393626201,
+    "six_month_raw_nearest_minus_daily_deg": 5.8647728999999345,
+    "six_month_interp_minus_daily_deg": 0.0005254058664831973,
+    "six_month_linear_interp_minus_daily_deg": -0.022392919383719345,
+    "six_month_interp_minus_weekly_interp_deg": 0.0004732431102638657
+   },
+   "max_interp_residual_arcsec": 1.8914611193395103,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": null,
+    "weekly_6h_derived": 14.472807191734843,
+    "six_month_derived": 14.432677314831595
+   },
+   "agree_after_interpolation": false,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)",
+    "interpolation (+ provider of components): six_month residual 1.89\" \u2014 Aether formula point built from Sun/Moon/Jupiter etc.; KNOWN DEFECT: 'SunMoon midpoint' is Sun+Moon (a sum), so it inherits the Moon's interpolation error; not fixed (D-AETHER)",
+    "derived vs direct speed: daily longitude_speed is null (unresolved, not fabricated); weekly/six-month derived speeds are the fallback"
+   ]
+  },
+  {
+   "body": "Aetheric_Jovian_Arc",
+   "category": "aether_points",
+   "sources": {
+    "daily": "calculated",
+    "weekly": "calculated",
+    "six_month": "calculated"
+   },
+   "daily_longitude": 129.87512330000004,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 129.90385270000002,
+    "interpolated": 129.87512382517758,
+    "linear": 129.87510989970255
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 129.97505079999996,
+    "interpolated": 129.87511314777,
+    "linear": 129.87489450273077
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.028729399999974703,
+    "weekly_interp_minus_daily_deg": 5.251774837233825e-07,
+    "weekly_linear_interp_minus_daily_deg": -1.3400297461885202e-05,
+    "six_month_raw_nearest_minus_daily_deg": 0.09992749999992157,
+    "six_month_interp_minus_daily_deg": -1.0152230061066803e-05,
+    "six_month_linear_interp_minus_daily_deg": -0.00022879726930113975,
+    "six_month_interp_minus_weekly_interp_deg": -1.0677407544790185e-05
+   },
+   "max_interp_residual_arcsec": 0.03654802821984049,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": null,
+    "weekly_6h_derived": 0.24633133696316542,
+    "six_month_derived": 0.24595958606449994
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)",
+    "derived vs direct speed: daily longitude_speed is null (unresolved, not fabricated); weekly/six-month derived speeds are the fallback"
+   ]
+  },
+  {
+   "body": "Aetheric_Elemental_Balance",
+   "category": "aether_points",
+   "sources": {
+    "daily": "calculated",
+    "weekly": "calculated",
+    "six_month": "calculated"
+   },
+   "daily_longitude": 170.36471559999995,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 170.90295749999996,
+    "interpolated": 170.36473250532111,
+    "linear": 170.36414763122323
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 172.23436873333333,
+    "interpolated": 170.36489656746232,
+    "linear": 170.35555147006835
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 0.5382419000000027,
+    "weekly_interp_minus_daily_deg": 1.690532121756405e-05,
+    "weekly_linear_interp_minus_daily_deg": -0.0005679687767496944,
+    "six_month_raw_nearest_minus_daily_deg": 1.8696531333333724,
+    "six_month_interp_minus_daily_deg": 0.000180967462370063,
+    "six_month_linear_interp_minus_daily_deg": -0.009164129931605203,
+    "six_month_interp_minus_weekly_interp_deg": 0.0001640621412661858
+   },
+   "max_interp_residual_arcsec": 0.6514828645322268,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": null,
+    "weekly_6h_derived": 4.617257416455178,
+    "six_month_derived": 4.601014630788904
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "timestamp difference: nearest weekly sample +2.80 h, nearest six-month sample +9.75 h from the daily instant (removed by interpolation down to the residuals below)",
+    "derived vs direct speed: daily longitude_speed is null (unresolved, not fabricated); weekly/six-month derived speeds are the fallback"
+   ]
+  },
+  {
+   "body": "Aldebaran",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 70.16919260032671,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 70.16920358248645,
+    "interpolated": 70.16919416408605,
+    "linear": 70.16919411811335
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 70.16922505330267,
+    "interpolated": 70.16919217285803,
+    "linear": 70.16919172561607
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.0982159665218205e-05,
+    "weekly_interp_minus_daily_deg": 1.5637592696293723e-06,
+    "weekly_linear_interp_minus_daily_deg": 1.5177865861915052e-06,
+    "six_month_raw_nearest_minus_daily_deg": 3.245297602916253e-05,
+    "six_month_interp_minus_daily_deg": -4.2746864892251324e-07,
+    "six_month_linear_interp_minus_daily_deg": -8.747106221562717e-07,
+    "six_month_interp_minus_weekly_interp_deg": -1.9912280322387232e-06
+   },
+   "max_interp_residual_arcsec": 0.00562953337066574,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 8.117775114689184e-05,
+    "six_month_derived": 8.092305935251383e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Algol",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 56.54788778535314,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 56.547897203210546,
+    "interpolated": 56.54788903016032,
+    "linear": 56.547888980791576
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 56.547915875933725,
+    "interpolated": 56.54788735756176,
+    "linear": 56.54788685779326
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 9.417857427251874e-06,
+    "weekly_interp_minus_daily_deg": 1.2448072084225714e-06,
+    "weekly_linear_interp_minus_daily_deg": 1.1954384717682842e-06,
+    "six_month_raw_nearest_minus_daily_deg": 2.809058059938252e-05,
+    "six_month_interp_minus_daily_deg": -4.277914058548049e-07,
+    "six_month_linear_interp_minus_daily_deg": -9.275598813474062e-07,
+    "six_month_interp_minus_weekly_interp_deg": -1.6725985005905386e-06
+   },
+   "max_interp_residual_arcsec": 0.004481305950321257,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 7.052971438333011e-05,
+    "six_month_derived": 7.018743007173315e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Altair",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 302.1584432794181,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 302.15842793815034,
+    "interpolated": 302.15844057855503,
+    "linear": 302.1584405346064
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 302.15839892760306,
+    "interpolated": 302.1584428437196,
+    "linear": 302.1584424318141
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -1.5341267726398655e-05,
+    "weekly_interp_minus_daily_deg": -2.700863092286454e-06,
+    "weekly_linear_interp_minus_daily_deg": -2.7448116952655255e-06,
+    "six_month_raw_nearest_minus_daily_deg": -4.4351815063237154e-05,
+    "six_month_interp_minus_daily_deg": -4.35698439105181e-07,
+    "six_month_linear_interp_minus_daily_deg": -8.476040420646314e-07,
+    "six_month_interp_minus_weekly_interp_deg": 2.2651645394944353e-06
+   },
+   "max_interp_residual_arcsec": 0.009723107132231235,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -0.00010789577488779032,
+    "six_month_derived": -0.00010808328608739725
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Antares",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 250.13509078339106,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 250.13507969036394,
+    "interpolated": 250.13508920013987,
+    "linear": 250.13508916912568
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 250.1350574310839,
+    "interpolated": 250.13509034834314,
+    "linear": 250.13509013676867
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -1.1093027069364325e-05,
+    "weekly_interp_minus_daily_deg": -1.5832512190172565e-06,
+    "weekly_linear_interp_minus_daily_deg": -1.6142653294082265e-06,
+    "six_month_raw_nearest_minus_daily_deg": -3.3352307127643144e-05,
+    "six_month_interp_minus_daily_deg": -4.3504792301973794e-07,
+    "six_month_linear_interp_minus_daily_deg": -6.466224249379593e-07,
+    "six_month_interp_minus_weekly_interp_deg": 1.1482032959975186e-06
+   },
+   "max_interp_residual_arcsec": 0.0056997043884621235,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -8.116109267690039e-05,
+    "six_month_derived": -8.10136648936968e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Arcturus",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 204.6030683358582,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 204.60306617217785,
+    "interpolated": 204.60306841034821,
+    "linear": 204.60306838783572
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 204.6030603706341,
+    "interpolated": 204.60306790314482,
+    "linear": 204.60306782233675
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -2.1636803921865067e-06,
+    "weekly_interp_minus_daily_deg": 7.449000349879498e-08,
+    "weekly_linear_interp_minus_daily_deg": 5.197750851948513e-08,
+    "six_month_raw_nearest_minus_daily_deg": -7.965224085637601e-06,
+    "six_month_interp_minus_daily_deg": -4.3271336380712455e-07,
+    "six_month_linear_interp_minus_daily_deg": -5.135213996254606e-07,
+    "six_month_interp_minus_weekly_interp_deg": -5.072033673059195e-07
+   },
+   "max_interp_residual_arcsec": 0.0015577681097056484,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -1.8902338141857853e-05,
+    "six_month_derived": -1.853849041571884e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Betelgeuse",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 89.13275584102104,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 89.13276934814544,
+    "interpolated": 89.13275788906684,
+    "linear": 89.1327578473262
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 89.13279543235706,
+    "interpolated": 89.13275541413907,
+    "linear": 89.13275503226494
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.3507124435818696e-05,
+    "weekly_interp_minus_daily_deg": 2.048045871561044e-06,
+    "weekly_linear_interp_minus_daily_deg": 2.006305180657364e-06,
+    "six_month_raw_nearest_minus_daily_deg": 3.959133596254105e-05,
+    "six_month_interp_minus_daily_deg": -4.268820248398697e-07,
+    "six_month_linear_interp_minus_daily_deg": -8.087561127467779e-07,
+    "six_month_interp_minus_weekly_interp_deg": -2.474927782714076e-06
+   },
+   "max_interp_residual_arcsec": 0.007372965137619758,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 9.863600728437206e-05,
+    "six_month_derived": 9.849004959472254e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Canopus",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 105.33283362102709,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 105.33288923688771,
+    "interpolated": 105.33284240642512,
+    "linear": 105.33284237135356
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 105.33299644320755,
+    "interpolated": 105.33283320695294,
+    "linear": 105.33283292240168
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 5.561586067415192e-05,
+    "weekly_interp_minus_daily_deg": 8.785397994870436e-06,
+    "weekly_linear_interp_minus_daily_deg": 8.75032651492802e-06,
+    "six_month_raw_nearest_minus_daily_deg": 0.0001628221805276553,
+    "six_month_interp_minus_daily_deg": -4.1407417938899016e-07,
+    "six_month_linear_interp_minus_daily_deg": -6.986253993090941e-07,
+    "six_month_interp_minus_weekly_interp_deg": -9.199472174259427e-06
+   },
+   "max_interp_residual_arcsec": 0.03162743278153357,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 0.00040174193736606346,
+    "six_month_derived": 0.0004017456956409937
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Capella",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 82.23696800905655,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 82.23698146242825,
+    "interpolated": 82.23697002090094,
+    "linear": 82.23696997720707
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 82.23700752467506,
+    "interpolated": 82.23696758224551,
+    "linear": 82.23696717003834
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.3453371707328188e-05,
+    "weekly_interp_minus_daily_deg": 2.0118443444516743e-06,
+    "weekly_linear_interp_minus_daily_deg": 1.968150513675937e-06,
+    "six_month_raw_nearest_minus_daily_deg": 3.951561848225538e-05,
+    "six_month_interp_minus_daily_deg": -4.268110842531314e-07,
+    "six_month_linear_interp_minus_daily_deg": -8.390181847062195e-07,
+    "six_month_interp_minus_weekly_interp_deg": -2.4386554287048057e-06
+   },
+   "max_interp_residual_arcsec": 0.007242639640026027,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 9.850020673875362e-05,
+    "six_month_derived": 9.83035245097082e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Deneb",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 335.7085188186066,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 335.70850093307655,
+    "interpolated": 335.70851558548276,
+    "linear": 335.70851552427973
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 335.7084673308329,
+    "interpolated": 335.7085183828664,
+    "linear": 335.7085177033253
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -1.7885530041894526e-05,
+    "weekly_interp_minus_daily_deg": -3.233123834434082e-06,
+    "weekly_linear_interp_minus_daily_deg": -3.2943269161478383e-06,
+    "six_month_raw_nearest_minus_daily_deg": -5.148777370322932e-05,
+    "six_month_interp_minus_daily_deg": -4.357402758614626e-07,
+    "six_month_linear_interp_minus_daily_deg": -1.1152812930959044e-06,
+    "six_month_interp_minus_weekly_interp_deg": 2.7973835585726192e-06
+   },
+   "max_interp_residual_arcsec": 0.011639245803962694,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -0.00012501074911104508,
+    "six_month_derived": -0.00012564570754985307
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Fomalhaut",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 334.2441858854188,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 334.24417578472736,
+    "interpolated": 334.24418391012114,
+    "linear": 334.24418385971506
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 334.2441572088116,
+    "interpolated": 334.24418545164474,
+    "linear": 334.2441849386497
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -1.010069149742776e-05,
+    "weekly_interp_minus_daily_deg": -1.975297664102982e-06,
+    "weekly_linear_interp_minus_daily_deg": -2.025703679464641e-06,
+    "six_month_raw_nearest_minus_daily_deg": -2.8676607144006994e-05,
+    "six_month_interp_minus_daily_deg": -4.3377406200306723e-07,
+    "six_month_linear_interp_minus_daily_deg": -9.467690915698768e-07,
+    "six_month_interp_minus_weekly_interp_deg": 1.5415236020999146e-06
+   },
+   "max_interp_residual_arcsec": 0.0071110715907707345,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -6.915082923144868e-05,
+    "six_month_derived": -6.950929302332235e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Pollux",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 113.58683643573241,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 113.58685005493437,
+    "interpolated": 113.58683869823264,
+    "linear": 113.58683866255546
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 113.58687571605053,
+    "interpolated": 113.58683600858784,
+    "linear": 113.58683572089637
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.3619202036352362e-05,
+    "weekly_interp_minus_daily_deg": 2.2625001747655915e-06,
+    "weekly_linear_interp_minus_daily_deg": 2.2268230850386317e-06,
+    "six_month_raw_nearest_minus_daily_deg": 3.928031810573884e-05,
+    "six_month_interp_minus_daily_deg": -4.2714464143500663e-07,
+    "six_month_linear_interp_minus_daily_deg": -7.148360054998193e-07,
+    "six_month_interp_minus_weekly_interp_deg": -2.689644816200598e-06
+   },
+   "max_interp_residual_arcsec": 0.00814500062915613,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 9.771316539700175e-05,
+    "six_month_derived": 9.772524048306157e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Procyon",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 116.15629236744157,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 116.15630655475074,
+    "interpolated": 116.15629488859516,
+    "linear": 116.15629485353055
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 116.15633273016228,
+    "interpolated": 116.15629194038121,
+    "linear": 116.15629166215248
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.4187309147928318e-05,
+    "weekly_interp_minus_daily_deg": 2.521153646739549e-06,
+    "weekly_linear_interp_minus_daily_deg": 2.4860889880073955e-06,
+    "six_month_raw_nearest_minus_daily_deg": 4.0362720710618305e-05,
+    "six_month_interp_minus_daily_deg": -4.270602858014172e-07,
+    "six_month_linear_interp_minus_daily_deg": -7.052890396153089e-07,
+    "six_month_interp_minus_weekly_interp_deg": -2.948213932540966e-06
+   },
+   "max_interp_residual_arcsec": 0.009076153128262376,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 0.00010036080161643508,
+    "six_month_derived": 0.00010038896689092047
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Regulus",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 150.19973318050668,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 150.19974303607657,
+    "interpolated": 150.1997349765508,
+    "linear": 150.1997349485596
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 150.1997610359712,
+    "interpolated": 150.19973275182375,
+    "linear": 150.1997325840973
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 9.855569942374132e-06,
+    "weekly_interp_minus_daily_deg": 1.7960441027753404e-06,
+    "weekly_linear_interp_minus_daily_deg": 1.7680529253993882e-06,
+    "six_month_raw_nearest_minus_daily_deg": 2.7855464509229932e-05,
+    "six_month_interp_minus_daily_deg": -4.286829380362178e-07,
+    "six_month_linear_interp_minus_daily_deg": -5.964093361399136e-07,
+    "six_month_interp_minus_weekly_interp_deg": -2.2247270408115583e-06
+   },
+   "max_interp_residual_arcsec": 0.0064657587699912256,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 6.93966664289151e-05,
+    "six_month_derived": 6.961097290172584e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Rigel",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 77.20939224159561,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 77.20940610565361,
+    "interpolated": 77.20939427164114,
+    "linear": 77.20939422626174
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 77.20943311136469,
+    "interpolated": 77.20939181499413,
+    "linear": 77.20939137654109
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.3864058018953074e-05,
+    "weekly_interp_minus_daily_deg": 2.030045607170905e-06,
+    "weekly_linear_interp_minus_daily_deg": 1.9846661416522693e-06,
+    "six_month_raw_nearest_minus_daily_deg": 4.086976900907757e-05,
+    "six_month_interp_minus_daily_deg": -4.2660144572437275e-07,
+    "six_month_linear_interp_minus_daily_deg": -8.650545169075485e-07,
+    "six_month_interp_minus_weekly_interp_deg": -2.4566470528952777e-06
+   },
+   "max_interp_residual_arcsec": 0.007308164185815258,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 0.0001018766827260522,
+    "six_month_derived": 0.00010163574975119899
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Sirius",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 104.45328687395104,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 104.4533047868641,
+    "interpolated": 104.45328997670349,
+    "linear": 104.45328993871088
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 104.45333816385498,
+    "interpolated": 104.45328644816982,
+    "linear": 104.45328612390954
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": 1.7912913108375506e-05,
+    "weekly_interp_minus_daily_deg": 3.102752430095279e-06,
+    "weekly_linear_interp_minus_daily_deg": 3.0647597668576054e-06,
+    "six_month_raw_nearest_minus_daily_deg": 5.1289903922224767e-05,
+    "six_month_interp_minus_daily_deg": -4.257811951902113e-07,
+    "six_month_linear_interp_minus_daily_deg": -7.500415222239099e-07,
+    "six_month_interp_minus_weekly_interp_deg": -3.5285336252854904e-06
+   },
+   "max_interp_residual_arcsec": 0.011169908748343005,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": 0.00012732890291518152,
+    "six_month_derived": 0.00012727904073543849
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Spica",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 204.21169286837872,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 204.2116911307258,
+    "interpolated": 204.2116928582917,
+    "linear": 204.21169283558248
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 204.21168668001255,
+    "interpolated": 204.21169243199785,
+    "linear": 204.21169235058835
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -1.7376529513057903e-06,
+    "weekly_interp_minus_daily_deg": -1.0086978363688104e-08,
+    "weekly_linear_interp_minus_daily_deg": -3.279626525909407e-08,
+    "six_month_raw_nearest_minus_daily_deg": -6.188366114656674e-06,
+    "six_month_interp_minus_daily_deg": -4.363809011920239e-07,
+    "six_month_linear_interp_minus_daily_deg": -5.177903403819073e-07,
+    "six_month_interp_minus_weekly_interp_deg": -4.2629380914149806e-07
+   },
+   "max_interp_residual_arcsec": 0.001570971244291286,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -1.452375269898395e-05,
+    "six_month_derived": -1.4156385433608246e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Vega",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 285.69398827786534,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 285.6939592221699,
+    "interpolated": 285.6939835394917,
+    "linear": 285.69398349921477
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 285.6939032886712,
+    "interpolated": 285.6939878377159,
+    "linear": 285.693987484896
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -2.905569544964237e-05,
+    "weekly_interp_minus_daily_deg": -4.7383737182826735e-06,
+    "weekly_linear_interp_minus_daily_deg": -4.77865057746385e-06,
+    "six_month_raw_nearest_minus_daily_deg": -8.49891941925307e-05,
+    "six_month_interp_minus_daily_deg": -4.4014950617565773e-07,
+    "six_month_linear_interp_minus_daily_deg": -7.929693310870789e-07,
+    "six_month_interp_minus_weekly_interp_deg": 4.298224212107016e-06
+   },
+   "max_interp_residual_arcsec": 0.017058145385817625,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -0.00020800207732744422,
+    "six_month_derived": -0.0002080862173720733
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Zubenelgenubi",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 225.45339254941968,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 225.45338592629594,
+    "interpolated": 225.45339177197212,
+    "linear": 225.4533917453368
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 225.4533719901554,
+    "interpolated": 225.45339211550308,
+    "linear": 225.4533919713213
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -6.623123681492871e-06,
+    "weekly_interp_minus_daily_deg": -7.774475534461089e-07,
+    "weekly_linear_interp_minus_daily_deg": -8.040829015953932e-07,
+    "six_month_raw_nearest_minus_daily_deg": -2.0559264271469146e-05,
+    "six_month_interp_minus_daily_deg": -4.3391662529757014e-07,
+    "six_month_linear_interp_minus_daily_deg": -5.780983656222816e-07,
+    "six_month_interp_minus_weekly_interp_deg": 3.435309281485388e-07
+   },
+   "max_interp_residual_arcsec": 0.002798811192405992,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -4.979014052387498e-05,
+    "six_month_derived": -4.953110340393494e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  },
+  {
+   "body": "Zubeneschamali",
+   "category": "fixed_stars",
+   "sources": {
+    "daily": "fixed_star_catalog",
+    "weekly": "Swiss",
+    "six_month": "fixed"
+   },
+   "daily_longitude": 229.74280816172563,
+   "weekly": {
+    "nearest_sample_utc": "2026-10-08T12:00:00Z",
+    "nearest_offset_hours": 2.8002280002777775,
+    "raw_nearest": 229.74280054475955,
+    "interpolated": 229.74280720407387,
+    "linear": 229.74280717690021
+   },
+   "six_month": {
+    "nearest_sample_utc": "2026-10-08T18:57:05Z",
+    "nearest_offset_hours": 9.751616889166668,
+    "raw_nearest": 229.74278476493407,
+    "interpolated": 229.74280772756782,
+    "linear": 229.74280757514413
+   },
+   "differences": {
+    "weekly_raw_nearest_minus_daily_deg": -7.6169660587765975e-06,
+    "weekly_interp_minus_daily_deg": -9.576517641107785e-07,
+    "weekly_linear_interp_minus_daily_deg": -9.848254194366746e-07,
+    "six_month_raw_nearest_minus_daily_deg": -2.339679156193597e-05,
+    "six_month_interp_minus_daily_deg": -4.341577550803777e-07,
+    "six_month_linear_interp_minus_daily_deg": -5.865815637662308e-07,
+    "six_month_interp_minus_weekly_interp_deg": 5.234940090304008e-07
+   },
+   "max_interp_residual_arcsec": 0.0034475463507988025,
+   "speeds_deg_per_day": {
+    "daily_longitude_speed": 0.0,
+    "weekly_6h_derived": -5.675952935300166e-05,
+    "six_month_derived": -5.651403435237571e-05
+   },
+   "agree_after_interpolation": true,
+   "reasons": [
+    "derived vs direct speed: daily fixed-star longitude_speed is a 0.0 catalog placeholder; derived series show apparent-of-date drift (precession + nutation + annual aberration, ~1e-4 deg/day or less); motion 'fixed', never a station"
+   ]
+  }
+ ]
+}
