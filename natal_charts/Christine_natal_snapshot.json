@@ -1530,7 +1530,7 @@
       "epoch": "apparent of birth date",
       "category": "fixed_stars",
       "timestamp": "1989-07-05T19:01:00Z",
-      "verification_status": "verified_primary_catalog_coarse",
+      "verification_status": "verified",
       "retrograde": false,
       "station": false,
       "motion_status": "fixed",
@@ -9171,11 +9171,10 @@
       "primary": "swiss fixstar2_ut (apparent of date, sefstars.txt ICRS + proper motion)",
       "primary_frame_method": "swiss_fixstar2_apparent_of_date",
       "cross_check": "repo data/fixed_star_catalog.json J2000 RA/Dec, IAU1976 precession + nutation (no aberration/proper motion)",
-      "cross_check_longitude": 224.89880464516648,
-      "diff_deg": 0.04318084554580537,
+      "cross_check_longitude": 224.93884620317795,
+      "diff_deg": 0.003139287534338564,
       "tolerance_deg": 0.02,
-      "status": "verified_primary_catalog_coarse",
-      "note": "Swiss sefstars Zubenelgenubi = alpha-2 Lib (RA 14h50m52.71s = 222.7196 deg). Repo data/fixed_star_catalog.json lists RA 222.676 (3-decimal, ~0.044 deg low), so the catalog-precession check differs by ~0.04 deg; the Swiss value is authoritative."
+      "status": "verified"
     },
     "Zubeneschamali": {
       "primary": "swiss fixstar2_ut (apparent of date, sefstars.txt ICRS + proper motion)",
@@ -9185,6 +9184,27 @@
       "diff_deg": 0.004234223193549269,
       "tolerance_deg": 0.0202,
       "status": "verified"
+    },
+    "Aetheric_SunMoon_Midpoint": {
+      "primary": "in-repo formula scripts/utils/celestial_math.compute_aether_longitudes (Oracle Aether definitions)",
+      "status": "derived",
+      "formula": "normalize(Sun + Moon)",
+      "inputs_verified": true,
+      "note": "No external ephemeris defines this point; value is the repo formula applied to cross-checked inputs."
+    },
+    "Aetheric_Jovian_Arc": {
+      "primary": "in-repo formula scripts/utils/celestial_math.compute_aether_longitudes (Oracle Aether definitions)",
+      "status": "derived",
+      "formula": "normalize(Jupiter - Saturn)",
+      "inputs_verified": true,
+      "note": "No external ephemeris defines this point; value is the repo formula applied to cross-checked inputs."
+    },
+    "Aetheric_Elemental_Balance": {
+      "primary": "in-repo formula scripts/utils/celestial_math.compute_aether_longitudes (Oracle Aether definitions)",
+      "status": "derived",
+      "formula": "normalize((Moon + Venus + Mars) / 3)",
+      "inputs_verified": true,
+      "note": "No external ephemeris defines this point; value is the repo formula applied to cross-checked inputs."
     },
     "ASC": {
       "primary": "swiss houses (Placidus)",
@@ -9201,6 +9221,28 @@
       "diff_deg": 1.1669956819559957e-05,
       "tolerance_deg": 0.1,
       "status": "verified"
+    },
+    "Vertex": {
+      "primary": "swiss houses (Placidus)",
+      "cross_check": "Meeus GMST + nutation closed-form",
+      "cross_check_longitude": 76.06923936927254,
+      "diff_deg": 1.2756475598507677e-05,
+      "tolerance_deg": 0.1,
+      "status": "verified"
+    },
+    "DSC": {
+      "primary": "swiss houses (Placidus)",
+      "status": "derived",
+      "formula": "ASC + 180",
+      "derived_from_verified": "ASC",
+      "diff_deg": 0.0
+    },
+    "IC": {
+      "primary": "swiss houses (Placidus)",
+      "status": "derived",
+      "formula": "MC + 180",
+      "derived_from_verified": "MC",
+      "diff_deg": 0.0
     }
   },
   "unresolved": [],
@@ -9208,7 +9250,16 @@
     "positions_total": 84,
     "positions_resolved": 84,
     "unresolved_count": 0,
-    "verified": 78,
+    "verified": 84,
+    "verified_independent_cross_check": 78,
+    "derived_from_verified_inputs": [
+      "Aetheric_Elemental_Balance",
+      "Aetheric_Jovian_Arc",
+      "Aetheric_SunMoon_Midpoint",
+      "DSC",
+      "IC",
+      "South_Node"
+    ],
     "cross_check_disagreements": [],
     "single_source": [],
     "partially_verified": []

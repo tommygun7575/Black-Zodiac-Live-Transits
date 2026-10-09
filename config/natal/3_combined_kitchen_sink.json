@@ -8,7 +8,7 @@
       "Rebuilt from calculation for Tommy, Milena, Trinity and Christine from the user's authoritative birth table (2026-10-09).",
       "Tropical, geocentric apparent of date; Placidus houses; 'Node' = True (osculating) node, Mean_Node and South_Node (= True + 180) listed separately; 'Lilith' = mean apogee (SE_MEAN_APOG).",
       "Degrees are sign degrees rounded to 0.01; full-precision values, sources and cross-checks are in natal_charts/<Person>_natal_snapshot.json.",
-      "Arabic parts use the in-repo formulas (scripts/utils/houses_parts.py) with Placidus sect; Part_of_Karma uses the circular Sun/Moon midpoint (see snapshot arabic_parts.karma_wrap_correction).",
+      "Arabic parts use the in-repo formulas (scripts/utils/houses_parts.py) with Placidus sect; Part_of_Karma = ASC + circular (shorter-arc) Sun/Moon midpoint, as computed by scripts/utils/houses_parts.py.",
       "fixed_star_contacts: conjunctions within 1.0 deg (scripts/calculate_aspects.fixed_star_conjunctions) using stars precessed to the birth date."
     ]
   },

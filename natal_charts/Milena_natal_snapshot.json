@@ -1530,7 +1530,7 @@
       "epoch": "apparent of birth date",
       "category": "fixed_stars",
       "timestamp": "1992-03-29T17:14:00Z",
-      "verification_status": "verified_primary_catalog_coarse",
+      "verification_status": "verified",
       "retrograde": false,
       "station": false,
       "motion_status": "fixed",
@@ -1802,7 +1802,7 @@
       "Part_of_Karma": {
         "name": "Part_of_Karma",
         "status": "computed",
-        "longitude": 61.11459084795331,
+        "longitude": 61.11459084795325,
         "formula": "ASC + (Sun + Moon) / 2",
         "inputs": {
           "ASC": 77.24757154795327,
@@ -1813,14 +1813,13 @@
           "sect_rule": "day = Sun in Placidus houses 7–12 (above horizon); night = Sun in houses 1–6. Replaces the inverted (sun-asc)%360<180 check in legacy generate_feed_overlay so sect matches classical above-horizon day charts."
         },
         "reason": null,
-        "provenance": "in-repo formula with circular Sun/Moon midpoint (wrap correction)",
-        "repo_code_value": 241.1145908479532,
+        "provenance": "in-repo formula",
         "house": 12
       },
       "Part_of_Treachery": {
         "name": "Part_of_Treachery",
         "status": "computed",
-        "longitude": 334.6031738,
+        "longitude": 334.6031737999999,
         "formula": "ASC + Moon - Karma",
         "inputs": {
           "ASC": 77.24757154795327,
@@ -1829,17 +1828,16 @@
           "sect": "day",
           "sun_house": 11,
           "sect_rule": "day = Sun in Placidus houses 7–12 (above horizon); night = Sun in houses 1–6. Replaces the inverted (sun-asc)%360<180 check in legacy generate_feed_overlay so sect matches classical above-horizon day charts.",
-          "Karma": 241.1145908479532
+          "Karma": 61.11459084795325
         },
         "reason": null,
-        "provenance": "in-repo formula with circular Sun/Moon midpoint (wrap correction)",
-        "repo_code_value": 154.60317380000004,
+        "provenance": "in-repo formula",
         "house": 10
       },
       "Part_of_Victory": {
         "name": "Part_of_Victory",
         "status": "computed",
-        "longitude": 25.396826199999964,
+        "longitude": 25.39682620000002,
         "formula": "ASC + Sun - Karma",
         "inputs": {
           "ASC": 77.24757154795327,
@@ -1848,11 +1846,10 @@
           "sect": "day",
           "sun_house": 11,
           "sect_rule": "day = Sun in Placidus houses 7–12 (above horizon); night = Sun in houses 1–6. Replaces the inverted (sun-asc)%360<180 check in legacy generate_feed_overlay so sect matches classical above-horizon day charts.",
-          "Karma": 241.1145908479532
+          "Karma": 61.11459084795325
         },
         "reason": null,
-        "provenance": "in-repo formula with circular Sun/Moon midpoint (wrap correction)",
-        "repo_code_value": 205.39682620000008,
+        "provenance": "in-repo formula",
         "house": 11
       },
       "Part_of_Deliverance": {
@@ -1890,12 +1887,11 @@
     "Part_of_Fortune": 26.45391914795323,
     "Part_of_Spirit": 128.0412239479533,
     "Part_of_Eros": 46.31071384795325,
-    "Part_of_Karma": 61.11459084795331,
-    "Part_of_Victory": 25.396826199999964,
-    "Part_of_Treachery": 334.6031738,
+    "Part_of_Karma": 61.11459084795325,
+    "Part_of_Victory": 25.39682620000002,
+    "Part_of_Treachery": 334.6031737999999,
     "Part_of_Deliverance": 178.83487634795335,
     "Part_of_Necessity": null,
-    "karma_wrap_correction": "KARMA WRAP: repo code computes ASC + (Sun+Moon)/2 as an arithmetic mean = 241.114591; the Sun/Moon midpoint crosses 0/360 so the arithmetic mean is the FAR midpoint (180.000 deg off). Published value uses the shorter-arc (circular) midpoint, same as repo body_midpoint(). Code left unchanged.",
     "data_role": "natal"
   },
   "midpoints": [
@@ -8725,11 +8721,10 @@
       "primary": "swiss fixstar2_ut (apparent of date, sefstars.txt ICRS + proper motion)",
       "primary_frame_method": "swiss_fixstar2_apparent_of_date",
       "cross_check": "repo data/fixed_star_catalog.json J2000 RA/Dec, IAU1976 precession + nutation (no aberration/proper motion)",
-      "cross_check_longitude": 224.93897678200415,
-      "diff_deg": 0.044802504737845084,
+      "cross_check_longitude": 224.9790183887292,
+      "diff_deg": 0.004760898012790449,
       "tolerance_deg": 0.02,
-      "status": "verified_primary_catalog_coarse",
-      "note": "Swiss sefstars Zubenelgenubi = alpha-2 Lib (RA 14h50m52.71s = 222.7196 deg). Repo data/fixed_star_catalog.json lists RA 222.676 (3-decimal, ~0.044 deg low), so the catalog-precession check differs by ~0.04 deg; the Swiss value is authoritative."
+      "status": "verified"
     },
     "Zubeneschamali": {
       "primary": "swiss fixstar2_ut (apparent of date, sefstars.txt ICRS + proper motion)",
@@ -8739,6 +8734,27 @@
       "diff_deg": 0.00523258250925096,
       "tolerance_deg": 0.0202,
       "status": "verified"
+    },
+    "Aetheric_SunMoon_Midpoint": {
+      "primary": "in-repo formula scripts/utils/celestial_math.compute_aether_longitudes (Oracle Aether definitions)",
+      "status": "derived",
+      "formula": "normalize(Sun + Moon)",
+      "inputs_verified": true,
+      "note": "No external ephemeris defines this point; value is the repo formula applied to cross-checked inputs."
+    },
+    "Aetheric_Jovian_Arc": {
+      "primary": "in-repo formula scripts/utils/celestial_math.compute_aether_longitudes (Oracle Aether definitions)",
+      "status": "derived",
+      "formula": "normalize(Jupiter - Saturn)",
+      "inputs_verified": true,
+      "note": "No external ephemeris defines this point; value is the repo formula applied to cross-checked inputs."
+    },
+    "Aetheric_Elemental_Balance": {
+      "primary": "in-repo formula scripts/utils/celestial_math.compute_aether_longitudes (Oracle Aether definitions)",
+      "status": "derived",
+      "formula": "normalize((Moon + Venus + Mars) / 3)",
+      "inputs_verified": true,
+      "note": "No external ephemeris defines this point; value is the repo formula applied to cross-checked inputs."
     },
     "ASC": {
       "primary": "swiss houses (Placidus)",
@@ -8755,6 +8771,28 @@
       "diff_deg": 9.544678164274956e-06,
       "tolerance_deg": 0.1,
       "status": "verified"
+    },
+    "Vertex": {
+      "primary": "swiss houses (Placidus)",
+      "cross_check": "Meeus GMST + nutation closed-form",
+      "cross_check_longitude": 219.68332771533045,
+      "diff_deg": 6.529850708147933e-06,
+      "tolerance_deg": 0.1,
+      "status": "verified"
+    },
+    "DSC": {
+      "primary": "swiss houses (Placidus)",
+      "status": "derived",
+      "formula": "ASC + 180",
+      "derived_from_verified": "ASC",
+      "diff_deg": 0.0
+    },
+    "IC": {
+      "primary": "swiss houses (Placidus)",
+      "status": "derived",
+      "formula": "MC + 180",
+      "derived_from_verified": "MC",
+      "diff_deg": 0.0
     }
   },
   "unresolved": [],
@@ -8762,7 +8800,16 @@
     "positions_total": 84,
     "positions_resolved": 84,
     "unresolved_count": 0,
-    "verified": 78,
+    "verified": 84,
+    "verified_independent_cross_check": 78,
+    "derived_from_verified_inputs": [
+      "Aetheric_Elemental_Balance",
+      "Aetheric_Jovian_Arc",
+      "Aetheric_SunMoon_Midpoint",
+      "DSC",
+      "IC",
+      "South_Node"
+    ],
     "cross_check_disagreements": [],
     "single_source": [],
     "partially_verified": []
