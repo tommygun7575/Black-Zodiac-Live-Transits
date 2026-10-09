@@ -1,133 +1,732 @@
 {
   "_meta": {
     "label": "Black Zodiac | Kitchen Sink Natal Bundle",
-    "version": "v3.3",
+    "version": "v3.4",
     "created": "2025-08-23",
+    "rebuilt": "2026-10-09",
     "notes": [
-      "Complete natal charts for Tommy, Milena (updated), and Trinity (added).",
-      "Includes planets, houses, aspects, harmonics, arabic parts, fixed stars (known), placeholders for TNOs/asteroids/aether planets until populated by GitHub pipeline."
+      "Rebuilt from calculation for Tommy, Milena, Trinity and Christine from the user's authoritative birth table (2026-10-09).",
+      "Tropical, geocentric apparent of date; Placidus houses; 'Node' = True (osculating) node, Mean_Node and South_Node (= True + 180) listed separately; 'Lilith' = mean apogee (SE_MEAN_APOG).",
+      "Degrees are sign degrees rounded to 0.01; full-precision values, sources and cross-checks are in natal_charts/<Person>_natal_snapshot.json.",
+      "Arabic parts use the in-repo formulas (scripts/utils/houses_parts.py) with Placidus sect; Part_of_Karma = ASC + circular (shorter-arc) Sun/Moon midpoint, as computed by scripts/utils/houses_parts.py.",
+      "fixed_star_contacts: conjunctions within 1.0 deg (scripts/calculate_aspects.fixed_star_conjunctions) using stars precessed to the birth date."
     ]
   },
-
   "Tommy": {
     "birth": {
       "date": "1975-09-12",
       "time": "09:20",
-      "place": "Bronx, NY, USA",
-      "lat": 40.85,
-      "lon": -73.8667,
+      "place": "Bronx, New York, USA",
+      "lat": 40.8466508,
+      "lon": -73.8785937,
       "tz": "America/New_York"
     },
+    "house_system": "Placidus",
     "planets": {
-      "Sun": {"sign": "Virgo", "degree": 19.15, "house": 12},
-      "Moon": {"sign": "Sagittarius", "degree": 19.83, "house": 3},
-      "Mercury": {"sign": "Libra", "degree": 15.78, "house": 1},
-      "Venus": {"sign": "Leo", "degree": 26.03, "house": 11, "retrograde": true},
-      "Mars": {"sign": "Gemini", "degree": 16.28, "house": 9},
-      "Jupiter": {"sign": "Aries", "degree": 23.37, "house": 7, "retrograde": true},
-      "Saturn": {"sign": "Cancer", "degree": 29.55, "house": 10},
-      "Uranus": {"sign": "Scorpio", "degree": 0.2, "house": 2},
-      "Neptune": {"sign": "Sagittarius", "degree": 9.15, "house": 3},
-      "Pluto": {"sign": "Libra", "degree": 8.35, "house": 1},
-      "Node": {"sign": "Scorpio", "degree": 25.1, "house": 2, "retrograde": true},
-      "Lilith": {"sign": "Pisces", "degree": 24.52, "house": 6},
-      "Chiron": {"sign": "Aries", "degree": 27.42, "house": 7, "retrograde": true},
-      "Fortune": {"sign": "Capricorn", "degree": 22.07, "house": 4},
-      "Vertex": {"sign": "Taurus", "degree": 21.87, "house": 8},
-      "ASC": {"sign": "Libra", "degree": 21.38},
-      "MC": {"sign": "Cancer", "degree": 25.1}
+      "Sun": {
+        "sign": "Virgo",
+        "degree": 19.16,
+        "house": 11
+      },
+      "Moon": {
+        "sign": "Sagittarius",
+        "degree": 19.85,
+        "house": 2
+      },
+      "Mercury": {
+        "sign": "Libra",
+        "degree": 15.8,
+        "house": 12
+      },
+      "Venus": {
+        "sign": "Leo",
+        "degree": 26.04,
+        "house": 10,
+        "retrograde": true
+      },
+      "Mars": {
+        "sign": "Gemini",
+        "degree": 16.28,
+        "house": 8
+      },
+      "Jupiter": {
+        "sign": "Aries",
+        "degree": 23.37,
+        "house": 7,
+        "retrograde": true
+      },
+      "Saturn": {
+        "sign": "Cancer",
+        "degree": 29.55,
+        "house": 10
+      },
+      "Uranus": {
+        "sign": "Scorpio",
+        "degree": 0.22,
+        "house": 1
+      },
+      "Neptune": {
+        "sign": "Sagittarius",
+        "degree": 9.15,
+        "house": 2
+      },
+      "Pluto": {
+        "sign": "Libra",
+        "degree": 8.35,
+        "house": 12
+      },
+      "Node": {
+        "sign": "Scorpio",
+        "degree": 24.21,
+        "house": 2,
+        "retrograde": true,
+        "node_type": "true"
+      },
+      "Mean_Node": {
+        "sign": "Scorpio",
+        "degree": 25.12,
+        "house": 2,
+        "retrograde": true,
+        "node_type": "mean"
+      },
+      "South_Node": {
+        "sign": "Taurus",
+        "degree": 24.21,
+        "house": 8,
+        "retrograde": true
+      },
+      "Lilith": {
+        "sign": "Pisces",
+        "degree": 24.53,
+        "house": 5,
+        "lilith_type": "mean"
+      },
+      "Chiron": {
+        "sign": "Aries",
+        "degree": 27.42,
+        "house": 7,
+        "retrograde": true
+      },
+      "Fortune": {
+        "sign": "Capricorn",
+        "degree": 22.07,
+        "house": 3
+      },
+      "Vertex": {
+        "sign": "Taurus",
+        "degree": 21.87,
+        "house": 8
+      },
+      "ASC": {
+        "sign": "Libra",
+        "degree": 21.39
+      },
+      "MC": {
+        "sign": "Cancer",
+        "degree": 25.1
+      }
     },
     "arabic_parts": {
       "Fortune": 292.07,
-      "Spirit": 110.7,
-      "Love": 178.27,
-      "Victory": 55.6
+      "Spirit": 110.71,
+      "Eros": 315.2,
+      "Karma": 55.89,
+      "Treachery": 45.34,
+      "Victory": 314.66,
+      "Deliverance": 20.02
     },
     "fixed_star_contacts": [
-      {"star": "Antares", "body": "Neptune", "orb": 0.62, "aspect": "conjunction"}
+      {
+        "star": "Regulus",
+        "body": "Huya",
+        "orb": 0.15,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Rigel",
+        "body": "Mars",
+        "orb": 0.21,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Antares",
+        "body": "Neptune",
+        "orb": 0.27,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Procyon",
+        "body": "MC",
+        "orb": 0.35,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Aldebaran",
+        "body": "Aetheric_SunMoon_Midpoint",
+        "orb": 0.45,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Aldebaran",
+        "body": "Varuna",
+        "orb": 0.5,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Rigel",
+        "body": "Psyche",
+        "orb": 0.69,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Zubenelgenubi",
+        "body": "Astraea",
+        "orb": 0.72,
+        "aspect": "conjunction"
+      }
     ],
-    "harmonics": {"h8": "filled", "h9": "filled"},
-    "midpoints": "filled",
-    "declinations": "filled"
+    "harmonics": {
+      "h8": "natal_charts/Tommy_natal_snapshot.json#harmonic_charts.h8",
+      "h9": "natal_charts/Tommy_natal_snapshot.json#harmonic_charts.h9"
+    },
+    "midpoints": "natal_charts/Tommy_natal_snapshot.json#midpoints",
+    "declinations": "natal_charts/Tommy_natal_snapshot.json#declination_aspects",
+    "source": "natal_charts/Tommy_natal_snapshot.json",
+    "legacy_unconfigured_parts": {
+      "note": "Values from the previous kitchen-sink entry whose formulas are not defined anywhere in the repo; kept for reference only, not recomputed for other charts.",
+      "Love": {
+        "value": 178.27,
+        "reproduces_as": "ASC + Venus - Sun"
+      },
+      "Victory_legacy": {
+        "value": 55.6,
+        "reproduces_as": "ASC + Jupiter - Sun (repo Part_of_Victory = ASC + Sun - Karma)"
+      }
+    }
   },
-
   "Milena": {
     "birth": {
       "date": "1992-03-29",
       "time": "09:14",
-      "place": "Carson City, NV, USA",
-      "lat": 39.1638,
-      "lon": -119.7674,
+      "place": "Carson City, Nevada, USA",
+      "lat": 39.1663259,
+      "lon": -119.7670374,
       "tz": "America/Los_Angeles"
     },
+    "house_system": "Placidus",
     "planets": {
-      "Sun": {"sign": "Aries", "degree": 9.27, "house": 9},
-      "Moon": {"sign": "Aquarius", "degree": 20.51, "house": 7},
-      "Mercury": {"sign": "Aries", "degree": 3.23, "house": 8, "retrograde": true},
-      "Venus": {"sign": "Pisces", "degree": 19.39, "house": 8},
-      "Mars": {"sign": "Pisces", "degree": 1.25, "house": 7},
-      "Jupiter": {"sign": "Virgo", "degree": 6.09, "house": 1, "retrograde": true},
-      "Saturn": {"sign": "Aquarius", "degree": 15.44, "house": 6},
-      "Uranus": {"sign": "Capricorn", "degree": 17.47, "house": 5},
-      "Neptune": {"sign": "Capricorn", "degree": 18.49, "house": 5},
-      "Pluto": {"sign": "Scorpio", "degree": 22.37, "house": 4, "retrograde": true},
-      "Node": {"sign": "Capricorn", "degree": 5.05, "house": 5, "retrograde": true},
-      "Lilith": {"sign": "Aquarius", "degree": 7.34, "house": 6},
-      "Chiron": {"sign": "Leo", "degree": 3.19, "house": 12, "retrograde": true},
-      "Fortune": {"sign": "Cancer", "degree": 0.28, "house": 11},
-      "Vertex": {"sign": "Capricorn", "degree": 6.19, "house": 5},
-      "ASC": {"sign": "Leo", "degree": 19.03},
-      "MC": {"sign": "Taurus", "degree": 11.12}
+      "Sun": {
+        "sign": "Aries",
+        "degree": 9.26,
+        "house": 11
+      },
+      "Moon": {
+        "sign": "Aquarius",
+        "degree": 18.47,
+        "house": 9
+      },
+      "Mercury": {
+        "sign": "Aries",
+        "degree": 3.55,
+        "house": 11,
+        "retrograde": true
+      },
+      "Venus": {
+        "sign": "Pisces",
+        "degree": 19.41,
+        "house": 10
+      },
+      "Mars": {
+        "sign": "Pisces",
+        "degree": 1.27,
+        "house": 10
+      },
+      "Jupiter": {
+        "sign": "Virgo",
+        "degree": 6.18,
+        "house": 4,
+        "retrograde": true
+      },
+      "Saturn": {
+        "sign": "Aquarius",
+        "degree": 15.73,
+        "house": 9
+      },
+      "Uranus": {
+        "sign": "Capricorn",
+        "degree": 17.79,
+        "house": 8
+      },
+      "Neptune": {
+        "sign": "Capricorn",
+        "degree": 18.83,
+        "house": 8
+      },
+      "Pluto": {
+        "sign": "Scorpio",
+        "degree": 22.64,
+        "house": 6,
+        "retrograde": true
+      },
+      "Node": {
+        "sign": "Capricorn",
+        "degree": 5.09,
+        "house": 7,
+        "retrograde": true,
+        "node_type": "true"
+      },
+      "Mean_Node": {
+        "sign": "Capricorn",
+        "degree": 5.11,
+        "house": 7,
+        "retrograde": true,
+        "node_type": "mean"
+      },
+      "South_Node": {
+        "sign": "Cancer",
+        "degree": 5.09,
+        "house": 1,
+        "retrograde": true
+      },
+      "Lilith": {
+        "sign": "Aquarius",
+        "degree": 7.56,
+        "house": 9,
+        "lilith_type": "mean"
+      },
+      "Chiron": {
+        "sign": "Leo",
+        "degree": 3.32,
+        "house": 3,
+        "retrograde": true
+      },
+      "Fortune": {
+        "sign": "Aries",
+        "degree": 26.45,
+        "house": 11
+      },
+      "Vertex": {
+        "sign": "Scorpio",
+        "degree": 9.68,
+        "house": 6
+      },
+      "ASC": {
+        "sign": "Gemini",
+        "degree": 17.25
+      },
+      "MC": {
+        "sign": "Aquarius",
+        "degree": 23.77
+      }
     },
-    "arabic_parts": {},
-    "fixed_star_contacts": [],
-    "harmonics": "filled",
-    "midpoints": "filled",
-    "declinations": "filled"
+    "arabic_parts": {
+      "Fortune": 26.45,
+      "Spirit": 128.04,
+      "Eros": 46.31,
+      "Karma": 61.11,
+      "Treachery": 334.6,
+      "Victory": 25.4,
+      "Deliverance": 178.83
+    },
+    "fixed_star_contacts": [
+      {
+        "star": "Altair",
+        "body": "Aphrodite",
+        "orb": 0.49,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Rigel",
+        "body": "ASC",
+        "orb": 0.52,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Fomalhaut",
+        "body": "Aetheric_Elemental_Balance",
+        "orb": 0.7,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Procyon",
+        "body": "Aura",
+        "orb": 0.72,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Procyon",
+        "body": "Pholus",
+        "orb": 0.77,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Rigel",
+        "body": "Typhon",
+        "orb": 0.79,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Arcturus",
+        "body": "Nessus",
+        "orb": 0.83,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Betelgeuse",
+        "body": "Varuna",
+        "orb": 0.97,
+        "aspect": "conjunction"
+      }
+    ],
+    "harmonics": {
+      "h8": "natal_charts/Milena_natal_snapshot.json#harmonic_charts.h8",
+      "h9": "natal_charts/Milena_natal_snapshot.json#harmonic_charts.h9"
+    },
+    "midpoints": "natal_charts/Milena_natal_snapshot.json#midpoints",
+    "declinations": "natal_charts/Milena_natal_snapshot.json#declination_aspects",
+    "source": "natal_charts/Milena_natal_snapshot.json"
   },
-
   "Trinity": {
     "birth": {
       "date": "2002-03-28",
       "time": "07:17",
-      "place": "Carson City, NV, USA",
-      "lat": 39.1638,
-      "lon": -119.7674,
+      "place": "Carson City, Nevada, USA",
+      "lat": 39.1663259,
+      "lon": -119.7670374,
       "tz": "America/Los_Angeles"
     },
+    "house_system": "Placidus",
     "planets": {
-      "Sun": {"sign": "Aries", "degree": 7.19, "house": 12},
-      "Moon": {"sign": "Virgo", "degree": 13.04, "house": 6},
-      "Mercury": {"sign": "Pisces", "degree": 25.89, "house": 11, "retrograde": true},
-      "Venus": {"sign": "Aquarius", "degree": 20.04, "house": 10},
-      "Mars": {"sign": "Cancer", "degree": 3.30, "house": 2},
-      "Jupiter": {"sign": "Cancer", "degree": 10.29, "house": 2, "retrograde": true},
-      "Saturn": {"sign": "Gemini", "degree": 25.48, "house": 1},
-      "Uranus": {"sign": "Aquarius", "degree": 22.42, "house": 10},
-      "Neptune": {"sign": "Aquarius", "degree": 9.35, "house": 10},
-      "Pluto": {"sign": "Sagittarius", "degree": 16.55, "house": 7, "retrograde": true},
-      "Node": {"sign": "Gemini", "degree": 27.53, "house": 1, "retrograde": true},
-      "Lilith": {"sign": "Taurus", "degree": 11.22, "house": 12},
-      "Chiron": {"sign": "Capricorn", "degree": 14.15, "house": 8, "retrograde": true},
-      "Fortune": {"sign": "Leo", "degree": 2.12, "house": 4},
-      "Vertex": {"sign": "Taurus", "degree": 0.40, "house": 12},
-      "ASC": {"sign": "Gemini", "degree": 27.53},
-      "MC": {"sign": "Aquarius", "degree": 8.18}
+      "Sun": {
+        "sign": "Aries",
+        "degree": 7.76,
+        "house": 12
+      },
+      "Moon": {
+        "sign": "Libra",
+        "degree": 5.89,
+        "house": 6
+      },
+      "Mercury": {
+        "sign": "Pisces",
+        "degree": 28.16,
+        "house": 12
+      },
+      "Venus": {
+        "sign": "Aries",
+        "degree": 25.51,
+        "house": 12
+      },
+      "Mars": {
+        "sign": "Taurus",
+        "degree": 18.93,
+        "house": 1
+      },
+      "Jupiter": {
+        "sign": "Cancer",
+        "degree": 6.79,
+        "house": 3
+      },
+      "Saturn": {
+        "sign": "Gemini",
+        "degree": 10.14,
+        "house": 2
+      },
+      "Uranus": {
+        "sign": "Aquarius",
+        "degree": 27.15,
+        "house": 11
+      },
+      "Neptune": {
+        "sign": "Aquarius",
+        "degree": 10.42,
+        "house": 10
+      },
+      "Pluto": {
+        "sign": "Sagittarius",
+        "degree": 17.61,
+        "house": 8,
+        "retrograde": true
+      },
+      "Node": {
+        "sign": "Gemini",
+        "degree": 20.78,
+        "house": 2,
+        "retrograde": true,
+        "node_type": "true"
+      },
+      "Mean_Node": {
+        "sign": "Gemini",
+        "degree": 21.77,
+        "house": 2,
+        "retrograde": true,
+        "node_type": "mean"
+      },
+      "South_Node": {
+        "sign": "Sagittarius",
+        "degree": 20.78,
+        "house": 8,
+        "retrograde": true
+      },
+      "Lilith": {
+        "sign": "Pisces",
+        "degree": 24.39,
+        "house": 12,
+        "lilith_type": "mean"
+      },
+      "Chiron": {
+        "sign": "Capricorn",
+        "degree": 8.87,
+        "house": 9
+      },
+      "Fortune": {
+        "sign": "Scorpio",
+        "degree": 8.41,
+        "house": 6
+      },
+      "Vertex": {
+        "sign": "Libra",
+        "degree": 18.0,
+        "house": 6
+      },
+      "ASC": {
+        "sign": "Taurus",
+        "degree": 10.28
+      },
+      "MC": {
+        "sign": "Capricorn",
+        "degree": 23.49
+      }
     },
     "arabic_parts": {
-      "Fortune": 122.12,
-      "Spirit": 157.32,
-      "Karma": 225.01,
-      "Victory": 289.22,
-      "Treachery": 264.47,
-      "Deliverance": 87.59
+      "Fortune": 218.41,
+      "Spirit": 222.15,
+      "Eros": 200.67,
+      "Karma": 137.11,
+      "Treachery": 89.06,
+      "Victory": 270.94,
+      "Deliverance": 44.02
     },
     "fixed_star_contacts": [
-      {"star": "Regulus", "body": "ASC", "orb": 2.03, "aspect": "conjunction"},
-      {"star": "Spica", "body": "Venus", "orb": 3.48, "aspect": "trine"}
+      {
+        "star": "Capella",
+        "body": "Mean_Node",
+        "orb": 0.11,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Antares",
+        "body": "Merlin",
+        "orb": 0.19,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Pollux",
+        "body": "IC",
+        "orb": 0.25,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Aldebaran",
+        "body": "Saturn",
+        "orb": 0.33,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Spica",
+        "body": "Huya",
+        "orb": 0.65,
+        "aspect": "conjunction"
+      }
     ],
-    "harmonics": {"h8": "filled", "h9": "filled"},
-    "midpoints": "filled",
-    "declinations": "filled"
+    "harmonics": {
+      "h8": "natal_charts/Trinity_natal_snapshot.json#harmonic_charts.h8",
+      "h9": "natal_charts/Trinity_natal_snapshot.json#harmonic_charts.h9"
+    },
+    "midpoints": "natal_charts/Trinity_natal_snapshot.json#midpoints",
+    "declinations": "natal_charts/Trinity_natal_snapshot.json#declination_aspects",
+    "source": "natal_charts/Trinity_natal_snapshot.json"
+  },
+  "Christine": {
+    "birth": {
+      "date": "1989-07-05",
+      "time": "15:01",
+      "place": "Islip, New York, USA",
+      "lat": 40.731505,
+      "lon": -73.2152869,
+      "tz": "America/New_York"
+    },
+    "house_system": "Placidus",
+    "planets": {
+      "Sun": {
+        "sign": "Cancer",
+        "degree": 13.72,
+        "house": 9
+      },
+      "Moon": {
+        "sign": "Leo",
+        "degree": 15.31,
+        "house": 10
+      },
+      "Mercury": {
+        "sign": "Gemini",
+        "degree": 29.53,
+        "house": 8
+      },
+      "Venus": {
+        "sign": "Leo",
+        "degree": 7.88,
+        "house": 9
+      },
+      "Mars": {
+        "sign": "Leo",
+        "degree": 11.96,
+        "house": 9
+      },
+      "Jupiter": {
+        "sign": "Gemini",
+        "degree": 24.57,
+        "house": 8
+      },
+      "Saturn": {
+        "sign": "Capricorn",
+        "degree": 10.38,
+        "house": 3,
+        "retrograde": true
+      },
+      "Uranus": {
+        "sign": "Capricorn",
+        "degree": 2.9,
+        "house": 2,
+        "retrograde": true
+      },
+      "Neptune": {
+        "sign": "Capricorn",
+        "degree": 10.92,
+        "house": 3,
+        "retrograde": true
+      },
+      "Pluto": {
+        "sign": "Scorpio",
+        "degree": 12.45,
+        "house": 1,
+        "retrograde": true
+      },
+      "Node": {
+        "sign": "Aquarius",
+        "degree": 26.4,
+        "house": 4,
+        "retrograde": true,
+        "node_type": "true"
+      },
+      "Mean_Node": {
+        "sign": "Aquarius",
+        "degree": 27.95,
+        "house": 4,
+        "retrograde": true,
+        "node_type": "mean"
+      },
+      "South_Node": {
+        "sign": "Leo",
+        "degree": 26.4,
+        "house": 10,
+        "retrograde": true
+      },
+      "Lilith": {
+        "sign": "Libra",
+        "degree": 16.38,
+        "house": 12,
+        "lilith_type": "mean"
+      },
+      "Chiron": {
+        "sign": "Cancer",
+        "degree": 9.29,
+        "house": 9
+      },
+      "Fortune": {
+        "sign": "Sagittarius",
+        "degree": 7.71,
+        "house": 2
+      },
+      "Vertex": {
+        "sign": "Gemini",
+        "degree": 16.07,
+        "house": 8
+      },
+      "ASC": {
+        "sign": "Scorpio",
+        "degree": 6.11
+      },
+      "MC": {
+        "sign": "Leo",
+        "degree": 13.32
+      }
+    },
+    "arabic_parts": {
+      "Fortune": 247.71,
+      "Spirit": 184.52,
+      "Eros": 223.54,
+      "Karma": 335.63,
+      "Treachery": 15.8,
+      "Victory": 344.2,
+      "Deliverance": 152.92
+    },
+    "fixed_star_contacts": [
+      {
+        "star": "Canopus",
+        "body": "Aphrodite",
+        "orb": 0.13,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Sirius",
+        "body": "Sun",
+        "orb": 0.22,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Capella",
+        "body": "Pholus",
+        "orb": 0.24,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Algol",
+        "body": "Euphrosyne",
+        "orb": 0.41,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Rigel",
+        "body": "Vertex",
+        "orb": 0.61,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Sirius",
+        "body": "Aphrodite",
+        "orb": 0.73,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Antares",
+        "body": "Hygiea",
+        "orb": 0.92,
+        "aspect": "conjunction"
+      },
+      {
+        "star": "Betelgeuse",
+        "body": "Mercury",
+        "orb": 0.92,
+        "aspect": "conjunction"
+      }
+    ],
+    "harmonics": {
+      "h8": "natal_charts/Christine_natal_snapshot.json#harmonic_charts.h8",
+      "h9": "natal_charts/Christine_natal_snapshot.json#harmonic_charts.h9"
+    },
+    "midpoints": "natal_charts/Christine_natal_snapshot.json#midpoints",
+    "declinations": "natal_charts/Christine_natal_snapshot.json#declination_aspects",
+    "source": "natal_charts/Christine_natal_snapshot.json"
   }
 }
