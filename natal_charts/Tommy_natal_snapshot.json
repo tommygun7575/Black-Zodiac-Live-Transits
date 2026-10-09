@@ -676,14 +676,24 @@
       "house": 4
     },
     "Amor": {
-      "longitude": null,
-      "latitude": null,
-      "source": "unresolved",
+      "longitude": 339.2572632,
+      "latitude": 2.8611398,
+      "distance": 1.43654155499029,
+      "velocity": -0.3167892999999822,
+      "longitude_speed": -0.3167892999999822,
+      "longitude_speed_source": "horizons_central_difference_pm12h",
+      "right_ascension": 339.759828001,
+      "declination": -5.44674226,
+      "source": "horizons",
+      "horizons_target": "1221 Amor (1932 EA1)",
       "category": "expanded_asteroids",
       "timestamp": "1975-09-12T13:20:00Z",
-      "errors": [
-        "held back pending separate commit: JPL Horizons value not confirmed by IMCCE Miriade within 0.01 deg (diff 0.0186 deg; see PR)"
-      ]
+      "verification_status": "partially_verified",
+      "retrograde": true,
+      "station": false,
+      "motion_status": "retrograde",
+      "station_eligible": true,
+      "house": 5
     },
     "Aphrodite": {
       "longitude": 210.3109319,
@@ -2401,6 +2411,18 @@
       "aspect_class": "minor/harmonic"
     },
     {
+      "body_a": "Amor",
+      "body_b": "Neptune",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 90.1042295,
+      "orb": 0.10422950000000242,
+      "motion": "applying",
+      "motion_reason": null,
+      "aspect": "square",
+      "aspect_class": "major"
+    },
+    {
       "body_a": "Sappho",
       "body_b": "Sun",
       "harmonic": 7,
@@ -2713,6 +2735,18 @@
       "aspect_class": "minor/harmonic"
     },
     {
+      "body_a": "Aetheric_SunMoon_Midpoint",
+      "body_b": "Amor",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.750813,
+      "orb": 0.24918700000000626,
+      "motion": "unresolved",
+      "motion_reason": "longitude_speed unavailable for one or both bodies",
+      "aspect": "square",
+      "aspect_class": "major"
+    },
+    {
       "body_a": "Euphrosyne",
       "body_b": "Pallas",
       "harmonic": 3,
@@ -2843,6 +2877,18 @@
       "motion_reason": null,
       "aspect": "quintile",
       "aspect_class": "minor/harmonic"
+    },
+    {
+      "body_a": "Amor",
+      "body_b": "Varuna",
+      "harmonic": 4,
+      "exact_angle": 90.0,
+      "separation": 89.69623839999997,
+      "orb": 0.30376160000002983,
+      "motion": "applying",
+      "motion_reason": null,
+      "aspect": "square",
+      "aspect_class": "major"
     },
     {
       "body_a": "Aphrodite",
@@ -3155,6 +3201,18 @@
       "motion_reason": null,
       "aspect": "conjunction",
       "aspect_class": "major"
+    },
+    {
+      "body_a": "Amor",
+      "body_b": "Merlin",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 45.424780999999996,
+      "orb": 0.42478099999999586,
+      "motion": "applying",
+      "motion_reason": null,
+      "aspect": "semisquare",
+      "aspect_class": "minor/harmonic"
     },
     {
       "body_a": "Hylonome",
@@ -3551,6 +3609,18 @@
       "motion_reason": null,
       "aspect": "square",
       "aspect_class": "major"
+    },
+    {
+      "body_a": "Amor",
+      "body_b": "Vertex",
+      "harmonic": 5,
+      "exact_angle": 72.0,
+      "separation": 72.60840412922983,
+      "orb": 0.6084041292298252,
+      "motion": "separating",
+      "motion_reason": null,
+      "aspect": "quintile",
+      "aspect_class": "minor/harmonic"
     },
     {
       "body_a": "Cupido",
@@ -4069,6 +4139,18 @@
       "aspect_class": "minor/harmonic"
     },
     {
+      "body_a": "Amor",
+      "body_b": "IC",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 44.15601690901042,
+      "orb": 0.8439830909895818,
+      "motion": "separating",
+      "motion_reason": null,
+      "aspect": "semisquare",
+      "aspect_class": "minor/harmonic"
+    },
+    {
       "body_a": "Jupiter",
       "body_b": "South_Node",
       "harmonic": 12,
@@ -4199,6 +4281,18 @@
       "motion_reason": null,
       "aspect": "sextile",
       "aspect_class": "major"
+    },
+    {
+      "body_a": "Amor",
+      "body_b": "Jupiter",
+      "harmonic": 8,
+      "exact_angle": 45.0,
+      "separation": 44.110254999999995,
+      "orb": 0.8897450000000049,
+      "motion": "applying",
+      "motion_reason": null,
+      "aspect": "semisquare",
+      "aspect_class": "minor/harmonic"
     },
     {
       "body_a": "Mean_Node",
@@ -4547,6 +4641,18 @@
       "motion_reason": null,
       "aspect": "novile",
       "aspect_class": "minor/harmonic"
+    },
+    {
+      "body_a": "Amor",
+      "body_b": "Ixion",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 121.06486860000001,
+      "orb": 1.0648686000000112,
+      "motion": "applying",
+      "motion_reason": null,
+      "aspect": "trine",
+      "aspect_class": "major"
     },
     {
       "body_a": "Mercury",
@@ -5245,6 +5351,18 @@
       "aspect_class": "minor/harmonic"
     },
     {
+      "body_a": "Amor",
+      "body_b": "Typhon",
+      "harmonic": 6,
+      "exact_angle": 60.0,
+      "separation": 61.31245799999999,
+      "orb": 1.3124579999999924,
+      "motion": "separating",
+      "motion_reason": null,
+      "aspect": "sextile",
+      "aspect_class": "major"
+    },
+    {
       "body_a": "Asbolus",
       "body_b": "Haumea",
       "harmonic": 12,
@@ -5533,6 +5651,18 @@
       "aspect_class": "minor/harmonic"
     },
     {
+      "body_a": "Amor",
+      "body_b": "Sappho",
+      "harmonic": 3,
+      "exact_angle": 120.0,
+      "separation": 118.55425430000003,
+      "orb": 1.445745699999975,
+      "motion": "separating",
+      "motion_reason": null,
+      "aspect": "trine",
+      "aspect_class": "major"
+    },
+    {
       "body_a": "Amphitrite",
       "body_b": "Uranus",
       "harmonic": 4,
@@ -5542,6 +5672,18 @@
       "motion": "separating",
       "motion_reason": null,
       "aspect": "square",
+      "aspect_class": "major"
+    },
+    {
+      "body_a": "Aetheric_Elemental_Balance",
+      "body_b": "Amor",
+      "harmonic": 2,
+      "exact_angle": 180.0,
+      "separation": 178.53549280000004,
+      "orb": 1.4645071999999573,
+      "motion": "unresolved",
+      "motion_reason": "longitude_speed unavailable for one or both bodies",
+      "aspect": "opposition",
       "aspect_class": "major"
     },
     {
@@ -5946,6 +6088,14 @@
       "declination_a": 11.702039366,
       "declination_b": -11.986092228,
       "orb": 0.2840528620000011
+    },
+    {
+      "body_a": "Amor",
+      "body_b": "Venus",
+      "type": "contraparallel",
+      "declination_a": -5.44674226,
+      "declination_b": 5.737898837,
+      "orb": 0.29115657700000064
     },
     {
       "body_a": "Astraea",
@@ -7267,6 +7417,18 @@
         "aspect_class": "major"
       },
       {
+        "body_a": "Amor",
+        "body_b": "Vertex",
+        "harmonic": 5,
+        "exact_angle": 72.0,
+        "separation": 72.60840412922983,
+        "orb": 0.6084041292298252,
+        "motion": "separating",
+        "motion_reason": null,
+        "aspect": "quintile",
+        "aspect_class": "minor/harmonic"
+      },
+      {
         "body_a": "Aetheric_Elemental_Balance",
         "body_b": "MC",
         "harmonic": 8,
@@ -7360,6 +7522,18 @@
         "motion": "separating",
         "motion_reason": null,
         "aspect": "septile",
+        "aspect_class": "minor/harmonic"
+      },
+      {
+        "body_a": "Amor",
+        "body_b": "IC",
+        "harmonic": 8,
+        "exact_angle": 45.0,
+        "separation": 44.15601690901042,
+        "orb": 0.8439830909895818,
+        "motion": "separating",
+        "motion_reason": null,
+        "aspect": "semisquare",
         "aspect_class": "minor/harmonic"
       },
       {
@@ -7995,6 +8169,15 @@
       "tolerance_deg": 0.01,
       "status": "verified"
     },
+    "Amor": {
+      "primary": "jpl_horizons",
+      "cross_check": "imcce_miriade (ASTORB, INPOP19A)",
+      "cross_check_longitude": 339.2386919861111,
+      "diff_deg": 0.01857121388889027,
+      "tolerance_deg": 0.01,
+      "status": "partially_verified",
+      "diagnosis": "1221 Amor is a near-Earth asteroid (geocentric distance 1.437 au at Tommy's birth). Horizons vs Miriade (ASTORB orbit, INPOP19A) differences for the same geocentric apparent ecliptic-of-date longitude: 2026-10-09: 1.3 arcsec; 2000-01-01: 3.5 arcsec; 1975-09-12: 67 arcsec. The divergence grows with distance from the current osculating epoch, i.e. Miriade's propagation of a single osculating orbit back ~51 years, whereas JPL Horizons uses the SBDB orbit solution numerically integrated with full perturbations. The JPL value is retained as primary; the independent cross-check does not confirm it within 0.01 deg, so this body is partially verified only (other three births agree within 8 arcsec)."
+    },
     "Aphrodite": {
       "primary": "jpl_horizons",
       "cross_check": "imcce_miriade (ASTORB, INPOP19A)",
@@ -8375,20 +8558,17 @@
       "status": "verified"
     }
   },
-  "unresolved": [
-    {
-      "name": "Amor",
-      "reason": "held back pending separate commit: JPL Horizons value not confirmed by IMCCE Miriade within 0.01 deg (diff 0.0186 deg; see PR)"
-    }
-  ],
+  "unresolved": [],
   "summary": {
     "positions_total": 84,
-    "positions_resolved": 83,
-    "unresolved_count": 1,
+    "positions_resolved": 84,
+    "unresolved_count": 0,
     "verified": 77,
     "cross_check_disagreements": [],
     "single_source": [],
-    "partially_verified": []
+    "partially_verified": [
+      "Amor"
+    ]
   },
   "provenance": {
     "builder": "standalone reconstruction (outside repo code; repo functions imported unmodified)",
