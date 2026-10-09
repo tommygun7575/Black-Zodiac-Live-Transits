@@ -251,7 +251,10 @@ def compute_arabic_parts_from_longitudes(
         )
 
     # Extended parts from generate_feed_overlay.compute_arabic_parts
-    karma = normalize(asc + (sun + moon) / 2.0)
+    # (Sun + Moon) / 2 is the Sun/Moon midpoint taken along the shorter arc; a plain
+    # arithmetic mean returns the far (opposite) midpoint when the pair straddles 0/360.
+    sun_moon_half_arc = (((normalize(moon) - normalize(sun) + 180.0) % 360.0) - 180.0) / 2.0
+    karma = normalize(asc + normalize(sun) + sun_moon_half_arc)
     treachery = normalize(asc + moon - karma)
     victory = normalize(asc + sun - karma)
     deliverance = normalize(asc + spirit - fortune)
