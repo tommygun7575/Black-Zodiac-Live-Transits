@@ -193,7 +193,7 @@ def motion_status(
     speed = float(longitude_speed)
     stationary = station_eligible and abs(speed) <= float(station_threshold)
     return {
-        "retrograde": speed < 0.0 and not stationary,
+        "retrograde": speed < 0.0,
         "station": stationary,
         "longitude_speed": speed,
         "status": "station" if stationary else ("retrograde" if speed < 0.0 else "direct"),

@@ -56,6 +56,12 @@ class TestStationRules(unittest.TestCase):
         r = classify_position_motion("Saturn", _pos(category="core_bodies", longitude_speed=-0.03))
         self.assertTrue(r["retrograde"])
         self.assertFalse(r["station"])
+        # Stationing with negative λ̇ (e.g. Pluto near station direct): still a
+        # station, and retrograde follows the sign of λ̇.
+        s = classify_position_motion("Pluto", _pos(category="core_bodies", longitude_speed=-0.0017))
+        self.assertTrue(s["station"])
+        self.assertEqual("station", s["motion_status"])
+        self.assertTrue(s["retrograde"])
 
     def test_velocity_never_used_as_longitude_speed(self):
         p = _pos(source="swiss", category="centaurs", velocity=-0.5)
