@@ -1,0 +1,220 @@
+{
+  "file": "docs/feed_overlay_2026_10_21.json",
+  "engine_version": "ZodiacOracle.DailyTransit.v3",
+  "generated_at_utc": "2026-10-21T10:02:15.138076+00:00",
+  "validated_at_utc": "2026-10-21T10:03:04.752210+00:00",
+  "all_passed": true,
+  "summary": {
+    "coverage": 1.0,
+    "resolved": "78/78",
+    "fixed_star_station_true": 0,
+    "fixed_star_motion_station": 0,
+    "null_longitude_speed_count": 41,
+    "null_longitude_speed_station_eligible": 38,
+    "null_longitude_speed_aether": 3,
+    "daily_station_items": 7
+  },
+  "checks": [
+    {
+      "check": "coverage_78_of_78",
+      "result": "PASS",
+      "detail": "78/78 coverage=1.0 missing=[]"
+    },
+    {
+      "check": "fixed_star_station_true_count_zero",
+      "result": "PASS",
+      "detail": {
+        "count": 0,
+        "bodies": []
+      }
+    },
+    {
+      "check": "fixed_star_motion_status_station_count_zero",
+      "result": "PASS",
+      "detail": {
+        "count": 0
+      }
+    },
+    {
+      "check": "fixed_stars_motion_fixed_station_false",
+      "result": "PASS",
+      "detail": {
+        "fixed_stars": 19,
+        "violations": []
+      }
+    },
+    {
+      "check": "aether_sun_moon_nodes_never_station",
+      "result": "PASS",
+      "detail": {
+        "violations": []
+      }
+    },
+    {
+      "check": "null_speed_explicit_unresolved_not_fabricated",
+      "result": "PASS",
+      "detail": {
+        "null_speed_count": 41,
+        "violations": [],
+        "positions_dropped": [],
+        "null_speed_bodies": [
+          "2002 AW197",
+          "2003 VS2",
+          "Aetheric_Elemental_Balance",
+          "Aetheric_Jovian_Arc",
+          "Aetheric_SunMoon_Midpoint",
+          "Amor",
+          "Amphitrite",
+          "Aphrodite",
+          "Asbolus",
+          "Astraea",
+          "Aura",
+          "Bacchus",
+          "Chariklo",
+          "Cupido",
+          "Destinn",
+          "Eris",
+          "Eros",
+          "Euphrosyne",
+          "Gonggong",
+          "Haumea",
+          "Hekate",
+          "Hidalgo",
+          "Huya",
+          "Hygiea",
+          "Hylonome",
+          "Ixion",
+          "Karma",
+          "Makemake",
+          "Merlin",
+          "Nemesis",
+          "Nessus",
+          "Orcus",
+          "Panacea",
+          "Pholus",
+          "Psyche",
+          "Quaoar",
+          "Salacia",
+          "Sappho",
+          "Sedna",
+          "Typhon",
+          "Varuna"
+        ]
+      }
+    },
+    {
+      "check": "stations_items_eligible_only",
+      "result": "PASS",
+      "detail": {
+        "items": [
+          "Chiron:retrograde",
+          "Neptune:retrograde",
+          "Pallas:retrograde",
+          "Saturn:retrograde",
+          "Uranus:retrograde",
+          "Venus:retrograde",
+          "Vesta:retrograde"
+        ],
+        "violations": []
+      }
+    },
+    {
+      "check": "major_body_speed_and_retrograde",
+      "result": "PASS",
+      "detail": {
+        "tolerance_deg_per_day": 0.01,
+        "bodies": {
+          "Sun": {
+            "longitude_speed": 0.994124424676492,
+            "retrograde": false,
+            "motion_status": "direct",
+            "swiss_speed": 0.994124,
+            "abs_diff": 0.0
+          },
+          "Moon": {
+            "longitude_speed": 12.534696033120998,
+            "retrograde": false,
+            "motion_status": "direct",
+            "swiss_speed": 12.534697,
+            "abs_diff": 1e-06
+          },
+          "Mercury": {
+            "longitude_speed": 0.3423787685985273,
+            "retrograde": false,
+            "motion_status": "direct",
+            "swiss_speed": 0.342379,
+            "abs_diff": 0.0
+          },
+          "Venus": {
+            "longitude_speed": -0.5944985649439952,
+            "retrograde": true,
+            "motion_status": "retrograde",
+            "swiss_speed": -0.594499,
+            "abs_diff": 0.0
+          },
+          "Mars": {
+            "longitude_speed": 0.5346567599055142,
+            "retrograde": false,
+            "motion_status": "direct",
+            "swiss_speed": 0.534657,
+            "abs_diff": 0.0
+          },
+          "Jupiter": {
+            "longitude_speed": 0.1442603697944147,
+            "retrograde": false,
+            "motion_status": "direct",
+            "swiss_speed": 0.14426,
+            "abs_diff": 0.0
+          },
+          "Saturn": {
+            "longitude_speed": -0.07257076992686548,
+            "retrograde": true,
+            "motion_status": "retrograde",
+            "swiss_speed": -0.072571,
+            "abs_diff": 0.0
+          },
+          "Uranus": {
+            "longitude_speed": -0.030924501470117733,
+            "retrograde": true,
+            "motion_status": "retrograde",
+            "swiss_speed": -0.030925,
+            "abs_diff": 0.0
+          },
+          "Neptune": {
+            "longitude_speed": -0.024323049645119624,
+            "retrograde": true,
+            "motion_status": "retrograde",
+            "swiss_speed": -0.024323,
+            "abs_diff": 0.0
+          },
+          "Pluto": {
+            "longitude_speed": 0.0024924875707988754,
+            "retrograde": false,
+            "motion_status": "direct",
+            "swiss_speed": 0.002492,
+            "abs_diff": 0.0
+          }
+        },
+        "error": null
+      }
+    },
+    {
+      "check": "harmonics_scoped_sky_geometry",
+      "result": "PASS",
+      "detail": {
+        "rows": 266
+      }
+    },
+    {
+      "check": "natal_blocks_reference_only",
+      "result": "PASS",
+      "detail": {
+        "blocks": [
+          "natal_chart",
+          "houses_and_angles",
+          "arabic_parts"
+        ]
+      }
+    }
+  ]
+}
