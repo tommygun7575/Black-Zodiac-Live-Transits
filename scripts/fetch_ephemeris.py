@@ -452,11 +452,15 @@ def _horizons_position(
     Horizons.TIMEOUT = REQUEST_TIMEOUT_HORIZONS
 
     # Do NOT pass id_type here.
+    # Horizons can return HTTP 200 with an error body (e.g. wldini missing
+    # files). Astroquery caches the raw response before parsing it, so its
+    # default cache can replay that failure on every retry after JPL recovers.
+    # Each live attempt must reach the provider; never reuse an error response.
     eph = Horizons(
         id=body_id,
         location=HORIZONS_LOCATION,
         epochs=[_to_jd(dt)],
-    ).ephemerides()
+    ).ephemerides(cache=False)
 
     if len(eph) < 1:
         return None
@@ -1715,3 +1719,4 @@ if __name__ == "__main__":
             indent=2,
         )
     )
+

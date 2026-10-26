@@ -1,0 +1,37 @@
+name: ephemeris-regression-tests
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - 'config/**'
+      - 'schemas/**'
+      - 'requirements.txt'
+      - '.github/workflows/test_ephemeris.yml'
+  push:
+    branches: ['fix/horizons-error-cache']
+
+# Verification only: no generated feed commits, Pages publication, or deploys.
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Validate configuration
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python scripts/validate_config.py
+      - name: Run offline regression suite
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m unittest discover -s tests -v
