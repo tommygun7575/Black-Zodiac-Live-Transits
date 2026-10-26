@@ -333,6 +333,16 @@ PROVIDER_RETRY_BASE_DELAY = float(_os.environ.get("BZ_PROVIDER_RETRY_BASE_DELAY"
 _REMOTE_PROVIDERS = {"horizons", "miriade"}
 
 
+import threading as _threading
+
+# Circuit breaker: after this many bodies exhaust all retries for a provider
+# without any success in between, further calls to that provider make a
+# single attempt (no backoff) so an upstream outage cannot stall the run.
+PROVIDER_BREAKER_THRESHOLD = int(_os.environ.get("BZ_PROVIDER_BREAKER_THRESHOLD", "3"))
+_breaker_lock = _threading.Lock()
+_breaker_failures: Dict[str, int] = {}
+
+
 def _call_with_retries(provider, loader, body, dt):
     """Call a provider loader, retrying remote providers with backoff.
 
@@ -342,11 +352,16 @@ def _call_with_retries(provider, loader, body, dt):
     """
 
     attempts = PROVIDER_RETRY_ATTEMPTS if provider in _REMOTE_PROVIDERS else 1
+    with _breaker_lock:
+        if _breaker_failures.get(provider, 0) >= PROVIDER_BREAKER_THRESHOLD:
+            attempts = 1
     last_exc = None
     for attempt in range(1, max(1, attempts) + 1):
         try:
             data = loader(body, dt)
             if data:
+                with _breaker_lock:
+                    _breaker_failures[provider] = 0
                 return data
             last_exc = None
         except Exception as exc:  # noqa: BLE001
@@ -355,10 +370,13 @@ def _call_with_retries(provider, loader, body, dt):
             delay = PROVIDER_RETRY_BASE_DELAY * (2 ** (attempt - 1))
             print(
                 f"[RETRY] {provider} {body.get('name')} attempt {attempt}/"
-                f"{attempts} failed ({last_exc or 'empty result'}); "
+                f"{attempts} failed ({str(last_exc or 'empty result')[:160]}); "
                 f"sleeping {delay:.1f}s"
             )
             _time.sleep(delay)
+    if provider in _REMOTE_PROVIDERS:
+        with _breaker_lock:
+            _breaker_failures[provider] = _breaker_failures.get(provider, 0) + 1
     if last_exc is not None:
         raise last_exc
     return None
