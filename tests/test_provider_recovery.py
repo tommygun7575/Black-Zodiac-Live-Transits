@@ -54,6 +54,7 @@ class ProviderRecoveryTests(unittest.TestCase):
             result.status_code = 200
             result._content = text.encode()
             result.url = "https://ssd.jpl.nasa.gov/api/horizons.api"
+            result.request = requests.Request("GET", result.url).prepare()
             return result
 
         original_parse = HorizonsClass._parse_result
