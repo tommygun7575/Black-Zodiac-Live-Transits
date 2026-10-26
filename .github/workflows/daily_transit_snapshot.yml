@@ -188,6 +188,15 @@ jobs:
                   f"population={expected_total}, total_targets={reported_total}"
               )
 
+          resolved_total = int(payload.get("resolved_targets", 0))
+          if reported_total <= 0 or resolved_total < reported_total:
+              raise SystemExit(
+                  "Coverage gate failed: resolved "
+                  f"{resolved_total}/{reported_total} targets "
+                  f"(coverage={payload.get('coverage')}); "
+                  f"unresolved={payload.get('unresolved')}"
+              )
+
           harmonics = payload.get("calculated_harmonics") or []
           if harmonics and "motion" not in harmonics[0]:
               raise SystemExit("calculated_harmonics entries must include motion status")

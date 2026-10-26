@@ -320,6 +320,51 @@ def _to_jd(
 
 
 # ---------------------------------------------------------------------------
+# NETWORK RETRIES
+# ---------------------------------------------------------------------------
+
+import os as _os
+import time as _time
+
+# Remote providers (Horizons, Miriade) are retried with exponential backoff.
+# Swiss is local and never retried.
+PROVIDER_RETRY_ATTEMPTS = int(_os.environ.get("BZ_PROVIDER_RETRY_ATTEMPTS", "4"))
+PROVIDER_RETRY_BASE_DELAY = float(_os.environ.get("BZ_PROVIDER_RETRY_BASE_DELAY", "2.0"))
+_REMOTE_PROVIDERS = {"horizons", "miriade"}
+
+
+def _call_with_retries(provider, loader, body, dt):
+    """Call a provider loader, retrying remote providers with backoff.
+
+    Retries on exceptions (HTTP 5xx, timeouts, Horizons server errors)
+    and on empty results. The last exception is re-raised so callers can
+    record it as an explicit unresolved error.
+    """
+
+    attempts = PROVIDER_RETRY_ATTEMPTS if provider in _REMOTE_PROVIDERS else 1
+    last_exc = None
+    for attempt in range(1, max(1, attempts) + 1):
+        try:
+            data = loader(body, dt)
+            if data:
+                return data
+            last_exc = None
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+        if attempt < attempts:
+            delay = PROVIDER_RETRY_BASE_DELAY * (2 ** (attempt - 1))
+            print(
+                f"[RETRY] {provider} {body.get('name')} attempt {attempt}/"
+                f"{attempts} failed ({last_exc or 'empty result'}); "
+                f"sleeping {delay:.1f}s"
+            )
+            _time.sleep(delay)
+    if last_exc is not None:
+        raise last_exc
+    return None
+
+
+# ---------------------------------------------------------------------------
 # JPL HORIZONS
 # ---------------------------------------------------------------------------
 
@@ -977,7 +1022,9 @@ def _compute_single(
     )
 
     try:
-        data = loader(
+        data = _call_with_retries(
+            provider,
+            loader,
             body,
             dt,
         )
