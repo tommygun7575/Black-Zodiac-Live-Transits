@@ -779,7 +779,7 @@ def fetch_horizons_range(
                 ),
                 "step": "1d",
             },
-        ).ephemerides()
+        ).ephemerides(cache=False)  # Do not replay cached HTTP-200 server errors.
 
     eph = None
 
@@ -2707,3 +2707,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
